@@ -1,4 +1,4 @@
-#!/Users/tedueda/Desktop/LGBTQ/LGBTQ_Community2/CascadeProjects/windsurf-project/rainbow_community/backend/venv/bin/python3.12
+#!/Users/tedueda/Desktop/LGBTQ/LGBTQ_Community2/rainbow_community-12/backend/venv/bin/python3.12
 import sys
 from charset_normalizer.cli import cli_detect
 if __name__ == '__main__':

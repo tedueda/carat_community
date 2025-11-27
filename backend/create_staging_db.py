@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, text
 
-admin_url = "postgresql+psycopg2://dbadmin:3831Uedalgbtq@rainbow-community-db-tokyo.cj8agmy8kjhv.ap-northeast-1.rds.amazonaws.com:5432/postgres?sslmode=require"
+admin_url = "postgresql+psycopg2://dbadmin:NewPassword123!@rainbow-community-db-tokyo.cj8agmy8kjhv.ap-northeast-1.rds.amazonaws.com:5432/postgres?sslmode=require"
 
 engine = create_engine(admin_url, isolation_level="AUTOCOMMIT")
 with engine.connect() as conn:

@@ -49,12 +49,24 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
     youtubeUrl: '',
     subcategory: '',
   });
+  const [linkUrl, setLinkUrl] = useState('');
+  const [visibility, setVisibility] = useState<'public' | 'members' | 'followers' | 'private'>('public');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStartTime, setSubmitStartTime] = useState<number | null>(null);
 
   const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
   const category = categories[categoryKey as keyof typeof categories];
+
+  const getLinkHostname = (url: string): string | null => {
+    try {
+      if (!url) return null;
+      const parsed = new URL(url.startsWith('http') ? url : `https://${url}`);
+      return parsed.hostname;
+    } catch {
+      return null;
+    }
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -150,11 +162,15 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
         }
       }
 
+      const bodyWithLink = linkUrl.trim()
+        ? `${formData.body} #${categoryKey}\n\nリンク: ${linkUrl.trim()}`
+        : `${formData.body} #${categoryKey}`;
+
       const postData = {
         title: formData.title || null,
-        body: `${formData.body} #${categoryKey}`,
+        body: bodyWithLink,
         category: categoryKey,
-        visibility: 'public',
+        visibility: visibility,
         youtube_url: formData.youtubeUrl || null,
         media_id: mediaId,
         subcategory: formData.subcategory || null,
@@ -213,13 +229,13 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
   };
 
   return (
-    <Card className="border-pink-200 shadow-lg">
-      <CardHeader className="bg-gradient-to-r from-pink-50 to-orange-50">
+    <Card className="border border-gray-200 shadow-xl bg-white">
+      <CardHeader className="bg-white border-b border-gray-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="text-2xl">{category?.emoji}</div>
             <div>
-              <h3 className="text-lg font-semibold text-pink-800">
+              <h3 className="text-lg font-semibold text-slate-900">
                 {category?.title}に投稿
               </h3>
               <p className="text-sm text-gray-600">{category?.desc}</p>
@@ -233,14 +249,14 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       <CardContent className="p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-800 mb-2">
               タイトル（任意）
             </label>
             <Input
               placeholder="投稿のタイトルを入力..."
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="border-pink-200 focus:border-pink-400"
+              className="border-gray-300 focus:border-gray-500 focus:ring-gray-500"
               maxLength={80}
             />
             <div className="flex justify-between items-center mt-1">
@@ -258,14 +274,14 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
 
           {subcategories[categoryKey as keyof typeof subcategories]?.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-800 mb-2">
                 サブカテゴリー
               </label>
               <Select 
                 value={formData.subcategory} 
                 onValueChange={(value) => setFormData({ ...formData, subcategory: value })}
               >
-                <SelectTrigger className="border-pink-200 focus:border-pink-400">
+                <SelectTrigger className="border-gray-300 focus:border-gray-500 focus:ring-gray-500">
                   <SelectValue placeholder="選択してください..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -280,14 +296,14 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-800 mb-2">
               投稿内容 <span className="text-red-500">*</span>
             </label>
             <Textarea
               placeholder="投稿内容を入力してください..."
               value={formData.body}
               onChange={(e) => setFormData({ ...formData, body: e.target.value })}
-              className="border-pink-200 focus:border-pink-400 min-h-[120px]"
+              className="border-gray-300 focus:border-gray-500 focus:ring-gray-500 min-h-[120px]"
               required
               maxLength={2000}
             />
@@ -306,10 +322,10 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
 
           {(categoryKey === 'board' || categoryKey === 'shops' || categoryKey === 'tourism' || categoryKey === 'comics' || categoryKey === 'news' || categoryKey === 'food' || categoryKey === 'beauty' || categoryKey === 'art') && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-800 mb-2">
                 画像をアップロード（最大5枚）
               </label>
-              <div className="border-2 border-dashed border-pink-200 rounded-lg p-6 hover:border-pink-300 transition-colors">
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 transition-colors bg-gray-50">
                 <input
                   type="file"
                   multiple
@@ -323,7 +339,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
                   htmlFor="image-upload"
                   className="cursor-pointer flex flex-col items-center justify-center"
                 >
-                  <Upload className="h-10 w-10 text-pink-400 mb-3" />
+                  <Upload className="h-10 w-10 text-gray-500 mb-3" />
                   <span className="text-sm font-medium text-gray-700 mb-1">
                     クリックして画像を選択
                   </span>
@@ -345,7 +361,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute -top-2 -right-2 bg-black text-white rounded-full w-6 h-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                         onClick={() => removeImage(index)}
                         aria-label={`画像${index + 1}を削除`}
                       >
@@ -369,9 +385,40 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
             </div>
           )}
 
+          {/* リンクURL（任意） */}
+          <div>
+            <label className="block text-sm font-medium text-gray-800 mb-2">
+              リンクURL（任意）
+            </label>
+            <Input
+              placeholder="https://example.com"
+              value={linkUrl}
+              onChange={(e) => setLinkUrl(e.target.value)}
+              className="border-gray-300 focus:border-gray-500 focus:ring-gray-500"
+              type="url"
+            />
+            {getLinkHostname(linkUrl) && (
+              <div className="mt-2 flex items-center gap-3 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-md px-3 py-2">
+                <img
+                  src={`https://www.google.com/s2/favicons?domain=${getLinkHostname(linkUrl)}`}
+                  alt="サイトアイコン"
+                  className="w-5 h-5 rounded"
+                />
+                <a
+                  href={linkUrl.startsWith('http') ? linkUrl : `https://${linkUrl}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 text-gray-800 truncate"
+                >
+                  {getLinkHostname(linkUrl)} を開く
+                </a>
+              </div>
+            )}
+          </div>
+
           {categoryKey === 'music' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-800 mb-2">
                 YouTube URL（任意）
               </label>
               <div className="relative">
@@ -380,7 +427,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
                   placeholder="https://www.youtube.com/watch?v=..."
                   value={formData.youtubeUrl}
                   onChange={(e) => setFormData({ ...formData, youtubeUrl: e.target.value })}
-                  className="pl-10 border-pink-200 focus:border-pink-400"
+                  className="pl-10 border-gray-300 focus:border-gray-500 focus:ring-gray-500"
                 />
               </div>
               {errors.youtubeUrl && (
@@ -393,7 +440,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-800 mb-2">
               タグ（任意）
             </label>
             <div className="relative">
@@ -402,12 +449,29 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
                 placeholder="タグをカンマ区切りで入力（例：悩み相談, 初心者向け）"
                 value={formData.tags}
                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                className="pl-10 border-pink-200 focus:border-pink-400"
+                className="pl-10 border-gray-300 focus:border-gray-500 focus:ring-gray-500"
               />
             </div>
             <p className="text-xs text-gray-500 mt-1">
               タグを付けることで、同じ興味を持つ人に見つけてもらいやすくなります
             </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-800 mb-2">
+              この投稿を見ることができる人
+            </label>
+            <Select value={visibility} onValueChange={(value) => setVisibility(value as typeof visibility)}>
+              <SelectTrigger className="border-gray-300 focus:border-gray-500 focus:ring-gray-500">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="public">🌍 公開 - 誰でも見ることができます</SelectItem>
+                <SelectItem value="members">👥 メンバーのみ - 登録ユーザーのみ</SelectItem>
+                <SelectItem value="followers">👤 フォロワー - あなたをフォローしている人</SelectItem>
+                <SelectItem value="private">🔒 非公開 - あなたのみ</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {(errors.submit || errors.spam) && (
@@ -424,7 +488,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
           <div className="flex gap-3 pt-4 border-t border-gray-100">
             <Button
               type="submit"
-              className="bg-gradient-to-r from-pink-600 to-orange-500 hover:from-pink-700 hover:to-orange-600 text-white flex-1"
+              className="bg-gradient-to-r from-black to-gray-800 hover:from-gray-900 hover:to-black text-white flex-1"
               disabled={isSubmitting || !formData.body.trim()}
             >
               {isSubmitting ? (
@@ -440,7 +504,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
               type="button"
               variant="outline"
               onClick={onCancel}
-              className="border-pink-300 text-pink-700 hover:bg-pink-50"
+              className="border-gray-300 text-gray-700 hover:bg-gray-100"
               disabled={isSubmitting}
             >
               キャンセル

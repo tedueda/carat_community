@@ -152,6 +152,23 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
     }
   };
 
+  const getLinkHostname = (url: string): string | null => {
+    try {
+      if (!url) return null;
+      const parsed = new URL(url);
+      return parsed.hostname;
+    } catch {
+      return null;
+    }
+  };
+
+  const extractFirstUrl = (text: string): string | null => {
+    if (!text) return null;
+    const urlRegex = /(https?:\/\/[\w\-._~:/?#\[\]@!$&'()*+,;=%]+)/;
+    const match = text.match(urlRegex);
+    return match ? match[1] : null;
+  };
+
   const handleAddComment = async () => {
     if (!newComment.trim() || !token) return;
     
@@ -270,6 +287,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
   const currentUserId = currentUser?.id != null ? Number(currentUser.id) : null;
   const postAuthorId = post?.user_id != null ? Number(post.user_id) : null;
   const canEdit = !isLoading && !!currentUser && !isAnonymous && currentUserId != null && postAuthorId != null && currentUserId === postAuthorId;
+  const linkUrlFromBody = extractFirstUrl(post.body || '');
 
   const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -776,6 +794,24 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                 </>
               )}
             </div>
+
+            {!isEditing && linkUrlFromBody && getLinkHostname(linkUrlFromBody) && (
+              <div className="mb-4 flex items-center gap-3 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-md px-3 py-2">
+                <img
+                  src={`https://www.google.com/s2/favicons?domain=${getLinkHostname(linkUrlFromBody)}`}
+                  alt="サイトアイコン"
+                  className="w-5 h-5 rounded"
+                />
+                <a
+                  href={linkUrlFromBody}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 text-gray-800 truncate"
+                >
+                  {getLinkHostname(linkUrlFromBody)} を開く
+                </a>
+              </div>
+            )}
 
             <div className="flex items-center gap-6 py-4 border-t border-gray-100">
               <LikeButton

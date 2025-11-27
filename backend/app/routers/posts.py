@@ -12,7 +12,7 @@ from app.database import get_db
 from app.models import User, Post, PointEvent, Reaction, Tag, PostTag, MediaAsset, PostMedia, PostTourism, Comment
 from app.schemas import Post as PostSchema, PostCreate, PostUpdate
 import re
-from app.auth import get_current_active_user, get_current_premium_user
+from app.auth import get_current_active_user, get_current_premium_user, get_optional_user
 
 router = APIRouter(prefix="/api/posts", tags=["posts"], redirect_slashes=False)
 
@@ -34,7 +34,7 @@ async def read_posts(
     sort: str = "newest",
     range: str = "all",
     tag: Optional[str] = None,
-    current_user: Optional[User] = Depends(get_current_active_user),
+    current_user: Optional[User] = Depends(get_optional_user),
     db: Session = Depends(get_db)
 ):
     query = db.query(Post).options(joinedload(Post.user))

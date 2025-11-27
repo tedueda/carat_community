@@ -56,10 +56,11 @@ else:
         "https://rainbow-community-app-wg5nxt2r.devinapps.com",
     ]
 
+    ALLOW_CREDENTIALS = True
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
-    allow_origin_regex=r"https://.*\.devinapps\.com",
+    allow_origins=["*"],  # For development
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

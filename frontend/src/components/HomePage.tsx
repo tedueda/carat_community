@@ -182,7 +182,9 @@ const HomePage: React.FC = () => {
       const params = new URLSearchParams({
         limit: '100',
       });
+      console.log(`Fetching news from: ${API_URL}/api/posts/?${params}`);
       const response = await fetch(`${API_URL}/api/posts/?${params}`);
+      console.log('News Response status:', response.status);
       if (response.ok) {
         const data = await response.json();
         // フロントエンドでnewsカテゴリのみフィルタリング
@@ -202,9 +204,11 @@ const HomePage: React.FC = () => {
         headers['Authorization'] = `Bearer ${token}`;
       }
       
+      console.log(`Fetching posts from: ${API_URL}/api/posts?limit=20`);
       const response = await fetch(`${API_URL}/api/posts?limit=20`, {
         headers,
       });
+      console.log('Response status:', response.status);
 
       if (response.ok) {
         const postsData = await response.json();
@@ -366,32 +370,43 @@ const HomePage: React.FC = () => {
                 自分を表現して、<br />新しい仲間と出会おう
               </h2>
               <p className="text-lg md:text-2xl mb-8 opacity-90">
-                悩み相談、アート、音楽、地元ツアー。ここから、あなたの物語が始まります。
+                悩み相談、アート、音楽、地元ツアー。<br />
+                ここから、あなたの物語が始まります。
               </p>
-              <div className="flex flex-wrap gap-4 justify-center">
+            </div>
+          </div>
+        </section>
+
+        {/* ヒーロー直下のCTAセクション */}
+        <section className="relative -mt-12 z-20">
+          <div className="max-w-3xl mx-auto px-4">
+            <div className="bg-white/95 border border-gray-200 shadow-xl rounded-2xl px-6 py-6 md:px-10 md:py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="text-left">
+                <p className="text-sm md:text-base text-slate-500 mb-1">会員制LGBTQ+コミュニティ "Carat"</p>
+                <p className="text-lg md:text-xl font-serif text-slate-900">投稿とマッチングで、あなたの物語をはじめましょう。</p>
+                {(!user || isAnonymous) && (
+                  <p className="mt-2 text-sm md:text-base text-slate-500">
+                    * 無料会員はサイト全体の内容を見ていただけます。投稿や有料会員限定サイトを閲覧するには会員登録が必要です。
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-end">
                 {user && !isAnonymous ? (
                   <Button 
-                    onClick={() => window.location.href = '/create'}
-                    className="gold-bg hover:opacity-90 text-slate-900 px-8 py-4 text-xl font-medium shadow-lg hover:shadow-xl transition-all"
+                    onClick={() => navigate('/create/board')}
+                    className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
                   >
                     投稿を作成
                   </Button>
                 ) : (
-                  <>
-                    <Button 
-                      onClick={() => window.location.href = '/login'}
-                      className="gold-bg hover:opacity-90 text-slate-900 px-8 py-4 text-xl font-medium shadow-lg hover:shadow-xl transition-all"
-                    >
-                      会員登録（月1,000円）
-                    </Button>
-                  </>
+                  <Button 
+                    onClick={() => window.location.href = '/login'}
+                    className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
+                  >
+                    会員登録（月1,000円）
+                  </Button>
                 )}
               </div>
-              {(!user || isAnonymous) && (
-                <p className="mt-4 text-lg opacity-80">
-                  * 無料会員はサイト全体の内容を見ていただけます。投稿や有料会員限定サイトを閲覧するには会員登録が必要です。
-                </p>
-              )}
             </div>
           </div>
         </section>
@@ -400,15 +415,14 @@ const HomePage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 最新投稿カルーセル */}
         <section className="py-12">
-          <div className="flex items-baseline justify-between mb-3">
+          <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-3 gap-1 md:gap-0">
             <h3 className="text-4xl md:text-5xl font-serif font-semibold text-slate-900">最新投稿</h3>
             <Button 
               variant="ghost" 
-              className="text-gray-700 hover:text-black hover:bg-gray-100 font-medium text-xl md:text-2xl"
+              className="text-gray-700 hover:text-black hover:bg-gray-100 font-medium text-base md:text-2xl self-start md:self-auto"
               onClick={() => navigate('/posts')}
             >
-              すべての投稿を見る
-              <ArrowRight className="h-4 w-4 ml-1" />
+              すべての投稿を見る→
             </Button>
           </div>
           <div 
@@ -596,7 +610,7 @@ const HomePage: React.FC = () => {
                                   e.stopPropagation();
                                   alert('この機能は準備中です');
                                 }}
-                                className="text-gray-600 hover:gold-accent hover:bg-yellow-50"
+                                className="text-gray-600 hover:bg-gray-100"
                               >
                                 <Heart className="h-4 w-4 mr-1" />
                                 愛
@@ -606,7 +620,7 @@ const HomePage: React.FC = () => {
                             <Button 
                               onClick={() => navigate('/login')}
                               size="sm"
-                              className="gold-bg hover:opacity-90 text-slate-900 font-medium shadow-sm"
+                              className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black font-medium shadow-sm"
                             >
                               会員登録してリアクション
                             </Button>
@@ -626,9 +640,9 @@ const HomePage: React.FC = () => {
 
         {/* 会員特典メニュー */}
         <section className="py-12">
-          <div className="flex items-baseline justify-between mb-3">
+          <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-3 gap-1 md:gap-0">
             <h3 className="text-4xl md:text-5xl font-serif font-semibold text-slate-900">会員特典メニュー</h3>
-            <span className="text-xl md:text-2xl text-slate-500">会員限定</span>
+            <span className="text-base md:text-2xl text-slate-500 self-start md:self-auto">会員限定</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
             {memberBenefits.map((benefit) => (
@@ -669,7 +683,7 @@ const HomePage: React.FC = () => {
                       </div>
                     </div>
                     <Button 
-                      className="gold-bg hover:opacity-90 text-slate-900 group-hover:shadow-md transition-all font-medium"
+                      className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black group-hover:shadow-md transition-all font-medium"
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -814,15 +828,14 @@ const HomePage: React.FC = () => {
 
         {/* ニュースセクション */}
         <section className="py-12">
-          <div className="flex items-baseline justify-between mb-6">
+          <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-6 gap-1 md:gap-0">
             <h3 className="text-3xl md:text-4xl font-bold text-slate-900">最新ニュース</h3>
             <Button 
               variant="ghost" 
-              className="text-gray-600 hover:text-black hover:bg-gray-100 font-medium text-base"
+              className="text-gray-600 hover:text-black hover:bg-gray-100 font-medium text-base self-start md:self-auto"
               onClick={() => navigate('/news')}
             >
-              すべてのニュースを見る
-              <ArrowRight className="h-4 w-4 ml-1" />
+              すべてのニュースをみる→
             </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

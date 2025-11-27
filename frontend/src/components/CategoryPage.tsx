@@ -179,14 +179,8 @@ const CategoryPage: React.FC = () => {
       
       if (response.ok) {
         const postsData = await response.json();
-
-        const enhancedPosts = postsData.map((post: Post) => ({
-          ...post,
-          media_urls: post.body.includes('#art') || post.body.includes('#shops') 
-            ? [`https://picsum.photos/400/300?random=${post.id}`] 
-            : undefined,
-        }));
-        setPosts(enhancedPosts);
+        // バックエンドが返す media_url / media_urls をそのまま利用する
+        setPosts(postsData);
       }
     } catch (error) {
       console.error('Error fetching posts:', error);
