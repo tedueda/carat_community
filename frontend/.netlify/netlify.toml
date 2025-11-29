@@ -7,10 +7,10 @@ headers = []
 [functions."*"]
 
 [build]
-publish = "/Users/tedueda/Library/Mobile Documents/com~apple~CloudDocs/Documents/CascadeProjects/rainbow_community/rainbow_community/frontend/dist"
+publish = "/Users/tedueda/rainbow_community/rainbow_community-1/frontend/dist"
 publishOrigin = "config"
 commandOrigin = "config"
-base = "/Users/tedueda/Library/Mobile Documents/com~apple~CloudDocs/Documents/CascadeProjects/rainbow_community/rainbow_community/frontend"
+base = "/Users/tedueda/rainbow_community/rainbow_community-1/frontend"
 command = "npm run build"
 
 [build.environment]

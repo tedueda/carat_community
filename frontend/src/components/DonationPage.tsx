@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Target, Users, Search, Filter, Clock, Star, Plus, Minus, Upload, Home, ChevronLeft, ChevronRight, X, Edit, Trash2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -46,7 +46,6 @@ const DonationPage: React.FC = () => {
     category: 'アート',
     images: [] as File[]
   });
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [rewards, setRewards] = useState([
     { amount: '', description: '' }
@@ -77,13 +76,6 @@ const DonationPage: React.FC = () => {
     console.log('支援ボタンクリック:', project.title);
     setSelectedProject(project);
     setShowSupportModal(true);
-  };
-
-  // 詳細ボタンクリック
-  const handleDetail = (project: Project) => {
-    console.log('詳細ボタンクリック:', project.title);
-    setSelectedProject(project);
-    setShowProjectDetail(true);
   };
 
   // プロジェクト作成ボタンクリック
@@ -198,10 +190,6 @@ const DonationPage: React.FC = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-  };
-
-  const handleAddMoreImages = () => {
-    fileInputRef.current?.click();
   };
 
   // リワード追加
