@@ -505,3 +505,38 @@ class ChatRequestMessage(Base):
     content = Column(Text, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     migrated_at = Column(DateTime(timezone=True))
+
+class DonationProject(Base):
+    __tablename__ = "donation_projects"
+
+    id = Column(Integer, primary_key=True, index=True)
+    creator_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    title = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    category = Column(String(50), nullable=False)
+    goal_amount = Column(Integer, nullable=False)
+    current_amount = Column(Integer, default=0, nullable=False)
+    deadline = Column(Date, nullable=False)
+    supporters_count = Column(Integer, default=0, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+class DonationProjectImage(Base):
+    __tablename__ = "donation_project_images"
+
+    id = Column(Integer, primary_key=True, index=True)
+    project_id = Column(Integer, ForeignKey("donation_projects.id"), nullable=False)
+    image_url = Column(String(500), nullable=False)
+    display_order = Column(Integer, default=0)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class DonationSupport(Base):
+    __tablename__ = "donation_supports"
+
+    id = Column(Integer, primary_key=True, index=True)
+    project_id = Column(Integer, ForeignKey("donation_projects.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    amount = Column(Integer, nullable=False)
+    message = Column(Text, nullable=True)
+    is_anonymous = Column(Boolean, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

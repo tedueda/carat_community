@@ -133,7 +133,7 @@ const MatchingLikesPage: React.FC = () => {
                   }}
                   className="px-3 py-1 text-sm bg-black text-white rounded hover:bg-gray-800 transition-colors"
                 >
-                  メールをする
+                  チャットをする
                 </button>
               </li>
             ))}
@@ -177,7 +177,7 @@ const MatchingLikesPage: React.FC = () => {
                     }}
                     className="w-full px-3 py-2 text-sm bg-black text-white rounded hover:bg-gray-800 transition-colors"
                   >
-                    メールをする
+                    チャットをする
                   </button>
                 </div>
               </div>

@@ -30,7 +30,7 @@ const memberBenefits = [
   },
   {
     id: "donation",
-    title: "募金",
+    title: "寄付金を募る",
     description: "LGBTQ+コミュニティを支援する寄付プラットフォーム",
     icon: "🤝",
     link: "/funding",

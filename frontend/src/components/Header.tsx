@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home, ChevronDown, Menu, X } from 'lucide-react';
+import { Home, ChevronDown, Menu, X, MessageCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Header: React.FC = () => {
@@ -11,6 +11,36 @@ const Header: React.FC = () => {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showBoardMenu, setShowBoardMenu] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // 未読メッセージ数を取得
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      if (isAnonymous || !user) return;
+      
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      
+      try {
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        const res = await fetch(`${API_URL}/api/matching/chats`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const total = data.items?.reduce((sum: number, chat: { unread_count?: number }) => sum + (chat.unread_count || 0), 0) || 0;
+          setUnreadCount(total);
+        }
+      } catch (error) {
+        console.error('Failed to fetch unread count:', error);
+      }
+    };
+
+    fetchUnreadCount();
+    // 30秒ごとに更新
+    const interval = setInterval(fetchUnreadCount, 30000);
+    return () => clearInterval(interval);
+  }, [user, isAnonymous]);
 
   const handleLogout = () => {
     logout();
@@ -20,7 +50,7 @@ const Header: React.FC = () => {
   const memberBenefits = [
     { title: "マッチング", link: "/matching", icon: "💕" },
     { title: "ライブ・ウエディング", link: "/live-wedding", icon: "💒" },
-    { title: "募金", link: "/funding", icon: "🤝" },
+    { title: "寄付金を募る", link: "/funding", icon: "🤝" },
     { title: "マーケット", link: "/marketplace", icon: "🛍️" },
     { title: "食レポ", link: "/members/food", icon: "🍽" },
     { title: "ビューティ", link: "/members/beauty", icon: "💄" },
@@ -44,6 +74,26 @@ const Header: React.FC = () => {
             <img src="/images/logo02.png" alt="Carat Logo" className="h-20 w-auto" />
           </Link>
           <div className="flex items-center gap-3">
+            {/* チャット通知アイコン（モバイル） */}
+            {!isAnonymous && user && (
+              <button
+                onClick={() => navigate('/matching/chats')}
+                className="flex items-center gap-1 px-2 py-1 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="チャット"
+              >
+                <div className="relative">
+                  <MessageCircle className="h-5 w-5 text-gray-700" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[14px] h-3.5 flex items-center justify-center px-0.5 animate-pulse">
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </span>
+                  )}
+                </div>
+                <span className="text-[10px] text-gray-600">
+                  {unreadCount > 0 ? '新着' : ''}
+                </span>
+              </button>
+            )}
             {!isAnonymous && user && (
               <span className="text-sm text-gray-700 font-medium">{user.display_name}</span>
             )}
@@ -300,6 +350,26 @@ const Header: React.FC = () => {
                 </Link>
               ) : (
                 <>
+                  {/* チャット通知アイコン（デスクトップ） */}
+                  <button
+                    onClick={() => navigate('/matching/chats')}
+                    className="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-100 rounded-full transition-colors"
+                    aria-label="チャット"
+                  >
+                    <div className="relative">
+                      <MessageCircle className="h-5 w-5 text-gray-700" />
+                      {unreadCount > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 animate-pulse">
+                          {unreadCount > 99 ? '99+' : unreadCount}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-xs text-gray-600">
+                      {unreadCount > 0 
+                        ? `未読${unreadCount}件` 
+                        : 'チャット'}
+                    </span>
+                  </button>
                   <span className="text-sm text-gray-600">{user.display_name}</span>
                   <Button variant="outline" onClick={handleLogout} className="border-gray-300 text-gray-700 hover:bg-gray-50 text-sm px-4">
                     ログアウト

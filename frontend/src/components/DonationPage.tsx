@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Target, Users, Search, Filter, Clock, Star, Plus, Minus, Upload, Home } from 'lucide-react';
+import { Target, Users, Search, Filter, Clock, Star, Plus, Minus, Upload, Home, ChevronLeft, ChevronRight, X, Edit, Trash2 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Project {
   id: number;
@@ -9,8 +10,9 @@ interface Project {
   goal_amount: number;
   current_amount: number;
   deadline: string;
-  image_url: string;
+  image_urls: string[];
   creator_name: string;
+  creator_id: number;
   category: string;
   supporters_count: number;
 }
@@ -19,6 +21,7 @@ const DonationPage: React.FC = () => {
   console.log('=== DonationPage FULL VERSION component loaded successfully ===');
   console.log('Component render time:', new Date().toISOString());
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('new');
@@ -26,17 +29,48 @@ const DonationPage: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [showProjectDetail, setShowProjectDetail] = useState(false);
   const [showCreateProject, setShowCreateProject] = useState(false);
+  const [detailImageIndex, setDetailImageIndex] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editProject, setEditProject] = useState({
+    title: '',
+    description: '',
+    goal_amount: '',
+    deadline: '',
+    category: ''
+  });
   const [newProject, setNewProject] = useState({
     title: '',
     description: '',
     goal_amount: '',
     deadline: '',
     category: 'アート',
-    image: null as File | null
+    images: [] as File[]
   });
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [rewards, setRewards] = useState([
     { amount: '', description: '' }
   ]);
+  const [supportAmount, setSupportAmount] = useState('');
+
+  // プロジェクト一覧を取得
+  const fetchProjects = async () => {
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${API_URL}/api/donation/projects`);
+      if (response.ok) {
+        const data = await response.json();
+        setProjects(data);
+      }
+    } catch (error) {
+      console.error('プロジェクト取得エラー:', error);
+    }
+  };
+
+  // 初回読み込み時にプロジェクトを取得
+  React.useEffect(() => {
+    fetchProjects();
+  }, []);
 
   // 支援ボタンクリック
   const handleSupport = (project: Project) => {
@@ -59,7 +93,7 @@ const DonationPage: React.FC = () => {
   };
 
   // プロジェクト作成フォーム送信
-  const handleSubmitProject = (e: React.FormEvent) => {
+  const handleSubmitProject = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log('新規プロジェクト作成:', newProject);
     
@@ -69,20 +103,76 @@ const DonationPage: React.FC = () => {
       return;
     }
 
-    // 成功メッセージ
-    alert(`プロジェクト「${newProject.title}」を作成しました！`);
-    
-    // フォームリセット
-    setNewProject({
-      title: '',
-      description: '',
-      goal_amount: '',
-      deadline: '',
-      category: 'アート',
-      image: null
-    });
-    setRewards([{ amount: '', description: '' }]);
-    setShowCreateProject(false);
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const token = localStorage.getItem('token');
+
+      // 1. まず画像をアップロード（CreatePostと同じ仕様）
+      const mediaIds: number[] = [];
+      for (const image of newProject.images) {
+        const imageFormData = new FormData();
+        imageFormData.append('file', image);
+        
+        const uploadResponse = await fetch(`${API_URL}/api/media/upload`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+          body: imageFormData,
+        });
+        
+        if (uploadResponse.ok) {
+          const uploadResult = await uploadResponse.json();
+          mediaIds.push(uploadResult.id);
+        } else {
+          console.error('Image upload failed', uploadResponse.status);
+        }
+      }
+
+      // 2. プロジェクトを作成（JSONで送信）
+      const response = await fetch(`${API_URL}/api/donation/projects`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title: newProject.title,
+          description: newProject.description,
+          category: newProject.category,
+          goal_amount: parseInt(newProject.goal_amount),
+          deadline: newProject.deadline,
+          media_ids: mediaIds
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('プロジェクトの作成に失敗しました');
+      }
+
+      const newProjectData = await response.json();
+      
+      // プロジェクトリストに追加
+      setProjects(prev => [newProjectData, ...prev]);
+
+      // 成功メッセージ
+      alert(`プロジェクト「${newProject.title}」を作成しました！`);
+      
+      // フォームリセット
+      setNewProject({
+        title: '',
+        description: '',
+        goal_amount: '',
+        deadline: '',
+        category: 'アート',
+        images: []
+      });
+      setRewards([{ amount: '', description: '' }]);
+      setShowCreateProject(false);
+    } catch (error) {
+      console.error('プロジェクト作成エラー:', error);
+      alert('プロジェクトの作成に失敗しました。もう一度お試しください。');
+    }
   };
 
   // フォーム入力変更
@@ -94,15 +184,24 @@ const DonationPage: React.FC = () => {
     }));
   };
 
-  // 画像アップロード
+  // 画像アップロード（複数対応）
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0) {
+      // 最大5枚まで
+      const newImages = [...newProject.images, ...files].slice(0, 5);
       setNewProject(prev => ({
         ...prev,
-        image: file
+        images: newImages
       }));
     }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleAddMoreImages = () => {
+    fileInputRef.current?.click();
   };
 
   // リワード追加
@@ -124,45 +223,8 @@ const DonationPage: React.FC = () => {
     ));
   };
 
-  // モックプロジェクトデータ
-  const projects: Project[] = [
-    {
-      id: 1,
-      title: "LGBTQアートギャラリー開設プロジェクト",
-      description: "多様性を表現するアート作品を展示するギャラリーを大阪に開設します。",
-      goal_amount: 500000,
-      current_amount: 320000,
-      deadline: "2024-12-31",
-      image_url: "/images/hero-slide-1.jpg",
-      creator_name: "田中アート",
-      category: "アート",
-      supporters_count: 45
-    },
-    {
-      id: 2,
-      title: "レインボー教育プログラム",
-      description: "学校でのLGBTQ理解促進のための教育プログラムを開発します。",
-      goal_amount: 300000,
-      current_amount: 180000,
-      deadline: "2024-11-30",
-      image_url: "/images/hero-slide-2.jpg",
-      creator_name: "教育サポート",
-      category: "教育",
-      supporters_count: 32
-    },
-    {
-      id: 3,
-      title: "バーチャルプライドパレード",
-      description: "オンラインでのプライドパレードイベントを開催します。",
-      goal_amount: 200000,
-      current_amount: 150000,
-      deadline: "2024-10-31",
-      image_url: "/images/hero-slide-3.jpg",
-      creator_name: "プライド実行委員会",
-      category: "イベント",
-      supporters_count: 28
-    }
-  ];
+  // プロジェクトデータ（実際のデータベースから取得する予定）
+  const [projects, setProjects] = useState<Project[]>([]);
 
   const categories = [
     { key: 'all', label: 'すべて' },
@@ -217,35 +279,34 @@ const DonationPage: React.FC = () => {
           </div>
 
           <div className="text-center">
-            <div className="mb-8">
-              <div className="flex justify-center mx-auto mb-6">
-                <img 
-                  src="/images/logo02.png" 
-                  alt="Carat Logo" 
-                  className="h-20 w-auto"
-                />
-              </div>
-            </div>
             <h1 className="text-5xl md:text-6xl font-bold text-carat-black mb-6 leading-tight">
-              募金
+              寄付金を募る
             </h1>
             <p className="text-xl md:text-2xl text-carat-gray5 mb-8 max-w-4xl mx-auto leading-relaxed">
-              LGBTQ+コミュニティを支援する寄付プラットフォーム
+              LGBTQ+コミュニティの仲間を支援するページ
             </p>
           </div>
-          <div className="flex flex-wrap justify-center gap-4 text-lg text-carat-gray5">
+          <div className="flex flex-wrap justify-center gap-4 text-lg text-carat-gray5 mb-8">
             <div className="flex items-center">
               <Target className="w-5 h-5 mr-2 text-carat-black" />
-              <span>目標達成率 78%</span>
+              <span>目標達成率 {projects.length > 0 ? Math.round(projects.reduce((sum, p) => sum + calculateProgress(p.current_amount, p.goal_amount), 0) / projects.length) : 0}%</span>
             </div>
             <div className="flex items-center">
               <Users className="w-5 h-5 mr-2 text-carat-black" />
-              <span>105名の支援者</span>
+              <span>{projects.reduce((sum, p) => sum + p.supporters_count, 0)}名の支援者</span>
             </div>
             <div className="flex items-center">
               <Star className="w-5 h-5 mr-2 text-carat-black" />
-              <span>3つの進行中プロジェクト</span>
+              <span>{projects.length}つの進行中プロジェクト</span>
             </div>
+          </div>
+          <div className="text-center mt-8">
+            <button
+              onClick={handleCreateProject}
+              className="bg-carat-black text-carat-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-carat-gray6 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              プロジェクトを作成
+            </button>
           </div>
         </div>
       </section>
@@ -311,17 +372,38 @@ const DonationPage: React.FC = () => {
               const daysLeft = getDaysLeft(project.deadline);
 
               return (
-                <div key={project.id} className="bg-carat-white rounded-2xl shadow-card hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-carat-gray2">
+                <div 
+                  key={project.id} 
+                  className="bg-carat-white rounded-2xl shadow-card hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-carat-gray2 cursor-pointer"
+                  onClick={() => {
+                    setSelectedProject(project);
+                    setDetailImageIndex(0);
+                    setShowProjectDetail(true);
+                  }}
+                >
                   {/* Project Image */}
-                  <div className="relative h-48 bg-carat-gray2">
-                    <img
-                      src={project.image_url}
-                      alt={project.title}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
+                  <div className="relative h-48 bg-gradient-to-br from-orange-100 to-pink-100 flex items-center justify-center">
+                    {project.image_urls && project.image_urls.length > 0 ? (
+                      <img
+                        src={(() => {
+                          const imageUrl = project.image_urls[0];
+                          if (!imageUrl) return '';
+                          if (imageUrl.startsWith('http')) return imageUrl;
+                          const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+                          return `${API_URL}${imageUrl}`;
+                        })()}
+                        alt={project.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="text-center text-gray-400">
+                        <Upload className="mx-auto h-16 w-16 mb-2" />
+                        <p className="text-sm">画像なし</p>
+                      </div>
+                    )}
                     <div className="absolute top-4 left-4 bg-carat-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-carat-gray6">
                       {project.category}
                     </div>
@@ -380,16 +462,13 @@ const DonationPage: React.FC = () => {
                     {/* Action Buttons */}
                     <div className="flex gap-2">
                       <button 
-                        onClick={() => handleSupport(project)}
-                        className="flex-1 bg-carat-black text-carat-white py-3 px-4 rounded-lg font-semibold hover:bg-carat-gray6 transition-all duration-300"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSupport(project);
+                        }}
+                        className="flex-1 bg-gray-200 text-gray-800 py-3 px-4 rounded-lg font-semibold hover:bg-gray-300 transition-all duration-300"
                       >
                         支援する
-                      </button>
-                      <button 
-                        onClick={() => handleDetail(project)}
-                        className="px-4 py-3 border border-carat-gray3 text-carat-gray6 rounded-lg hover:bg-carat-gray1 transition-colors"
-                      >
-                        詳細
                       </button>
                     </div>
                   </div>
@@ -410,43 +489,89 @@ const DonationPage: React.FC = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-carat-gray1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-carat-black mb-6">
-            あなたもプロジェクトを始めませんか？
-          </h2>
-          <p className="text-lg text-carat-gray5 mb-8 max-w-2xl mx-auto">
-            会員なら、LGBTQ+コミュニティのためのプロジェクトを立ち上げることができます。
-          </p>
-          <button 
-            onClick={handleCreateProject}
-            className="bg-carat-black text-carat-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-carat-gray6 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-          >
-            プロジェクトを作成
-          </button>
-        </div>
-      </section>
 
       {/* Support Modal */}
       {showSupportModal && selectedProject && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] p-4" onClick={() => setShowSupportModal(false)}>
           <div className="bg-white p-8 rounded-2xl max-w-md w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-2xl font-bold text-carat-black mb-4">プロジェクトを支援</h3>
-            <p className="text-carat-gray6 mb-6">{selectedProject.title}</p>
-            <div className="flex gap-4">
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">プロジェクトを支援</h3>
+            <p className="text-gray-600 mb-6">{selectedProject.title}</p>
+            
+            {/* 支援金入力 */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                支援金額（任意）
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  value={supportAmount}
+                  onChange={(e) => setSupportAmount(e.target.value)}
+                  placeholder="例: 5000"
+                  min="0"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent text-lg"
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">円</span>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">※ 金額を入力しない場合は応援メッセージのみ送信されます</p>
+            </div>
+
+            {/* 説明文 */}
+            <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <p className="text-sm text-gray-700 leading-relaxed">
+                「支援する」ボタンを押すと、プロジェクト投稿者に直接チャットメッセージが届きます。
+                支払い方法については、チャットで直接やり取りをお願いいたします。
+              </p>
+            </div>
+
+            <div className="flex gap-3">
               <button
-                onClick={() => {
-                  alert(`${selectedProject.title}への支援ありがとうございます！`);
-                  setShowSupportModal(false);
+                onClick={async () => {
+                  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+                  const token = localStorage.getItem('token');
+                  
+                  const amount = supportAmount ? `${Number(supportAmount).toLocaleString()}円` : '応援';
+                  const message = `「${selectedProject.title}」に対し${amount}を支援します`;
+                  
+                  try {
+                    // 支援メッセージを送信（マッチングなしで直接送信可能）
+                    const response = await fetch(`${API_URL}/api/donation/support-message`, {
+                      method: 'POST',
+                      headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                        project_id: selectedProject.id,
+                        amount: supportAmount ? parseInt(supportAmount) : null,
+                        message: message
+                      })
+                    });
+                    
+                    if (response.ok) {
+                      setShowSupportModal(false);
+                      setSupportAmount('');
+                      alert('支援メッセージを送信しました！');
+                      navigate(`/matching/chats`);
+                    } else {
+                      const errorData = await response.json();
+                      alert(errorData.detail || 'メッセージの送信に失敗しました');
+                    }
+                  } catch (error) {
+                    console.error('Support error:', error);
+                    alert('エラーが発生しました');
+                  }
                 }}
-                className="flex-1 bg-carat-black text-carat-white py-3 px-4 rounded-lg font-semibold hover:bg-carat-gray6 transition-colors"
+                className="flex-1 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-500 text-white py-3 px-4 rounded-lg font-semibold hover:opacity-90 transition-all shadow-lg"
               >
                 支援する
               </button>
               <button
-                onClick={() => setShowSupportModal(false)}
-                className="px-6 py-3 border border-carat-gray3 text-carat-gray6 rounded-lg hover:bg-carat-gray1 transition-colors"
+                onClick={() => {
+                  setShowSupportModal(false);
+                  setSupportAmount('');
+                }}
+                className="px-6 py-3 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 キャンセル
               </button>
@@ -457,21 +582,220 @@ const DonationPage: React.FC = () => {
 
       {/* Project Detail Modal */}
       {showProjectDetail && selectedProject && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] p-4" onClick={() => setShowProjectDetail(false)}>
-          <div className="bg-white p-8 rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-2xl font-bold text-carat-black mb-4">{selectedProject.title}</h3>
-            <p className="text-carat-gray6 mb-4">{selectedProject.description}</p>
-            <div className="mb-4">
-              <p className="text-sm text-carat-gray5">目標金額: {formatAmount(selectedProject.goal_amount)}円</p>
-              <p className="text-sm text-carat-gray5">現在の支援額: {formatAmount(selectedProject.current_amount)}円</p>
-              <p className="text-sm text-carat-gray5">支援者数: {selectedProject.supporters_count}人</p>
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] p-4" onClick={() => { setShowProjectDetail(false); setIsEditing(false); }}>
+          <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            {/* Header with close button */}
+            <div className="flex justify-between items-center p-4 border-b">
+              <h3 className="text-xl font-bold text-gray-900">{selectedProject.title}</h3>
+              <button
+                onClick={() => { setShowProjectDetail(false); setIsEditing(false); }}
+                className="p-2 hover:bg-gray-100 rounded-full"
+                aria-label="閉じる"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
-            <button
-              onClick={() => setShowProjectDetail(false)}
-              className="w-full bg-carat-gray5 text-carat-white py-3 px-4 rounded-lg font-semibold hover:bg-carat-gray6 transition-colors"
-            >
-              閉じる
-            </button>
+
+            <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+              {/* Image Slider */}
+              {selectedProject.image_urls && selectedProject.image_urls.length > 0 && (
+                <div className="relative">
+                  <div className="aspect-[16/9] bg-gray-100 flex items-center justify-center">
+                    <img
+                      src={(() => {
+                        const imageUrl = selectedProject.image_urls[detailImageIndex];
+                        if (!imageUrl) return '';
+                        if (imageUrl.startsWith('http')) return imageUrl;
+                        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+                        return `${API_URL}${imageUrl}`;
+                      })()}
+                      alt={`${selectedProject.title} - 画像${detailImageIndex + 1}`}
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                  {/* Navigation buttons */}
+                  {selectedProject.image_urls.length > 1 && (
+                    <>
+                      <button
+                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2"
+                        onClick={() => setDetailImageIndex((prev) => (prev === 0 ? selectedProject.image_urls.length - 1 : prev - 1))}
+                        aria-label="前の画像"
+                      >
+                        <ChevronLeft className="h-6 w-6" />
+                      </button>
+                      <button
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2"
+                        onClick={() => setDetailImageIndex((prev) => (prev === selectedProject.image_urls.length - 1 ? 0 : prev + 1))}
+                        aria-label="次の画像"
+                      >
+                        <ChevronRight className="h-6 w-6" />
+                      </button>
+                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                        {selectedProject.image_urls.map((_, index) => (
+                          <button
+                            key={index}
+                            className={`w-2 h-2 rounded-full transition-all ${index === detailImageIndex ? 'bg-white' : 'bg-white/50'}`}
+                            onClick={() => setDetailImageIndex(index)}
+                            aria-label={`画像${index + 1}を表示`}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+
+              {/* Content */}
+              <div className="p-6">
+                {/* Creator info and edit/delete buttons */}
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white font-bold">
+                      {selectedProject.creator_name.charAt(0)}
+                    </div>
+                    <span className="ml-3 font-medium text-gray-900">{selectedProject.creator_name}</span>
+                  </div>
+                  {/* デバッグ: user.id={user?.id}, creator_id={selectedProject.creator_id} */}
+                  {user && Number(user.id) === Number(selectedProject.creator_id) && (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          setEditProject({
+                            title: selectedProject.title,
+                            description: selectedProject.description,
+                            goal_amount: String(selectedProject.goal_amount),
+                            deadline: selectedProject.deadline,
+                            category: selectedProject.category
+                          });
+                          setIsEditing(true);
+                        }}
+                        className="flex items-center gap-1 px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded"
+                      >
+                        <Edit className="w-4 h-4" />
+                        編集
+                      </button>
+                      <button
+                        onClick={async () => {
+                          if (confirm('このプロジェクトを削除しますか？')) {
+                            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+                            const token = localStorage.getItem('token');
+                            const response = await fetch(`${API_URL}/api/donation/projects/${selectedProject.id}`, {
+                              method: 'DELETE',
+                              headers: { 'Authorization': `Bearer ${token}` }
+                            });
+                            if (response.ok) {
+                              setProjects(prev => prev.filter(p => p.id !== selectedProject.id));
+                              setShowProjectDetail(false);
+                            }
+                          }
+                        }}
+                        className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        削除
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Edit form or display */}
+                {isEditing ? (
+                  <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+                    const token = localStorage.getItem('token');
+                    const response = await fetch(`${API_URL}/api/donation/projects/${selectedProject.id}`, {
+                      method: 'PUT',
+                      headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                        title: editProject.title,
+                        description: editProject.description,
+                        category: editProject.category,
+                        goal_amount: parseInt(editProject.goal_amount),
+                        deadline: editProject.deadline
+                      })
+                    });
+                    if (response.ok) {
+                      const updated = await response.json();
+                      setProjects(prev => prev.map(p => p.id === selectedProject.id ? { ...p, ...updated } : p));
+                      setSelectedProject({ ...selectedProject, ...updated });
+                      setIsEditing(false);
+                    }
+                  }} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">タイトル</label>
+                      <input
+                        type="text"
+                        value={editProject.title}
+                        onChange={(e) => setEditProject({ ...editProject, title: e.target.value })}
+                        className="w-full px-3 py-2 border rounded-lg"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">説明</label>
+                      <textarea
+                        value={editProject.description}
+                        onChange={(e) => setEditProject({ ...editProject, description: e.target.value })}
+                        rows={4}
+                        className="w-full px-3 py-2 border rounded-lg"
+                      />
+                    </div>
+                    <div className="flex gap-3">
+                      <button type="submit" className="flex-1 bg-black text-white py-2 rounded-lg">保存</button>
+                      <button type="button" onClick={() => setIsEditing(false)} className="flex-1 border py-2 rounded-lg">キャンセル</button>
+                    </div>
+                  </form>
+                ) : (
+                  <>
+                    {/* Category */}
+                    <div className="mb-4">
+                      <span className="inline-block bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                        {selectedProject.category}
+                      </span>
+                    </div>
+
+                    {/* Description */}
+                    <p className="text-gray-700 mb-6 whitespace-pre-wrap">{selectedProject.description}</p>
+
+                    {/* Progress */}
+                    <div className="mb-6">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm text-gray-500">進捗状況</span>
+                        <span className="font-medium">
+                          {formatAmount(selectedProject.current_amount)}円 / {formatAmount(selectedProject.goal_amount)}円
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div
+                          className="bg-black h-3 rounded-full transition-all duration-300"
+                          style={{ width: `${Math.min(calculateProgress(selectedProject.current_amount, selectedProject.goal_amount), 100)}%` }}
+                        ></div>
+                      </div>
+                      <div className="flex justify-between mt-2 text-sm text-gray-500">
+                        <span>{selectedProject.supporters_count}人の支援者</span>
+                        <span>残り{getDaysLeft(selectedProject.deadline)}日</span>
+                      </div>
+                    </div>
+
+                    {/* Support button */}
+                    <div className="flex justify-center">
+                      <button
+                        onClick={() => {
+                          setShowProjectDetail(false);
+                          handleSupport(selectedProject);
+                        }}
+                        className="w-[60%] bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
+                      >
+                        支援する
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -479,50 +803,65 @@ const DonationPage: React.FC = () => {
       {/* Create Project Modal */}
       {showCreateProject && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] p-4" onClick={() => setShowCreateProject(false)}>
-          <div className="bg-white p-8 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">新しいプロジェクトを作成</h3>
+          <div className="bg-white p-6 rounded-2xl max-w-2xl w-full h-[85vh] flex flex-col shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">新しいプロジェクトを作成</h3>
+            <div className="flex-1 overflow-y-auto pr-2">
             
-            <form onSubmit={handleSubmitProject} className="space-y-6">
-              {/* メイン画像アップロード */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  メイン画像 *
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-orange-400 transition-colors relative">
-                  {newProject.image ? (
-                    <div className="space-y-2">
-                      <img 
-                        src={URL.createObjectURL(newProject.image)} 
-                        alt="プレビュー" 
-                        className="mx-auto h-32 w-32 object-cover rounded-lg"
-                      />
-                      <p className="text-sm text-gray-600">{newProject.image.name}</p>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setNewProject(prev => ({ ...prev, image: null }));
-                        }}
-                        className="text-red-500 text-sm hover:text-red-700 relative z-10"
-                      >
-                        削除
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                      <p className="text-gray-600">画像をアップロードしてください</p>
-                      <p className="text-xs text-gray-500">JPG, PNG, GIF (最大5MB)</p>
-                    </div>
-                  )}
+            <form id="donation-form" onSubmit={handleSubmitProject} className="space-y-6 pb-6">
+              {/* 画像アップロード（CreatePostと同じ仕様） */}
+              <div className="space-y-2">
+                <label className="text-gray-800 text-sm font-medium">画像をアップロード（最大5枚、任意）</label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 transition-colors bg-gray-50">
                   <input
                     type="file"
+                    multiple
                     accept="image/*"
                     onChange={handleImageUpload}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0"
-                    required
+                    className="hidden"
+                    id="donation-image-upload"
                   />
+                  <label
+                    htmlFor="donation-image-upload"
+                    className="cursor-pointer flex flex-col items-center justify-center"
+                  >
+                    <Upload className="h-10 w-10 text-orange-400 mb-3" />
+                    <span className="text-sm font-medium text-gray-700 mb-1">
+                      クリックして画像を選択
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      PNG, JPG, WebP (最大10MB、5枚まで)
+                    </span>
+                  </label>
                 </div>
+                {newProject.images.length > 0 && (
+                  <div className="grid grid-cols-3 gap-3 mt-4">
+                    {newProject.images.map((file, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={`アップロード画像 ${index + 1}`}
+                          className="w-full h-24 object-cover rounded-lg"
+                        />
+                        <button
+                          type="button"
+                          className="absolute -top-2 -right-2 bg-black text-white rounded-full w-6 h-6 p-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                          onClick={() => {
+                            const newImages = newProject.images.filter((_, i) => i !== index);
+                            setNewProject(prev => ({ ...prev, images: newImages }));
+                          }}
+                          aria-label={`画像${index + 1}を削除`}
+                        >
+                          ✕
+                        </button>
+                        {index === 0 && (
+                          <div className="absolute bottom-1 left-1 bg-black/70 text-white text-xs px-1 rounded">
+                            メイン
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* プロジェクトタイトル */}
@@ -617,23 +956,19 @@ const DonationPage: React.FC = () => {
                 />
               </div>
 
-              {/* リワード設定 */}
+              {/* リターン設定 */}
               <div>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-3">
                   <label className="block text-sm font-medium text-gray-700">
-                    リターン（見返り）設定 *
+                    リターン設定（任意）
                   </label>
                   <button
                     type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      addReward();
-                    }}
-                    className="flex items-center gap-1 text-orange-600 hover:text-orange-700 text-sm font-medium relative z-20"
+                    onClick={addReward}
+                    className="flex items-center gap-1 text-sm text-carat-black hover:text-carat-gray6"
                   >
                     <Plus className="w-4 h-4" />
-                    追加
+                    リターンを追加
                   </button>
                 </div>
                 
@@ -645,11 +980,7 @@ const DonationPage: React.FC = () => {
                         {rewards.length > 1 && (
                           <button
                             type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                              removeReward(index);
-                            }}
+                            onClick={() => removeReward(index)}
                             className="text-red-500 hover:text-red-700 relative z-20"
                           >
                             <Minus className="w-4 h-4" />
@@ -657,57 +988,44 @@ const DonationPage: React.FC = () => {
                         )}
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <label className="block text-xs text-gray-600 mb-1">支援金額</label>
-                          <div className="relative">
-                            <input
-                              type="number"
-                              value={reward.amount}
-                              onChange={(e) => handleRewardChange(index, 'amount', e.target.value)}
-                              placeholder="1000"
-                              min="100"
-                              className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
-                              required
-                            />
-                            <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-gray-500">円</span>
-                          </div>
-                        </div>
-                        
-                        <div className="md:col-span-2">
-                          <label className="block text-xs text-gray-600 mb-1">リターン内容</label>
-                          <textarea
-                            value={reward.description}
-                            onChange={(e) => handleRewardChange(index, 'description', e.target.value)}
-                            placeholder="例: お礼メール + 限定ステッカー"
-                            rows={2}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
-                            required
-                          />
-                        </div>
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">リターン内容</label>
+                        <textarea
+                          value={reward.description}
+                          onChange={(e) => handleRewardChange(index, 'description', e.target.value)}
+                          placeholder="例: お礼メール + 限定ステッカー"
+                          rows={3}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
+                        />
                       </div>
                     </div>
                   ))}
                 </div>
+                
+                <p className="text-xs text-gray-500 mt-2">
+                  ※ 支援者は任意の金額で支援できます。リターンは参考情報として表示されます。
+                </p>
               </div>
 
-              {/* ボタン */}
-              <div className="flex gap-4 pt-4">
-                <button
-                  type="submit"
-                  className="flex-1 bg-gradient-to-r from-orange-500 to-pink-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-orange-600 hover:to-pink-700 transition-all duration-300"
-                >
-                  プロジェクトを作成
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowCreateProject(false)}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  キャンセル
-                </button>
-              </div>
             </form>
+            </div>
+            {/* ボタン - フォームの外、モーダル下部に固定 */}
+            <div className="pt-4 pb-2 flex gap-3 border-t border-gray-200 bg-white">
+              <button
+                type="submit"
+                form="donation-form"
+                className="flex-1 bg-black text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-800 transition-all duration-300"
+              >
+                プロジェクトを作成
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowCreateProject(false)}
+                className="flex-1 py-2 px-4 border-2 border-black text-black rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                キャンセル
+              </button>
+            </div>
           </div>
         </div>
       )}

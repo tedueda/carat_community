@@ -289,7 +289,7 @@ This removes the legacy CIDR rules from the RDS security group.
 
 ⚠️ **ONLY do this after Phase 4 is complete and verified**
 
-1. In AWS Console → RDS → Modify `lgbtq-dev`
+1. In AWS Console → RDS → Modify `rainbow-community-db-tokyo`
 2. Set "Public accessibility" to "No"
 3. Apply immediately or during maintenance window
 4. Verify App Runner still works
@@ -402,7 +402,7 @@ aws rds describe-db-log-files \
 
 View in AWS Console:
 - App Runner → Services → rainbow-community-api → Metrics
-- RDS → Databases → lgbtq-dev → Monitoring
+- RDS → Databases → rainbow-community-db-tokyo → Monitoring
 - CloudWatch → Dashboards (create custom dashboard)
 
 ## 🐛 Troubleshooting

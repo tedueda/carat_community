@@ -190,7 +190,7 @@ const MatchingUserProfilePage: React.FC = () => {
               onClick={handleSendMessage}
               className="rounded-lg px-4 py-2.5 text-sm font-medium text-gray-700 transition-all bg-white hover:bg-gray-50 active:scale-95 border border-gray-300"
             >
-              メールをする
+              チャットをする
             </button>
           </div>
         </div>
@@ -230,7 +230,7 @@ const MatchingUserProfilePage: React.FC = () => {
               <h3 className="text-lg font-semibold text-black mb-3">恋愛対象</h3>
               <div className="flex flex-wrap gap-2">
                 {profile.romance_targets.map((target, idx) => (
-                  <span key={idx} className="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-sm">
+                  <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm border border-gray-200">
                     {target}
                   </span>
                 ))}
@@ -260,7 +260,7 @@ const MatchingUserProfilePage: React.FC = () => {
               <h3 className="text-lg font-semibold text-black mb-3">趣味</h3>
               <div className="flex flex-wrap gap-2">
                 {profile.hobbies.map((hobby, idx) => (
-                  <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                  <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm border border-gray-200">
                     {hobby}
                   </span>
                 ))}
@@ -275,7 +275,7 @@ const MatchingUserProfilePage: React.FC = () => {
         <div className="max-w-2xl mx-auto flex gap-3">
           <button
             onClick={handleLike}
-            className="flex-1 rounded-full px-6 py-4 text-base font-semibold transition-all bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:from-pink-600 hover:to-rose-600 active:scale-95 shadow-xl"
+            className="flex-1 rounded-full px-6 py-4 text-base font-semibold transition-all bg-black text-white hover:bg-gray-800 active:scale-95 shadow-xl"
           >
             ♡ お気に入り
           </button>
@@ -283,7 +283,7 @@ const MatchingUserProfilePage: React.FC = () => {
             onClick={handleSendMessage}
             className="flex-1 rounded-full px-6 py-4 text-base font-semibold text-gray-800 transition-all bg-white hover:bg-gray-50 active:scale-95 shadow-xl border border-gray-200"
           >
-            ✉️ メールをする
+            💬 チャットをする
           </button>
         </div>
       </div>

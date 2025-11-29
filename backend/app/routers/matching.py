@@ -343,7 +343,7 @@ def list_likes(
         try:
             first_image = (
                 db.query(MatchingProfileImage)
-                .filter(MatchingProfileImage.user_id == like.to_user_id)
+                .filter(MatchingProfileImage.profile_id == like.to_user_id)
                 .order_by(MatchingProfileImage.display_order)
                 .first()
             )
@@ -549,6 +549,34 @@ def send_message(
         "image_url": None,
         "created_at": msg.created_at.isoformat() if msg.created_at else None
     }
+
+
+@router.post("/chats/{chat_id}/read")
+def mark_messages_as_read(
+    chat_id: int,
+    current_user: User = Depends(require_premium),
+    db: Session = Depends(get_db),
+):
+    """チャットのメッセージを既読にする"""
+    from datetime import datetime
+    
+    ch = _ensure_chat_access(chat_id, current_user.id, db)
+    m = db.query(Match).filter(Match.id == ch.match_id).first()
+    other_id = m.user_b_id if m.user_a_id == current_user.id else m.user_a_id
+    
+    # 相手からのメッセージを既読にする
+    updated = (
+        db.query(Message)
+        .filter(
+            Message.chat_id == chat_id,
+            Message.sender_id == other_id,
+            Message.read_at == None
+        )
+        .update({"read_at": datetime.utcnow()})
+    )
+    db.commit()
+    
+    return {"marked_as_read": updated}
 
 
 # ===== WebSocket (simple in-process pub/sub) =====

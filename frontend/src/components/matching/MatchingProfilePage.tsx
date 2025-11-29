@@ -49,6 +49,7 @@ const MatchingProfilePage: React.FC = () => {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [hobbyPickerOpen, setHobbyPickerOpen] = useState(false);
   const [tempHobbies, setTempHobbies] = useState<string[]>([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const PREFECTURES = [
     '北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'
@@ -472,7 +473,7 @@ const MatchingProfilePage: React.FC = () => {
                     
                     {/* 性別バッジ（左上） */}
                     {profile?.identity && profile.identity !== '非表示' && (
-                      <div className="absolute top-2 left-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-2 py-1 rounded font-semibold shadow-lg z-10">
+                      <div className="absolute top-2 left-2 bg-black text-white text-xs px-2 py-1 rounded font-semibold shadow-lg z-10">
                         {profile.identity}
                       </div>
                     )}
@@ -486,7 +487,7 @@ const MatchingProfilePage: React.FC = () => {
                     
                     {/* メイン画像バッジ */}
                     {currentSlide === 0 && (
-                      <div className="absolute top-2 right-12 bg-pink-500 text-white text-xs px-2 py-1 rounded font-semibold shadow-lg z-10">
+                      <div className="absolute top-2 right-12 bg-gray-800 text-white text-xs px-2 py-1 rounded font-semibold shadow-lg z-10">
                         メイン
                       </div>
                     )}
@@ -536,7 +537,7 @@ const MatchingProfilePage: React.FC = () => {
                     <div
                       key={idx}
                       className={`w-3 h-3 rounded-full transition-all cursor-grab active:cursor-grabbing ${
-                        idx === currentSlide ? 'bg-pink-600 scale-125' : 'bg-gray-300'
+                        idx === currentSlide ? 'bg-black scale-125' : 'bg-gray-300'
                       } ${draggedIndex === idx ? 'opacity-50' : ''}`}
                       draggable
                       onDragStart={(e) => handleDragStart(e, idx)}
@@ -569,7 +570,7 @@ const MatchingProfilePage: React.FC = () => {
                           key={idx}
                           className={`aspect-square border-2 rounded-lg overflow-hidden relative ${
                             image ? 'border-gray-300' : 'border-dashed border-gray-300 bg-gray-50'
-                          } ${currentSlide === idx ? 'ring-2 ring-pink-500' : ''} ${
+                          } ${currentSlide === idx ? 'ring-2 ring-black' : ''} ${
                             draggedIndex === idx ? 'opacity-50' : ''
                           }`}
                           draggable={!!image}
@@ -597,7 +598,7 @@ const MatchingProfilePage: React.FC = () => {
                               
                               {/* メインバッジ */}
                               {idx === 0 && (
-                                <div className="absolute top-1 left-1 bg-pink-500 text-white text-xs px-1 py-0.5 rounded text-[10px] font-semibold">
+                                <div className="absolute top-1 left-1 bg-gray-800 text-white text-xs px-1 py-0.5 rounded text-[10px] font-semibold">
                                   メイン
                                 </div>
                               )}
@@ -618,7 +619,7 @@ const MatchingProfilePage: React.FC = () => {
                             /* 空きスロット */
                             <button
                               onClick={() => fileInputRef.current?.click()}
-                              className="w-full h-full flex flex-col items-center justify-center text-gray-400 hover:text-pink-400 hover:bg-pink-50 transition-colors"
+                              className="w-full h-full flex flex-col items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
                             >
                               <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -636,7 +637,7 @@ const MatchingProfilePage: React.FC = () => {
               <div className="w-full max-w-md mx-auto aspect-[4/3] bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg flex items-center justify-center text-gray-400 border-2 border-dashed border-gray-300 relative">
                 {/* 性別バッジ（左上）- ダミー表示時も表示 */}
                 {profile?.identity && profile.identity !== '非表示' && (
-                  <div className="absolute top-2 left-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-2 py-1 rounded font-semibold shadow-lg z-10">
+                  <div className="absolute top-2 left-2 bg-black text-white text-xs px-2 py-1 rounded font-semibold shadow-lg z-10">
                     {profile.identity}
                   </div>
                 )}
@@ -666,7 +667,7 @@ const MatchingProfilePage: React.FC = () => {
                       >
                         <button
                           onClick={() => fileInputRef.current?.click()}
-                          className="w-full h-full flex flex-col items-center justify-center text-gray-400 hover:text-pink-400 hover:bg-pink-50 transition-colors"
+                          className="w-full h-full flex flex-col items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
                         >
                           <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -684,7 +685,7 @@ const MatchingProfilePage: React.FC = () => {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={images.length >= 4}
-                className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -726,8 +727,8 @@ const MatchingProfilePage: React.FC = () => {
                     setProfile({ ...profile, display_flag: !profile.display_flag });
                   }
                 }}
-                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 ${
-                  profile?.display_flag ? 'bg-pink-500' : 'bg-gray-300'
+                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2 ${
+                  profile?.display_flag ? 'bg-black' : 'bg-gray-300'
                 }`}
                 role="switch"
                 aria-checked={profile?.display_flag ? 'true' : 'false'}
@@ -1097,6 +1098,13 @@ const MatchingProfilePage: React.FC = () => {
 
                 <div className="flex gap-2">
                   <button
+                    onClick={() => setPreviewOpen(true)}
+                    type="button"
+                    className="px-4 py-2 bg-gray-800 text-white rounded text-sm hover:bg-gray-700 transition-colors"
+                  >
+                    👁️ プレビュー
+                  </button>
+                  <button
                     onClick={saveProfile}
                     disabled={saving}
                     className="px-4 py-2 bg-black text-white rounded text-sm hover:bg-gray-800 disabled:opacity-60 transition-colors"
@@ -1109,6 +1117,149 @@ const MatchingProfilePage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* プレビューモーダル */}
+      {previewOpen && profile && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setPreviewOpen(false)}>
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+              <h2 className="text-xl font-bold">プロフィールプレビュー</h2>
+              <button
+                onClick={() => setPreviewOpen(false)}
+                className="text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-6">
+              {/* 画像スライド */}
+              {images.length > 0 && (
+                <div className="relative">
+                  <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
+                    <img
+                      src={resolveImageUrl(images[currentSlide]?.url)}
+                      alt="プロフィール画像"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  {profile.identity && profile.identity !== '非表示' && (
+                    <div className="absolute top-4 left-4 bg-black text-white px-3 py-1 rounded-full text-sm font-bold">
+                      {profile.identity}
+                    </div>
+                  )}
+                  {profile.display_name && (
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm">
+                      {profile.display_name}
+                    </div>
+                  )}
+                  {images.length > 1 && (
+                    <div className="absolute bottom-4 left-4 right-4 flex justify-center gap-2">
+                      {images.map((_, idx) => (
+                        <div
+                          key={idx}
+                          className={`w-2 h-2 rounded-full ${idx === currentSlide ? 'bg-black' : 'bg-white/50'}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* プロフィール情報 */}
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  {profile.prefecture && (
+                    <div>
+                      <div className="text-xs text-gray-500">居住地</div>
+                      <div className="font-medium">{profile.prefecture}{profile.residence_detail && ` ${profile.residence_detail}`}</div>
+                    </div>
+                  )}
+                  {profile.age_band && (
+                    <div>
+                      <div className="text-xs text-gray-500">年代</div>
+                      <div className="font-medium">{profile.age_band}</div>
+                    </div>
+                  )}
+                  {profile.occupation && (
+                    <div>
+                      <div className="text-xs text-gray-500">職業</div>
+                      <div className="font-medium">{profile.occupation}</div>
+                    </div>
+                  )}
+                  {profile.blood_type && (
+                    <div>
+                      <div className="text-xs text-gray-500">血液型</div>
+                      <div className="font-medium">{profile.blood_type}</div>
+                    </div>
+                  )}
+                  {profile.zodiac && (
+                    <div>
+                      <div className="text-xs text-gray-500">星座</div>
+                      <div className="font-medium">{profile.zodiac}</div>
+                    </div>
+                  )}
+                  {profile.hometown && (
+                    <div>
+                      <div className="text-xs text-gray-500">出身地</div>
+                      <div className="font-medium">{profile.hometown}</div>
+                    </div>
+                  )}
+                </div>
+
+                {profile.romance_targets && profile.romance_targets.length > 0 && (
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">恋愛対象</div>
+                    <div className="flex flex-wrap gap-2">
+                      {profile.romance_targets.map((target, idx) => (
+                        <span key={idx} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm border border-gray-200">
+                          {target}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {profile.hobbies && profile.hobbies.length > 0 && (
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">趣味</div>
+                    <div className="flex flex-wrap gap-2">
+                      {profile.hobbies.map((hobby, idx) => (
+                        <span key={idx} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm border border-gray-200">
+                          {hobby}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {profile.meet_pref && (
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">出会いの目的</div>
+                    <div className="font-medium">{profile.meet_pref}</div>
+                  </div>
+                )}
+
+                {profile.bio && (
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">自己紹介</div>
+                    <div className="whitespace-pre-wrap text-sm leading-relaxed">{profile.bio}</div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-center pt-4">
+                <button
+                  onClick={() => setPreviewOpen(false)}
+                  className="px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors"
+                >
+                  閉じる
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

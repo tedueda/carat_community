@@ -110,6 +110,19 @@ export function useChatThread(chatId: number | null, token: string | null, _curr
 
     fetchMessages();
 
+    // メッセージを既読にする
+    const markAsRead = async () => {
+      try {
+        await fetch(`${API_URL}/api/matching/chats/${chatId}/read`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+      } catch (e) {
+        console.debug('Failed to mark messages as read:', e);
+      }
+    };
+    markAsRead();
+
     const proto = API_URL.startsWith('https') ? 'wss' : 'ws';
     const wsUrl = `${proto}://${new URL(API_URL).host}/ws/matching/chat?chat_id=${chatId}&token=${encodeURIComponent(token)}`;
     const ws = new WebSocket(wsUrl);
@@ -129,7 +142,8 @@ export function useChatThread(chatId: number | null, token: string | null, _curr
     };
 
     ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      // WebSocket接続エラーは静かに処理（403エラーは権限不足のため）
+      console.debug('WebSocket connection failed (this is expected if chat access is restricted):', error);
     };
 
     ws.onclose = () => {

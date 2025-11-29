@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from app.routers import auth, users, profiles, posts, comments, reactions, follows, notifications, media, billing, matching, categories, ops, account
+from app.routers import auth, users, profiles, posts, comments, reactions, follows, notifications, media, billing, matching, categories, ops, account, donation
 from app.database import Base, engine
 import os
 from pathlib import Path
@@ -17,10 +17,10 @@ PORT = int(os.getenv("PORT", 8000))
 
 app = FastAPI(title="LGBTQ Community API", version="1.0.0")
 
-# S3設定
+# S3設定 - 開発環境ではローカルストレージを使用
 S3_BUCKET = os.getenv("AWS_S3_BUCKET", "rainbow-community-media-prod")
 S3_REGION = os.getenv("AWS_REGION", "ap-northeast-1")
-USE_S3 = os.getenv("USE_S3", "true").lower() == "true"
+USE_S3 = os.getenv("USE_S3", "false").lower() == "true"  # デフォルトfalseに変更
 
 # ローカルメディアディレクトリ（フォールバック）
 media_base = os.getenv("MEDIA_DIR")
@@ -83,6 +83,7 @@ app.include_router(matching.router)
 app.include_router(categories.router)
 app.include_router(ops.router)
 app.include_router(account.router)
+app.include_router(donation.router)
 
 @app.on_event("startup")
 def on_startup():

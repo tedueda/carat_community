@@ -263,6 +263,15 @@
 
 ### 1. バックエンド
 
+**推奨: 起動スクリプトを使用（正しいRDS情報が自動設定されます）**
+
+```bash
+cd backend
+./start_dev.sh
+```
+
+**または手動で起動:**
+
 ```bash
 cd backend
 
@@ -275,8 +284,8 @@ pip install -r requirements.txt
 # または
 poetry install
 
-# 環境変数設定
-export DATABASE_URL="postgresql+psycopg2://dbadmin:<PASSWORD>@rainbow-community-db-tokyo.cj8agmy8kjhv.ap-northeast-1.rds.amazonaws.com:5432/lgbtq_community?sslmode=require"
+# ⚠️ 重要: 正しいRDS情報（ap-northeast-1 東京リージョン）
+export DATABASE_URL="postgresql+psycopg2://dbadmin:0034caretLgbtQ@rainbow-community-db-tokyo.cj8agmy8kjhv.ap-northeast-1.rds.amazonaws.com:5432/lgbtq_community?sslmode=require"
 export PYTHONPATH=$(pwd):$PYTHONPATH
 export PORT=8000
 
@@ -284,7 +293,7 @@ export PORT=8000
 alembic upgrade head
 
 # 開発サーバー起動
-uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+./venv/bin/python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 **API ドキュメント**: http://127.0.0.1:8000/docs
@@ -308,18 +317,20 @@ npm run dev
 ## クイックスタート
 
 - ローカル開発ガイド: [docs/LOCAL_DEV.md](./docs/LOCAL_DEV.md)
-- バックエンド起動スクリプト: `./scripts/dev_backend.sh`
+- **バックエンド起動スクリプト**: `backend/start_dev.sh` ⭐️ 推奨
 - フロントエンド起動スクリプト: `./scripts/dev_frontend.sh`
 
 最短手順:
 
 ```bash
 # バックエンド（別ターミナル）
-./scripts/dev_backend.sh
+cd backend && ./start_dev.sh
 
 # フロントエンド（別ターミナル）
-./scripts/dev_frontend.sh
+cd frontend && npm run dev
 ```
+
+**重要**: `start_dev.sh` は正しいRDS情報（ap-northeast-1 東京リージョン）を自動設定します。
 
 
 ## マイグレーション運用
@@ -346,8 +357,8 @@ class Post(Base):
 cd backend
 source venv/bin/activate
 
-# 環境変数設定
-export DATABASE_URL="postgresql+psycopg2://dbadmin:<PASSWORD>@rainbow-community-db-tokyo.cj8agmy8kjhv.ap-northeast-1.rds.amazonaws.com:5432/lgbtq_community?sslmode=require"
+# ⚠️ 重要: 正しいRDS情報（ap-northeast-1 東京リージョン）
+export DATABASE_URL="postgresql+psycopg2://dbadmin:0034caretLgbtQ@rainbow-community-db-tokyo.cj8agmy8kjhv.ap-northeast-1.rds.amazonaws.com:5432/lgbtq_community?sslmode=require"
 export PYTHONPATH=$(pwd):$PYTHONPATH
 
 # 差分から自動生成
