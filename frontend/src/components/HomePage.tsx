@@ -894,24 +894,25 @@ const HomePage: React.FC = () => {
 
         {/* 参加CTA */}
         <section className="py-16">
-          <Card className="backdrop-blur-md bg-gray-50/90 border border-gray-200 p-6 md:p-8 text-center shadow-2xl">
-            <CardContent className="py-4">
-              <h3 className="text-2xl md:text-3xl font-serif font-semibold text-slate-900">
-                無料で体験・<br />有料で実践！
-              </h3>
-              <p className="mt-4 text-xl md:text-2xl text-slate-600">
-                無料会員はサイト全体の内容を見ていただけます。投稿や有料会員限定サイトを閲覧するには会員登録が必要です。
-              </p>
-              <div className="mt-4 flex justify-center px-4">
+          <div className="max-w-3xl mx-auto px-4">
+            <div className="bg-white/95 border border-gray-200 shadow-xl rounded-2xl px-6 py-6 md:px-10 md:py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="text-left">
+                <p className="text-sm md:text-base text-slate-500 mb-1">会員制LGBTQ+コミュニティ "Carat"</p>
+                <p className="text-lg md:text-xl font-serif text-slate-900">投稿とマッチングで、あなたの物語をはじめましょう。</p>
+                <p className="mt-2 text-sm md:text-base text-slate-500">
+                  * 無料会員はサイト全体の内容を見ていただけます。投稿や有料会員限定サイトを閲覧するには会員登録が必要です。
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-end">
                 <Button 
                   onClick={() => window.location.href = '/login'}
-                  className="bg-gradient-to-r from-yellow-300 to-yellow-400 hover:from-yellow-400 hover:to-yellow-500 text-gray-900 px-6 md:px-10 py-5 md:py-6 text-lg md:text-xl lg:text-2xl font-medium shadow-md hover:shadow-lg transition-all w-full md:w-auto leading-relaxed"
+                  className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
                 >
-                  会員になる<br />月1,000円（税別）
+                  会員登録（月1,000円）
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </section>
         </div>
       </div>

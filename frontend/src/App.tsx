@@ -189,6 +189,8 @@ function AppContent() {
           <Route path="/board/general" element={<Navigate to="/category/board" replace />} />
           <Route path="/board/shops" element={<Navigate to="/category/shops" replace />} />
           <Route path="/board/tourism" element={<Navigate to="/category/tourism" replace />} />
+          {/* Funding redirect to category */}
+          <Route path="/funding" element={<Navigate to="/category/funding" replace />} />
           <Route path="/" element={<Navigate to="/feed" />} />
         </Routes>
       </main>

@@ -24,6 +24,7 @@ const categories = {
   news: { title: "ニュース", emoji: "📰", desc: "最新の制度・条例情報と解説記事" },
   food: { title: "食レポ", emoji: "🍽️", desc: "単品メニュー・市販品のレビュー" },
   beauty: { title: "美容", emoji: "💄", desc: "コスメ・スキンケアのレビュー" },
+  funding: { title: "寄付金を募る", emoji: "🤝", desc: "LGBTQ+コミュニティの仲間を支援" },
 };
 
 const subcategories: Record<string, string[]> = {

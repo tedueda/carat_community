@@ -295,19 +295,19 @@ def send_support_message(
     db: Session = Depends(get_db)
 ):
     """支援メッセージを送信（マッチングなしで直接送信可能）"""
-    from app.models import Match, Chat, Message
+    from app.models import Match, Chat, Message, Post
     
-    # プロジェクトを取得
-    project = db.query(DonationProject).filter(DonationProject.id == request.project_id).first()
-    if not project:
+    # Postsテーブルからプロジェクトを取得
+    post = db.query(Post).filter(Post.id == request.project_id).first()
+    if not post:
         raise HTTPException(status_code=404, detail="プロジェクトが見つかりません")
     
     # 自分自身には送信できない
-    if project.creator_id == current_user.id:
+    if post.user_id == current_user.id:
         raise HTTPException(status_code=400, detail="自分のプロジェクトには支援メッセージを送れません")
     
     # Matchを確認または作成
-    a, b = sorted([current_user.id, project.creator_id])
+    a, b = sorted([current_user.id, post.user_id])
     match = db.query(Match).filter(Match.user_a_id == a, Match.user_b_id == b).first()
     if not match:
         match = Match(user_a_id=a, user_b_id=b)

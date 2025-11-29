@@ -104,6 +104,10 @@ class PostBase(BaseModel):
     status: PostStatusEnum = PostStatusEnum.published
     og_image_url: Optional[str] = None
     excerpt: Optional[str] = None
+    # Funding用フィールド
+    goal_amount: Optional[int] = 0
+    current_amount: Optional[int] = 0
+    deadline: Optional[date] = None
 
 class PostTourismDetails(BaseModel):
     prefecture: Optional[str] = None
@@ -136,6 +140,10 @@ class PostUpdate(BaseModel):
     og_image_url: Optional[str] = None
     excerpt: Optional[str] = None
     tourism_details: Optional[PostTourismDetails] = None
+    # Funding用フィールド
+    goal_amount: Optional[int] = None
+    current_amount: Optional[int] = None
+    deadline: Optional[date] = None
 
 class Post(PostBase):
     id: int

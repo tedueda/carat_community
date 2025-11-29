@@ -77,6 +77,13 @@ const categories = {
     slug: "beauty",
     seoKeywords: "美容,コスメ,自分らしく"
   },
+  funding: { 
+    title: "寄付金を募る", 
+    emoji: "🤝", 
+    desc: "LGBTQ+コミュニティの仲間を支援するページ。プロジェクトを立ち上げ、お互いに支援し合いましょう", 
+    slug: "funding",
+    seoKeywords: "LGBTQ 寄付,支援,クラウドファンディング,コミュニティ"
+  },
 };
 
 const sortOptions = [

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, Heart, MessageCircle, ShoppingBag, Plus, Grid, List, MapPin, Clock, Star, Shield, Upload, Minus, Trash2, ThumbsUp, Home } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Heart, MessageCircle, ShoppingBag, Plus, Grid, List, MapPin, Clock, Star, Shield, Upload, Minus, Trash2, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -19,10 +19,13 @@ interface Listing {
   is_favorited: boolean;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'https://ddxdewgmen.ap-northeast-1.awsapprunner.com';
+
 const MarketplacePage: React.FC = () => {
   console.log('=== MarketplacePage component loaded successfully ===');
   const navigate = useNavigate();
-  const { user } = useAuth();
+  useAuth();
+  const token = localStorage.getItem('token');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   // const [sortBy] = useState('newest');
@@ -32,6 +35,15 @@ const MarketplacePage: React.FC = () => {
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editListing, setEditListing] = useState({
+    title: '',
+    description: '',
+    price: '',
+    category: '',
+    location: '',
+    newImages: [] as File[]
+  });
   const [newListing, setNewListing] = useState({
     title: '',
     description: '',
@@ -42,54 +54,43 @@ const MarketplacePage: React.FC = () => {
     images: [] as File[]
   });
 
-  // モック出品データ
-  const listings: Listing[] = [
-    {
-      id: 1,
-      title: "レインボーフラッグ Tシャツ",
-      description: "プライドパレードで着用したTシャツです。サイズM、状態良好。",
-      price: 2500,
-      condition: 'good',
-      category: 'ファッション',
-      location: '東京都渋谷区',
-      seller_name: 'Rainbow太郎',
-      seller_id: 101,
-      images: ['/images/market01.jpg'],
-      created_at: '2024-11-01',
-      status: 'active',
-      is_favorited: false
-    },
-    {
-      id: 2,
-      title: "LGBTQ関連書籍セット",
-      description: "多様性について学べる本5冊セット。読み終わったのでお譲りします。",
-      price: 3000,
-      condition: 'like_new',
-      category: '本・雑誌',
-      location: '大阪府大阪市',
-      seller_name: 'BookLover',
-      seller_id: 102,
-      images: ['/images/shop02.jpg'],
-      created_at: '2024-10-30',
-      status: 'active',
-      is_favorited: true
-    },
-    {
-      id: 3,
-      title: "プライドグッズ詰め合わせ",
-      description: "バッジ、ステッカー、キーホルダーなど。コレクション整理のため出品。",
-      price: 1800,
-      condition: 'good',
-      category: 'グッズ',
-      location: '神奈川県横浜市',
-      seller_name: 'PrideCollector',
-      seller_id: 103,
-      images: ['/images/art01.jpg'],
-      created_at: '2024-10-28',
-      status: 'active',
-      is_favorited: false
+  const [listings, setListings] = useState<Listing[]>([]);
+
+  // 出品データを取得
+  const fetchListings = async () => {
+    try {
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      const response = await fetch(`${API_URL}/api/posts/?category=marketplace&limit=50`, { headers });
+      if (response.ok) {
+        const data = await response.json();
+        const items = data.map((post: any) => ({
+          id: post.id,
+          title: post.title || '',
+          description: post.body || '',
+          price: post.goal_amount || 0,
+          condition: post.subcategory?.includes('new') ? 'new' : post.subcategory?.includes('like_new') ? 'like_new' : post.subcategory?.includes('fair') ? 'fair' : 'good',
+          category: post.subcategory || 'その他',
+          location: post.excerpt || '',
+          seller_name: post.user_display_name || '匿名',
+          seller_id: post.user_id,
+          images: post.media_urls || [],
+          created_at: post.created_at,
+          status: 'active' as const,
+          is_favorited: false
+        }));
+        setListings(items);
+      }
+    } catch (error) {
+      console.error('出品データ取得エラー:', error);
     }
-  ];
+  };
+
+  useEffect(() => {
+    fetchListings();
+  }, []);
 
   const categories = [
     { key: 'all', label: 'すべて' },
@@ -146,21 +147,26 @@ const MarketplacePage: React.FC = () => {
   };
 
   // 取り下げ確定
-  const confirmWithdraw = () => {
+  const confirmWithdraw = async () => {
     if (selectedListing) {
-      console.log('取り下げ確定:', selectedListing.title);
-      alert(`「${selectedListing.title}」を取り下げました。`);
-      // TODO: API呼び出しで実際の削除処理
-      setShowWithdrawModal(false);
-      setShowListingDetail(false);
+      try {
+        const response = await fetch(`${API_URL}/api/posts/${selectedListing.id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+          alert(`「${selectedListing.title}」を取り下げました。`);
+          setListings(prev => prev.filter(l => l.id !== selectedListing.id));
+          setShowWithdrawModal(false);
+          setShowListingDetail(false);
+        } else {
+          alert('取り下げに失敗しました');
+        }
+      } catch (error) {
+        console.error('取り下げエラー:', error);
+        alert('取り下げに失敗しました');
+      }
     }
-  };
-
-  // 評価・レビュー
-  const handleReviewListing = (listing: Listing) => {
-    console.log('評価・レビュー:', listing.title);
-    setSelectedListing(listing);
-    setShowReviewModal(true);
   };
 
   // 評価送信
@@ -175,11 +181,9 @@ const MarketplacePage: React.FC = () => {
   };
 
   // 出品フォーム送信
-  const handleSubmitListing = (e: React.FormEvent) => {
+  const handleSubmitListing = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('新規出品:', newListing);
     
-    // バリデーション
     if (!newListing.title || !newListing.description || !newListing.price || !newListing.location) {
       alert('すべての必須項目を入力してください。');
       return;
@@ -190,20 +194,62 @@ const MarketplacePage: React.FC = () => {
       return;
     }
 
-    // 成功メッセージ
-    alert(`商品「${newListing.title}」を出品しました！`);
-    
-    // フォームリセット
-    setNewListing({
-      title: '',
-      description: '',
-      price: '',
-      condition: 'good',
-      category: 'ファッション',
-      location: '',
-      images: []
-    });
-    setShowCreateListing(false);
+    try {
+      // 画像アップロード
+      const mediaIds: number[] = [];
+      for (const file of newListing.images) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const uploadResponse = await fetch(`${API_URL}/api/media/upload`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+        if (uploadResponse.ok) {
+          const uploadResult = await uploadResponse.json();
+          mediaIds.push(uploadResult.id);
+        }
+      }
+
+      // 出品作成
+      const response = await fetch(`${API_URL}/api/posts/`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title: newListing.title,
+          body: newListing.description,
+          category: 'marketplace',
+          subcategory: newListing.category,
+          visibility: 'public',
+          media_ids: mediaIds,
+          goal_amount: parseInt(newListing.price) || 0,
+          excerpt: newListing.location
+        })
+      });
+
+      if (response.ok) {
+        alert(`商品「${newListing.title}」を出品しました！`);
+        setNewListing({
+          title: '',
+          description: '',
+          price: '',
+          condition: 'good',
+          category: 'ファッション',
+          location: '',
+          images: []
+        });
+        setShowCreateListing(false);
+        fetchListings();
+      } else {
+        alert('出品に失敗しました');
+      }
+    } catch (error) {
+      console.error('出品エラー:', error);
+      alert('出品に失敗しました');
+    }
   };
 
   // フォーム入力変更
@@ -263,20 +309,14 @@ const MarketplacePage: React.FC = () => {
           </div>
 
           <div className="text-center">
-            <div className="mb-8">
-              <div className="flex justify-center mx-auto mb-6">
-                <img 
-                  src="/images/logo02.png" 
-                  alt="Carat Logo" 
-                  className="h-20 w-auto"
-                />
-              </div>
-            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-carat-black mb-6">
+              マーケット
+            </h1>
             <p className="text-xl md:text-2xl text-carat-gray5 mb-8 max-w-4xl mx-auto leading-relaxed">
               会員同士で安心・安全な売買取引
             </p>
           </div>
-          <div className="flex flex-wrap justify-center gap-4 text-lg text-carat-gray5">
+          <div className="flex flex-wrap justify-center gap-4 text-lg text-carat-gray5 mb-8">
             <div className="flex items-center">
               <ShoppingBag className="w-5 h-5 mr-2 text-carat-black" />
               <span>会員限定</span>
@@ -289,6 +329,15 @@ const MarketplacePage: React.FC = () => {
               <Heart className="w-5 h-5 mr-2 text-carat-black" />
               <span>{listings.length}件の出品</span>
             </div>
+          </div>
+          <div className="flex justify-center">
+            <button
+              onClick={() => setShowCreateListing(true)}
+              className="bg-carat-black text-carat-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-carat-gray6 transition-all duration-300 flex items-center gap-2"
+            >
+              <Plus className="w-5 h-5" />
+              出品する
+            </button>
           </div>
         </div>
       </section>
@@ -345,15 +394,6 @@ const MarketplacePage: React.FC = () => {
                   <List className="w-4 h-4" />
                 </button>
               </div>
-
-              {/* Create Listing Button */}
-              <button
-                onClick={() => setShowCreateListing(true)}
-                className="bg-carat-black text-carat-white px-6 py-3 rounded-lg font-semibold hover:bg-carat-gray6 transition-all duration-300 flex items-center gap-2"
-              >
-                <Plus className="w-4 h-4" />
-                出品する
-              </button>
             </div>
           </div>
         </div>
@@ -787,50 +827,156 @@ const MarketplacePage: React.FC = () => {
                 {/* アクションボタン */}
                 <div className="space-y-3">
                   {/* 出品者向けボタン */}
-                  {user?.id === selectedListing.seller_id ? (
-                    <div className="space-y-3">
-                      <div className="bg-carat-gray2 p-3 rounded-lg">
-                        <p className="text-sm text-carat-gray6 font-medium">あなたの出品です</p>
+                  {isEditing ? (
+                      <form onSubmit={async (e) => {
+                        e.preventDefault();
+                        const tkn = localStorage.getItem('token');
+                        
+                        // 新しい画像があればアップロード
+                        const mediaIds: number[] = [];
+                        for (const file of editListing.newImages) {
+                          const formData = new FormData();
+                          formData.append('file', file);
+                          const uploadResponse = await fetch(`${API_URL}/api/media/upload`, {
+                            method: 'POST',
+                            headers: { 'Authorization': `Bearer ${tkn}` },
+                            body: formData
+                          });
+                          if (uploadResponse.ok) {
+                            const uploadResult = await uploadResponse.json();
+                            mediaIds.push(uploadResult.id);
+                          }
+                        }
+                        
+                        const updateData: Record<string, unknown> = {
+                          title: editListing.title,
+                          body: editListing.description,
+                          category: 'marketplace',
+                          subcategory: editListing.category,
+                          goal_amount: parseInt(editListing.price) || 0,
+                          excerpt: editListing.location
+                        };
+                        if (mediaIds.length > 0) {
+                          updateData.media_ids = mediaIds;
+                        }
+                        
+                        const response = await fetch(`${API_URL}/api/posts/${selectedListing.id}`, {
+                          method: 'PUT',
+                          headers: {
+                            'Authorization': `Bearer ${tkn}`,
+                            'Content-Type': 'application/json'
+                          },
+                          body: JSON.stringify(updateData)
+                        });
+                        if (response.ok) {
+                          const updated = await response.json();
+                          const updatedListing = {
+                            ...selectedListing,
+                            title: updated.title || '',
+                            description: updated.body || '',
+                            price: updated.goal_amount || 0,
+                            category: updated.subcategory || 'その他',
+                            location: updated.excerpt || '',
+                            images: updated.media_urls || selectedListing.images
+                          };
+                          setListings(prev => prev.map(l => l.id === selectedListing.id ? updatedListing : l));
+                          setSelectedListing(updatedListing);
+                          setIsEditing(false);
+                          alert('更新しました');
+                        } else {
+                          alert('更新に失敗しました');
+                        }
+                      }} className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">商品名</label>
+                          <input
+                            type="text"
+                            value={editListing.title}
+                            onChange={(e) => setEditListing({ ...editListing, title: e.target.value })}
+                            className="w-full px-3 py-2 border rounded-lg"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">商品説明</label>
+                          <textarea
+                            value={editListing.description}
+                            onChange={(e) => setEditListing({ ...editListing, description: e.target.value })}
+                            rows={3}
+                            className="w-full px-3 py-2 border rounded-lg"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">価格（円）</label>
+                          <input
+                            type="number"
+                            value={editListing.price}
+                            onChange={(e) => setEditListing({ ...editListing, price: e.target.value })}
+                            className="w-full px-3 py-2 border rounded-lg"
+                            placeholder="例: 3000"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">発送元</label>
+                          <input
+                            type="text"
+                            value={editListing.location}
+                            onChange={(e) => setEditListing({ ...editListing, location: e.target.value })}
+                            className="w-full px-3 py-2 border rounded-lg"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">画像を変更</label>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => {
+                              if (e.target.files) {
+                                setEditListing({ ...editListing, newImages: Array.from(e.target.files) });
+                              }
+                            }}
+                            className="w-full px-3 py-2 border rounded-lg"
+                          />
+                          {editListing.newImages.length > 0 && (
+                            <p className="text-sm text-gray-500 mt-1">{editListing.newImages.length}枚の画像を選択中</p>
+                          )}
+                        </div>
+                        <div className="flex gap-3">
+                          <button type="submit" className="flex-1 bg-black text-white py-2 rounded-lg">保存</button>
+                          <button type="button" onClick={() => setIsEditing(false)} className="flex-1 border py-2 rounded-lg">キャンセル</button>
+                        </div>
+                      </form>
+                    ) : (
+                      <div className="space-y-3">
+                        <div className="bg-carat-gray2 p-3 rounded-lg">
+                          <p className="text-sm text-carat-gray6 font-medium">あなたの出品です</p>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setEditListing({
+                              title: selectedListing.title,
+                              description: selectedListing.description,
+                              price: String(selectedListing.price),
+                              category: selectedListing.category,
+                              location: selectedListing.location,
+                              newImages: []
+                            });
+                            setIsEditing(true);
+                          }}
+                          className="w-full bg-carat-black text-white py-3 px-4 rounded-lg font-semibold hover:bg-carat-gray6 transition-colors flex items-center justify-center gap-2"
+                        >
+                          編集する
+                        </button>
+                        <button
+                          onClick={() => handleWithdrawListing(selectedListing)}
+                          className="w-full bg-red-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                          出品を取り下げる
+                        </button>
                       </div>
-                      <button
-                        onClick={() => handleWithdrawListing(selectedListing)}
-                        className="w-full bg-red-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-red-600 transition-colors"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                        出品を取り下げる
-                      </button>
-                    </div>
-                  ) : (
-                    /* 購入者向けボタン */
-                    <div className="space-y-3">
-                      <button
-                        onClick={() => {
-                          handleChatContact(selectedListing);
-                          setShowListingDetail(false);
-                        }}
-                        className="w-full bg-carat-black text-carat-white py-3 px-4 rounded-lg font-semibold hover:bg-carat-gray6 transition-all duration-300 flex items-center justify-center gap-2"
-                      >
-                        <MessageCircle className="w-5 h-5" />
-                        チャットで連絡する
-                      </button>
-
-                      <button
-                        onClick={() => handleFavorite(selectedListing.id)}
-                        className="w-full border border-carat-gray3 text-carat-gray6 py-3 px-4 rounded-lg font-medium hover:bg-carat-gray1 transition-colors flex items-center justify-center gap-2"
-                      >
-                        <Heart className={`w-5 h-5 ${selectedListing.is_favorited ? 'fill-current text-carat-black' : 'text-carat-gray5'}`} />
-                        {selectedListing.is_favorited ? 'お気に入り済み' : 'お気に入りに追加'}
-                      </button>
-
-                      <button
-                        onClick={() => handleReviewListing(selectedListing)}
-                        className="w-full bg-carat-gray5 text-carat-white py-3 px-4 rounded-lg font-semibold hover:bg-carat-gray6 transition-colors flex items-center justify-center gap-2"
-                      >
-                        <ThumbsUp className="w-5 h-5" />
-                        この出品者を評価する
-                      </button>
-                    </div>
-                  )}
+                    )
+                  }
                 </div>
 
                 {/* 注意事項 */}

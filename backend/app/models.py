@@ -152,6 +152,10 @@ class Post(Base):
     status = Column(String(20), server_default='published', nullable=False)
     og_image_url = Column(String(500))
     excerpt = Column(Text)
+    # Funding用フィールド
+    goal_amount = Column(Integer, default=0)
+    current_amount = Column(Integer, default=0)
+    deadline = Column(Date, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     

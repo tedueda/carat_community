@@ -49,7 +49,56 @@ def run_migration(
     ))
     db.execute(text("CREATE INDEX IF NOT EXISTS idx_profile_images_profile_id ON matching_profile_images(profile_id)"))
 
-    # 4) Hobbies seed (idempotent)
+    # 4) Donation tables
+    db.execute(text("""
+        CREATE TABLE IF NOT EXISTS donation_projects (
+            id SERIAL PRIMARY KEY,
+            creator_id INTEGER NOT NULL REFERENCES users(id),
+            title VARCHAR(200) NOT NULL,
+            description TEXT NOT NULL,
+            category VARCHAR(50) NOT NULL,
+            goal_amount INTEGER NOT NULL,
+            current_amount INTEGER NOT NULL DEFAULT 0,
+            deadline DATE NOT NULL,
+            supporters_count INTEGER NOT NULL DEFAULT 0,
+            is_active BOOLEAN NOT NULL DEFAULT TRUE,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        )
+    """))
+    
+    db.execute(text("""
+        CREATE TABLE IF NOT EXISTS donation_project_images (
+            id SERIAL PRIMARY KEY,
+            project_id INTEGER NOT NULL REFERENCES donation_projects(id) ON DELETE CASCADE,
+            image_url VARCHAR(500) NOT NULL,
+            display_order INTEGER NOT NULL DEFAULT 0,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        )
+    """))
+    
+    db.execute(text("""
+        CREATE TABLE IF NOT EXISTS donation_supports (
+            id SERIAL PRIMARY KEY,
+            project_id INTEGER NOT NULL REFERENCES donation_projects(id),
+            user_id INTEGER NOT NULL REFERENCES users(id),
+            amount INTEGER NOT NULL,
+            message TEXT,
+            is_anonymous BOOLEAN NOT NULL DEFAULT FALSE,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        )
+    """))
+    
+    db.execute(text("CREATE INDEX IF NOT EXISTS ix_donation_projects_creator_id ON donation_projects(creator_id)"))
+    db.execute(text("CREATE INDEX IF NOT EXISTS ix_donation_project_images_project_id ON donation_project_images(project_id)"))
+    db.execute(text("CREATE INDEX IF NOT EXISTS ix_donation_supports_project_id ON donation_supports(project_id)"))
+
+    # 5) Posts table funding columns
+    db.execute(text("ALTER TABLE posts ADD COLUMN IF NOT EXISTS goal_amount INTEGER DEFAULT 0"))
+    db.execute(text("ALTER TABLE posts ADD COLUMN IF NOT EXISTS current_amount INTEGER DEFAULT 0"))
+    db.execute(text("ALTER TABLE posts ADD COLUMN IF NOT EXISTS deadline DATE"))
+
+    # 6) Hobbies seed (idempotent)
     hobbies = [
         '料理','グルメ','カフェ巡り','お酒・バー','お菓子作り',
         '旅行','温泉','ドライブ','バイク','キャンプ','登山','釣り','海・ビーチ',

@@ -21,7 +21,7 @@ const DonationPage: React.FC = () => {
   console.log('=== DonationPage FULL VERSION component loaded successfully ===');
   console.log('Component render time:', new Date().toISOString());
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('new');
@@ -36,8 +36,10 @@ const DonationPage: React.FC = () => {
     description: '',
     goal_amount: '',
     deadline: '',
-    category: ''
+    category: '',
+    newImages: [] as File[]
   });
+  const editFileInputRef = useRef<HTMLInputElement>(null);
   const [newProject, setNewProject] = useState({
     title: '',
     description: '',
@@ -52,14 +54,33 @@ const DonationPage: React.FC = () => {
   ]);
   const [supportAmount, setSupportAmount] = useState('');
 
-  // プロジェクト一覧を取得
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+  // プロジェクト一覧を取得（PostsのAPIを使用）
   const fetchProjects = async () => {
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${API_URL}/api/donation/projects`);
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      const response = await fetch(`${API_URL}/api/posts/?category=funding&limit=50`, { headers });
       if (response.ok) {
         const data = await response.json();
-        setProjects(data);
+        // PostsのデータをProject形式に変換
+        const projects = data.map((post: any) => ({
+          id: post.id,
+          title: post.title || '',
+          description: post.body || '',
+          goal_amount: post.goal_amount || 0,
+          current_amount: post.current_amount || 0,
+          deadline: post.deadline || post.created_at,
+          image_urls: post.media_urls || (post.media_url ? [post.media_url] : []),
+          creator_name: post.user_display_name || '匿名',
+          creator_id: post.user_id,
+          category: post.subcategory || 'その他',
+          supporters_count: post.like_count || 0
+        }));
+        setProjects(projects);
       }
     } catch (error) {
       console.error('プロジェクト取得エラー:', error);
@@ -69,7 +90,7 @@ const DonationPage: React.FC = () => {
   // 初回読み込み時にプロジェクトを取得
   React.useEffect(() => {
     fetchProjects();
-  }, []);
+  }, [token]);
 
   // 支援ボタンクリック
   const handleSupport = (project: Project) => {
@@ -96,7 +117,6 @@ const DonationPage: React.FC = () => {
     }
 
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
       const token = localStorage.getItem('token');
 
       // 1. まず画像をアップロード（CreatePostと同じ仕様）
@@ -121,8 +141,8 @@ const DonationPage: React.FC = () => {
         }
       }
 
-      // 2. プロジェクトを作成（JSONで送信）
-      const response = await fetch(`${API_URL}/api/donation/projects`, {
+      // 2. Postsとして作成（category: funding）
+      const response = await fetch(`${API_URL}/api/posts/`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -130,11 +150,13 @@ const DonationPage: React.FC = () => {
         },
         body: JSON.stringify({
           title: newProject.title,
-          description: newProject.description,
-          category: newProject.category,
-          goal_amount: parseInt(newProject.goal_amount),
-          deadline: newProject.deadline,
-          media_ids: mediaIds
+          body: newProject.description,
+          category: 'funding',
+          subcategory: newProject.category,
+          visibility: 'public',
+          media_ids: mediaIds,
+          goal_amount: parseInt(newProject.goal_amount) || 0,
+          deadline: newProject.deadline || null
         })
       });
 
@@ -142,7 +164,22 @@ const DonationPage: React.FC = () => {
         throw new Error('プロジェクトの作成に失敗しました');
       }
 
-      const newProjectData = await response.json();
+      const newPostData = await response.json();
+      
+      // PostデータをProject形式に変換
+      const newProjectData = {
+        id: newPostData.id,
+        title: newPostData.title || '',
+        description: newPostData.body || '',
+        goal_amount: newPostData.goal_amount || 0,
+        current_amount: newPostData.current_amount || 0,
+        deadline: newPostData.deadline || newPostData.created_at,
+        image_urls: newPostData.media_urls || [],
+        creator_name: newPostData.user_display_name || '匿名',
+        creator_id: newPostData.user_id,
+        category: newPostData.subcategory || 'その他',
+        supporters_count: 0
+      };
       
       // プロジェクトリストに追加
       setProjects(prev => [newProjectData, ...prev]);
@@ -550,7 +587,7 @@ const DonationPage: React.FC = () => {
                     alert('エラーが発生しました');
                   }
                 }}
-                className="flex-1 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-500 text-white py-3 px-4 rounded-lg font-semibold hover:opacity-90 transition-all shadow-lg"
+                className="flex-1 bg-black text-white py-3 px-4 rounded-lg font-semibold hover:bg-gray-800 transition-all"
               >
                 支援する
               </button>
@@ -653,7 +690,8 @@ const DonationPage: React.FC = () => {
                             description: selectedProject.description,
                             goal_amount: String(selectedProject.goal_amount),
                             deadline: selectedProject.deadline,
-                            category: selectedProject.category
+                            category: selectedProject.category,
+                            newImages: []
                           });
                           setIsEditing(true);
                         }}
@@ -665,15 +703,17 @@ const DonationPage: React.FC = () => {
                       <button
                         onClick={async () => {
                           if (confirm('このプロジェクトを削除しますか？')) {
-                            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-                            const token = localStorage.getItem('token');
-                            const response = await fetch(`${API_URL}/api/donation/projects/${selectedProject.id}`, {
+                            const tkn = localStorage.getItem('token');
+                            const response = await fetch(`${API_URL}/api/posts/${selectedProject.id}`, {
                               method: 'DELETE',
-                              headers: { 'Authorization': `Bearer ${token}` }
+                              headers: { 'Authorization': `Bearer ${tkn}` }
                             });
                             if (response.ok) {
                               setProjects(prev => prev.filter(p => p.id !== selectedProject.id));
                               setShowProjectDetail(false);
+                              alert('削除しました');
+                            } else {
+                              alert('削除に失敗しました');
                             }
                           }
                         }}
@@ -690,27 +730,58 @@ const DonationPage: React.FC = () => {
                 {isEditing ? (
                   <form onSubmit={async (e) => {
                     e.preventDefault();
-                    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-                    const token = localStorage.getItem('token');
-                    const response = await fetch(`${API_URL}/api/donation/projects/${selectedProject.id}`, {
+                    const tkn = localStorage.getItem('token');
+                    
+                    // 新しい画像がある場合はアップロード
+                    const mediaIds: number[] = [];
+                    for (const image of editProject.newImages) {
+                      const imageFormData = new FormData();
+                      imageFormData.append('file', image);
+                      const uploadResponse = await fetch(`${API_URL}/api/media/upload`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${tkn}` },
+                        body: imageFormData,
+                      });
+                      if (uploadResponse.ok) {
+                        const uploadResult = await uploadResponse.json();
+                        mediaIds.push(uploadResult.id);
+                      }
+                    }
+                    
+                    const updateData: Record<string, unknown> = {
+                      title: editProject.title,
+                      body: editProject.description,
+                      category: 'funding',
+                      subcategory: editProject.category
+                    };
+                    if (mediaIds.length > 0) {
+                      updateData.media_ids = mediaIds;
+                    }
+                    
+                    const response = await fetch(`${API_URL}/api/posts/${selectedProject.id}`, {
                       method: 'PUT',
                       headers: {
-                        'Authorization': `Bearer ${token}`,
+                        'Authorization': `Bearer ${tkn}`,
                         'Content-Type': 'application/json'
                       },
-                      body: JSON.stringify({
-                        title: editProject.title,
-                        description: editProject.description,
-                        category: editProject.category,
-                        goal_amount: parseInt(editProject.goal_amount),
-                        deadline: editProject.deadline
-                      })
+                      body: JSON.stringify(updateData)
                     });
                     if (response.ok) {
                       const updated = await response.json();
-                      setProjects(prev => prev.map(p => p.id === selectedProject.id ? { ...p, ...updated } : p));
-                      setSelectedProject({ ...selectedProject, ...updated });
+                      const updatedProject = {
+                        ...selectedProject,
+                        title: updated.title || '',
+                        description: updated.body || '',
+                        category: updated.subcategory || 'その他',
+                        image_urls: updated.media_urls || selectedProject.image_urls
+                      };
+                      setProjects(prev => prev.map(p => p.id === selectedProject.id ? updatedProject : p));
+                      setSelectedProject(updatedProject);
                       setIsEditing(false);
+                      setEditProject({ ...editProject, newImages: [] });
+                      alert('更新しました');
+                    } else {
+                      alert('更新に失敗しました');
                     }
                   }} className="space-y-4">
                     <div>
@@ -730,6 +801,43 @@ const DonationPage: React.FC = () => {
                         rows={4}
                         className="w-full px-3 py-2 border rounded-lg"
                       />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">目標金額</label>
+                      <input
+                        type="number"
+                        value={editProject.goal_amount}
+                        onChange={(e) => setEditProject({ ...editProject, goal_amount: e.target.value })}
+                        className="w-full px-3 py-2 border rounded-lg"
+                        placeholder="例: 100000"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">締切日</label>
+                      <input
+                        type="date"
+                        value={editProject.deadline}
+                        onChange={(e) => setEditProject({ ...editProject, deadline: e.target.value })}
+                        className="w-full px-3 py-2 border rounded-lg"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">画像を変更</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        ref={editFileInputRef}
+                        onChange={(e) => {
+                          if (e.target.files) {
+                            setEditProject({ ...editProject, newImages: Array.from(e.target.files) });
+                          }
+                        }}
+                        className="w-full px-3 py-2 border rounded-lg"
+                      />
+                      {editProject.newImages.length > 0 && (
+                        <p className="text-sm text-gray-500 mt-1">{editProject.newImages.length}枚の画像を選択中</p>
+                      )}
                     </div>
                     <div className="flex gap-3">
                       <button type="submit" className="flex-1 bg-black text-white py-2 rounded-lg">保存</button>
