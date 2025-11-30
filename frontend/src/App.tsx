@@ -29,6 +29,7 @@ import BeautyPage from './pages/members/BeautyPage';
 import VirtualWeddingPage from './components/VirtualWeddingPage';
 import DonationPage from './components/DonationPage';
 import MarketplacePage from './pages/members/MarketplacePage';
+import FavoritesPage from './pages/members/FavoritesPage';
 import AccountPage from './pages/members/AccountPage';
 
 
@@ -160,6 +161,16 @@ function AppContent() {
           <Route path="/marketplace" element={
             <FeedRoute>
               <MarketplacePage />
+            </FeedRoute>
+          } />
+          <Route path="/members/marketplace" element={
+            <FeedRoute>
+              <MarketplacePage />
+            </FeedRoute>
+          } />
+          <Route path="/members/favorites" element={
+            <FeedRoute>
+              <FavoritesPage />
             </FeedRoute>
           } />
           <Route path="/account" element={

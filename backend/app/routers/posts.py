@@ -140,6 +140,9 @@ async def read_posts(
             "status": post.status,
             "og_image_url": post.og_image_url,
             "excerpt": post.excerpt,
+            "goal_amount": post.goal_amount if hasattr(post, 'goal_amount') else 0,
+            "current_amount": post.current_amount if hasattr(post, 'current_amount') else 0,
+            "deadline": post.deadline if hasattr(post, 'deadline') else None,
             "tourism_details": None,
             "created_at": post.created_at,
             "updated_at": post.updated_at,
@@ -158,7 +161,11 @@ async def read_posts(
             for pm in post_media_records:
                 media = db.query(MediaAsset).filter(MediaAsset.id == pm.media_asset_id).first()
                 if media:
-                    media_urls.append(media.url)
+                    url = media.url
+                    # 相対パスをS3 URLに変換
+                    if url and url.startswith('/media/'):
+                        url = f"https://rainbow-community-media-prod.s3.ap-northeast-1.amazonaws.com{url}"
+                    media_urls.append(url)
             post_dict["media_urls"] = media_urls
         
         if post.post_type == 'tourism':
@@ -253,6 +260,9 @@ async def read_post(post_id: int, db: Session = Depends(get_db)):
         "status": post.status,
         "og_image_url": post.og_image_url,
         "excerpt": post.excerpt,
+        "goal_amount": post.goal_amount if hasattr(post, 'goal_amount') else 0,
+        "current_amount": post.current_amount if hasattr(post, 'current_amount') else 0,
+        "deadline": post.deadline if hasattr(post, 'deadline') else None,
         "tourism_details": None,
         "created_at": post.created_at,
         "updated_at": post.updated_at

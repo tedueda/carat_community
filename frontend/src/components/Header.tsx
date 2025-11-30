@@ -52,6 +52,7 @@ const Header: React.FC = () => {
     { title: "ライブ・ウエディング", link: "/live-wedding", icon: "💒" },
     { title: "寄付金を募る", link: "/funding", icon: "🤝" },
     { title: "マーケット", link: "/marketplace", icon: "🛍️" },
+    { title: "お気に入り", link: "/members/favorites", icon: "❤️" },
     { title: "食レポ", link: "/members/food", icon: "🍽" },
     { title: "ビューティ", link: "/members/beauty", icon: "💄" },
   ];
