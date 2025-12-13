@@ -544,3 +544,57 @@ class DonationSupport(Base):
     message = Column(Text, nullable=True)
     is_anonymous = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class SalonRoom(Base):
+    __tablename__ = "salon_rooms"
+
+    id = Column(Integer, primary_key=True, index=True)
+    creator_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    theme = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    target_identities = Column(JSON, nullable=False)
+    room_type = Column(String(50), nullable=False)
+    allow_anonymous = Column(Boolean, default=False)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        CheckConstraint("room_type IN ('consultation', 'exchange', 'story', 'other')", name="check_salon_room_type"),
+    )
+
+    creator = relationship("User")
+    participants = relationship("SalonParticipant", back_populates="room")
+    messages = relationship("SalonMessage", back_populates="room")
+
+
+class SalonParticipant(Base):
+    __tablename__ = "salon_participants"
+
+    id = Column(Integer, primary_key=True, index=True)
+    room_id = Column(Integer, ForeignKey("salon_rooms.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    anonymous_name = Column(String(100), nullable=True)
+    joined_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("room_id", "user_id", name="unique_salon_participant"),
+    )
+
+    room = relationship("SalonRoom", back_populates="participants")
+    user = relationship("User")
+
+
+class SalonMessage(Base):
+    __tablename__ = "salon_messages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    room_id = Column(Integer, ForeignKey("salon_rooms.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    is_anonymous = Column(Boolean, default=False)
+    body = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    room = relationship("SalonRoom", back_populates="messages")
+    user = relationship("User")

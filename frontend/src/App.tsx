@@ -31,6 +31,7 @@ import DonationPage from './components/DonationPage';
 import MarketplacePage from './pages/members/MarketplacePage';
 import FavoritesPage from './pages/members/FavoritesPage';
 import AccountPage from './pages/members/AccountPage';
+import { SalonPage, SalonRoomDetailPage } from './components/salon';
 
 
 const FeedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -173,12 +174,23 @@ function AppContent() {
               <FavoritesPage />
             </FeedRoute>
           } />
-          <Route path="/account" element={
-            <FeedRoute>
-              <AccountPage />
-            </FeedRoute>
-          } />
-          <Route path="/news" element={
+                    <Route path="/account" element={
+                      <FeedRoute>
+                        <AccountPage />
+                      </FeedRoute>
+                    } />
+                    {/* Salon routes */}
+                    <Route path="/salon" element={
+                      <FeedRoute>
+                        <SalonPage />
+                      </FeedRoute>
+                    } />
+                    <Route path="/salon/rooms/:roomId" element={
+                      <FeedRoute>
+                        <SalonRoomDetailPage />
+                      </FeedRoute>
+                    } />
+                    <Route path="/news" element={
             <FeedRoute>
               <NewsPage />
             </FeedRoute>

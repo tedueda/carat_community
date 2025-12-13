@@ -1,0 +1,193 @@
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '../ui/button';
+import { Card, CardContent } from '../ui/card';
+import { Plus, Lock, MessageCircle } from 'lucide-react';
+import SalonRoomCard from './SalonRoomCard';
+import CreateSalonRoomModal from './CreateSalonRoomModal';
+
+interface SalonRoom {
+  id: number;
+  creator_id: number;
+  theme: string;
+  description: string;
+  target_identities: string[];
+  room_type: string;
+  allow_anonymous: boolean;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  participant_count: number;
+  creator_display_name: string | null;
+}
+
+const SalonPage: React.FC = () => {
+  const { user, token } = useAuth();
+  const navigate = useNavigate();
+  const [rooms, setRooms] = useState<SalonRoom[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [selectedRoomType, setSelectedRoomType] = useState<string | null>(null);
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+
+  const fetchRooms = async () => {
+    if (!token) return;
+    
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      if (selectedRoomType) {
+        params.append('room_type', selectedRoomType);
+      }
+      
+      const response = await fetch(`${API_URL}/api/salon/rooms?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setRooms(data);
+      } else if (response.status === 403) {
+        setError('プレミアム会員のみ利用可能です');
+      } else {
+        setError('ルームの取得に失敗しました');
+      }
+    } catch (err) {
+      setError('ネットワークエラーが発生しました');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isPremium) {
+      fetchRooms();
+    } else {
+      setLoading(false);
+    }
+  }, [token, selectedRoomType, isPremium]);
+
+  const handleRoomCreated = () => {
+    setShowCreateModal(false);
+    fetchRooms();
+  };
+
+  const roomTypes = [
+    { value: null, label: 'すべて' },
+    { value: 'consultation', label: '相談' },
+    { value: 'exchange', label: '交流' },
+    { value: 'story', label: 'ストーリー' },
+    { value: 'other', label: 'その他' },
+  ];
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card className="max-w-md w-full mx-4">
+          <CardContent className="p-6 text-center">
+            <Lock className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+            <h2 className="text-xl font-semibold mb-2">ログインが必要です</h2>
+            <p className="text-gray-600 mb-4">会員サロンを利用するにはログインしてください</p>
+            <Button onClick={() => navigate('/login')}>ログイン</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!isPremium) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card className="max-w-md w-full mx-4">
+          <CardContent className="p-6 text-center">
+            <Lock className="h-12 w-12 mx-auto text-yellow-500 mb-4" />
+            <h2 className="text-xl font-semibold mb-2">プレミアム会員限定</h2>
+            <p className="text-gray-600 mb-4">
+              会員サロンはプレミアム会員のみご利用いただけます。
+              プレミアム会員になると、専門チャットサロンで同じ悩みを持つ仲間と交流できます。
+            </p>
+            <Button onClick={() => navigate('/account')} className="bg-yellow-500 hover:bg-yellow-600">
+              プレミアム会員になる
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-serif font-bold text-gray-900">会員サロン</h1>
+            <p className="text-gray-600 mt-1">プレミアム会員限定の専門チャットサロン</p>
+          </div>
+          <Button
+            onClick={() => setShowCreateModal(true)}
+            className="mt-4 md:mt-0 bg-black hover:bg-gray-800"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            ルームを作成
+          </Button>
+        </div>
+
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+          {roomTypes.map((type) => (
+            <Button
+              key={type.value || 'all'}
+              variant={selectedRoomType === type.value ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSelectedRoomType(type.value)}
+              className={selectedRoomType === type.value ? 'bg-black' : ''}
+            >
+              {type.label}
+            </Button>
+          ))}
+        </div>
+
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+            <p className="mt-4 text-gray-600">読み込み中...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className="text-red-500">{error}</p>
+          </div>
+        ) : rooms.length === 0 ? (
+          <div className="text-center py-12">
+            <MessageCircle className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+            <p className="text-gray-600">まだルームがありません</p>
+            <p className="text-gray-500 text-sm mt-2">最初のルームを作成してみましょう</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {rooms.map((room) => (
+              <SalonRoomCard
+                key={room.id}
+                room={room}
+                onClick={() => navigate(`/salon/rooms/${room.id}`)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <CreateSalonRoomModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onCreated={handleRoomCreated}
+      />
+    </div>
+  );
+};
+
+export default SalonPage;
