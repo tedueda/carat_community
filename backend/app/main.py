@@ -8,14 +8,36 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from app.routers import auth, users, profiles, posts, comments, reactions, follows, notifications, media, billing, matching, categories, ops, account, donation, salon
-from app.database import Base, engine
+from app.database import Base, engine, get_db
 import os
 from pathlib import Path
 import os
+from sqlalchemy import text
 
 PORT = int(os.getenv("PORT", 8000))
 
 app = FastAPI(title="LGBTQ Community API", version="1.0.0")
+
+@app.on_event("startup")
+def run_migrations():
+    """Run database migrations on startup"""
+    try:
+        db = next(get_db())
+        result = db.execute(text("""
+            SELECT column_name 
+            FROM information_schema.columns 
+            WHERE table_name='users' AND column_name='phone_number'
+        """))
+        if not result.fetchone():
+            db.execute(text("ALTER TABLE users ADD COLUMN phone_number VARCHAR(20)"))
+            db.commit()
+            print("✅ Successfully added phone_number column to users table")
+        else:
+            print("✅ phone_number column already exists")
+    except Exception as e:
+        print(f"⚠️ Migration error (may be safe to ignore if column exists): {e}")
+    finally:
+        db.close()
 
 # S3設定 - 開発環境ではローカルストレージを使用
 S3_BUCKET = os.getenv("AWS_S3_BUCKET", "rainbow-community-media-prod")
