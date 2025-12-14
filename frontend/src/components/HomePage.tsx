@@ -7,6 +7,7 @@ import { Card, CardContent } from './ui/card';
 import UnderConstructionModal from './UnderConstructionModal';
 import PostDetailModal from './PostDetailModal';
 import { Post, User } from '../types/Post';
+import { extractYouTubeId } from '../utils/youtube';
 
 
 const memberBenefits = [
@@ -35,7 +36,7 @@ const memberBenefits = [
     icon: "🤝",
     link: "/funding",
     external: false,
-    premiumOnly: false,
+    premiumOnly: true,
   },
   {
     id: "marketplace",
@@ -44,17 +45,17 @@ const memberBenefits = [
     icon: "🛍️",
     link: "/marketplace",
     external: false,
-    premiumOnly: false,
+    premiumOnly: true,
   },
 ];
 
 const boardCategories = [
-  { key: "music", title: "ミュージック", desc: "お気に入りや自作・AI曲の共有。", emoji: "🎵", link: "/category/music" },
-  { key: "art", title: "アート", desc: "イラスト・写真・映像作品の発表。", emoji: "🎨", link: "/category/art" },
-  { key: "comics", title: "サブカルチャー", desc: "映画・アニメ・ゲーム・小説などの作品レビューと感想。", emoji: "🎭", link: "/category/comics" },
-  { key: "food_shops", title: "食レポ・お店", desc: "グルメレビューとLGBTQフレンドリーなお店紹介。", emoji: "🍽️", link: "/category/food", categories: ["food", "shops"] },
-  { key: "tourism", title: "ツーリズム", desc: "会員ガイドの交流型ツアー。", emoji: "📍", link: "/category/tourism" },
-  { key: "board", title: "悩み相談", desc: "悩み相談や雑談、生活の話題。", emoji: "💬", link: "/category/board" },
+  { key: "music", title: "ミュージック", desc: "あなたの好きな楽曲、作成した楽曲を投稿して共有しましょう！", emoji: "🎵", link: "/category/music" },
+  { key: "art", title: "アート", desc: "イラスト・写真・映像作品を発表して、アートの世界を広げましょう！", emoji: "🎨", link: "/category/art" },
+  { key: "comics", title: "サブカルチャー", desc: "映画・アニメ・ゲーム・小説などの作品レビューと感想を共有しましょう！", emoji: "🎭", link: "/category/comics" },
+  { key: "food_shops", title: "食レポ・お店", desc: "美味しいグルメやLGBTQフレンドリーなお店を紹介しましょう！", emoji: "🍽️", link: "/category/food", categories: ["food", "shops"] },
+  { key: "tourism", title: "ツーリズム", desc: "おすすめの旅行先や観光スポットを紹介して、旅の楽しさを共有しましょう！", emoji: "📍", link: "/category/tourism" },
+  { key: "board", title: "掲示板", desc: "悩み相談や雑談、日常の話題を自由に投稿しましょう！", emoji: "💬", link: "/category/board" },
 ];
 
 const getCategoryPlaceholder= (category: string | undefined): string => {
@@ -146,19 +147,6 @@ const HomePage: React.FC = () => {
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-  const extractYouTubeVideoId = (url: string): string | null => {
-    if (!url) return null;
-    const patterns = [
-      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
-      /youtube\.com\/watch\?.*v=([^&\n?#]+)/
-    ];
-    
-    for (const pattern of patterns) {
-      const match = url.match(pattern);
-      if (match) return match[1];
-    }
-    return null;
-  };
 
   const fetchNews = async () => {
     try {
@@ -186,31 +174,34 @@ const HomePage: React.FC = () => {
         headers['Authorization'] = `Bearer ${token}`;
       }
       
-      const allCategoryPosts: { [key: string]: Post[] } = {};
-      
-      for (const cat of boardCategories) {
+      // 並列処理で全カテゴリのデータを同時取得
+      const categoryPromises = boardCategories.map(async (cat) => {
         if (cat.categories) {
           // 複数カテゴリを統合（食レポ・お店）
-          const combinedPosts: Post[] = [];
-          for (const subCat of cat.categories) {
-            const response = await fetch(`${API_URL}/api/posts/?category=${subCat}&limit=8`, { headers });
-            if (response.ok) {
-              const data = await response.json();
-              combinedPosts.push(...data);
-            }
-          }
+          const subCatPromises = cat.categories.map(subCat =>
+            fetch(`${API_URL}/api/posts/?category=${subCat}&limit=8`, { headers })
+              .then(res => res.ok ? res.json() : [])
+              .catch(() => [])
+          );
+          const results = await Promise.all(subCatPromises);
+          const combinedPosts = results.flat();
           // 最新順でソートして4件取得
           combinedPosts.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-          allCategoryPosts[cat.key] = combinedPosts.slice(0, 4);
+          return { key: cat.key, posts: combinedPosts.slice(0, 4) };
         } else {
           // 単一カテゴリ
-          const response = await fetch(`${API_URL}/api/posts/?category=${cat.key}&limit=4`, { headers });
-          if (response.ok) {
-            const data = await response.json();
-            allCategoryPosts[cat.key] = data;
-          }
+          const posts = await fetch(`${API_URL}/api/posts/?category=${cat.key}&limit=4`, { headers })
+            .then(res => res.ok ? res.json() : [])
+            .catch(() => []);
+          return { key: cat.key, posts };
         }
-      }
+      });
+      
+      const results = await Promise.all(categoryPromises);
+      const allCategoryPosts: { [key: string]: Post[] } = {};
+      results.forEach(result => {
+        allCategoryPosts[result.key] = result.posts;
+      });
       
       setCategoryPosts(allCategoryPosts);
     } catch (error) {
@@ -406,111 +397,6 @@ const HomePage: React.FC = () => {
 
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 掲示板セクション - 6カテゴリ */}
-        {boardCategories.map((cat) => (
-          <section key={cat.key} className="py-8">
-            <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-4 gap-1 md:gap-0">
-              <h3 className="text-3xl md:text-4xl font-serif font-semibold text-slate-900 flex items-center gap-2">
-                <span>{cat.emoji}</span>
-                {cat.title}
-              </h3>
-              <Button 
-                variant="ghost" 
-                className="text-gray-700 hover:text-black hover:bg-gray-100 font-medium text-base md:text-xl self-start md:self-auto"
-                onClick={() => navigate(cat.link)}
-              >
-                もっと見る→
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {(categoryPosts[cat.key] || []).slice(0, 4).map((post) => (
-                <Card 
-                  key={post.id} 
-                  onClick={() => {
-                    setSelectedPost(post);
-                    setSelectedUser({
-                      id: post.user_id,
-                      display_name: post.user_display_name || 'ユーザー',
-                      email: ''
-                    });
-                  }}
-                  className="group backdrop-blur-md bg-gray-50/80 border border-gray-200 hover:bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer hover:scale-[1.02] shadow-lg hover:shadow-2xl"
-                >
-                  {(post.media_url || (post.media_urls && post.media_urls.length > 0)) ? (
-                    <div className="h-40 overflow-hidden rounded-t-lg bg-gray-100 flex items-center justify-center">
-                      <img 
-                        src={`${(() => {
-                          const imageUrl = post.media_url || (post.media_urls && post.media_urls[0]);
-                          if (!imageUrl) return getCategoryPlaceholder(post.category);
-                          return imageUrl.startsWith('http') ? imageUrl : 
-                                 (imageUrl.startsWith('/assets/') || imageUrl.startsWith('/images/')) ? imageUrl : 
-                                 `${API_URL}${imageUrl}`;
-                        })()}`}
-                        alt={post.title || '投稿画像'}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = getCategoryPlaceholder(post.category);
-                        }}
-                      />
-                    </div>
-                  ) : post.youtube_url ? (
-                    <div className="h-40 overflow-hidden rounded-t-lg bg-black flex items-center justify-center">
-                      <img 
-                        src={`https://img.youtube.com/vi/${extractYouTubeVideoId(post.youtube_url)}/maxresdefault.jpg`}
-                        alt={post.title || 'YouTube動画'}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          if (post.youtube_url) {
-                            (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${extractYouTubeVideoId(post.youtube_url)}/hqdefault.jpg`;
-                          }
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div className="h-40 overflow-hidden rounded-t-lg bg-gray-100 flex items-center justify-center">
-                      <img 
-                        src={getCategoryPlaceholder(post.category)}
-                        alt={cat.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-2 text-xs mb-2">
-                      <span className="text-slate-500">
-                        {new Date(post.created_at).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' })}
-                      </span>
-                    </div>
-                    {post.title && (
-                      <h4 className="font-serif font-semibold leading-snug text-slate-900 mb-2 group-hover:gold-accent line-clamp-2">
-                        {post.title}
-                      </h4>
-                    )}
-                    <p className="text-sm text-slate-600 line-clamp-2">{post.body}</p>
-                    <div className="flex items-center justify-between text-sm mt-3">
-                      <div className="flex items-center gap-3 text-slate-500">
-                        <span className="flex items-center gap-1">
-                          <DiamondIcon className="h-3 w-3 text-blue-500" />
-                          {post.like_count || 0}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <MessageCircle className="h-3 w-3" />
-                          {post.comment_count || 0}
-                        </span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-              {(!categoryPosts[cat.key] || categoryPosts[cat.key].length === 0) && (
-                <div className="col-span-4 text-center py-8 text-slate-500">
-                  投稿がまだありません
-                </div>
-              )}
-            </div>
-          </section>
-        ))}
-
         {/* 会員特典メニュー */}
         <section className="py-12">
           <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-3 gap-1 md:gap-0">
@@ -639,10 +525,118 @@ const HomePage: React.FC = () => {
           </Card>
         </section>
 
+        {/* 掲示板セクション - 6カテゴリ */}
+        {boardCategories.map((cat) => (
+          <section key={cat.key} className="py-8">
+            <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2 gap-1 md:gap-0">
+              <div className="flex-1">
+                <h3 className="text-3xl md:text-4xl font-serif font-semibold text-slate-900 flex items-center gap-2">
+                  <span>{cat.emoji}</span>
+                  {cat.title}
+                </h3>
+                <p className="text-sm md:text-base text-slate-600 mt-1">{cat.desc}</p>
+              </div>
+              <Button 
+                variant="ghost" 
+                className="text-gray-700 hover:text-black hover:bg-gray-100 font-medium text-base md:text-xl self-start md:self-auto"
+                onClick={() => navigate(cat.link)}
+              >
+                もっと見る→
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {(categoryPosts[cat.key] || []).slice(0, 4).map((post) => (
+                <Card 
+                  key={post.id} 
+                  onClick={() => {
+                    setSelectedPost(post);
+                    setSelectedUser({
+                      id: post.user_id,
+                      display_name: post.user_display_name || 'ユーザー',
+                      email: ''
+                    });
+                  }}
+                  className="group backdrop-blur-md bg-gray-50/80 border border-gray-200 hover:bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer hover:scale-[1.02] shadow-lg hover:shadow-2xl"
+                >
+                  {(post.media_url || (post.media_urls && post.media_urls.length > 0)) ? (
+                    <div className="h-40 overflow-hidden rounded-t-lg bg-gray-100 flex items-center justify-center">
+                      <img 
+                        src={`${(() => {
+                          const imageUrl = post.media_url || (post.media_urls && post.media_urls[0]);
+                          if (!imageUrl) return getCategoryPlaceholder(post.category);
+                          return imageUrl.startsWith('http') ? imageUrl : 
+                                 (imageUrl.startsWith('/assets/') || imageUrl.startsWith('/images/')) ? imageUrl : 
+                                 `${API_URL}${imageUrl}`;
+                        })()}`}
+                        alt={post.title || '投稿画像'}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = getCategoryPlaceholder(post.category);
+                        }}
+                      />
+                    </div>
+                  ) : post.youtube_url ? (
+                    <div className="h-40 overflow-hidden rounded-t-lg bg-black flex items-center justify-center">
+                      <img 
+                        src={`https://img.youtube.com/vi/${extractYouTubeId(post.youtube_url)}/maxresdefault.jpg`}
+                        alt={post.title || 'YouTube動画'}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          if (post.youtube_url) {
+                            (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${extractYouTubeId(post.youtube_url)}/hqdefault.jpg`;
+                          }
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-40 overflow-hidden rounded-t-lg bg-gray-100 flex items-center justify-center">
+                      <img 
+                        src={getCategoryPlaceholder(post.category)}
+                        alt={cat.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2 text-xs mb-2">
+                      <span className="text-slate-500">
+                        {new Date(post.created_at).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' })}
+                      </span>
+                    </div>
+                    {post.title && (
+                      <h4 className="font-serif font-semibold leading-snug text-slate-900 mb-2 group-hover:gold-accent line-clamp-2">
+                        {post.title}
+                      </h4>
+                    )}
+                    <p className="text-sm text-slate-600 line-clamp-2">{post.body}</p>
+                    <div className="flex items-center justify-between text-sm mt-3">
+                      <div className="flex items-center gap-3 text-slate-500">
+                        <span className="flex items-center gap-1">
+                          <DiamondIcon className="h-3 w-3 text-blue-500" />
+                          {post.like_count || 0}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <MessageCircle className="h-3 w-3" />
+                          {post.comment_count || 0}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              {(!categoryPosts[cat.key] || categoryPosts[cat.key].length === 0) && (
+                <div className="col-span-4 text-center py-8 text-slate-500">
+                  投稿がまだありません
+                </div>
+              )}
+            </div>
+          </section>
+        ))}
+
         {/* ニュースセクション */}
         <section className="py-12">
           <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-6 gap-1 md:gap-0">
-            <h3 className="text-3xl md:text-4xl font-bold text-slate-900">最新ニュース</h3>
+            <h3 className="text-3xl md:text-4xl font-bold text-slate-900">LGBTQニュース</h3>
             <Button 
               variant="ghost" 
               className="text-gray-600 hover:text-black hover:bg-gray-100 font-medium text-base self-start md:self-auto"
@@ -651,7 +645,7 @@ const HomePage: React.FC = () => {
               すべてのニュースをみる→
             </Button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {newsArticles.slice(0, 4).map((article) => (
               <Card 
                 key={article.id} 

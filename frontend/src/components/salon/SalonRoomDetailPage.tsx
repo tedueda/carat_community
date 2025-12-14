@@ -186,8 +186,8 @@ const SalonRoomDetailPage: React.FC = () => {
     }
   };
 
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSendMessage = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!token || !roomId || !newMessage.trim()) return;
 
     setSendingMessage(true);
@@ -225,6 +225,19 @@ const SalonRoomDetailPage: React.FC = () => {
       hour: '2-digit',
       minute: '2-digit',
     });
+  };
+
+  const handleParticipantClick = (participant: Participant) => {
+    if (participant.user_id === user?.id) return;
+    // Navigate to user profile page where they can send a message or view profile
+    navigate(`/matching/users/${participant.user_id}`);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Prevent Enter key from submitting - only allow button click
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+    }
   };
 
   if (loading) {
@@ -347,8 +360,27 @@ const SalonRoomDetailPage: React.FC = () => {
                     return (
                       <div
                         key={message.id}
-                        className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
+                        className={`flex gap-2 ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
                       >
+                        {!isOwnMessage && (
+                          <div className="flex-shrink-0">
+                            {message.is_anonymous ? (
+                              <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                <UserCircle className="h-6 w-6 text-gray-400" />
+                              </div>
+                            ) : message.user_avatar_url ? (
+                              <img
+                                src={message.user_avatar_url}
+                                alt=""
+                                className="h-10 w-10 rounded-full object-cover"
+                              />
+                            ) : (
+                              <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                <UserCircle className="h-6 w-6 text-gray-400" />
+                              </div>
+                            )}
+                          </div>
+                        )}
                         <div
                           className={`max-w-[70%] ${
                             isOwnMessage
@@ -358,29 +390,9 @@ const SalonRoomDetailPage: React.FC = () => {
                         >
                           {!isOwnMessage && (
                             <div className="flex items-center gap-2 mb-1">
-                              {message.is_anonymous ? (
-                                <>
-                                  <UserCircle className="h-4 w-4 text-gray-400" />
-                                  <span className="text-xs font-medium text-gray-600">
-                                    {message.anonymous_name || '匿名'}
-                                  </span>
-                                </>
-                              ) : (
-                                <>
-                                  {message.user_avatar_url ? (
-                                    <img
-                                      src={message.user_avatar_url}
-                                      alt=""
-                                      className="h-4 w-4 rounded-full"
-                                    />
-                                  ) : (
-                                    <UserCircle className="h-4 w-4 text-gray-400" />
-                                  )}
-                                  <span className="text-xs font-medium text-gray-600">
-                                    {message.user_display_name || 'ユーザー'}
-                                  </span>
-                                </>
-                              )}
+                              <span className="text-xs font-medium text-gray-600">
+                                {message.is_anonymous ? (message.anonymous_name || '匿名') : (message.user_display_name || 'ユーザー')}
+                              </span>
                             </div>
                           )}
                           <p className="text-sm whitespace-pre-wrap">{message.body}</p>
@@ -392,6 +404,21 @@ const SalonRoomDetailPage: React.FC = () => {
                             {formatTime(message.created_at)}
                           </div>
                         </div>
+                        {isOwnMessage && (
+                          <div className="flex-shrink-0">
+                            {user?.avatar_url ? (
+                              <img
+                                src={user.avatar_url}
+                                alt=""
+                                className="h-10 w-10 rounded-full object-cover"
+                              />
+                            ) : (
+                              <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                <UserCircle className="h-6 w-6 text-gray-400" />
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     );
                   })
@@ -400,11 +427,12 @@ const SalonRoomDetailPage: React.FC = () => {
               </div>
 
               <div className="bg-white border-t p-4">
-                <form onSubmit={handleSendMessage} className="flex gap-2">
+                <div className="flex gap-2">
                   <div className="flex-1">
                     <Input
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
+                      onKeyDown={handleKeyDown}
                       placeholder="メッセージを入力..."
                       disabled={sendingMessage}
                     />
@@ -425,13 +453,14 @@ const SalonRoomDetailPage: React.FC = () => {
                     )}
                   </div>
                   <Button
-                    type="submit"
+                    type="button"
+                    onClick={() => handleSendMessage()}
                     disabled={sendingMessage || !newMessage.trim()}
                     className="bg-black hover:bg-gray-800"
                   >
                     <Send className="h-4 w-4" />
                   </Button>
-                </form>
+                </div>
               </div>
             </>
           )}
@@ -442,15 +471,25 @@ const SalonRoomDetailPage: React.FC = () => {
             <h3 className="font-semibold mb-4">参加者 ({participants.length})</h3>
             <div className="space-y-3">
               {participants.map((p) => (
-                <div key={p.id} className="flex items-center gap-2">
+                <div 
+                  key={p.id} 
+                  className={`flex items-center gap-2 p-2 rounded-lg transition-colors ${
+                    p.user_id === user?.id 
+                      ? 'bg-gray-50' 
+                      : 'hover:bg-gray-100 cursor-pointer'
+                  }`}
+                  onClick={() => handleParticipantClick(p)}
+                >
                   {p.user_avatar_url ? (
                     <img
                       src={p.user_avatar_url}
                       alt=""
-                      className="h-8 w-8 rounded-full"
+                      className="h-8 w-8 rounded-full object-cover"
                     />
                   ) : (
-                    <UserCircle className="h-8 w-8 text-gray-400" />
+                    <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                      <UserCircle className="h-5 w-5 text-gray-400" />
+                    </div>
                   )}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">

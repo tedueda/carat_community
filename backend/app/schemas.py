@@ -31,6 +31,7 @@ class User(UserBase):
     membership_type: str
     is_active: bool
     created_at: datetime
+    avatar_url: Optional[str] = None
     
     class Config:
         from_attributes = True

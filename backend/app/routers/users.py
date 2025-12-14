@@ -7,6 +7,25 @@ from app.auth import get_current_active_user
 
 router = APIRouter(prefix="/api/users", tags=["users"])
 
+@router.get("/{user_id}")
+async def get_user_by_id(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get user information by ID"""
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {
+        "id": user.id,
+        "email": user.email,
+        "display_name": user.display_name,
+        "membership_type": user.membership_type,
+        "carats": user.carats or 0,
+        "created_at": user.created_at
+    }
+
 @router.get("/me/stats")
 async def get_user_stats(
     current_user: User = Depends(get_current_active_user),

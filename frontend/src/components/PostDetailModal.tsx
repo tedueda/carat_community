@@ -79,6 +79,8 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
   };
 
   const getYouTubeEmbedUrl = (url: string): string => {
+    if (!url) return '';
+    
     try {
       const urlObj = new URL(url);
       let videoId = '';
@@ -86,13 +88,19 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
       if (urlObj.hostname === 'www.youtube.com' || urlObj.hostname === 'youtube.com') {
         videoId = urlObj.searchParams.get('v') || '';
       } else if (urlObj.hostname === 'youtu.be') {
-        videoId = urlObj.pathname.slice(1);
+        // Extract video ID from pathname, removing any query parameters
+        const pathParts = urlObj.pathname.slice(1).split('?');
+        videoId = pathParts[0];
       } else if (urlObj.hostname === 'm.youtube.com') {
         videoId = urlObj.searchParams.get('v') || '';
       }
       
-      if (videoId) {
-        return `https://www.youtube.com/embed/${videoId}`;
+      // Clean video ID by removing any remaining query parameters or slashes
+      videoId = videoId.split('?')[0].split('&')[0].split('/')[0];
+      
+      if (videoId && /^[a-zA-Z0-9_-]{11}$/.test(videoId)) {
+        // Use youtube-nocookie.com for better privacy and compatibility
+        return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1`;
       }
     } catch (error) {
       console.error('Invalid YouTube URL:', error);
@@ -281,7 +289,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
         document.body.style.overflow = 'unset';
       };
     }
-  }, [isOpen, post, onClose]);
+  }, [isOpen, post.id, onClose]);
 
   // Normalize IDs to numbers to avoid strict equality issues (API may return strings)
   const currentUserId = currentUser?.id != null ? Number(currentUser.id) : null;
@@ -698,6 +706,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
                 className="w-full h-full rounded-lg"
               />
             </div>

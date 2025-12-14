@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
-import { Plus, Lock, MessageCircle } from 'lucide-react';
+import { Plus, Lock, MessageCircle, Grid3x3, List } from 'lucide-react';
 import SalonRoomCard from './SalonRoomCard';
 import CreateSalonRoomModal from './CreateSalonRoomModal';
 
@@ -30,6 +30,7 @@ const SalonPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedRoomType, setSelectedRoomType] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -139,18 +140,38 @@ const SalonPage: React.FC = () => {
           </Button>
         </div>
 
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-          {roomTypes.map((type) => (
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {roomTypes.map((type) => (
+              <Button
+                key={type.value || 'all'}
+                variant={selectedRoomType === type.value ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSelectedRoomType(type.value)}
+                className={selectedRoomType === type.value ? 'bg-black' : ''}
+              >
+                {type.label}
+              </Button>
+            ))}
+          </div>
+          <div className="flex gap-2">
             <Button
-              key={type.value || 'all'}
-              variant={selectedRoomType === type.value ? 'default' : 'outline'}
+              variant={viewMode === 'grid' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setSelectedRoomType(type.value)}
-              className={selectedRoomType === type.value ? 'bg-black' : ''}
+              onClick={() => setViewMode('grid')}
+              className={viewMode === 'grid' ? 'bg-black' : ''}
             >
-              {type.label}
+              <Grid3x3 className="h-4 w-4" />
             </Button>
-          ))}
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+              className={viewMode === 'list' ? 'bg-black' : ''}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
         {loading ? (
@@ -168,7 +189,7 @@ const SalonPage: React.FC = () => {
             <p className="text-gray-600">まだルームがありません</p>
             <p className="text-gray-500 text-sm mt-2">最初のルームを作成してみましょう</p>
           </div>
-        ) : (
+        ) : viewMode === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {rooms.map((room) => (
               <SalonRoomCard
@@ -176,6 +197,45 @@ const SalonPage: React.FC = () => {
                 room={room}
                 onClick={() => navigate(`/salon/rooms/${room.id}`)}
               />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {rooms.map((room) => (
+              <Card
+                key={room.id}
+                className="hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => navigate(`/salon/rooms/${room.id}`)}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="px-2 py-1 bg-gray-100 rounded text-xs font-medium">
+                          {room.room_type === 'consultation' ? '相談' :
+                           room.room_type === 'exchange' ? '交流' :
+                           room.room_type === 'story' ? 'ストーリー' : 'その他'}
+                        </span>
+                        {room.allow_anonymous && (
+                          <span className="text-xs text-gray-500">匿名可</span>
+                        )}
+                      </div>
+                      <h3 className="font-semibold text-lg mb-2">{room.theme}</h3>
+                      <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                        {room.description}
+                      </p>
+                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <span className="flex items-center gap-1">
+                          <MessageCircle className="h-4 w-4" />
+                          {room.participant_count}人
+                        </span>
+                        <span>作成者: {room.creator_display_name || 'ユーザー'}</span>
+                        <span>{new Date(room.created_at).toLocaleDateString('ja-JP')}</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}

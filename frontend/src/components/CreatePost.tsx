@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlusCircle, Music, MessageSquare, Store, MapPin, Film, FileText, Palette, Upload, X } from 'lucide-react';
+import { PlusCircle, Music, MessageSquare, Store, MapPin, Film, FileText, Palette, Upload, X, Lock } from 'lucide-react';
 
 const CreatePost: React.FC = () => {
   const [title, setTitle] = useState('');
@@ -34,9 +34,10 @@ const CreatePost: React.FC = () => {
     attachmentPdfUrl: ''
   });
   
-  const { token } = useAuth();
+  const { token, user, isAnonymous } = useAuth();
   const navigate = useNavigate();
   const { categoryKey } = useParams();
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
 
@@ -89,6 +90,13 @@ const CreatePost: React.FC = () => {
   useEffect(() => {
     setSubcategory('');
   }, [category]);
+
+  // Check if user is logged in
+  useEffect(() => {
+    if (!user || isAnonymous) {
+      setShowLoginPrompt(true);
+    }
+  }, [user, isAnonymous]);
 
   const extractYouTubeVideoId = (url: string): string | null => {
     const patterns = [
@@ -237,6 +245,44 @@ const CreatePost: React.FC = () => {
 
   const selectedCategory = categories.find(cat => cat.key === category);
   const CategoryIcon = selectedCategory?.icon || PlusCircle;
+
+  // Show login prompt if not logged in
+  if (showLoginPrompt && (!user || isAnonymous)) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <Card className="max-w-md w-full">
+          <CardContent className="p-6 text-center">
+            <Lock className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+            <h2 className="text-xl font-semibold mb-2">会員登録が必要です</h2>
+            <p className="text-gray-600 mb-4">
+              投稿を作成するには会員登録（無料）が必要です。<br />
+              登録後すぐに投稿できるようになります。
+            </p>
+            <div className="flex flex-col gap-3">
+              <Button 
+                onClick={() => navigate('/register')}
+                className="bg-black hover:bg-gray-800"
+              >
+                会員登録（無料）
+              </Button>
+              <Button 
+                onClick={() => navigate('/login')}
+                variant="outline"
+              >
+                すでにアカウントをお持ちの方
+              </Button>
+              <Button 
+                onClick={() => navigate('/feed')}
+                variant="ghost"
+              >
+                ホームに戻る
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto p-4 sm:p-6">

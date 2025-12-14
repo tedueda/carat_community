@@ -326,7 +326,16 @@ def list_participants(
     result = []
     for p in participants:
         user = db.query(User).filter(User.id == p.user_id).first()
+        # Try matching_profiles first, then fall back to profiles
+        matching_profile = db.query(MatchingProfile).filter(MatchingProfile.user_id == p.user_id).first()
         profile = db.query(Profile).filter(Profile.user_id == p.user_id).first()
+        
+        # Get avatar URL from matching_profiles or profiles
+        avatar_url = None
+        if matching_profile and matching_profile.avatar_url:
+            avatar_url = matching_profile.avatar_url
+        elif profile and profile.avatar_url:
+            avatar_url = profile.avatar_url
         
         result.append({
             "id": p.id,
@@ -335,7 +344,7 @@ def list_participants(
             "anonymous_name": p.anonymous_name,
             "joined_at": p.joined_at,
             "user_display_name": user.display_name if user else None,
-            "user_avatar_url": profile.avatar_url if profile else None,
+            "user_avatar_url": avatar_url,
         })
     
     return result
@@ -372,7 +381,16 @@ def list_messages(
     result = []
     for msg in messages:
         user = db.query(User).filter(User.id == msg.user_id).first()
+        # Try matching_profiles first, then fall back to profiles
+        matching_profile = db.query(MatchingProfile).filter(MatchingProfile.user_id == msg.user_id).first()
         profile = db.query(Profile).filter(Profile.user_id == msg.user_id).first()
+        
+        # Get avatar URL from matching_profiles or profiles
+        avatar_url = None
+        if matching_profile and matching_profile.avatar_url:
+            avatar_url = matching_profile.avatar_url
+        elif profile and profile.avatar_url:
+            avatar_url = profile.avatar_url
         
         sender_participant = db.query(SalonParticipant).filter(
             SalonParticipant.room_id == room_id,
@@ -400,7 +418,7 @@ def list_messages(
                 "body": msg.body,
                 "created_at": msg.created_at,
                 "user_display_name": user.display_name if user else None,
-                "user_avatar_url": profile.avatar_url if profile else None,
+                "user_avatar_url": avatar_url,
                 "anonymous_name": None,
             })
     

@@ -89,38 +89,49 @@ async def read_posts(
     offset = (page - 1) * limit
     posts = query.offset(offset).limit(limit).all()
     
+    # N+1クエリ問題を解決：一括でいいね数とコメント数を取得
+    post_ids = [post.id for post in posts]
+    
+    # いいね数を一括取得
+    like_counts = {}
+    if post_ids:
+        like_results = db.query(
+            Reaction.target_id,
+            func.count(Reaction.id).label('count')
+        ).filter(
+            Reaction.target_type == "post",
+            Reaction.target_id.in_(post_ids),
+            Reaction.reaction_type == "like"
+        ).group_by(Reaction.target_id).all()
+        like_counts = {target_id: count for target_id, count in like_results}
+    
+    # ユーザーのいいね状態を一括取得
+    user_likes = set()
+    if current_user and post_ids:
+        user_like_results = db.query(Reaction.target_id).filter(
+            Reaction.user_id == current_user.id,
+            Reaction.target_type == "post",
+            Reaction.target_id.in_(post_ids),
+            Reaction.reaction_type == "like"
+        ).all()
+        user_likes = {target_id for (target_id,) in user_like_results}
+    
+    # コメント数を一括取得
+    comment_counts = {}
+    if post_ids:
+        comment_results = db.query(
+            Comment.post_id,
+            func.count(Comment.id).label('count')
+        ).filter(
+            Comment.post_id.in_(post_ids)
+        ).group_by(Comment.post_id).all()
+        comment_counts = {post_id: count for post_id, count in comment_results}
+    
     result = []
     for post in posts:
-        # カラット数（いいね数）を計算
-        try:
-            like_count = db.query(Reaction).filter(
-                Reaction.target_type == "post",
-                Reaction.target_id == post.id,
-                Reaction.reaction_type == "like"
-            ).count()
-        except Exception as e:
-            print(f"Error counting likes for post {post.id}: {e}")
-            like_count = 0
-        
-        is_liked = False
-        if current_user:
-            try:
-                is_liked = db.query(Reaction).filter(
-                    Reaction.user_id == current_user.id,
-                    Reaction.target_type == "post",
-                    Reaction.target_id == post.id,
-                    Reaction.reaction_type == "like"
-                ).first() is not None
-            except Exception as e:
-                print(f"Error checking like status for post {post.id}: {e}")
-                is_liked = False
-        
-        # コメント数を計算
-        try:
-            comment_count = db.query(Comment).filter(Comment.post_id == post.id).count()
-        except Exception as e:
-            print(f"Error counting comments for post {post.id}: {e}")
-            comment_count = 0
+        like_count = like_counts.get(post.id, 0)
+        is_liked = post.id in user_likes
+        comment_count = comment_counts.get(post.id, 0)
         
         post_dict = {
             "id": post.id,

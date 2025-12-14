@@ -9,6 +9,7 @@ interface User {
   membership_type: string;
   is_active: boolean;
   created_at: string;
+  avatar_url?: string;
 }
 
 interface AuthContextType {
