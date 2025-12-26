@@ -298,7 +298,7 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % 8);
-    }, 5000);
+    }, 8000);
 
     return () => clearInterval(slideInterval);
   }, []);
@@ -344,7 +344,7 @@ const HomePage: React.FC = () => {
         <section ref={heroSectionRef} className="relative w-full overflow-hidden" style={{height: '860px'}}>
           <div className="absolute inset-0">
             <div 
-              className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 0 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 0 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
                 src="/images/slide1.png" 
@@ -353,7 +353,7 @@ const HomePage: React.FC = () => {
               />
             </div>
             <div 
-              className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 1 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 1 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
                 src="/images/slide2.png" 
@@ -362,7 +362,7 @@ const HomePage: React.FC = () => {
               />
             </div>
             <div 
-              className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 2 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 2 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
                 src="/images/slide3.png" 
@@ -371,7 +371,7 @@ const HomePage: React.FC = () => {
               />
             </div>
             <div 
-              className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 3 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 3 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
                 src="/images/slide4.png" 
@@ -380,7 +380,7 @@ const HomePage: React.FC = () => {
               />
             </div>
             <div 
-              className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 4 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 4 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
                 src="/images/slide5.png" 
@@ -389,7 +389,7 @@ const HomePage: React.FC = () => {
               />
             </div>
             <div 
-              className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 5 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 5 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
                 src="/images/slide6.png" 
@@ -398,7 +398,7 @@ const HomePage: React.FC = () => {
               />
             </div>
             <div 
-              className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 6 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 6 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
                 src="/images/slide7.png" 
@@ -407,7 +407,7 @@ const HomePage: React.FC = () => {
               />
             </div>
             <div 
-              className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 7 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 7 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
                 src="/images/slide8.png" 

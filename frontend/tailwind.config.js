@@ -4,6 +4,9 @@ export default {
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
   	extend: {
+  		transitionDuration: {
+  			'3000': '3000ms',
+  		},
   		fontFamily: {
   			serif: ['Cormorant Garamond', 'serif'],
   			sans: ['Inter', 'sans-serif'],
