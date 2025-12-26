@@ -426,6 +426,10 @@ const HomePage: React.FC = () => {
                 悩み相談、アート、音楽、地元ツアー。<br />
                 ここから、あなたの物語が始まります。
               </p>
+              {/* Hero Audio Player - centered below text */}
+              <div className="flex justify-center mt-4">
+                <HeroAudioPlayer isHeroVisible={isHeroVisible} />
+              </div>
             </div>
           </div>
         </section>
@@ -904,9 +908,6 @@ const HomePage: React.FC = () => {
           }}
         />
       )}
-
-      {/* Hero Audio Player */}
-      <HeroAudioPlayer isHeroVisible={isHeroVisible} />
     </div>
   );
 };
