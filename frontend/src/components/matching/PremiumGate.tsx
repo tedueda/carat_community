@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { usePremium } from '@/hooks/usePremium';
 import { useAuth } from '@/contexts/AuthContext';
 import MatchingGateModal from './MatchingGateModal';
@@ -10,6 +11,11 @@ interface PremiumGateProps {
 const PremiumGate: React.FC<PremiumGateProps> = ({ children }) => {
   const { isPremium, loading } = usePremium();
   const { isAnonymous } = useAuth();
+  const navigate = useNavigate();
+
+  const handleClose = () => {
+    navigate('/');
+  };
 
   const handleUpgrade = async () => {
     try {
@@ -39,7 +45,7 @@ const PremiumGate: React.FC<PremiumGateProps> = ({ children }) => {
   if (!isPremium || isAnonymous) {
     return (
       <>
-        <MatchingGateModal open={true} onClose={() => {}} onUpgrade={handleUpgrade} />
+        <MatchingGateModal open={true} onClose={handleClose} onUpgrade={handleUpgrade} />
         <div aria-hidden className="pointer-events-none select-none opacity-40">
           {children}
         </div>

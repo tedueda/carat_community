@@ -8,11 +8,11 @@ from datetime import datetime, timedelta
 import random
 
 DB_CONFIG = {
-    'host': 'lgbtq-dev.czqogwkequrm.ap-northeast-3.rds.amazonaws.com',
+    'host': 'rainbow-community-db-tokyo.cj8agmy8kjhv.ap-northeast-1.rds.amazonaws.com',
     'port': 5432,
     'database': 'lgbtq_community',
     'user': 'dbadmin',
-    'password': '3831Uedalgbtq',
+    'password': 'NewPassword123!',
     'sslmode': 'require'
 }
 

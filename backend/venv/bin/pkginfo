@@ -1,7 +1,0 @@
-#!/Users/tedueda/Desktop/LGBTQ/LGBTQ_Community2/CascadeProjects/windsurf-project/rainbow_community/backend/venv/bin/python3.12
-import sys
-from pkginfo.commandline import main
-if __name__ == '__main__':
-    if sys.argv[0].endswith('.exe'):
-        sys.argv[0] = sys.argv[0][:-4]
-    sys.exit(main())

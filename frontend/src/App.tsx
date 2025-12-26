@@ -29,7 +29,9 @@ import BeautyPage from './pages/members/BeautyPage';
 import VirtualWeddingPage from './components/VirtualWeddingPage';
 import DonationPage from './components/DonationPage';
 import MarketplacePage from './pages/members/MarketplacePage';
+import FavoritesPage from './pages/members/FavoritesPage';
 import AccountPage from './pages/members/AccountPage';
+import { SalonPage, SalonRoomDetailPage } from './components/salon';
 
 
 const FeedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -154,20 +156,51 @@ function AppContent() {
           } />
           <Route path="/funding" element={
             <FeedRoute>
-              <DonationPage />
+              <PremiumGate>
+                <DonationPage />
+              </PremiumGate>
             </FeedRoute>
           } />
           <Route path="/marketplace" element={
             <FeedRoute>
-              <MarketplacePage />
+              <PremiumGate>
+                <MarketplacePage />
+              </PremiumGate>
             </FeedRoute>
           } />
-          <Route path="/account" element={
+          <Route path="/members/marketplace" element={
             <FeedRoute>
-              <AccountPage />
+              <PremiumGate>
+                <MarketplacePage />
+              </PremiumGate>
             </FeedRoute>
           } />
-          <Route path="/news" element={
+          <Route path="/members/favorites" element={
+            <FeedRoute>
+              <FavoritesPage />
+            </FeedRoute>
+          } />
+                    <Route path="/account" element={
+                      <FeedRoute>
+                        <AccountPage />
+                      </FeedRoute>
+                    } />
+                    {/* Salon routes - Premium only */}
+                    <Route path="/salon" element={
+                      <FeedRoute>
+                        <PremiumGate>
+                          <SalonPage />
+                        </PremiumGate>
+                      </FeedRoute>
+                    } />
+                    <Route path="/salon/rooms/:roomId" element={
+                      <FeedRoute>
+                        <PremiumGate>
+                          <SalonRoomDetailPage />
+                        </PremiumGate>
+                      </FeedRoute>
+                    } />
+                    <Route path="/news" element={
             <FeedRoute>
               <NewsPage />
             </FeedRoute>
@@ -189,6 +222,8 @@ function AppContent() {
           <Route path="/board/general" element={<Navigate to="/category/board" replace />} />
           <Route path="/board/shops" element={<Navigate to="/category/shops" replace />} />
           <Route path="/board/tourism" element={<Navigate to="/category/tourism" replace />} />
+          {/* Funding redirect to category */}
+          <Route path="/funding" element={<Navigate to="/category/funding" replace />} />
           <Route path="/" element={<Navigate to="/feed" />} />
         </Routes>
       </main>

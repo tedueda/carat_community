@@ -8,9 +8,12 @@ export function extractYouTubeId(rawUrl: string): string | null {
     // Standard watch URL: https://www.youtube.com/watch?v=VIDEO_ID
     if ((url.hostname.includes('youtube.com') || url.hostname.includes('youtu.be'))) {
       if (url.hostname.includes('youtu.be')) {
-        // Short URL: https://youtu.be/VIDEO_ID
-        const id = url.pathname.split('/').filter(Boolean)[0];
-        return id || null;
+        // Short URL: https://youtu.be/VIDEO_ID or https://youtu.be/VIDEO_ID?si=...
+        // Extract pathname and remove leading slash, then split by '?' to remove query params
+        const id = url.pathname.slice(1).split('?')[0].split('/')[0];
+        // Validate it's 11 characters (standard YouTube ID length)
+        if (id && id.length === 11) return id;
+        return null;
       }
       // /watch?v=VIDEO_ID
       if (url.pathname === '/watch') {

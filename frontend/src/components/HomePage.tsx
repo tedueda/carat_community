@@ -1,77 +1,64 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
-import { ArrowRight, Calendar, Heart, MessageCircle, Gem as DiamondIcon } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
+import { ArrowRight, MessageCircle, Gem as DiamondIcon } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import UnderConstructionModal from './UnderConstructionModal';
 import PostDetailModal from './PostDetailModal';
 import { Post, User } from '../types/Post';
+import { extractYouTubeId } from '../utils/youtube';
 
 
 const memberBenefits = [
   {
     id: "matching",
-    title: "マッチング",
+    title: "会員マッチング",
     description: "理想のパートナーと出会える安心のマッチングサービス",
     icon: "💕",
-    link: "/matching", // React版統合
+    link: "/matching",
     external: false,
+    premiumOnly: true,
   },
   {
-    id: "live-wedding",
-    title: "ライブ・ウエディング",
-    description: "オンラインで叶える特別な結婚式体験",
-    icon: "💒",
-    link: "/live-wedding",
+    id: "salon",
+    title: "会員サロン",
+    description: "プレミアム会員限定の専門チャットサロン",
+    icon: "💬",
+    link: "/salon",
     external: false,
+    premiumOnly: true,
   },
   {
     id: "donation",
-    title: "募金",
+    title: "寄付金募集",
     description: "LGBTQ+コミュニティを支援する寄付プラットフォーム",
     icon: "🤝",
     link: "/funding",
     external: false,
+    premiumOnly: true,
   },
   {
     id: "marketplace",
-    title: "マーケット",
+    title: "商品販売",
     description: "会員同士で安心・安全な売買取引",
     icon: "🛍️",
     link: "/marketplace",
     external: false,
-  },
-  {
-    id: "food",
-    title: "食レポ",
-    description: "単品メニュー・市販品の\"秘密の推し\"を共有",
-    icon: "🍽",
-    link: "/members/food",
-    external: false,
-  },
-  {
-    id: "beauty",
-    title: "ビューティ",
-    description: "コスメ・メイク・ヨガのおすすめと講座",
-    icon: "💄",
-    link: "/members/beauty",
-    external: false,
+    premiumOnly: true,
   },
 ];
 
-const categories = [
-  { key: "comics", title: "サブカルチャー", desc: "映画・アニメ・ゲーム・小説などの作品レビューと感想。", posts: 2840, emoji: "🎭" },
-  { key: "art", title: "アート", desc: "イラスト・写真・映像作品の発表。", posts: 8932, emoji: "🎨" },
-  { key: "music", title: "音楽", desc: "お気に入りや自作・AI曲の共有。", posts: 6240, emoji: "🎵" },
-  { key: "board", title: "掲示板", desc: "悩み相談や雑談、生活の話題。", posts: 15230, emoji: "💬" },
-  { key: "shops", title: "お店", desc: "LGBTQフレンドリーなお店紹介。", posts: 1450, emoji: "🏬" },
-  { key: "tourism", title: "ツーリズム", desc: "会員ガイドの交流型ツアー。", posts: 312, emoji: "📍" },
+const boardCategories = [
+  { key: "music", title: "ミュージック", desc: "あなたの好きな楽曲、作成した楽曲を投稿して共有しましょう！", emoji: "🎵", link: "/category/music" },
+  { key: "art", title: "アート", desc: "イラスト・写真・映像作品を発表して、アートの世界を広げましょう！", emoji: "🎨", link: "/category/art" },
+  { key: "comics", title: "サブカルチャー", desc: "映画・アニメ・ゲーム・小説などの作品レビューと感想を共有しましょう！", emoji: "🎭", link: "/category/comics" },
+  { key: "food_shops", title: "食レポ・お店", desc: "美味しいグルメやLGBTQフレンドリーなお店を紹介しましょう！", emoji: "🍽️", link: "/category/food", categories: ["food", "shops"] },
+  { key: "tourism", title: "ツーリズム", desc: "おすすめの旅行先や観光スポットを紹介して、旅の楽しさを共有しましょう！", emoji: "📍", link: "/category/tourism" },
+  { key: "board", title: "掲示板", desc: "悩み相談や雑談、日常の話題を自由に投稿しましょう！", emoji: "💬", link: "/category/board" },
 ];
 
-const getCategoryPlaceholder = (category: string | undefined): string => {
+const getCategoryPlaceholder= (category: string | undefined): string => {
   const categoryMap: { [key: string]: string } = {
     'board': '/images/hero-slide-4.jpg',
     'community': '/images/hero-slide-4.jpg',
@@ -145,53 +132,80 @@ const dummyUsers: { [key: number]: User } = {
 
 const HomePage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [categoryPosts, setCategoryPosts] = useState<{ [key: string]: Post[] }>({});
   const [newsArticles, setNewsArticles] = useState<any[]>([]);
   const [, setUsers] = useState<{ [key: number]: User }>(dummyUsers);
   const [loading, setLoading] = useState(false);
-  // const [activeTab, setActiveTab] = useState('all');
-  // const [searchQuery, setSearchQuery] = useState('');
-  const [isCarouselHovered, setIsCarouselHovered] = useState(false);
   const [showConstructionModal, setShowConstructionModal] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedNewsArticle, setSelectedNewsArticle] = useState<any>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const carouselApiRef = useRef<any>(null);
   const { token, user, isAnonymous } = useAuth();
   const navigate = useNavigate();
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-  const extractYouTubeVideoId = (url: string): string | null => {
-    if (!url) return null;
-    const patterns = [
-      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
-      /youtube\.com\/watch\?.*v=([^&\n?#]+)/
-    ];
-    
-    for (const pattern of patterns) {
-      const match = url.match(pattern);
-      if (match) return match[1];
-    }
-    return null;
-  };
 
   const fetchNews = async () => {
     try {
       const params = new URLSearchParams({
         limit: '100',
       });
+      console.log(`Fetching news from: ${API_URL}/api/posts/?${params}`);
       const response = await fetch(`${API_URL}/api/posts/?${params}`);
+      console.log('News Response status:', response.status);
       if (response.ok) {
         const data = await response.json();
-        // フロントエンドでnewsカテゴリのみフィルタリング
         const newsData = data.filter((post: any) => post.category === 'news');
         console.log('📰 [HomePage] News articles filtered:', newsData.length, newsData);
-        setNewsArticles(newsData.slice(0, 3));  // 最新3件のみ
+        setNewsArticles(newsData.slice(0, 4));  // 最新4件
       }
     } catch (error) {
       console.error('Failed to fetch news:', error);
+    }
+  };
+
+  const fetchCategoryPosts = async () => {
+    try {
+      const headers: any = {};
+      if (token && !isAnonymous) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
+      // 並列処理で全カテゴリのデータを同時取得
+      const categoryPromises = boardCategories.map(async (cat) => {
+        if (cat.categories) {
+          // 複数カテゴリを統合（食レポ・お店）
+          const subCatPromises = cat.categories.map(subCat =>
+            fetch(`${API_URL}/api/posts/?category=${subCat}&limit=8`, { headers })
+              .then(res => res.ok ? res.json() : [])
+              .catch(() => [])
+          );
+          const results = await Promise.all(subCatPromises);
+          const combinedPosts = results.flat();
+          // 最新順でソートして4件取得
+          combinedPosts.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+          return { key: cat.key, posts: combinedPosts.slice(0, 4) };
+        } else {
+          // 単一カテゴリ
+          const posts = await fetch(`${API_URL}/api/posts/?category=${cat.key}&limit=4`, { headers })
+            .then(res => res.ok ? res.json() : [])
+            .catch(() => []);
+          return { key: cat.key, posts };
+        }
+      });
+      
+      const results = await Promise.all(categoryPromises);
+      const allCategoryPosts: { [key: string]: Post[] } = {};
+      results.forEach(result => {
+        allCategoryPosts[result.key] = result.posts;
+      });
+      
+      setCategoryPosts(allCategoryPosts);
+    } catch (error) {
+      console.error('Failed to fetch category posts:', error);
     }
   };
 
@@ -202,9 +216,11 @@ const HomePage: React.FC = () => {
         headers['Authorization'] = `Bearer ${token}`;
       }
       
+      console.log(`Fetching posts from: ${API_URL}/api/posts?limit=20`);
       const response = await fetch(`${API_URL}/api/posts?limit=20`, {
         headers,
       });
+      console.log('Response status:', response.status);
 
       if (response.ok) {
         const postsData = await response.json();
@@ -270,36 +286,8 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     fetchPosts();
     fetchNews();
+    fetchCategoryPosts();
   }, [user, isAnonymous]);
-
-  useEffect(() => {
-    if (!isCarouselHovered && posts.length > 0 && carouselApiRef.current) {
-      const interval = setInterval(() => {
-        if (carouselApiRef.current && !isCarouselHovered) {
-          const api = carouselApiRef.current;
-          if (api.canScrollNext()) {
-            api.scrollNext();
-          } else {
-            api.scrollTo(0);
-          }
-        }
-      }, 4000);
-
-      return () => clearInterval(interval);
-    }
-  }, [isCarouselHovered, posts.length]);
-
-  useEffect(() => {
-    if (carouselApiRef.current && posts.length > 0) {
-      const timer = setTimeout(() => {
-        if (!isCarouselHovered && carouselApiRef.current) {
-          setIsCarouselHovered(false);
-        }
-      }, 100);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [carouselApiRef.current, posts.length]);
 
   useEffect(() => {
     const slideInterval = setInterval(() => {
@@ -366,366 +354,137 @@ const HomePage: React.FC = () => {
                 自分を表現して、<br />新しい仲間と出会おう
               </h2>
               <p className="text-lg md:text-2xl mb-8 opacity-90">
-                悩み相談、アート、音楽、地元ツアー。ここから、あなたの物語が始まります。
+                悩み相談、アート、音楽、地元ツアー。<br />
+                ここから、あなたの物語が始まります。
               </p>
-              <div className="flex flex-wrap gap-4 justify-center">
+            </div>
+          </div>
+        </section>
+
+        {/* ヒーロー直下のCTAセクション */}
+        <section className="relative -mt-12 z-20">
+          <div className="max-w-3xl mx-auto px-4">
+            <div className="bg-white/95 border border-gray-200 shadow-xl rounded-2xl px-6 py-6 md:px-10 md:py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="text-left">
+                <p className="text-sm md:text-base text-slate-500 mb-1">会員制LGBTQ+コミュニティ "Carat"</p>
+                <p className="text-lg md:text-xl font-serif text-slate-900">投稿とマッチングで、あなたの物語をはじめましょう。</p>
+                {(!user || isAnonymous) && (
+                  <p className="mt-2 text-sm md:text-base text-slate-500">
+                    * 無料会員はサイト全体の内容を見ていただけます。投稿や有料会員限定サイトを閲覧するには会員登録が必要です。
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-end">
                 {user && !isAnonymous ? (
                   <Button 
-                    onClick={() => window.location.href = '/create'}
-                    className="gold-bg hover:opacity-90 text-slate-900 px-8 py-4 text-xl font-medium shadow-lg hover:shadow-xl transition-all"
+                    onClick={() => navigate('/create/board')}
+                    className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
                   >
                     投稿を作成
                   </Button>
                 ) : (
-                  <>
-                    <Button 
-                      onClick={() => window.location.href = '/login'}
-                      className="gold-bg hover:opacity-90 text-slate-900 px-8 py-4 text-xl font-medium shadow-lg hover:shadow-xl transition-all"
-                    >
-                      会員登録（月1,000円）
-                    </Button>
-                  </>
+                  <Button 
+                    onClick={() => window.location.href = '/login'}
+                    className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
+                  >
+                    会員登録（月1,000円）
+                  </Button>
                 )}
               </div>
-              {(!user || isAnonymous) && (
-                <p className="mt-4 text-lg opacity-80">
-                  * 無料会員はサイト全体の内容を見ていただけます。投稿や有料会員限定サイトを閲覧するには会員登録が必要です。
-                </p>
-              )}
             </div>
           </div>
         </section>
 
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 最新投稿カルーセル */}
+        {/* 会員特典メニュー - プレミアム会員のみ表示 */}
+        {(user?.membership_type === 'premium' || user?.membership_type === 'admin') && (
         <section className="py-12">
-          <div className="flex items-baseline justify-between mb-3">
-            <h3 className="text-4xl md:text-5xl font-serif font-semibold text-slate-900">最新投稿</h3>
-            <Button 
-              variant="ghost" 
-              className="text-gray-700 hover:text-black hover:bg-gray-100 font-medium text-xl md:text-2xl"
-              onClick={() => navigate('/posts')}
-            >
-              すべての投稿を見る
-              <ArrowRight className="h-4 w-4 ml-1" />
-            </Button>
-          </div>
-          <div 
-            onMouseEnter={() => setIsCarouselHovered(true)}
-            onMouseLeave={() => setIsCarouselHovered(false)}
-          >
-            <Carousel 
-              className="w-full"
-              setApi={(api) => { 
-                carouselApiRef.current = api; 
-              }}
-              opts={{
-                align: "start",
-                loop: true,
-                breakpoints: {
-                  '(max-width: 767px)': { slidesToScroll: 1 },
-                  '(min-width: 768px) and (max-width: 1023px)': { slidesToScroll: 2 },
-                  '(min-width: 1024px)': { slidesToScroll: 3 }
-                }
-              }}
-            >
-            <CarouselContent className="-ml-2 md:-ml-4">
-              {posts.slice(0, 9).map((post) => (
-                <CarouselItem key={post.id} className="pl-2 md:pl-4 basis-full md:basis-1/2 lg:basis-1/3">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Card 
-                        key={post.id} 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          // PostDetailModalを開く
-                          setSelectedPost(post);
-                          setSelectedUser({
-                            id: post.user_id,
-                            display_name: post.user_display_name || 'テッドさん',
-                            email: ''
-                          });
-                        }}
-                        className="group backdrop-blur-md bg-gray-50/80 border border-gray-200 hover:bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer hover:scale-[1.02] shadow-lg hover:shadow-2xl"
-                      >
-                        {(post.media_url || (post.media_urls && post.media_urls.length > 0)) ? (
-                          <div className="h-40 overflow-hidden rounded-t-lg bg-gray-100 flex items-center justify-center">
-                            <img 
-                              src={`${(() => {
-                                const imageUrl = post.media_url || (post.media_urls && post.media_urls[0]);
-                                if (!imageUrl) return getCategoryPlaceholder(post.category);
-                                return imageUrl.startsWith('http') ? imageUrl : 
-                                       (imageUrl.startsWith('/assets/') || imageUrl.startsWith('/images/')) ? imageUrl : 
-                                       `${API_URL}${imageUrl}`;
-                              })()}`}
-                              alt={post.title || '投稿画像'}
-                              className="max-w-full max-h-full object-contain"
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).src = getCategoryPlaceholder(post.category);
-                              }}
-                            />
-                          </div>
-                        ) : post.youtube_url ? (
-                          <div className="h-40 overflow-hidden rounded-t-lg bg-black flex items-center justify-center">
-                            <img 
-                              src={`https://img.youtube.com/vi/${extractYouTubeVideoId(post.youtube_url)}/maxresdefault.jpg`}
-                              alt={post.title || 'YouTube動画'}
-                              className="max-w-full max-h-full object-contain"
-                              onError={(e) => {
-                                if (post.youtube_url) {
-                                  (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${extractYouTubeVideoId(post.youtube_url)}/hqdefault.jpg`;
-                                }
-                              }}
-                            />
-                          </div>
-                        ) : (
-                          <div className="h-40 overflow-hidden rounded-t-lg bg-gray-100 flex items-center justify-center">
-                            <img 
-                              src={getCategoryPlaceholder(post.category)}
-                              alt={categories.find(c => c.key === post.category)?.title || '掲示板'}
-                              className="max-w-full max-h-full object-contain"
-                            />
-                          </div>
-                        )}
-                        <CardContent className="p-4 h-[180px] flex flex-col">
-                          <div className="flex items-center gap-2 text-xs mb-2">
-                            <span className="rounded-full bg-gray-100 text-gray-800 px-2.5 py-1 border border-gray-300 font-medium">
-                              {categories.find(c => c.key === post.category)?.title || '掲示板'}
-                            </span>
-                            <span className="text-slate-500">
-                              {new Date(post.created_at).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' })}
-                            </span>
-                          </div>
-                          {post.title && (
-                            <h4 className="font-serif font-semibold leading-snug text-slate-900 mb-2 group-hover:gold-accent line-clamp-2">
-                              {post.title}
-                            </h4>
-                          )}
-                          <p className="text-sm text-slate-600 line-clamp-3 mb-2 flex-1">{post.body}</p>
-                          <div className="flex items-center justify-between text-sm mt-auto">
-                            <div className="flex items-center gap-3 text-slate-500">
-                              <span className="flex items-center gap-1">
-                                <DiamondIcon className="h-3 w-3 text-blue-500" />
-                                いいね {post.like_count || 0}カラット
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <MessageCircle className="h-3 w-3" />
-                                {post.comment_count || 0}
-                              </span>
-                            </div>
-                            <span className="text-xs text-slate-400">
-                              {post.user_display_name || 'テッドさん'}
-                            </span>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle className="text-slate-900 font-serif text-2xl">
-                          {post.title || '投稿詳細'}
-                        </DialogTitle>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        {(post.media_url || (post.media_urls && post.media_urls.length > 0)) ? (
-                          <div className="space-y-3">
-                            <div className="h-64 overflow-hidden rounded-lg bg-gray-100 flex items-center justify-center">
-                              <img 
-                                src={`${(() => {
-                                  const imageUrl = post.media_url || (post.media_urls && post.media_urls[0]);
-                                  if (!imageUrl) return getCategoryPlaceholder(post.category);
-                                  return imageUrl.startsWith('http') ? imageUrl : 
-                                         (imageUrl.startsWith('/assets/') || imageUrl.startsWith('/images/')) ? imageUrl : 
-                                         `${API_URL}${imageUrl}`;
-                                })()}`}
-                                alt={post.title || '投稿画像'}
-                                className="max-w-full max-h-full object-contain"
-                              />
-                            </div>
-                            {post.media_urls && post.media_urls.length > 1 && (
-                              <div className="grid grid-cols-4 gap-2">
-                                {post.media_urls.slice(1, 5).map((url, idx) => (
-                                  <img 
-                                    key={idx}
-                                    src={`${url.startsWith('http') ? url : (url.startsWith('/assets/') || url.startsWith('/images/') ? url : `${API_URL}${url}`)}`} 
-                                    alt={`追加画像 ${idx + 1}`}
-                                    className="w-full h-20 object-cover rounded"
-                                  />
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        ) : post.youtube_url ? (
-                          <div className="aspect-video">
-                            <iframe
-                              src={`https://www.youtube.com/embed/${extractYouTubeVideoId(post.youtube_url)}`}
-                              title="YouTube video"
-                              frameBorder="0"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              allowFullScreen
-                              className="w-full h-full rounded-lg"
-                            ></iframe>
-                          </div>
-                        ) : (
-                          <div className="h-64 overflow-hidden rounded-lg bg-gray-100 flex items-center justify-center">
-                            <img 
-                              src={getCategoryPlaceholder(post.category)}
-                              alt={categories.find(c => c.key === post.category)?.title || '掲示板'}
-                              className="max-w-full max-h-full object-contain"
-                            />
-                          </div>
-                        )}
-                        <div className="flex items-center gap-2 text-sm">
-                          <span className="rounded-full bg-gray-100 text-gray-800 px-3 py-1 border border-gray-300 font-medium">
-                            {categories.find(c => c.key === post.category)?.title || '掲示板'}
-                          </span>
-                          <span className="text-slate-500">
-                            {new Date(post.created_at).toLocaleDateString('ja-JP')}
-                          </span>
-                        </div>
-                        <p className="text-slate-700 whitespace-pre-wrap">{post.body}</p>
-                        <div className="flex items-center gap-4 pt-4 border-t">
-                          {user && !isAnonymous ? (
-                            <>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  alert('この機能は準備中です');
-                                }}
-                                className="text-gray-600 hover:gold-accent hover:bg-yellow-50"
-                              >
-                                <Heart className="h-4 w-4 mr-1" />
-                                愛
-                              </Button>
-                            </>
-                          ) : (
-                            <Button 
-                              onClick={() => navigate('/login')}
-                              size="sm"
-                              className="gold-bg hover:opacity-90 text-slate-900 font-medium shadow-sm"
-                            >
-                              会員登録してリアクション
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="border-gray-300 text-gray-700 hover:bg-gray-100" />
-            <CarouselNext className="border-gray-300 text-gray-700 hover:bg-gray-100" />
-          </Carousel>
-          </div>
-        </section>
-
-        {/* 会員特典メニュー */}
-        <section className="py-12">
-          <div className="flex items-baseline justify-between mb-3">
+          <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-3 gap-1 md:gap-0">
             <h3 className="text-4xl md:text-5xl font-serif font-semibold text-slate-900">会員特典メニュー</h3>
-            <span className="text-xl md:text-2xl text-slate-500">会員限定</span>
+            <span className="text-base md:text-2xl text-slate-500 self-start md:self-auto">プレミアム会員限定</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-            {memberBenefits.map((benefit) => (
-              <Card 
-                key={benefit.id} 
-                className="group backdrop-blur-md bg-gray-50/90 border border-gray-200 hover:bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer hover:scale-[1.02] shadow-lg hover:shadow-2xl"
-                onClick={() => {
-                  console.log('Card clicked:', benefit.title, 'external:', benefit.external, 'link:', benefit.link);
-                  console.log('Current location:', window.location.pathname);
-                  if (benefit.external === false && benefit.link) {
-                    console.log('Attempting to navigate to:', benefit.link);
-                    try {
+            {memberBenefits.map((benefit) => {
+              return (
+                <Card 
+                  key={benefit.id} 
+                  className="group backdrop-blur-md bg-gray-50/90 border border-gray-200 hover:bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer hover:scale-[1.02] shadow-lg hover:shadow-2xl"
+                  onClick={() => {
+                    if (benefit.external === false && benefit.link) {
                       navigate(benefit.link);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
-                      console.log('Navigation called successfully');
-                    } catch (error) {
-                      console.error('Navigation error:', error);
+                    } else {
+                      setShowConstructionModal(true);
                     }
-                  } else {
-                    console.log('Showing construction modal');
-                    setShowConstructionModal(true);
-                  }
-                }}
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="text-4xl group-hover:scale-110 transition-transform">
-                        {benefit.icon}
+                  }}
+                >
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="text-4xl group-hover:scale-110 transition-transform relative">
+                          {benefit.icon}
+                        </div>
+                        <div className="text-left">
+                          <h4 className="font-serif font-semibold text-slate-900 mb-1 group-hover:gold-accent flex items-center gap-2">
+                            {benefit.title}
+                          </h4>
+                          <p className="text-sm text-slate-600 line-clamp-2">
+                            {benefit.description}
+                          </p>
+                        </div>
                       </div>
-                      <div className="text-left">
-                        <h4 className="font-serif font-semibold text-slate-900 mb-1 group-hover:gold-accent">
-                          {benefit.title}
-                        </h4>
-                        <p className="text-sm text-slate-600 line-clamp-2">
-                          {benefit.description}
-                        </p>
-                      </div>
-                    </div>
-                    <Button 
-                      className="gold-bg hover:opacity-90 text-slate-900 group-hover:shadow-md transition-all font-medium"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        // 未ログイン時はログインポップアップを表示
-                        if (!user) {
-                          setShowLoginPrompt(true);
-                          return;
-                        }
-                        console.log('Button clicked:', benefit.title, 'external:', benefit.external, 'link:', benefit.link);
-                        console.log('Current location:', window.location.pathname);
-                        if (benefit.external === false && benefit.link) {
-                          console.log('Attempting to navigate to:', benefit.link);
-                          try {
+                      <Button 
+                        className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black group-hover:shadow-md transition-all font-medium"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (benefit.external === false && benefit.link) {
                             navigate(benefit.link);
                             window.scrollTo({ top: 0, behavior: 'smooth' });
-                            console.log('Navigation called successfully');
-                          } catch (error) {
-                            console.error('Navigation error:', error);
+                          } else {
+                            setShowConstructionModal(true);
                           }
-                        } else {
-                          console.log('Showing construction modal');
-                          setShowConstructionModal(true);
-                        }
-                      }}
-                    >
-                      利用する
-                      <ArrowRight className="h-3 w-3 ml-1" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                        }}
+                      >
+                        利用する
+                        <ArrowRight className="h-3 w-3 ml-1" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </section>
+        )}
 
-        {/* イベント特集バナー */}
+        {/* ライブウェディングバナー */}
         <section className="py-12">
-          <Card className="text-white border border-white/20 shadow-2xl relative overflow-hidden backdrop-blur-sm">
+          <Card 
+            className="text-white border border-white/20 shadow-2xl relative overflow-hidden backdrop-blur-sm cursor-pointer hover:shadow-3xl transition-all duration-300"
+            onClick={() => navigate('/live-wedding')}
+          >
             <div className="absolute inset-0">
               <img 
                 src="/images/lgbtq-7-1536x1024.jpg" 
-                alt="LGBTQ Pride Background"
+                alt="Live Wedding Background"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-500/60 via-purple-500/60 to-indigo-500/60"></div>
             </div>
             <CardContent className="p-6 md:p-8 text-center relative z-10">
               <div className="flex items-center justify-center gap-2 mb-3">
-                <Calendar className="h-6 w-6" />
-                <span className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">特別イベント</span>
+                <span className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">Special Service</span>
               </div>
-              <h3 className="text-4xl md:text-5xl font-serif font-bold mb-4">Rainbow Festa 2024</h3>
-              <p className="text-xl md:text-2xl mb-6 opacity-90">つながりをテーマに、10月開催決定！</p>
+              <h3 className="text-4xl md:text-5xl font-serif font-bold mb-4">Live Wedding</h3>
+              <p className="text-xl md:text-2xl mb-6 opacity-90">オンラインで叶える、あなただけの特別な結婚式</p>
               <Button 
-                onClick={() => navigate('/news')}
-                className="gold-bg text-slate-900 hover:opacity-90 font-semibold px-6 py-2.5 shadow-lg"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate('/live-wedding');
+                }}
+                className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-6 py-2.5 shadow-lg"
               >
                 詳細を見る
                 <ArrowRight className="h-4 w-4 ml-2" />
@@ -734,99 +493,128 @@ const HomePage: React.FC = () => {
           </Card>
         </section>
 
-        {/* カテゴリーセクション */}
-        <section className="py-12">
-          <div className="flex items-baseline justify-between mb-3">
-            <h3 className="text-4xl md:text-5xl font-serif font-semibold text-slate-900">掲示板</h3>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {categories.map((cat) => (
-              <Card 
-                key={cat.key} 
-                className="group backdrop-blur-md bg-gray-50/80 border border-gray-200 hover:bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer hover:scale-[1.02] shadow-lg hover:shadow-2xl" 
-                onClick={() => {
-                  if (!user) {
-                    setShowLoginPrompt(true);
-                    return;
-                  }
-                  navigate(`/category/${cat.key}`);
-                }}
+        {/* 掲示板セクション - 6カテゴリ */}
+        {boardCategories.map((cat) => (
+          <section key={cat.key} className="py-8">
+            <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2 gap-1 md:gap-0">
+              <div className="flex-1">
+                <h3 className="text-3xl md:text-4xl font-serif font-semibold text-slate-900 flex items-center gap-2">
+                  <span>{cat.emoji}</span>
+                  {cat.title}
+                </h3>
+                <p className="text-sm md:text-base text-slate-600 mt-1">{cat.desc}</p>
+              </div>
+              <Button 
+                variant="ghost" 
+                className="text-gray-700 hover:text-black hover:bg-gray-100 font-medium text-base md:text-xl self-start md:self-auto"
+                onClick={() => navigate(cat.link)}
               >
-                <div className="h-32 sm:h-40 rounded-t-lg overflow-hidden relative">
-                  {cat.key === 'comics' ? (
-                    <img 
-                      src="/images/sub_cuture01.jpg" 
-                      alt="サブカルチャー"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : cat.key === 'art' ? (
-                    <img 
-                      src="/images/sub_cuture02.jpg" 
-                      alt="アート"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : cat.key === 'music' ? (
-                    <img 
-                      src="/images/music01.jpg" 
-                      alt="音楽"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : cat.key === 'board' ? (
-                    <img 
-                      src="/images/hero-slide-4.jpg" 
-                      alt="掲示板"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : cat.key === 'shops' ? (
-                    <img 
-                      src="/images/shop01.jpg" 
-                      alt="お店"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : cat.key === 'tourism' ? (
-                    <img 
-                      src="/images/img13.jpg" 
-                      alt="ツーリズム"
-                      className="w-full h-full object-cover"
-                    />
+                もっと見る→
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {(categoryPosts[cat.key] || []).slice(0, 4).map((post) => (
+                <Card 
+                  key={post.id} 
+                  onClick={() => {
+                    setSelectedPost(post);
+                    setSelectedUser({
+                      id: post.user_id,
+                      display_name: post.user_display_name || 'ユーザー',
+                      email: ''
+                    });
+                  }}
+                  className="group backdrop-blur-md bg-gray-50/80 border border-gray-200 hover:bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer hover:scale-[1.02] shadow-lg hover:shadow-2xl"
+                >
+                  {(post.media_url || (post.media_urls && post.media_urls.length > 0)) ? (
+                    <div className="h-40 overflow-hidden rounded-t-lg bg-gray-100 flex items-center justify-center">
+                      <img 
+                        src={`${(() => {
+                          const imageUrl = post.media_url || (post.media_urls && post.media_urls[0]);
+                          if (!imageUrl) return getCategoryPlaceholder(post.category);
+                          return imageUrl.startsWith('http') ? imageUrl : 
+                                 (imageUrl.startsWith('/assets/') || imageUrl.startsWith('/images/')) ? imageUrl : 
+                                 `${API_URL}${imageUrl}`;
+                        })()}`}
+                        alt={post.title || '投稿画像'}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = getCategoryPlaceholder(post.category);
+                        }}
+                      />
+                    </div>
+                  ) : post.youtube_url ? (
+                    <div className="h-40 overflow-hidden rounded-t-lg bg-black flex items-center justify-center">
+                      <img 
+                        src={`https://img.youtube.com/vi/${extractYouTubeId(post.youtube_url)}/maxresdefault.jpg`}
+                        alt={post.title || 'YouTube動画'}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          if (post.youtube_url) {
+                            (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${extractYouTubeId(post.youtube_url)}/hqdefault.jpg`;
+                          }
+                        }}
+                      />
+                    </div>
                   ) : (
-                    <div className="h-full bg-gradient-to-br from-gray-50 via-yellow-50 to-gray-50">
+                    <div className="h-40 overflow-hidden rounded-t-lg bg-gray-100 flex items-center justify-center">
+                      <img 
+                        src={getCategoryPlaceholder(post.category)}
+                        alt={cat.title}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   )}
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2 text-xs mb-2">
+                      <span className="text-slate-500">
+                        {new Date(post.created_at).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' })}
+                      </span>
+                    </div>
+                    {post.title && (
+                      <h4 className="font-serif font-semibold leading-snug text-slate-900 mb-2 group-hover:gold-accent line-clamp-2">
+                        {post.title}
+                      </h4>
+                    )}
+                    <p className="text-sm text-slate-600 line-clamp-2">{post.body}</p>
+                    <div className="flex items-center justify-between text-sm mt-3">
+                      <div className="flex items-center gap-3 text-slate-500">
+                        <span className="flex items-center gap-1">
+                          <DiamondIcon className="h-3 w-3 text-blue-500" />
+                          {post.like_count || 0}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <MessageCircle className="h-3 w-3" />
+                          {post.comment_count || 0}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              {(!categoryPosts[cat.key] || categoryPosts[cat.key].length === 0) && (
+                <div className="col-span-4 text-center py-8 text-slate-500">
+                  投稿がまだありません
                 </div>
-                <CardContent className="p-4 sm:p-5">
-                  <div className="text-xs text-slate-500">カテゴリー</div>
-                  <h4 className="mt-1 font-serif font-semibold leading-snug group-hover:gold-accent text-base sm:text-lg">{cat.title}</h4>
-                  <p className="mt-2 text-sm text-slate-600 line-clamp-2">{cat.desc}</p>
-                  <div className="mt-3 sm:mt-4 flex items-center justify-between text-sm text-slate-600">
-                    <span className="flex items-center gap-1">
-                      📄 {cat.posts.toLocaleString()}件
-                    </span>
-                    <Button variant="outline" size="sm" className="border-gray-300 text-gray-700 hover:bg-gray-100 group-hover:bg-gray-200 group-hover:text-black transition-all">
-                      投稿を見る
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
+              )}
+            </div>
+          </section>
+        ))}
 
         {/* ニュースセクション */}
         <section className="py-12">
-          <div className="flex items-baseline justify-between mb-6">
-            <h3 className="text-3xl md:text-4xl font-bold text-slate-900">最新ニュース</h3>
+          <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-6 gap-1 md:gap-0">
+            <h3 className="text-3xl md:text-4xl font-bold text-slate-900">LGBTQニュース</h3>
             <Button 
               variant="ghost" 
-              className="text-gray-600 hover:text-black hover:bg-gray-100 font-medium text-base"
+              className="text-gray-600 hover:text-black hover:bg-gray-100 font-medium text-base self-start md:self-auto"
               onClick={() => navigate('/news')}
             >
-              すべてのニュースを見る
-              <ArrowRight className="h-4 w-4 ml-1" />
+              すべてのニュースをみる→
             </Button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {newsArticles.slice(0, 3).map((article) => (
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {newsArticles.slice(0, 4).map((article) => (
               <Card 
                 key={article.id} 
                 className="group bg-white border border-gray-200 hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden rounded-lg"
@@ -881,24 +669,25 @@ const HomePage: React.FC = () => {
 
         {/* 参加CTA */}
         <section className="py-16">
-          <Card className="backdrop-blur-md bg-gray-50/90 border border-gray-200 p-6 md:p-8 text-center shadow-2xl">
-            <CardContent className="py-4">
-              <h3 className="text-2xl md:text-3xl font-serif font-semibold text-slate-900">
-                無料で体験・<br />有料で実践！
-              </h3>
-              <p className="mt-4 text-xl md:text-2xl text-slate-600">
-                無料会員はサイト全体の内容を見ていただけます。投稿や有料会員限定サイトを閲覧するには会員登録が必要です。
-              </p>
-              <div className="mt-4 flex justify-center px-4">
+          <div className="max-w-3xl mx-auto px-4">
+            <div className="bg-white/95 border border-gray-200 shadow-xl rounded-2xl px-6 py-6 md:px-10 md:py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="text-left">
+                <p className="text-sm md:text-base text-slate-500 mb-1">会員制LGBTQ+コミュニティ "Carat"</p>
+                <p className="text-lg md:text-xl font-serif text-slate-900">投稿とマッチングで、あなたの物語をはじめましょう。</p>
+                <p className="mt-2 text-sm md:text-base text-slate-500">
+                  * 無料会員はサイト全体の内容を見ていただけます。投稿や有料会員限定サイトを閲覧するには会員登録が必要です。
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-end">
                 <Button 
                   onClick={() => window.location.href = '/login'}
-                  className="bg-gradient-to-r from-yellow-300 to-yellow-400 hover:from-yellow-400 hover:to-yellow-500 text-gray-900 px-6 md:px-10 py-5 md:py-6 text-lg md:text-xl lg:text-2xl font-medium shadow-md hover:shadow-lg transition-all w-full md:w-auto leading-relaxed"
+                  className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
                 >
-                  会員になる<br />月1,000円（税別）
+                  会員登録（月1,000円）
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </section>
         </div>
       </div>

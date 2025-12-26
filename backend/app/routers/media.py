@@ -13,10 +13,10 @@ from botocore.exceptions import ClientError
 
 router = APIRouter(prefix="/api/media", tags=["media"])
 
-# S3設定
+# S3設定 - 開発環境ではローカルストレージを使用
 S3_BUCKET = os.getenv("AWS_S3_BUCKET", "rainbow-community-media-prod")
 S3_REGION = os.getenv("AWS_REGION", "ap-northeast-1")
-USE_S3 = os.getenv("USE_S3", "true").lower() == "true"
+USE_S3 = os.getenv("USE_S3", "true").lower() == "true"  # 本番はS3を使用
 
 # S3クライアント初期化
 if USE_S3:

@@ -67,13 +67,27 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
     return user
 
 
+async def get_optional_user(token: Optional[str] = Depends(OAuth2PasswordBearer(tokenUrl="auth/token", auto_error=False)), db: Session = Depends(get_db)):
+    if not token:
+        return None
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            return None
+    except JWTError:
+        return None
+    
+    user = get_user_by_email(db, email=email)
+    return user
+
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
     if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
 async def get_current_premium_user(current_user: User = Depends(get_current_active_user)):
-    if current_user.membership_type != "premium":
+    if current_user.membership_type not in ("premium", "admin"):
         raise HTTPException(status_code=403, detail="Premium membership required")
     return current_user
 

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, Heart, MessageCircle, ShoppingBag, Plus, Grid, List, MapPin, Clock, Star, Shield, Upload, Minus, Trash2, ThumbsUp, Home } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Heart, MessageCircle, ShoppingBag, Plus, MapPin, Clock, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -19,264 +19,144 @@ interface Listing {
   is_favorited: boolean;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'https://ddxdewgmen.ap-northeast-1.awsapprunner.com';
+
 const MarketplacePage: React.FC = () => {
-  console.log('=== MarketplacePage component loaded successfully ===');
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  // const [sortBy] = useState('newest');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [showCreateListing, setShowCreateListing] = useState(false);
-  const [showListingDetail, setShowListingDetail] = useState(false);
+  const { user, isLoading: authLoading } = useAuth();
+  const token = localStorage.getItem('token');
+  const currentUserId = user?.id;
+  
+  // Debug: Log auth state for troubleshooting
+  useEffect(() => {
+    console.log('🔍 MarketplacePage Auth Debug:', {
+      authLoading,
+      user,
+      currentUserId,
+      token: token ? 'exists' : 'null'
+    });
+  }, [authLoading, user, currentUserId, token]);
+
+  const [listings, setListings] = useState<Listing[]>([]);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
-  const [showReviewModal, setShowReviewModal] = useState(false);
-  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
-  const [newListing, setNewListing] = useState({
-    title: '',
-    description: '',
-    price: '',
-    condition: 'good' as const,
-    category: 'ファッション',
-    location: '',
-    images: [] as File[]
-  });
+  const [showListingDetail, setShowListingDetail] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // モック出品データ
-  const listings: Listing[] = [
-    {
-      id: 1,
-      title: "レインボーフラッグ Tシャツ",
-      description: "プライドパレードで着用したTシャツです。サイズM、状態良好。",
-      price: 2500,
-      condition: 'good',
-      category: 'ファッション',
-      location: '東京都渋谷区',
-      seller_name: 'Rainbow太郎',
-      seller_id: 101,
-      images: ['/images/market01.jpg'],
-      created_at: '2024-11-01',
-      status: 'active',
-      is_favorited: false
-    },
-    {
-      id: 2,
-      title: "LGBTQ関連書籍セット",
-      description: "多様性について学べる本5冊セット。読み終わったのでお譲りします。",
-      price: 3000,
-      condition: 'like_new',
-      category: '本・雑誌',
-      location: '大阪府大阪市',
-      seller_name: 'BookLover',
-      seller_id: 102,
-      images: ['/images/shop02.jpg'],
-      created_at: '2024-10-30',
-      status: 'active',
-      is_favorited: true
-    },
-    {
-      id: 3,
-      title: "プライドグッズ詰め合わせ",
-      description: "バッジ、ステッカー、キーホルダーなど。コレクション整理のため出品。",
-      price: 1800,
-      condition: 'good',
-      category: 'グッズ',
-      location: '神奈川県横浜市',
-      seller_name: 'PrideCollector',
-      seller_id: 103,
-      images: ['/images/art01.jpg'],
-      created_at: '2024-10-28',
-      status: 'active',
-      is_favorited: false
-    }
-  ];
-
-  const categories = [
-    { key: 'all', label: 'すべて' },
-    { key: 'fashion', label: 'ファッション' },
-    { key: 'books', label: '本・雑誌' },
-    { key: 'goods', label: 'グッズ' },
-    { key: 'accessories', label: 'アクセサリー' },
-    { key: 'home', label: 'インテリア' },
-    { key: 'other', label: 'その他' }
-  ];
-
-  const conditionLabels: { [key: string]: string } = {
+  const conditionLabels = {
     new: '新品',
     like_new: '未使用に近い',
     good: '目立った傷や汚れなし',
     fair: 'やや傷や汚れあり'
   };
 
-  const getTimeAgo = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = now.getTime() - date.getTime();
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) return '今日';
-    if (diffDays === 1) return '昨日';
-    return `${diffDays}日前`;
-  };
+  useEffect(() => {
+    fetchListings();
+  }, []);
 
-  const handleChatContact = (listing: Listing) => {
-    console.log('チャットで連絡:', listing.title);
-    // 出品名を含むメッセージを準備
-    const initialMessage = `「${listing.title}」の件です。`;
-    // マッチングチャットに遷移（context="marketplace", context_id=listing_id, 初期メッセージ付き）
-    navigate(`/matching/chats?context=marketplace&context_id=${listing.id}&seller_id=${listing.seller_id}&initial_message=${encodeURIComponent(initialMessage)}`);
-  };
-
-  const handleFavorite = (listingId: number) => {
-    console.log('お気に入り:', listingId);
-    // TODO: お気に入り機能実装
-  };
-
-  const handleShowDetail = (listing: Listing) => {
-    console.log('詳細表示:', listing.title);
-    setSelectedListing(listing);
-    setShowListingDetail(true);
-  };
-
-  // 出品取り下げ
-  const handleWithdrawListing = (listing: Listing) => {
-    console.log('出品取り下げ:', listing.title);
-    setSelectedListing(listing);
-    setShowWithdrawModal(true);
-  };
-
-  // 取り下げ確定
-  const confirmWithdraw = () => {
-    if (selectedListing) {
-      console.log('取り下げ確定:', selectedListing.title);
-      alert(`「${selectedListing.title}」を取り下げました。`);
-      // TODO: API呼び出しで実際の削除処理
-      setShowWithdrawModal(false);
-      setShowListingDetail(false);
+  const fetchListings = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/posts/?category=marketplace`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const listingsData: Listing[] = data.map((item: any) => ({
+          id: item.id,
+          title: item.title || '無題',
+          description: item.body || '',
+          price: item.goal_amount || 0,
+          condition: 'good',
+          category: item.subcategory || 'その他',
+          location: '大阪府',
+          seller_name: item.user_display_name || '匿名',
+          seller_id: Number(item.user_id),
+          images: item.media_urls && item.media_urls.length > 0 ? item.media_urls : ['/placeholder.jpg'],
+          created_at: item.created_at,
+          status: 'active',
+          is_favorited: item.is_liked || false
+        }));
+        setListings(listingsData);
+      }
+    } catch (error) {
+      console.error('商品取得エラー:', error);
     }
   };
 
-  // 評価・レビュー
-  const handleReviewListing = (listing: Listing) => {
-    console.log('評価・レビュー:', listing.title);
-    setSelectedListing(listing);
-    setShowReviewModal(true);
-  };
+  const handleFavorite = async (listingId: number) => {
+    try {
+      const listing = listings.find(l => l.id === listingId);
+      if (!listing) return;
 
-  // 評価送信
-  const submitReview = (rating: 'good' | 'neutral' | 'bad', comment: string) => {
-    if (selectedListing) {
-      console.log('評価送信:', { listing: selectedListing.title, rating, comment });
-      alert(`「${selectedListing.title}」の評価を送信しました。`);
-      // TODO: API呼び出しで評価データ送信
-      setShowReviewModal(false);
-      setShowListingDetail(false);
+      if (listing.is_favorited) {
+        await fetch(`${API_URL}/api/posts/${listingId}/like`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+      } else {
+        await fetch(`${API_URL}/api/posts/${listingId}/like`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+      }
+
+      setListings(listings.map(l => 
+        l.id === listingId ? { ...l, is_favorited: !l.is_favorited } : l
+      ));
+    } catch (error) {
+      console.error('お気に入りエラー:', error);
     }
   };
 
-  // 出品フォーム送信
-  const handleSubmitListing = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('新規出品:', newListing);
-    
-    // バリデーション
-    if (!newListing.title || !newListing.description || !newListing.price || !newListing.location) {
-      alert('すべての必須項目を入力してください。');
-      return;
-    }
+  const handleSendMessage = async (messageType: 'purchase' | 'inquiry') => {
+    if (!selectedListing) return;
 
-    if (newListing.images.length === 0) {
-      alert('商品画像を最低1枚アップロードしてください。');
-      return;
-    }
+    const message = messageType === 'purchase'
+      ? `「${selectedListing.title}」を購入したいです。`
+      : `「${selectedListing.title}」について質問があります。`;
 
-    // 成功メッセージ
-    alert(`商品「${newListing.title}」を出品しました！`);
-    
-    // フォームリセット
-    setNewListing({
-      title: '',
-      description: '',
-      price: '',
-      condition: 'good',
-      category: 'ファッション',
-      location: '',
-      images: []
-    });
-    setShowCreateListing(false);
-  };
+    try {
+      const response = await fetch(`${API_URL}/api/donation/support-message`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          project_id: selectedListing.id,
+          amount: null,
+          message: message
+        })
+      });
 
-  // フォーム入力変更
-  const handleListingInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setNewListing(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  // 画像アップロード
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (files.length > 0) {
-      setNewListing(prev => ({
-        ...prev,
-        images: [...prev.images, ...files].slice(0, 5) // 最大5枚
-      }));
+      if (response.ok) {
+        setShowContactModal(false);
+        setShowListingDetail(false);
+        alert('メッセージを送信しました！');
+        navigate(`/matching/chats`);
+      } else {
+        alert('メッセージの送信に失敗しました');
+      }
+    } catch (error) {
+      console.error('メッセージ送信エラー:', error);
+      alert('エラーが発生しました');
     }
   };
 
-  // 画像削除
-  const removeImage = (index: number) => {
-    setNewListing(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index)
-    }));
-  };
-
-  const filteredListings = listings.filter(listing => {
-    const matchesSearch = listing.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         listing.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || listing.category === selectedCategory;
-    const isActive = listing.status === 'active';
-    return matchesSearch && matchesCategory && isActive;
-  });
+  const filteredListings = listings.filter(listing =>
+    listing.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    listing.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen bg-carat-gray1">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-carat-white py-20">
-        <div className="absolute inset-0 bg-carat-gray1/10"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* ホームに戻るボタン */}
-          <div className="mb-6">
-            <button
-              onClick={() => {
-                navigate('/');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="flex items-center gap-2 text-carat-gray6 hover:text-carat-black transition-colors"
-            >
-              <Home className="h-5 w-5" />
-              ホームに戻る
-            </button>
-          </div>
-
-          <div className="text-center">
-            <div className="mb-8">
-              <div className="flex justify-center mx-auto mb-6">
-                <img 
-                  src="/images/logo02.png" 
-                  alt="Carat Logo" 
-                  className="h-20 w-auto"
-                />
-              </div>
-            </div>
-            <p className="text-xl md:text-2xl text-carat-gray5 mb-8 max-w-4xl mx-auto leading-relaxed">
-              会員同士で安心・安全な売買取引
-            </p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-4 text-lg text-carat-gray5">
+    <div className="min-h-screen bg-gradient-to-b from-pink-50 via-purple-50 to-blue-50">
+      {/* Header */}
+      <section className="py-16 px-4">
+        <div className="max-w-7xl mx-auto text-center">
+          <h1 className="text-5xl font-bold text-carat-black mb-6">マーケット</h1>
+          <p className="text-2xl text-carat-gray5 mb-8">会員同士で安心・安全な売買取引</p>
+          <div className="flex flex-wrap justify-center gap-4 text-lg text-carat-gray5 mb-8">
             <div className="flex items-center">
               <ShoppingBag className="w-5 h-5 mr-2 text-carat-black" />
               <span>会員限定</span>
@@ -293,11 +173,11 @@ const MarketplacePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Search and Filter Section */}
+      {/* Search and Actions */}
       <section className="py-8 bg-carat-white border-b border-carat-gray2">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
-            {/* Search Bar */}
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+            {/* Search */}
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-carat-gray4 w-5 h-5" />
               <input
@@ -309,50 +189,21 @@ const MarketplacePage: React.FC = () => {
               />
             </div>
 
-            {/* Category Tabs */}
-            <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
-                <button
-                  key={category.key}
-                  onClick={() => setSelectedCategory(category.key)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    selectedCategory === category.key
-                      ? 'bg-carat-black text-carat-white'
-                      : 'bg-carat-gray2 text-carat-gray6 hover:bg-carat-gray3'
-                  }`}
-                >
-                  {category.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Controls */}
-            <div className="flex items-center gap-4">
-              {/* View Mode Toggle */}
-              <div className="flex items-center border border-carat-gray3 rounded-lg">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg transition-colors ${
-                    viewMode === 'grid' ? 'bg-carat-black text-carat-white' : 'bg-carat-white text-carat-gray5 hover:bg-carat-gray1 hover:text-carat-black'
-                  }`}>
-                  <Grid className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg transition-colors ${
-                    viewMode === 'list' ? 'bg-carat-black text-carat-white' : 'bg-carat-white text-carat-gray5 hover:bg-carat-gray1 hover:text-carat-black'
-                  }`}>
-                  <List className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Create Listing Button */}
+            {/* Action Buttons */}
+            <div className="flex gap-3">
               <button
-                onClick={() => setShowCreateListing(true)}
-                className="bg-carat-black text-carat-white px-6 py-3 rounded-lg font-semibold hover:bg-carat-gray6 transition-all duration-300 flex items-center gap-2"
+                onClick={() => navigate('/members/marketplace/new')}
+                className="bg-carat-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-carat-gray6 transition-all flex items-center gap-2"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="w-5 h-5" />
                 出品する
+              </button>
+              <button
+                onClick={() => navigate('/members/favorites')}
+                className="bg-pink-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-600 transition-all flex items-center gap-2"
+              >
+                <Heart className="w-5 h-5" />
+                お気に入り一覧
               </button>
             </div>
           </div>
@@ -360,376 +211,160 @@ const MarketplacePage: React.FC = () => {
       </section>
 
       {/* Listings Grid */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+      <section className="py-12">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredListings.map((listing) => (
-              <div key={listing.id} className="bg-carat-white rounded-2xl shadow-card hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-carat-gray2">
-                {/* Listing Image */}
-                <div className={`relative ${viewMode === 'list' ? 'w-48 h-32' : 'h-48'} bg-carat-gray2`}>
+              <div
+                key={listing.id}
+                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all cursor-pointer"
+                onClick={() => {
+                  setSelectedListing(listing);
+                  setShowListingDetail(true);
+                }}
+              >
+                {/* Image */}
+                <div className="relative h-64 bg-carat-gray2">
                   <img
                     src={listing.images[0]}
                     alt={listing.title}
                     className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
                   />
                   <div className="absolute top-4 left-4 bg-carat-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-carat-gray6">
                     {conditionLabels[listing.condition]}
                   </div>
                   <button
-                    onClick={() => handleFavorite(listing.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleFavorite(listing.id);
+                    }}
                     className={`absolute top-4 right-4 p-2 rounded-full transition-colors ${
-                      listing.is_favorited ? 'bg-carat-black text-carat-white' : 'bg-carat-white/90 text-carat-gray5 hover:bg-carat-gray1 hover:text-carat-black'
+                      listing.is_favorited
+                        ? 'bg-pink-500 text-white'
+                        : 'bg-carat-white/90 text-carat-gray6 hover:bg-pink-100'
                     }`}
                   >
-                    <Heart className={`w-4 h-4 ${listing.is_favorited ? 'fill-current' : ''}`} />
+                    <Heart className={`w-5 h-5 ${listing.is_favorited ? 'fill-current' : ''}`} />
                   </button>
                 </div>
 
-                {/* Listing Info */}
-                <div className={`p-4 ${viewMode === 'list' ? 'flex-1' : ''}`}>
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="text-xl font-bold text-carat-black mb-2 line-clamp-2">
-                      {listing.title}
-                    </h3>
-                    <p className="text-2xl font-bold text-carat-black mb-2">¥{listing.price.toLocaleString()}</p>
-                  </div>
-
-                  <p className="text-carat-gray6 mb-4 text-sm line-clamp-2">
+                {/* Info */}
+                <div className="p-4">
+                  <h3 className="text-xl font-bold text-carat-black mb-2 line-clamp-2">
+                    {listing.title}
+                  </h3>
+                  <p className="text-2xl font-bold text-carat-black mb-3">
+                    ¥{listing.price.toLocaleString()}
+                  </p>
+                  <p className="text-sm text-carat-gray5 mb-4 line-clamp-2">
                     {listing.description}
                   </p>
 
-                  {/* Listing Meta */}
-                  <div className="flex items-center justify-between mb-4 text-sm text-carat-gray5">
+                  {/* Meta */}
+                  <div className="flex items-center justify-between text-xs text-carat-gray5 mb-4">
                     <div className="flex items-center">
                       <MapPin className="w-3 h-3 mr-1" />
                       <span>{listing.location}</span>
                     </div>
                     <div className="flex items-center">
                       <Clock className="w-3 h-3 mr-1" />
-                      <span>{getTimeAgo(listing.created_at)}</span>
+                      <span>今日</span>
                     </div>
                   </div>
 
-                  {/* Seller Info */}
+                  {/* Seller */}
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/profile/${listing.seller_id}`);
+                      }}
+                      className="flex items-center hover:opacity-70 transition-opacity"
+                    >
                       <div className="w-8 h-8 bg-carat-black rounded-full flex items-center justify-center text-carat-white text-sm font-bold">
                         {listing.seller_name.charAt(0)}
                       </div>
-                      <span className="ml-2 text-sm text-carat-gray5">{listing.seller_name}</span>
-                    </div>
+                      <span className="ml-2 text-sm text-sky-500 hover:text-sky-600 font-medium">
+                        {listing.seller_name}
+                      </span>
+                    </button>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-2">
+                  {/* Chat Button (only for non-sellers) */}
+                  {listing.seller_id !== currentUserId && (
                     <button
-                      onClick={() => handleChatContact(listing)}
-                      className="flex-1 bg-carat-black text-carat-white py-2 px-3 rounded-lg font-medium hover:bg-carat-gray6 transition-all duration-300 flex items-center justify-center gap-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedListing(listing);
+                        setShowContactModal(true);
+                      }}
+                      className="w-full bg-carat-black text-white py-2 px-3 rounded-lg font-medium hover:bg-carat-gray6 transition-all flex items-center justify-center gap-1"
                     >
                       <MessageCircle className="w-4 h-4" />
                       チャットで連絡
                     </button>
-                    <button
-                      onClick={() => handleShowDetail(listing)}
-                      className="px-4 py-3 border border-carat-gray3 text-carat-gray6 rounded-lg hover:bg-carat-gray1 transition-colors"
-                    >
-                      詳細
-                    </button>
-                  </div>
+                  )}
                 </div>
               </div>
             ))}
           </div>
-
-          {filteredListings.length === 0 && (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-carat-gray2 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Search className="w-8 h-8 text-carat-gray4" />
-              </div>
-              <h3 className="text-lg font-semibold text-carat-black mb-2">商品が見つかりません</h3>
-              <p className="text-carat-gray5">検索条件を変更してお試しください。</p>
-            </div>
-          )}
         </div>
       </section>
 
-      {/* Safety Guidelines */}
-      <section className="py-16 bg-carat-gray1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-carat-black mb-6">
-            安心・安全な取引のために
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-carat-black rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="w-8 h-8 text-carat-white" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">チャットで連絡</h3>
-              <p className="text-carat-gray6">すべての連絡は専用チャットで行い、個人情報を守ります。</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-carat-black rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-carat-white" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">会員限定</h3>
-              <p className="text-carat-gray6">会員同士の取引で安心感を提供します。</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-carat-black rounded-full flex items-center justify-center mx-auto mb-4">
-                <Star className="w-8 h-8 text-carat-white" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">評価システム</h3>
-              <p className="text-carat-gray6">取引完了後の評価で信頼できる取引相手を見つけられます。</p>
-            </div>
-          </div>
-          <button className="bg-carat-black text-carat-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-carat-gray6 transition-all duration-300">
-            安全ガイドラインを見る
-          </button>
-        </div>
-      </section>
-
-      {/* Create Listing Modal */}
-      {showCreateListing && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] p-4" onClick={() => setShowCreateListing(false)}>
-          <div className="bg-white p-8 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-2xl font-bold text-carat-black mb-6">商品を出品</h3>
-
-            <form onSubmit={handleSubmitListing} className="space-y-6">
-              {/* 商品画像 */}
-              <div>
-                <label className="block text-sm font-medium text-carat-gray6 mb-2">
-                  商品画像 * (最大5枚)
-                </label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-                  {newListing.images.map((image, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={URL.createObjectURL(image)}
-                        alt={`商品画像 ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        className="absolute -top-2 -right-2 bg-carat-black text-carat-white rounded-full p-1 hover:bg-carat-gray6"
-                      >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-                  {newListing.images.length < 5 && (
-                    <div className="border-2 border-dashed border-carat-gray3 rounded-lg p-4 text-center hover:border-carat-black transition-colors relative">
-                      <Upload className="mx-auto h-8 w-8 text-carat-gray4 mb-2" />
-                      <p className="text-sm text-carat-gray6">画像を追加</p>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        onChange={handleImageUpload}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* 商品名 */}
-              <div>
-                <label htmlFor="title" className="block text-sm font-medium text-carat-gray6 mb-2">
-                  商品名 *
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  name="title"
-                  value={newListing.title}
-                  onChange={handleListingInputChange}
-                  placeholder="例: レインボーフラッグ Tシャツ"
-                  className="w-full px-4 py-3 border border-carat-gray3 rounded-lg focus:ring-2 focus:ring-carat-black focus:border-transparent"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* カテゴリー */}
-                <div>
-                  <label htmlFor="category" className="block text-sm font-medium text-carat-gray6 mb-2">
-                    カテゴリー
-                  </label>
-                  <select
-                    id="category"
-                    name="category"
-                    value={newListing.category}
-                    onChange={handleListingInputChange}
-                    className="w-full px-4 py-3 border border-carat-gray3 rounded-lg focus:ring-2 focus:ring-carat-black focus:border-transparent"
-                  >
-                    <option value="ファッション">ファッション</option>
-                    <option value="本・雑誌">本・雑誌</option>
-                    <option value="グッズ">グッズ</option>
-                    <option value="アクセサリー">アクセサリー</option>
-                    <option value="インテリア">インテリア</option>
-                    <option value="その他">その他</option>
-                  </select>
-                </div>
-
-                {/* 商品の状態 */}
-                <div>
-                  <label htmlFor="condition" className="block text-sm font-medium text-carat-gray6 mb-2">
-                    商品の状態
-                  </label>
-                  <select
-                    id="condition"
-                    name="condition"
-                    value={newListing.condition}
-                    onChange={handleListingInputChange}
-                    className="w-full px-4 py-3 border border-carat-gray3 rounded-lg focus:ring-2 focus:ring-carat-black focus:border-transparent"
-                  >
-                    <option value="new">新品</option>
-                    <option value="like_new">未使用に近い</option>
-                    <option value="good">目立った傷や汚れなし</option>
-                    <option value="fair">やや傷や汚れあり</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* 商品説明 */}
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium text-carat-gray6 mb-2">
-                  商品説明 *
-                </label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={newListing.description}
-                  onChange={handleListingInputChange}
-                  placeholder="商品の詳細な説明を入力してください..."
-                  rows={4}
-                  className="w-full px-4 py-3 border border-carat-gray3 rounded-lg focus:ring-2 focus:ring-carat-black focus:border-transparent"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* 価格 */}
-                <div>
-                  <label htmlFor="price" className="block text-sm font-medium text-carat-gray6 mb-2">
-                    価格 *
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      id="price"
-                      name="price"
-                      value={newListing.price}
-                      onChange={handleListingInputChange}
-                      placeholder="1000"
-                      min="100"
-                      className="w-full px-4 py-3 pr-12 border border-carat-gray3 rounded-lg focus:ring-2 focus:ring-carat-black focus:border-transparent"
-                      required
-                    />
-                    <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-carat-gray6">円</span>
-                  </div>
-                </div>
-
-                {/* 発送元地域 */}
-                <div>
-                  <label htmlFor="location" className="block text-sm font-medium text-carat-gray6 mb-2">
-                    発送元地域 *
-                  </label>
-                  <input
-                    type="text"
-                    id="location"
-                    name="location"
-                    value={newListing.location}
-                    onChange={handleListingInputChange}
-                    placeholder="例: 東京都渋谷区"
-                    className="w-full px-4 py-3 border border-carat-gray3 rounded-lg focus:ring-2 focus:ring-carat-black focus:border-transparent"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* 注意事項 */}
-              <div className="bg-carat-gray2 p-4 rounded-lg">
-                <h4 className="font-medium text-carat-gray6 mb-2">出品時の注意事項</h4>
-                <ul className="text-sm text-carat-gray6 space-y-1">
-                  <li>• 購入者との連絡は専用チャットで行ってください</li>
-                  <li>• 個人情報の交換は禁止されています</li>
-                  <li>• 取引完了後は必ず完了報告をしてください</li>
-                  <li>• 不適切な商品の出品は禁止されています</li>
-                </ul>
-              </div>
-
-              {/* ボタン */}
-              <div className="flex gap-4 pt-4">
-                <button
-                  type="submit"
-                  className="flex-1 bg-carat-black text-carat-white py-3 px-4 rounded-lg font-semibold hover:bg-carat-gray6 transition-all duration-300"
-                >
-                  出品する
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowCreateListing(false)}
-                  className="px-6 py-3 border border-carat-gray3 text-carat-gray6 rounded-lg hover:bg-carat-gray1 transition-colors"
-                >
-                  キャンセル
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Listing Detail Modal */}
+      {/* Detail Modal */}
       {showListingDetail && selectedListing && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] p-4" onClick={() => setShowListingDetail(false)}>
-          <div className="bg-white p-8 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-between items-start mb-6">
-              <h3 className="text-2xl font-bold text-carat-black">{selectedListing.title}</h3>
+          <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="sticky top-0 bg-white border-b border-carat-gray2 px-6 py-4 flex items-center justify-between z-10">
+              <h2 className="text-2xl font-bold text-carat-black">{selectedListing.title}</h2>
               <button
                 onClick={() => setShowListingDetail(false)}
-                className="text-carat-gray6 hover:text-carat-black"
+                className="p-2 hover:bg-carat-gray1 rounded-full transition-colors"
               >
-                ✕
+                <X className="w-6 h-6" />
               </button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* 商品画像 */}
-              <div>
-                <div className="aspect-square bg-carat-gray2 rounded-lg overflow-hidden mb-4">
+            <div className="grid grid-cols-2 gap-6 p-6">
+              {/* Left: Image */}
+              <div className="flex flex-col space-y-4">
+                <div className="aspect-square bg-carat-gray2 rounded-xl overflow-hidden">
                   <img
                     src={selectedListing.images[0]}
                     alt={selectedListing.title}
                     className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
                   />
                 </div>
-                {selectedListing.images.length > 1 && (
-                  <div className="grid grid-cols-4 gap-2">
-                    {selectedListing.images.slice(1, 5).map((image, index) => (
-                      <div key={index} className="aspect-square bg-carat-gray2 rounded-lg overflow-hidden">
-                        <img
-                          src={image}
-                          alt={`${selectedListing.title} ${index + 2}`}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                      </div>
-                    ))}
-                  </div>
+
+                {/* Chat Button (bottom left, for non-sellers) */}
+                {/* Debug: Show button state */}
+                {(() => {
+                  const sellerId = Number(selectedListing.seller_id);
+                  const userId = currentUserId ? Number(currentUserId) : null;
+                  const shouldShow = !authLoading && userId !== null && sellerId !== userId;
+                  console.log('🔍 Chat Button Debug:', {
+                    authLoading,
+                    currentUserId,
+                    sellerId: selectedListing.seller_id,
+                    sellerIdNum: sellerId,
+                    userIdNum: userId,
+                    shouldShow
+                  });
+                  return null;
+                })()}
+                {!authLoading && currentUserId !== undefined && Number(selectedListing.seller_id) !== Number(currentUserId) && (
+                  <button
+                    onClick={() => setShowContactModal(true)}
+                    className="w-full bg-carat-black text-white py-3 px-4 rounded-lg font-semibold hover:bg-carat-gray6 transition-colors flex items-center justify-center gap-2 mt-4"
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    チャットで連絡
+                  </button>
                 )}
               </div>
 
-              {/* 商品情報 */}
+              {/* Right: Info */}
               <div>
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-4">
@@ -764,76 +399,35 @@ const MarketplacePage: React.FC = () => {
                         <span>出品日</span>
                         <p className="font-medium flex items-center">
                           <Clock className="w-4 h-4 mr-1" />
-                          {getTimeAgo(selectedListing.created_at)}
+                          今日
                         </p>
                       </div>
                     </div>
 
                     <div className="border-t pt-4">
                       <h4 className="font-semibold text-carat-black mb-3">出品者情報</h4>
-                      <div className="flex items-center">
+                      <button
+                        onClick={() => {
+                          navigate(`/profile/${selectedListing.seller_id}`);
+                          setShowListingDetail(false);
+                        }}
+                        className="flex items-center hover:opacity-70 transition-opacity w-full text-left"
+                      >
                         <div className="w-12 h-12 bg-carat-black rounded-full flex items-center justify-center text-carat-white text-lg font-bold mr-4">
                           {selectedListing.seller_name.charAt(0)}
                         </div>
                         <div>
-                          <p className="font-medium text-carat-black">{selectedListing.seller_name}</p>
+                          <p className="font-medium text-sky-500 hover:text-sky-600 hover:underline">
+                            {selectedListing.seller_name}
+                          </p>
                           <p className="text-sm text-carat-gray6">会員</p>
                         </div>
-                      </div>
+                      </button>
                     </div>
                   </div>
                 </div>
 
-                {/* アクションボタン */}
-                <div className="space-y-3">
-                  {/* 出品者向けボタン */}
-                  {user?.id === selectedListing.seller_id ? (
-                    <div className="space-y-3">
-                      <div className="bg-carat-gray2 p-3 rounded-lg">
-                        <p className="text-sm text-carat-gray6 font-medium">あなたの出品です</p>
-                      </div>
-                      <button
-                        onClick={() => handleWithdrawListing(selectedListing)}
-                        className="w-full bg-red-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-red-600 transition-colors"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                        出品を取り下げる
-                      </button>
-                    </div>
-                  ) : (
-                    /* 購入者向けボタン */
-                    <div className="space-y-3">
-                      <button
-                        onClick={() => {
-                          handleChatContact(selectedListing);
-                          setShowListingDetail(false);
-                        }}
-                        className="w-full bg-carat-black text-carat-white py-3 px-4 rounded-lg font-semibold hover:bg-carat-gray6 transition-all duration-300 flex items-center justify-center gap-2"
-                      >
-                        <MessageCircle className="w-5 h-5" />
-                        チャットで連絡する
-                      </button>
-
-                      <button
-                        onClick={() => handleFavorite(selectedListing.id)}
-                        className="w-full border border-carat-gray3 text-carat-gray6 py-3 px-4 rounded-lg font-medium hover:bg-carat-gray1 transition-colors flex items-center justify-center gap-2"
-                      >
-                        <Heart className={`w-5 h-5 ${selectedListing.is_favorited ? 'fill-current text-carat-black' : 'text-carat-gray5'}`} />
-                        {selectedListing.is_favorited ? 'お気に入り済み' : 'お気に入りに追加'}
-                      </button>
-
-                      <button
-                        onClick={() => handleReviewListing(selectedListing)}
-                        className="w-full bg-carat-gray5 text-carat-white py-3 px-4 rounded-lg font-semibold hover:bg-carat-gray6 transition-colors flex items-center justify-center gap-2"
-                      >
-                        <ThumbsUp className="w-5 h-5" />
-                        この出品者を評価する
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* 注意事項 */}
+                {/* Notes */}
                 <div className="mt-6 bg-blue-50 p-4 rounded-lg">
                   <h5 className="font-medium text-blue-900 mb-2">取引時の注意</h5>
                   <ul className="text-sm text-blue-800 space-y-1">
@@ -848,82 +442,31 @@ const MarketplacePage: React.FC = () => {
         </div>
       )}
 
-      {/* Withdraw Confirmation Modal */}
-      {showWithdrawModal && selectedListing && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] p-4" onClick={() => setShowWithdrawModal(false)}>
+      {/* Contact Selection Modal */}
+      {showContactModal && selectedListing && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[10000] p-4" onClick={() => setShowContactModal(false)}>
           <div className="bg-white p-8 rounded-2xl max-w-md w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">出品を取り下げ</h3>
-            <p className="text-gray-600 mb-6">
-              「{selectedListing.title}」を取り下げますか？<br />
-              この操作は取り消せません。
-            </p>
-            <div className="flex gap-4">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">連絡方法を選択</h3>
+            <div className="space-y-3">
               <button
-                onClick={confirmWithdraw}
-                className="flex-1 bg-red-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-red-600 transition-colors"
+                onClick={() => handleSendMessage('purchase')}
+                className="w-full bg-carat-black text-white py-4 px-6 rounded-lg font-semibold hover:bg-carat-gray6 transition-colors text-lg"
               >
-                取り下げる
+                購入する
               </button>
               <button
-                onClick={() => setShowWithdrawModal(false)}
-                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                onClick={() => handleSendMessage('inquiry')}
+                className="w-full bg-white border-2 border-carat-black text-carat-black py-4 px-6 rounded-lg font-semibold hover:bg-carat-gray1 transition-colors text-lg"
+              >
+                問い合わせ
+              </button>
+              <button
+                onClick={() => setShowContactModal(false)}
+                className="w-full bg-carat-gray2 text-carat-gray6 py-3 px-6 rounded-lg font-medium hover:bg-carat-gray3 transition-colors"
               >
                 キャンセル
               </button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Review Modal */}
-      {showReviewModal && selectedListing && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] p-4" onClick={() => setShowReviewModal(false)}>
-          <div className="bg-white p-8 rounded-2xl max-w-md w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">出品者を評価</h3>
-            <p className="text-gray-600 mb-6">
-              「{selectedListing.title}」の出品者「{selectedListing.seller_name}」さんを評価してください。
-            </p>
-            
-            <div className="space-y-4 mb-6">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => submitReview('good', '良い取引でした')}
-                  className="flex-1 bg-green-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
-                >
-                  👍 良い
-                </button>
-                <button
-                  onClick={() => submitReview('neutral', '普通の取引でした')}
-                  className="flex-1 bg-yellow-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-yellow-600 transition-colors flex items-center justify-center gap-2"
-                >
-                  😐 普通
-                </button>
-                <button
-                  onClick={() => submitReview('bad', '問題のある取引でした')}
-                  className="flex-1 bg-red-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
-                >
-                  👎 悪い
-                </button>
-              </div>
-            </div>
-
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                コメント（任意）
-              </label>
-              <textarea
-                placeholder="取引の感想をお聞かせください..."
-                rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-
-            <button
-              onClick={() => setShowReviewModal(false)}
-              className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              後で評価する
-            </button>
           </div>
         </div>
       )}

@@ -1,4 +1,15 @@
-export const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000' : 'https://ddxdewgmen.ap-northeast-1.awsapprunner.com');
+// Helper function to get clean origin without userinfo (user:pass@)
+const getCleanOrigin = (): string => {
+  if (typeof window === 'undefined') return '';
+  const url = new URL(window.location.href);
+  // Reconstruct origin without userinfo
+  return `${url.protocol}//${url.host}`;
+};
+
+// For dev mode, use clean origin to avoid userinfo in fetch URLs
+// For production, use the configured API URL
+export const API_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.DEV ? getCleanOrigin() : 'https://ddxdewgmen.ap-northeast-1.awsapprunner.com');
 
 if (!import.meta.env.VITE_API_URL && !import.meta.env.DEV) {
   console.warn('VITE_API_URL is not set, using fallback backend URL');

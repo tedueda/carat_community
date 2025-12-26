@@ -146,9 +146,9 @@ export function MatchCard({ item }: { item: Item }) {
           <button
             onClick={handleMessage}
             className="flex-1 rounded-md border border-gray-300 px-2 py-1.5 text-center text-xs font-medium text-gray-700 transition-all hover:bg-gray-100 active:scale-95"
-            aria-label={`${item.display_name || "このユーザー"}にメールする`}
+            aria-label={`${item.display_name || "このユーザー"}とチャットする`}
           >
-            メールをする
+            チャットをする
           </button>
         </div>
       </div>

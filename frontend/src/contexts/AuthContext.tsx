@@ -9,6 +9,7 @@ interface User {
   membership_type: string;
   is_active: boolean;
   created_at: string;
+  avatar_url?: string;
 }
 
 interface AuthContextType {
@@ -93,7 +94,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     initializeAuth();
-  }, [API_URL]);
+  }, []); // API_URLは定数なので依存配列から削除
 
   const login = async (email: string, password: string, rememberMe: boolean = true): Promise<boolean> => {
     console.log('Login attempt with:', { email, rememberMe, API_URL });

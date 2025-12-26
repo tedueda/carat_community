@@ -12,7 +12,7 @@ from app.database import get_db
 from app.models import User, Post, PointEvent, Reaction, Tag, PostTag, MediaAsset, PostMedia, PostTourism, Comment
 from app.schemas import Post as PostSchema, PostCreate, PostUpdate
 import re
-from app.auth import get_current_active_user, get_current_premium_user
+from app.auth import get_current_active_user, get_current_premium_user, get_optional_user
 
 router = APIRouter(prefix="/api/posts", tags=["posts"], redirect_slashes=False)
 
@@ -34,7 +34,7 @@ async def read_posts(
     sort: str = "newest",
     range: str = "all",
     tag: Optional[str] = None,
-    current_user: Optional[User] = Depends(get_current_active_user),
+    current_user: Optional[User] = Depends(get_optional_user),
     db: Session = Depends(get_db)
 ):
     query = db.query(Post).options(joinedload(Post.user))
@@ -89,38 +89,49 @@ async def read_posts(
     offset = (page - 1) * limit
     posts = query.offset(offset).limit(limit).all()
     
+    # N+1クエリ問題を解決：一括でいいね数とコメント数を取得
+    post_ids = [post.id for post in posts]
+    
+    # いいね数を一括取得
+    like_counts = {}
+    if post_ids:
+        like_results = db.query(
+            Reaction.target_id,
+            func.count(Reaction.id).label('count')
+        ).filter(
+            Reaction.target_type == "post",
+            Reaction.target_id.in_(post_ids),
+            Reaction.reaction_type == "like"
+        ).group_by(Reaction.target_id).all()
+        like_counts = {target_id: count for target_id, count in like_results}
+    
+    # ユーザーのいいね状態を一括取得
+    user_likes = set()
+    if current_user and post_ids:
+        user_like_results = db.query(Reaction.target_id).filter(
+            Reaction.user_id == current_user.id,
+            Reaction.target_type == "post",
+            Reaction.target_id.in_(post_ids),
+            Reaction.reaction_type == "like"
+        ).all()
+        user_likes = {target_id for (target_id,) in user_like_results}
+    
+    # コメント数を一括取得
+    comment_counts = {}
+    if post_ids:
+        comment_results = db.query(
+            Comment.post_id,
+            func.count(Comment.id).label('count')
+        ).filter(
+            Comment.post_id.in_(post_ids)
+        ).group_by(Comment.post_id).all()
+        comment_counts = {post_id: count for post_id, count in comment_results}
+    
     result = []
     for post in posts:
-        # カラット数（いいね数）を計算
-        try:
-            like_count = db.query(Reaction).filter(
-                Reaction.target_type == "post",
-                Reaction.target_id == post.id,
-                Reaction.reaction_type == "like"
-            ).count()
-        except Exception as e:
-            print(f"Error counting likes for post {post.id}: {e}")
-            like_count = 0
-        
-        is_liked = False
-        if current_user:
-            try:
-                is_liked = db.query(Reaction).filter(
-                    Reaction.user_id == current_user.id,
-                    Reaction.target_type == "post",
-                    Reaction.target_id == post.id,
-                    Reaction.reaction_type == "like"
-                ).first() is not None
-            except Exception as e:
-                print(f"Error checking like status for post {post.id}: {e}")
-                is_liked = False
-        
-        # コメント数を計算
-        try:
-            comment_count = db.query(Comment).filter(Comment.post_id == post.id).count()
-        except Exception as e:
-            print(f"Error counting comments for post {post.id}: {e}")
-            comment_count = 0
+        like_count = like_counts.get(post.id, 0)
+        is_liked = post.id in user_likes
+        comment_count = comment_counts.get(post.id, 0)
         
         post_dict = {
             "id": post.id,
@@ -140,6 +151,9 @@ async def read_posts(
             "status": post.status,
             "og_image_url": post.og_image_url,
             "excerpt": post.excerpt,
+            "goal_amount": post.goal_amount if hasattr(post, 'goal_amount') else 0,
+            "current_amount": post.current_amount if hasattr(post, 'current_amount') else 0,
+            "deadline": post.deadline if hasattr(post, 'deadline') else None,
             "tourism_details": None,
             "created_at": post.created_at,
             "updated_at": post.updated_at,
@@ -158,7 +172,11 @@ async def read_posts(
             for pm in post_media_records:
                 media = db.query(MediaAsset).filter(MediaAsset.id == pm.media_asset_id).first()
                 if media:
-                    media_urls.append(media.url)
+                    url = media.url
+                    # 相対パスをS3 URLに変換
+                    if url and url.startswith('/media/'):
+                        url = f"https://rainbow-community-media-prod.s3.ap-northeast-1.amazonaws.com{url}"
+                    media_urls.append(url)
             post_dict["media_urls"] = media_urls
         
         if post.post_type == 'tourism':
@@ -185,7 +203,7 @@ async def read_posts(
 @router.post("/", response_model=PostSchema)
 async def create_post(
     post: PostCreate,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_premium_user),
     db: Session = Depends(get_db)
 ):
     post_data = post.dict(exclude={'media_ids', 'tourism_details'})
@@ -253,6 +271,9 @@ async def read_post(post_id: int, db: Session = Depends(get_db)):
         "status": post.status,
         "og_image_url": post.og_image_url,
         "excerpt": post.excerpt,
+        "goal_amount": post.goal_amount if hasattr(post, 'goal_amount') else 0,
+        "current_amount": post.current_amount if hasattr(post, 'current_amount') else 0,
+        "deadline": post.deadline if hasattr(post, 'deadline') else None,
         "tourism_details": None,
         "created_at": post.created_at,
         "updated_at": post.updated_at

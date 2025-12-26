@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from app.routers import auth, users, profiles, posts, comments, reactions, follows, notifications, media, billing, matching, categories, ops, account
+from app.routers import auth, users, profiles, posts, comments, reactions, follows, notifications, media, billing, matching, categories, ops, account, donation, salon
 from app.database import Base, engine, get_db
 import os
 from pathlib import Path
@@ -39,10 +39,10 @@ def run_migrations():
     finally:
         db.close()
 
-# S3設定
+# S3設定 - 開発環境ではローカルストレージを使用
 S3_BUCKET = os.getenv("AWS_S3_BUCKET", "rainbow-community-media-prod")
 S3_REGION = os.getenv("AWS_REGION", "ap-northeast-1")
-USE_S3 = os.getenv("USE_S3", "true").lower() == "true"
+USE_S3 = os.getenv("USE_S3", "false").lower() == "true"  # デフォルトfalseに変更
 
 # ローカルメディアディレクトリ（フォールバック）
 media_base = os.getenv("MEDIA_DIR")
@@ -78,10 +78,11 @@ else:
         "https://rainbow-community-app-wg5nxt2r.devinapps.com",
     ]
 
+    ALLOW_CREDENTIALS = True
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
-    allow_origin_regex=r"https://.*\.devinapps\.com",
+    allow_origins=["*"],  # For development
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -104,6 +105,8 @@ app.include_router(matching.router)
 app.include_router(categories.router)
 app.include_router(ops.router)
 app.include_router(account.router)
+app.include_router(donation.router)
+app.include_router(salon.router)
 
 @app.on_event("startup")
 def on_startup():

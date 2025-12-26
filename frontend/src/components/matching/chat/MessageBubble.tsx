@@ -21,7 +21,21 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   const formatTime = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
-      return date.toLocaleTimeString('ja-JP', {
+      const now = new Date();
+      const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
+      
+      // 24時間以内なら時刻のみ表示
+      if (diffInHours < 24) {
+        return date.toLocaleTimeString('ja-JP', {
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+      }
+      
+      // 24時間以上なら日時表示
+      return date.toLocaleString('ja-JP', {
+        month: 'numeric',
+        day: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
       });

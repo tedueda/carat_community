@@ -152,6 +152,10 @@ class Post(Base):
     status = Column(String(20), server_default='published', nullable=False)
     og_image_url = Column(String(500))
     excerpt = Column(Text)
+    # Funding用フィールド
+    goal_amount = Column(Integer, default=0)
+    current_amount = Column(Integer, default=0)
+    deadline = Column(Date, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
@@ -393,6 +397,7 @@ class MatchingProfile(Base):
     bio = Column(Text)
     identity = Column(String(50))
     romance_targets = Column(JSON, default=list)
+    avatar_url = Column(String(500))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -505,3 +510,92 @@ class ChatRequestMessage(Base):
     content = Column(Text, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     migrated_at = Column(DateTime(timezone=True))
+
+class DonationProject(Base):
+    __tablename__ = "donation_projects"
+
+    id = Column(Integer, primary_key=True, index=True)
+    creator_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    title = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    category = Column(String(50), nullable=False)
+    goal_amount = Column(Integer, nullable=False)
+    current_amount = Column(Integer, default=0, nullable=False)
+    deadline = Column(Date, nullable=False)
+    supporters_count = Column(Integer, default=0, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+class DonationProjectImage(Base):
+    __tablename__ = "donation_project_images"
+
+    id = Column(Integer, primary_key=True, index=True)
+    project_id = Column(Integer, ForeignKey("donation_projects.id"), nullable=False)
+    image_url = Column(String(500), nullable=False)
+    display_order = Column(Integer, default=0)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class DonationSupport(Base):
+    __tablename__ = "donation_supports"
+
+    id = Column(Integer, primary_key=True, index=True)
+    project_id = Column(Integer, ForeignKey("donation_projects.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    amount = Column(Integer, nullable=False)
+    message = Column(Text, nullable=True)
+    is_anonymous = Column(Boolean, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class SalonRoom(Base):
+    __tablename__ = "salon_rooms"
+
+    id = Column(Integer, primary_key=True, index=True)
+    creator_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    theme = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    target_identities = Column(JSON, nullable=False)
+    room_type = Column(String(50), nullable=False)
+    allow_anonymous = Column(Boolean, default=False)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        CheckConstraint("room_type IN ('consultation', 'exchange', 'story', 'other')", name="check_salon_room_type"),
+    )
+
+    creator = relationship("User")
+    participants = relationship("SalonParticipant", back_populates="room")
+    messages = relationship("SalonMessage", back_populates="room")
+
+
+class SalonParticipant(Base):
+    __tablename__ = "salon_participants"
+
+    id = Column(Integer, primary_key=True, index=True)
+    room_id = Column(Integer, ForeignKey("salon_rooms.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    anonymous_name = Column(String(100), nullable=True)
+    joined_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("room_id", "user_id", name="unique_salon_participant"),
+    )
+
+    room = relationship("SalonRoom", back_populates="participants")
+    user = relationship("User")
+
+
+class SalonMessage(Base):
+    __tablename__ = "salon_messages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    room_id = Column(Integer, ForeignKey("salon_rooms.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    is_anonymous = Column(Boolean, default=False)
+    body = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    room = relationship("SalonRoom", back_populates="messages")
+    user = relationship("User")

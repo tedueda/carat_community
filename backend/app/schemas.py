@@ -31,6 +31,7 @@ class User(UserBase):
     membership_type: str
     is_active: bool
     created_at: datetime
+    avatar_url: Optional[str] = None
     
     class Config:
         from_attributes = True
@@ -104,6 +105,10 @@ class PostBase(BaseModel):
     status: PostStatusEnum = PostStatusEnum.published
     og_image_url: Optional[str] = None
     excerpt: Optional[str] = None
+    # Funding用フィールド
+    goal_amount: Optional[int] = 0
+    current_amount: Optional[int] = 0
+    deadline: Optional[date] = None
 
 class PostTourismDetails(BaseModel):
     prefecture: Optional[str] = None
@@ -136,6 +141,10 @@ class PostUpdate(BaseModel):
     og_image_url: Optional[str] = None
     excerpt: Optional[str] = None
     tourism_details: Optional[PostTourismDetails] = None
+    # Funding用フィールド
+    goal_amount: Optional[int] = None
+    current_amount: Optional[int] = None
+    deadline: Optional[date] = None
 
 class Post(PostBase):
     id: int
@@ -243,6 +252,89 @@ class TagCreate(TagBase):
 class Tag(TagBase):
     id: int
     created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+
+class SalonRoomTypeEnum(str, Enum):
+    consultation = "consultation"
+    exchange = "exchange"
+    story = "story"
+    other = "other"
+
+
+class SalonRoomBase(BaseModel):
+    theme: str
+    description: str
+    target_identities: List[str]
+    room_type: SalonRoomTypeEnum
+    allow_anonymous: bool = False
+
+
+class SalonRoomCreate(SalonRoomBase):
+    pass
+
+
+class SalonRoomUpdate(BaseModel):
+    theme: Optional[str] = None
+    description: Optional[str] = None
+    target_identities: Optional[List[str]] = None
+    room_type: Optional[SalonRoomTypeEnum] = None
+    allow_anonymous: Optional[bool] = None
+    is_active: Optional[bool] = None
+
+
+class SalonRoom(SalonRoomBase):
+    id: int
+    creator_id: int
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+    participant_count: Optional[int] = 0
+    creator_display_name: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
+
+
+class SalonParticipantBase(BaseModel):
+    anonymous_name: Optional[str] = None
+
+
+class SalonParticipantCreate(SalonParticipantBase):
+    room_id: int
+
+
+class SalonParticipant(SalonParticipantBase):
+    id: int
+    room_id: int
+    user_id: int
+    joined_at: datetime
+    user_display_name: Optional[str] = None
+    user_avatar_url: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
+
+
+class SalonMessageBase(BaseModel):
+    body: str
+    is_anonymous: bool = False
+
+
+class SalonMessageCreate(SalonMessageBase):
+    room_id: int
+
+
+class SalonMessage(SalonMessageBase):
+    id: int
+    room_id: int
+    user_id: int
+    created_at: datetime
+    user_display_name: Optional[str] = None
+    user_avatar_url: Optional[str] = None
+    anonymous_name: Optional[str] = None
     
     class Config:
         from_attributes = True

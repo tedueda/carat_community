@@ -265,6 +265,17 @@ async def read_users_me(
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
+    # Get avatar URL from matching_profiles or profiles
+    from app.models import MatchingProfile, Profile
+    avatar_url = None
+    matching_profile = db.query(MatchingProfile).filter(MatchingProfile.user_id == current_user.id).first()
+    if matching_profile and matching_profile.avatar_url:
+        avatar_url = matching_profile.avatar_url
+    else:
+        profile = db.query(Profile).filter(Profile.user_id == current_user.id).first()
+        if profile and profile.avatar_url:
+            avatar_url = profile.avatar_url
+    
     user_dict = {
         "id": current_user.id,
         "email": current_user.email,
@@ -272,7 +283,8 @@ async def read_users_me(
         "nickname": current_user.display_name,  # Use display_name as fallback
         "membership_type": current_user.membership_type,
         "is_active": current_user.is_active,
-        "created_at": current_user.created_at
+        "created_at": current_user.created_at,
+        "avatar_url": avatar_url
     }
     
     return user_dict
