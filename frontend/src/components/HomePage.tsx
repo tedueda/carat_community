@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, MessageCircle, Gem as DiamondIcon } from 'lucide-react';
+import { ArrowRight, MessageCircle, Gem as DiamondIcon, Lock } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import UnderConstructionModal from './UnderConstructionModal';
 import PostDetailModal from './PostDetailModal';
+import PremiumUpgradeModal from './PremiumUpgradeModal';
 import { Post, User } from '../types/Post';
 import { extractYouTubeId } from '../utils/youtube';
 
@@ -138,6 +139,8 @@ const HomePage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [showConstructionModal, setShowConstructionModal] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeFeatureName, setUpgradeFeatureName] = useState('');
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedNewsArticle, setSelectedNewsArticle] = useState<any>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
@@ -397,102 +400,6 @@ const HomePage: React.FC = () => {
 
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 会員特典メニュー - プレミアム会員のみ表示 */}
-        {(user?.membership_type === 'premium' || user?.membership_type === 'admin') && (
-        <section className="py-12">
-          <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-3 gap-1 md:gap-0">
-            <h3 className="text-4xl md:text-5xl font-serif font-semibold text-slate-900">会員特典メニュー</h3>
-            <span className="text-base md:text-2xl text-slate-500 self-start md:self-auto">プレミアム会員限定</span>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-            {memberBenefits.map((benefit) => {
-              return (
-                <Card 
-                  key={benefit.id} 
-                  className="group backdrop-blur-md bg-gray-50/90 border border-gray-200 hover:bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer hover:scale-[1.02] shadow-lg hover:shadow-2xl"
-                  onClick={() => {
-                    if (benefit.external === false && benefit.link) {
-                      navigate(benefit.link);
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    } else {
-                      setShowConstructionModal(true);
-                    }
-                  }}
-                >
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="text-4xl group-hover:scale-110 transition-transform relative">
-                          {benefit.icon}
-                        </div>
-                        <div className="text-left">
-                          <h4 className="font-serif font-semibold text-slate-900 mb-1 group-hover:gold-accent flex items-center gap-2">
-                            {benefit.title}
-                          </h4>
-                          <p className="text-sm text-slate-600 line-clamp-2">
-                            {benefit.description}
-                          </p>
-                        </div>
-                      </div>
-                      <Button 
-                        className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black group-hover:shadow-md transition-all font-medium"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (benefit.external === false && benefit.link) {
-                            navigate(benefit.link);
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                          } else {
-                            setShowConstructionModal(true);
-                          }
-                        }}
-                      >
-                        利用する
-                        <ArrowRight className="h-3 w-3 ml-1" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </section>
-        )}
-
-        {/* ライブウェディングバナー */}
-        <section className="py-12">
-          <Card 
-            className="text-white border border-white/20 shadow-2xl relative overflow-hidden backdrop-blur-sm cursor-pointer hover:shadow-3xl transition-all duration-300"
-            onClick={() => navigate('/live-wedding')}
-          >
-            <div className="absolute inset-0">
-              <img 
-                src="/images/lgbtq-7-1536x1024.jpg" 
-                alt="Live Wedding Background"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-pink-500/60 via-purple-500/60 to-indigo-500/60"></div>
-            </div>
-            <CardContent className="p-6 md:p-8 text-center relative z-10">
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <span className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">Special Service</span>
-              </div>
-              <h3 className="text-4xl md:text-5xl font-serif font-bold mb-4">Live Wedding</h3>
-              <p className="text-xl md:text-2xl mb-6 opacity-90">オンラインで叶える、あなただけの特別な結婚式</p>
-              <Button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate('/live-wedding');
-                }}
-                className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-6 py-2.5 shadow-lg"
-              >
-                詳細を見る
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            </CardContent>
-          </Card>
-        </section>
-
         {/* 掲示板セクション - 6カテゴリ */}
         {boardCategories.map((cat) => (
           <section key={cat.key} className="py-8">
@@ -601,6 +508,128 @@ const HomePage: React.FC = () => {
           </section>
         ))}
 
+        {/* 会員特典メニュー - 全員に表示、無料会員はロック表示 */}
+        <section className="py-12">
+          <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-3 gap-1 md:gap-0">
+            <h3 className="text-4xl md:text-5xl font-serif font-semibold text-slate-900">会員特典メニュー</h3>
+            <span className="text-base md:text-2xl text-slate-500 self-start md:self-auto">プレミアム会員限定</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+            {memberBenefits.map((benefit) => {
+              const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+              const isLocked = !isPremium;
+              
+              const handleBenefitClick = () => {
+                if (!user) {
+                  window.location.href = '/login';
+                } else if (isLocked) {
+                  setUpgradeFeatureName(benefit.title);
+                  setShowUpgradeModal(true);
+                } else if (benefit.external === false && benefit.link) {
+                  navigate(benefit.link);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                  setShowConstructionModal(true);
+                }
+              };
+              
+              return (
+                <Card 
+                  key={benefit.id} 
+                  className={`group backdrop-blur-md border transition-all duration-300 cursor-pointer shadow-lg ${
+                    isLocked 
+                      ? 'bg-gray-100/90 border-gray-300 hover:bg-gray-200/90' 
+                      : 'bg-gray-50/90 border-gray-200 hover:bg-white hover:border-gray-300 hover:scale-[1.02] hover:shadow-2xl'
+                  }`}
+                  onClick={handleBenefitClick}
+                >
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className={`text-4xl transition-transform relative ${isLocked ? 'opacity-50' : 'group-hover:scale-110'}`}>
+                          {benefit.icon}
+                          {isLocked && (
+                            <div className="absolute -top-1 -right-1 bg-gray-600 rounded-full p-1">
+                              <Lock className="h-3 w-3 text-white" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="text-left">
+                          <h4 className={`font-serif font-semibold mb-1 flex items-center gap-2 ${isLocked ? 'text-slate-500' : 'text-slate-900 group-hover:gold-accent'}`}>
+                            {benefit.title}
+                            {isLocked && <Lock className="h-4 w-4 text-gray-400" />}
+                          </h4>
+                          <p className={`text-sm line-clamp-2 ${isLocked ? 'text-slate-400' : 'text-slate-600'}`}>
+                            {benefit.description}
+                          </p>
+                        </div>
+                      </div>
+                      <Button 
+                        className={`font-medium ${
+                          isLocked 
+                            ? 'bg-gray-200 text-gray-500 border border-gray-300 hover:bg-gray-300' 
+                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black group-hover:shadow-md'
+                        } transition-all`}
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleBenefitClick();
+                        }}
+                      >
+                        {isLocked ? (
+                          <>
+                            <Lock className="h-3 w-3 mr-1" />
+                            ロック中
+                          </>
+                        ) : (
+                          <>
+                            利用する
+                            <ArrowRight className="h-3 w-3 ml-1" />
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ライブウェディングバナー */}
+        <section className="py-12">
+          <Card 
+            className="text-white border border-white/20 shadow-2xl relative overflow-hidden backdrop-blur-sm cursor-pointer hover:shadow-3xl transition-all duration-300"
+            onClick={() => navigate('/live-wedding')}
+          >
+            <div className="absolute inset-0">
+              <img 
+                src="/images/lgbtq-7-1536x1024.jpg" 
+                alt="Live Wedding Background"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-500/60 via-purple-500/60 to-indigo-500/60"></div>
+            </div>
+            <CardContent className="p-6 md:p-8 text-center relative z-10">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <span className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">Special Service</span>
+              </div>
+              <h3 className="text-4xl md:text-5xl font-serif font-bold mb-4">Live Wedding</h3>
+              <p className="text-xl md:text-2xl mb-6 opacity-90">オンラインで叶える、あなただけの特別な結婚式</p>
+              <Button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate('/live-wedding');
+                }}
+                className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-6 py-2.5 shadow-lg"
+              >
+                詳細を見る
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </CardContent>
+          </Card>
+        </section>
+
         {/* ニュースセクション */}
         <section className="py-12">
           <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-6 gap-1 md:gap-0">
@@ -695,6 +724,13 @@ const HomePage: React.FC = () => {
       <UnderConstructionModal 
         isOpen={showConstructionModal}
         onClose={() => setShowConstructionModal(false)}
+      />
+
+      {/* プレミアムアップグレードモーダル */}
+      <PremiumUpgradeModal
+        open={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        featureName={upgradeFeatureName}
       />
 
       {/* ニュース詳細モーダル */}
