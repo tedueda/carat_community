@@ -14,29 +14,17 @@ interface HeroAudioPlayerProps {
 export const HeroAudioPlayer = ({ isHeroVisible }: HeroAudioPlayerProps) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Start muted for autoplay
   const [volume, setVolume] = useState(0.5);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-  const [needsUserGesture, setNeedsUserGesture] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
-
-  // Detect mobile device
-  useEffect(() => {
-    const checkMobile = () => {
-      const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-      const hasTouch = navigator.maxTouchPoints > 0;
-      const isSmallScreen = window.innerWidth < 768;
-      return isTouchDevice || (hasTouch && isSmallScreen);
-    };
-    setIsMobile(checkMobile());
-  }, []);
 
   // Initialize audio element
   useEffect(() => {
     if (!audioRef.current) {
       audioRef.current = new Audio();
-      audioRef.current.volume = volume;
+      audioRef.current.volume = 0; // Start muted
+      audioRef.current.muted = true;
     }
     return () => {
       if (audioRef.current) {
@@ -65,35 +53,21 @@ export const HeroAudioPlayer = ({ isHeroVisible }: HeroAudioPlayerProps) => {
     return () => audio.removeEventListener('ended', handleEnded);
   }, [currentTrackIndex, isPlaying, isHeroVisible]);
 
-  // Load initial track
+  // Autoplay muted on mount
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    audio.src = AUDIO_TRACKS[currentTrackIndex];
-    audio.load();
-  }, []);
 
-  // Attempt autoplay on desktop
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || isMobile) {
-      if (isMobile) {
-        setNeedsUserGesture(true);
-      }
-      return;
-    }
-
-    // Try to autoplay on desktop
     const attemptAutoplay = async () => {
       try {
         audio.src = AUDIO_TRACKS[0];
-        audio.volume = volume;
+        audio.muted = true;
+        audio.volume = 0;
         await audio.play();
         setIsPlaying(true);
-        setNeedsUserGesture(false);
+        console.log('Autoplay started (muted)');
       } catch (error) {
-        console.log('Autoplay blocked, waiting for user gesture');
-        setNeedsUserGesture(true);
+        console.log('Autoplay failed:', error);
         setIsPlaying(false);
       }
     };
@@ -101,23 +75,24 @@ export const HeroAudioPlayer = ({ isHeroVisible }: HeroAudioPlayerProps) => {
     // Small delay to ensure component is mounted
     const timer = setTimeout(attemptAutoplay, 500);
     return () => clearTimeout(timer);
-  }, [isMobile]);
+  }, []);
 
   // Handle hero visibility changes
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (isHeroVisible && isPlaying && !needsUserGesture) {
+    if (isHeroVisible && isPlaying) {
       audio.play().catch(() => {});
     } else if (!isHeroVisible && isPlaying) {
       audio.pause();
     }
-  }, [isHeroVisible, isPlaying, needsUserGesture]);
+  }, [isHeroVisible, isPlaying]);
 
-  // Update volume
+  // Update volume and muted state
   useEffect(() => {
     if (audioRef.current) {
+      audioRef.current.muted = isMuted;
       audioRef.current.volume = isMuted ? 0 : volume;
     }
   }, [volume, isMuted]);
@@ -133,7 +108,6 @@ export const HeroAudioPlayer = ({ isHeroVisible }: HeroAudioPlayerProps) => {
       audio.play()
         .then(() => {
           setIsPlaying(true);
-          setNeedsUserGesture(false);
         })
         .catch((error) => {
           console.error('Play failed:', error);
@@ -159,23 +133,21 @@ export const HeroAudioPlayer = ({ isHeroVisible }: HeroAudioPlayerProps) => {
       onMouseEnter={() => setShowVolumeSlider(true)}
       onMouseLeave={() => setShowVolumeSlider(false)}
     >
-      {/* Play/Pause button - shown when user gesture is needed or on mobile */}
-      {(needsUserGesture || isMobile) && (
-        <button
-          onClick={togglePlay}
-          className="text-white hover:text-gray-300 transition-colors p-1"
-          aria-label={isPlaying ? 'Pause' : 'Play'}
-        >
-          {isPlaying ? (
-            <Pause className="w-5 h-5" />
-          ) : (
-            <Play className="w-5 h-5" />
-          )}
-        </button>
-      )}
+      {/* Play/Pause button - always shown for control */}
+      <button
+        onClick={togglePlay}
+        className="text-white hover:text-gray-300 transition-colors p-1"
+        aria-label={isPlaying ? 'Pause' : 'Play'}
+      >
+        {isPlaying ? (
+          <Pause className="w-5 h-5" />
+        ) : (
+          <Play className="w-5 h-5" />
+        )}
+      </button>
 
-      {/* Volume slider - shown on hover (desktop) or always visible (mobile) */}
-      <div className={`flex items-center gap-2 overflow-hidden transition-all duration-300 ${showVolumeSlider || isMobile ? 'w-24 opacity-100' : 'w-0 opacity-0'}`}>
+      {/* Volume slider - shown on hover or when interacting */}
+      <div className={`flex items-center gap-2 overflow-hidden transition-all duration-300 ${showVolumeSlider ? 'w-24 opacity-100' : 'w-0 opacity-0'}`}>
         <input
           type="range"
           min="0"
