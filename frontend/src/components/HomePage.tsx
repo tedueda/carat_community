@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, MessageCircle, Gem as DiamondIcon, Lock } from 'lucide-react';
@@ -9,6 +9,7 @@ import PostDetailModal from './PostDetailModal';
 import PremiumUpgradeModal from './PremiumUpgradeModal';
 import { Post, User } from '../types/Post';
 import { extractYouTubeId } from '../utils/youtube';
+import HeroAudioPlayer from './HeroAudioPlayer';
 
 
 const memberBenefits = [
@@ -145,6 +146,8 @@ const HomePage: React.FC = () => {
   const [selectedNewsArticle, setSelectedNewsArticle] = useState<any>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isHeroVisible, setIsHeroVisible] = useState(true);
+  const heroSectionRef = useRef<HTMLElement>(null);
   const { token, user, isAnonymous } = useAuth();
   const navigate = useNavigate();
 
@@ -300,6 +303,24 @@ const HomePage: React.FC = () => {
     return () => clearInterval(slideInterval);
   }, []);
 
+  // IntersectionObserver for hero section visibility
+  useEffect(() => {
+    const heroElement = heroSectionRef.current;
+    if (!heroElement) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsHeroVisible(entry.isIntersecting);
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(heroElement);
+    return () => observer.disconnect();
+  }, []);
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto p-4 sm:p-6">
@@ -320,7 +341,7 @@ const HomePage: React.FC = () => {
       <div className="w-full max-w-full space-y-8">
         
         {/* ヒーローセクション */}
-        <section className="relative w-full overflow-hidden" style={{height: '860px'}}>
+        <section ref={heroSectionRef} className="relative w-full overflow-hidden" style={{height: '860px'}}>
           <div className="absolute inset-0">
             <div 
               className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 0 ? 'opacity-100' : 'opacity-0'}`}
@@ -883,6 +904,9 @@ const HomePage: React.FC = () => {
           }}
         />
       )}
+
+      {/* Hero Audio Player */}
+      <HeroAudioPlayer isHeroVisible={isHeroVisible} />
     </div>
   );
 };
