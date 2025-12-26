@@ -294,7 +294,7 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const slideInterval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 3);
+      setCurrentSlide((prev) => (prev + 1) % 5);
     }, 5000);
 
     return () => clearInterval(slideInterval);
@@ -326,7 +326,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 0 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/img10.jpg" 
+                src="/images/hero1.png" 
                 alt="LGBTQ+ Community 1"
                 className="w-full h-full object-cover"
               />
@@ -335,7 +335,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 1 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/img12.jpg" 
+                src="/images/hero2.png" 
                 alt="LGBTQ+ Community 2"
                 className="w-full h-full object-cover"
               />
@@ -344,8 +344,26 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 2 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/img14.jpg" 
+                src="/images/hero3.png" 
                 alt="LGBTQ+ Community 3"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div 
+              className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 3 ? 'opacity-100' : 'opacity-0'}`}
+            >
+              <img 
+                src="/images/hero4.png" 
+                alt="LGBTQ+ Community 4"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div 
+              className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 4 ? 'opacity-100' : 'opacity-0'}`}
+            >
+              <img 
+                src="/images/hero5.png" 
+                alt="LGBTQ+ Community 5"
                 className="w-full h-full object-cover"
               />
             </div>
