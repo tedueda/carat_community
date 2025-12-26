@@ -246,6 +246,9 @@ const CreatePost: React.FC = () => {
   const selectedCategory = categories.find(cat => cat.key === category);
   const CategoryIcon = selectedCategory?.icon || PlusCircle;
 
+  // Check if user is premium member
+  const isPremiumMember = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+
   // Show login prompt if not logged in
   if (showLoginPrompt && (!user || isAnonymous)) {
     return (
@@ -255,21 +258,78 @@ const CreatePost: React.FC = () => {
             <Lock className="h-12 w-12 mx-auto text-gray-400 mb-4" />
             <h2 className="text-xl font-semibold mb-2">会員登録が必要です</h2>
             <p className="text-gray-600 mb-4">
-              投稿を作成するには会員登録（無料）が必要です。<br />
-              登録後すぐに投稿できるようになります。
+              投稿を作成するには会員登録が必要です。<br />
+              プレミアム会員になると投稿できるようになります。
             </p>
             <div className="flex flex-col gap-3">
               <Button 
                 onClick={() => navigate('/register')}
                 className="bg-black hover:bg-gray-800"
               >
-                会員登録（無料）
+                会員登録（月額1,000円）
               </Button>
               <Button 
                 onClick={() => navigate('/login')}
                 variant="outline"
               >
                 すでにアカウントをお持ちの方
+              </Button>
+              <Button 
+                onClick={() => navigate('/feed')}
+                variant="ghost"
+              >
+                ホームに戻る
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Show premium upgrade prompt for free members
+  if (user && !isPremiumMember) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <Card className="max-w-md w-full">
+          <CardContent className="p-6 text-center">
+            <div className="bg-gradient-to-r from-amber-400 to-yellow-500 p-3 rounded-full w-fit mx-auto mb-4">
+              <Lock className="h-8 w-8 text-white" />
+            </div>
+            <h2 className="text-xl font-semibold mb-2">プレミアム会員限定機能です</h2>
+            <p className="text-gray-600 mb-4">
+              投稿を作成するにはプレミアム会員への登録が必要です。
+            </p>
+            <div className="bg-gray-50 rounded-lg p-4 mb-4 text-left">
+              <h3 className="font-semibold text-gray-900 mb-2">プレミアム会員特典</h3>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  すべてのカテゴリへの投稿
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  会員マッチング機能
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  会員サロン（チャットルーム）
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  寄付金募集・商品販売
+                </li>
+              </ul>
+            </div>
+            <p className="text-xs text-gray-500 mb-4">
+              月額1,000円 ・ いつでも解約可能
+            </p>
+            <div className="flex flex-col gap-3">
+              <Button 
+                onClick={() => navigate('/register')}
+                className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600"
+              >
+                プレミアム会員に登録
               </Button>
               <Button 
                 onClick={() => navigate('/feed')}

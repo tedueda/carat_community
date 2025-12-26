@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, MessageCircle, Gem as DiamondIcon, Lock } from 'lucide-react';
+import { ArrowRight, MessageCircle, Gem as DiamondIcon } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import UnderConstructionModal from './UnderConstructionModal';
@@ -397,28 +397,20 @@ const HomePage: React.FC = () => {
 
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 会員特典メニュー */}
+        {/* 会員特典メニュー - プレミアム会員のみ表示 */}
+        {(user?.membership_type === 'premium' || user?.membership_type === 'admin') && (
         <section className="py-12">
           <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-3 gap-1 md:gap-0">
             <h3 className="text-4xl md:text-5xl font-serif font-semibold text-slate-900">会員特典メニュー</h3>
-            <span className="text-base md:text-2xl text-slate-500 self-start md:self-auto">会員限定</span>
+            <span className="text-base md:text-2xl text-slate-500 self-start md:self-auto">プレミアム会員限定</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
             {memberBenefits.map((benefit) => {
-              const isPremiumLocked = benefit.premiumOnly && user?.membership_type !== 'premium' && user?.membership_type !== 'admin';
               return (
                 <Card 
                   key={benefit.id} 
-                  className={`group backdrop-blur-md bg-gray-50/90 border border-gray-200 hover:bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer hover:scale-[1.02] shadow-lg hover:shadow-2xl ${isPremiumLocked ? 'opacity-75' : ''}`}
+                  className="group backdrop-blur-md bg-gray-50/90 border border-gray-200 hover:bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer hover:scale-[1.02] shadow-lg hover:shadow-2xl"
                   onClick={() => {
-                    if (!user) {
-                      setShowLoginPrompt(true);
-                      return;
-                    }
-                    if (isPremiumLocked) {
-                      alert('この機能はプレミアム会員限定です');
-                      return;
-                    }
                     if (benefit.external === false && benefit.link) {
                       navigate(benefit.link);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -432,18 +424,10 @@ const HomePage: React.FC = () => {
                       <div className="flex items-center space-x-4">
                         <div className="text-4xl group-hover:scale-110 transition-transform relative">
                           {benefit.icon}
-                          {isPremiumLocked && (
-                            <div className="absolute -top-1 -right-1 bg-gray-800 rounded-full p-1">
-                              <Lock className="h-3 w-3 text-white" />
-                            </div>
-                          )}
                         </div>
                         <div className="text-left">
                           <h4 className="font-serif font-semibold text-slate-900 mb-1 group-hover:gold-accent flex items-center gap-2">
                             {benefit.title}
-                            {isPremiumLocked && (
-                              <span className="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded">Premium</span>
-                            )}
                           </h4>
                           <p className="text-sm text-slate-600 line-clamp-2">
                             {benefit.description}
@@ -455,14 +439,6 @@ const HomePage: React.FC = () => {
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (!user) {
-                            setShowLoginPrompt(true);
-                            return;
-                          }
-                          if (isPremiumLocked) {
-                            alert('この機能はプレミアム会員限定です');
-                            return;
-                          }
                           if (benefit.external === false && benefit.link) {
                             navigate(benefit.link);
                             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -471,17 +447,8 @@ const HomePage: React.FC = () => {
                           }
                         }}
                       >
-                        {isPremiumLocked ? (
-                          <>
-                            <Lock className="h-3 w-3 mr-1" />
-                            ロック中
-                          </>
-                        ) : (
-                          <>
-                            利用する
-                            <ArrowRight className="h-3 w-3 ml-1" />
-                          </>
-                        )}
+                        利用する
+                        <ArrowRight className="h-3 w-3 ml-1" />
                       </Button>
                     </div>
                   </CardContent>
@@ -490,6 +457,7 @@ const HomePage: React.FC = () => {
             })}
           </div>
         </section>
+        )}
 
         {/* ライブウェディングバナー */}
         <section className="py-12">

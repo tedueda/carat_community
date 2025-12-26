@@ -156,17 +156,23 @@ function AppContent() {
           } />
           <Route path="/funding" element={
             <FeedRoute>
-              <DonationPage />
+              <PremiumGate>
+                <DonationPage />
+              </PremiumGate>
             </FeedRoute>
           } />
           <Route path="/marketplace" element={
             <FeedRoute>
-              <MarketplacePage />
+              <PremiumGate>
+                <MarketplacePage />
+              </PremiumGate>
             </FeedRoute>
           } />
           <Route path="/members/marketplace" element={
             <FeedRoute>
-              <MarketplacePage />
+              <PremiumGate>
+                <MarketplacePage />
+              </PremiumGate>
             </FeedRoute>
           } />
           <Route path="/members/favorites" element={
@@ -179,15 +185,19 @@ function AppContent() {
                         <AccountPage />
                       </FeedRoute>
                     } />
-                    {/* Salon routes */}
+                    {/* Salon routes - Premium only */}
                     <Route path="/salon" element={
                       <FeedRoute>
-                        <SalonPage />
+                        <PremiumGate>
+                          <SalonPage />
+                        </PremiumGate>
                       </FeedRoute>
                     } />
                     <Route path="/salon/rooms/:roomId" element={
                       <FeedRoute>
-                        <SalonRoomDetailPage />
+                        <PremiumGate>
+                          <SalonRoomDetailPage />
+                        </PremiumGate>
                       </FeedRoute>
                     } />
                     <Route path="/news" element={

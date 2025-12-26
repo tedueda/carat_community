@@ -203,7 +203,7 @@ async def read_posts(
 @router.post("/", response_model=PostSchema)
 async def create_post(
     post: PostCreate,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_premium_user),
     db: Session = Depends(get_db)
 ):
     post_data = post.dict(exclude={'media_ids', 'tourism_details'})
