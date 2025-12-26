@@ -294,7 +294,7 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const slideInterval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 5);
+      setCurrentSlide((prev) => (prev + 1) % 8);
     }, 5000);
 
     return () => clearInterval(slideInterval);
@@ -364,6 +364,33 @@ const HomePage: React.FC = () => {
               <img 
                 src="/images/hero5.png" 
                 alt="LGBTQ+ Community 5"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div 
+              className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 5 ? 'opacity-100' : 'opacity-0'}`}
+            >
+              <img 
+                src="/images/img10.jpg" 
+                alt="LGBTQ+ Community 6"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div 
+              className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 6 ? 'opacity-100' : 'opacity-0'}`}
+            >
+              <img 
+                src="/images/img12.jpg" 
+                alt="LGBTQ+ Community 7"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div 
+              className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 7 ? 'opacity-100' : 'opacity-0'}`}
+            >
+              <img 
+                src="/images/img14.jpg" 
+                alt="LGBTQ+ Community 8"
                 className="w-full h-full object-cover"
               />
             </div>
