@@ -13,7 +13,7 @@ interface PremiumUpgradeModalProps {
 const PremiumUpgradeModal: React.FC<PremiumUpgradeModalProps> = ({ 
   open, 
   onClose, 
-  title = 'プレミアム会員限定機能です',
+  title = '有料会員限定機能です',
   description,
   featureName
 }) => {
@@ -25,8 +25,8 @@ const PremiumUpgradeModal: React.FC<PremiumUpgradeModalProps> = ({
   };
 
   const defaultDescription = featureName 
-    ? `「${featureName}」はプレミアム会員限定の機能です。`
-    : 'この機能はプレミアム会員限定です。';
+    ? `「${featureName}」は有料会員限定の機能です。`
+    : 'この機能は有料会員限定です。';
 
   return (
     <div className="fixed inset-0 z-[1000] flex items-center justify-center">
@@ -42,7 +42,7 @@ const PremiumUpgradeModal: React.FC<PremiumUpgradeModalProps> = ({
           {description || defaultDescription}
         </p>
         <div className="bg-gray-50 rounded-lg p-4 mb-4">
-          <h3 className="font-semibold text-gray-900 mb-2">プレミアム会員特典</h3>
+          <h3 className="font-semibold text-gray-900 mb-2">有料会員特典</h3>
           <ul className="text-sm text-gray-600 space-y-1">
             <li className="flex items-center gap-2">
               <span className="text-green-500">✓</span>
@@ -71,7 +71,7 @@ const PremiumUpgradeModal: React.FC<PremiumUpgradeModalProps> = ({
             className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold"
           >
             <Crown className="h-4 w-4 mr-2" />
-            プレミアム会員に登録
+            有料会員に登録
           </Button>
           <Button 
             variant="outline" 

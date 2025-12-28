@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Heart, MessageCircle, ShoppingBag, Plus, MapPin, Clock, X } from 'lucide-react';
+import { Search, Heart, MessageCircle, ShoppingBag, Plus, MapPin, Clock, X, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -153,9 +153,20 @@ const MarketplacePage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-b from-pink-50 via-purple-50 to-blue-50">
       {/* Header */}
       <section className="py-16 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-5xl font-bold text-carat-black mb-6">マーケット</h1>
-          <p className="text-2xl text-carat-gray5 mb-8">会員同士で安心・安全な売買取引</p>
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-6">
+            <button
+              onClick={() => navigate('/feed')}
+              className="flex items-center text-gray-700 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              ホームに戻る
+            </button>
+          </div>
+          <div className="text-center">
+            <h1 className="text-5xl font-bold text-carat-black mb-6">マーケット</h1>
+            <p className="text-2xl text-carat-gray5 mb-8">会員同士で安心・安全な売買取引</p>
+          </div>
           <div className="flex flex-wrap justify-center gap-4 text-lg text-carat-gray5 mb-8">
             <div className="flex items-center">
               <ShoppingBag className="w-5 h-5 mr-2 text-carat-black" />
@@ -405,11 +416,11 @@ const MarketplacePage: React.FC = () => {
                     </div>
 
                     <div className="border-t pt-4">
-                      <h4 className="font-semibold text-carat-black mb-3">出品者情報</h4>
+                      <h4 className="font-semibold text-carat-black mb-3">出品者に連絡</h4>
                       <button
-                        onClick={() => {
-                          navigate(`/profile/${selectedListing.seller_id}`);
-                          setShowListingDetail(false);
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowContactModal(true);
                         }}
                         className="flex items-center hover:opacity-70 transition-opacity w-full text-left"
                       >
@@ -418,7 +429,7 @@ const MarketplacePage: React.FC = () => {
                         </div>
                         <div>
                           <p className="font-medium text-sky-500 hover:text-sky-600 hover:underline">
-                            {selectedListing.seller_name}
+                            {selectedListing.seller_name}さんにチャットする
                           </p>
                           <p className="text-sm text-carat-gray6">会員</p>
                         </div>

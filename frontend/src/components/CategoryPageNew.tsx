@@ -9,6 +9,7 @@ import PostDetailModal from './PostDetailModal';
 import NewPostForm from './NewPostForm';
 import { Post } from '../types/Post';
 import { Category, Subcategory } from '../types/category';
+import { extractYouTubeId } from '../utils/youtube';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
@@ -59,11 +60,13 @@ const CategoryPageNew: React.FC = () => {
   const [showNewPostForm, setShowNewPostForm] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
   
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'newest');
   const [timeRange, setTimeRange] = useState(searchParams.get('range') || 'all');
   const [selectedTag, setSelectedTag] = useState(searchParams.get('tag') || '');
   const [selectedSubcategorySlug, setSelectedSubcategorySlug] = useState<string | null>(subcategorySlug || null);
+  const editPostId = searchParams.get('edit');
 
   useEffect(() => {
     const fetchCategory = async () => {
@@ -196,6 +199,21 @@ const CategoryPageNew: React.FC = () => {
       fetchPosts();
     }
   }, [category, token, sortBy, timeRange, selectedTag, selectedSubcategorySlug]);
+
+  // URLパラメータに編集対象の投稿IDがある場合、該当する投稿を編集モードで開く
+  useEffect(() => {
+    if (editPostId && posts.length > 0) {
+      const postToEdit = posts.find(p => p.id === parseInt(editPostId));
+      if (postToEdit) {
+        setEditingPost(postToEdit);
+        setShowNewPostForm(true);
+        // URLパラメータから編集IDを削除
+        const params = new URLSearchParams(searchParams);
+        params.delete('edit');
+        setSearchParams(params);
+      }
+    }
+  }, [editPostId, posts]);
 
   const updateFilters = (newSort?: string, newRange?: string, newTag?: string) => {
     const params = new URLSearchParams(searchParams);
@@ -373,7 +391,11 @@ const CategoryPageNew: React.FC = () => {
         <NewPostForm
           categoryKey={categorySlug || ''}
           onPostCreated={handlePostCreated}
-          onCancel={() => setShowNewPostForm(false)}
+          onCancel={() => {
+            setShowNewPostForm(false);
+            setEditingPost(null);
+          }}
+          editingPost={editingPost}
         />
       )}
 
@@ -416,7 +438,10 @@ const CategoryPageNew: React.FC = () => {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
-          {posts.map((post) => (
+          {posts.map((post) => {
+            // youtube_urlフィールドがない場合、本文からYouTubeのURLを抽出
+            const youtubeUrl = post.youtube_url || (post.body ? post.body.match(/https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)[^\s)<>"']+/i)?.[0] : null);
+            return (
             <Card 
               key={post.id} 
               className="rounded-xl shadow-sm hover:shadow-md hover:scale-[1.01] transition-all duration-200 cursor-pointer border-gray-200"
@@ -425,6 +450,28 @@ const CategoryPageNew: React.FC = () => {
               tabIndex={0}
               aria-label={`投稿: ${post.title || post.body.substring(0, 50)}`}
             >
+              {youtubeUrl && (
+                <div className="aspect-video w-full overflow-hidden rounded-t-xl bg-black flex items-center justify-center relative">
+                  <img 
+                    src={`https://img.youtube.com/vi/${extractYouTubeId(youtubeUrl)}/maxresdefault.jpg`}
+                    alt={post.title || 'YouTube動画'}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const videoId = extractYouTubeId(youtubeUrl);
+                      if (videoId) {
+                        (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                      }
+                    }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="bg-black/60 rounded-full p-3">
+                      <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              )}
               <CardContent className="p-4 space-y-3">
                 <h3 className="font-semibold text-gray-800 line-clamp-2">
                   {post.title || post.body.substring(0, 100)}
@@ -447,7 +494,8 @@ const CategoryPageNew: React.FC = () => {
                 </div>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -460,6 +508,10 @@ const CategoryPageNew: React.FC = () => {
           onClose={closePostModal}
           onUpdated={handlePostUpdated}
           onDeleted={handlePostDeleted}
+          onEditInForm={(post) => {
+            setEditingPost(post);
+            setShowNewPostForm(true);
+          }}
         />
       )}
     </div>

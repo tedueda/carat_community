@@ -25,7 +25,7 @@ const memberBenefits = [
   {
     id: "salon",
     title: "会員サロン",
-    description: "プレミアム会員限定の専門チャットサロン",
+    description: "有料会員限定の専門チャットサロン",
     icon: "💬",
     link: "/salon",
     external: false,
@@ -53,11 +53,46 @@ const memberBenefits = [
 
 const boardCategories = [
   { key: "music", title: "ミュージック", desc: "あなたの好きな楽曲、作成した楽曲を投稿して共有しましょう！", emoji: "🎵", link: "/category/music" },
-  { key: "art", title: "アート", desc: "イラスト・写真・映像作品を発表して、アートの世界を広げましょう！", emoji: "🎨", link: "/category/art" },
+  { key: "art", title: "アート・動画", desc: "イラスト・写真・映像作品を発表して、アートの世界を広げましょう！", emoji: "🎨", link: "/category/art" },
   { key: "comics", title: "サブカルチャー", desc: "映画・アニメ・ゲーム・小説などの作品レビューと感想を共有しましょう！", emoji: "🎭", link: "/category/comics" },
-  { key: "food_shops", title: "食レポ・お店", desc: "美味しいグルメやLGBTQフレンドリーなお店を紹介しましょう！", emoji: "🍽️", link: "/category/food", categories: ["food", "shops"] },
+  { key: "food_shops", title: "食レポ・お店・ライブハウス", desc: "美味しいグルメやLGBTQフレンドリーなお店を紹介しましょう！", emoji: "🍽️", link: "/category/food", categories: ["food", "shops"] },
   { key: "tourism", title: "ツーリズム", desc: "おすすめの旅行先や観光スポットを紹介して、旅の楽しさを共有しましょう！", emoji: "📍", link: "/category/tourism" },
   { key: "board", title: "掲示板", desc: "悩み相談や雑談、日常の話題を自由に投稿しましょう！", emoji: "💬", link: "/category/board" },
+];
+
+const heroMessages = [
+  {
+    main: "自分を表現して、\n新しい仲間と出会おう",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  },
+  {
+    main: "安心して自分を表現できる\n安全性の高いコミュニティ",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  },
+  {
+    main: "心許せる仲間との\n繋がりがつくれる空間",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  },
+  {
+    main: "ジェンダーフリーの生き方を\n応援する唯一のサイト",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  },
+  {
+    main: "ひとりじゃない。\n\"自分らしさ\"を出せる居場所",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  },
+  {
+    main: "あなたの才能を認めてくれる\n仲間が集うコミュニティ",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  },
+  {
+    main: "価値観が響き合う仲間と作る\n上質なコミュニティ空間",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  },
+  {
+    main: "真っ白なキャンバスをあなたの\n「カラット」で輝かせましょう",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  }
 ];
 
 const getCategoryPlaceholder= (category: string | undefined): string => {
@@ -347,7 +382,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 0 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide1.png" 
+                src="/images/img10.jpg" 
                 alt="LGBTQ+ Community 1"
                 className="w-full h-full object-cover"
               />
@@ -356,7 +391,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 1 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide2.png" 
+                src="/images/img12.jpg" 
                 alt="LGBTQ+ Community 2"
                 className="w-full h-full object-cover"
               />
@@ -365,7 +400,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 2 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide3.png" 
+                src="/images/img14.jpg" 
                 alt="LGBTQ+ Community 3"
                 className="w-full h-full object-cover"
               />
@@ -374,7 +409,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 3 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide4.png" 
+                src="/images/hero1.png" 
                 alt="LGBTQ+ Community 4"
                 className="w-full h-full object-cover"
               />
@@ -383,7 +418,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 4 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide5.png" 
+                src="/images/hero2.png" 
                 alt="LGBTQ+ Community 5"
                 className="w-full h-full object-cover"
               />
@@ -392,7 +427,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 5 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide6.png" 
+                src="/images/hero3.png" 
                 alt="LGBTQ+ Community 6"
                 className="w-full h-full object-cover"
               />
@@ -401,7 +436,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 6 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide7.png" 
+                src="/images/hero4.png" 
                 alt="LGBTQ+ Community 7"
                 className="w-full h-full object-cover"
               />
@@ -410,26 +445,39 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 7 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide8.png" 
+                src="/images/hero5.png" 
                 alt="LGBTQ+ Community 8"
                 className="w-full h-full object-cover"
               />
             </div>
           </div>
           <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+          {/* Sound Credit and Audio Player */}
+          <div className="absolute bottom-16 right-8 z-50 flex flex-col items-end gap-2 pointer-events-auto">
+            <div className="text-white text-sm opacity-70 flex items-center gap-2">
+              <span className="text-lg">♫</span>
+              <span>Inspired by Marvin Gaye</span>
+            </div>
+            <HeroAudioPlayer isHeroVisible={isHeroVisible} />
+          </div>
           <div className="relative z-10 flex items-center justify-center h-full">
             <div className="text-center text-white px-4 max-w-6xl">
-              <h2 className="text-3xl md:text-7xl font-serif font-bold leading-tight mb-6">
-                自分を表現して、<br />新しい仲間と出会おう
+              <h2 className="text-3xl md:text-7xl font-serif font-bold leading-tight mb-6 transition-opacity duration-1000">
+                {heroMessages[currentSlide].main.split('\n').map((line, i) => (
+                  <React.Fragment key={i}>
+                    {line}
+                    {i < heroMessages[currentSlide].main.split('\n').length - 1 && <br />}
+                  </React.Fragment>
+                ))}
               </h2>
-              <p className="text-lg md:text-2xl mb-8 opacity-90">
-                悩み相談、アート、音楽、地元ツアー。<br />
-                ここから、あなたの物語が始まります。
+              <p className="text-lg md:text-2xl mb-8 opacity-90 transition-opacity duration-1000">
+                {heroMessages[currentSlide].sub.split('\n').map((line, i) => (
+                  <React.Fragment key={i}>
+                    {line}
+                    {i < heroMessages[currentSlide].sub.split('\n').length - 1 && <br />}
+                  </React.Fragment>
+                ))}
               </p>
-              {/* Hero Audio Player - centered below text */}
-              <div className="flex justify-center mt-4">
-                <HeroAudioPlayer isHeroVisible={isHeroVisible} />
-              </div>
             </div>
           </div>
         </section>
@@ -490,7 +538,11 @@ const HomePage: React.FC = () => {
               </Button>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {(categoryPosts[cat.key] || []).slice(0, 4).map((post) => (
+              {(categoryPosts[cat.key] || []).slice(0, 4).map((post) => {
+                // youtube_urlフィールドがない場合、本文からYouTubeのURLを抽出
+                const youtubeUrl = post.youtube_url || (post.body ? post.body.match(/https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)[^\s)<>"']+/i)?.[0] : null);
+                console.log(`📌 Post ${post.id} - youtube_url:`, post.youtube_url, 'extracted:', youtubeUrl, 'media_url:', post.media_url);
+                return (
                 <Card 
                   key={post.id} 
                   onClick={() => {
@@ -503,7 +555,30 @@ const HomePage: React.FC = () => {
                   }}
                   className="group backdrop-blur-md bg-gray-50/80 border border-gray-200 hover:bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer hover:scale-[1.02] shadow-lg hover:shadow-2xl"
                 >
-                  {(post.media_url || (post.media_urls && post.media_urls.length > 0)) ? (
+                  {youtubeUrl ? (
+                    <div className="h-40 overflow-hidden rounded-t-lg bg-black flex items-center justify-center relative">
+                      <img 
+                        src={`https://img.youtube.com/vi/${extractYouTubeId(youtubeUrl)}/maxresdefault.jpg`}
+                        alt={post.title || 'YouTube動画'}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const videoId = extractYouTubeId(youtubeUrl);
+                          if (videoId) {
+                            (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                          } else {
+                            (e.target as HTMLImageElement).src = getCategoryPlaceholder(post.category);
+                          }
+                        }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="bg-black/60 rounded-full p-3">
+                          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (post.media_url || (post.media_urls && post.media_urls.length > 0)) ? (
                     <div className="h-40 overflow-hidden rounded-t-lg bg-gray-100 flex items-center justify-center">
                       <img 
                         src={`${(() => {
@@ -517,19 +592,6 @@ const HomePage: React.FC = () => {
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = getCategoryPlaceholder(post.category);
-                        }}
-                      />
-                    </div>
-                  ) : post.youtube_url ? (
-                    <div className="h-40 overflow-hidden rounded-t-lg bg-black flex items-center justify-center">
-                      <img 
-                        src={`https://img.youtube.com/vi/${extractYouTubeId(post.youtube_url)}/maxresdefault.jpg`}
-                        alt={post.title || 'YouTube動画'}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          if (post.youtube_url) {
-                            (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${extractYouTubeId(post.youtube_url)}/hqdefault.jpg`;
-                          }
                         }}
                       />
                     </div>
@@ -568,7 +630,8 @@ const HomePage: React.FC = () => {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+              );
+              })}
               {(!categoryPosts[cat.key] || categoryPosts[cat.key].length === 0) && (
                 <div className="col-span-4 text-center py-8 text-slate-500">
                   投稿がまだありません
@@ -582,7 +645,7 @@ const HomePage: React.FC = () => {
         <section className="py-12">
           <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-3 gap-1 md:gap-0">
             <h3 className="text-4xl md:text-5xl font-serif font-semibold text-slate-900">会員特典メニュー</h3>
-            <span className="text-base md:text-2xl text-slate-500 self-start md:self-auto">プレミアム会員限定</span>
+            <span className="text-base md:text-2xl text-slate-500 self-start md:self-auto">有料会員限定</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
             {memberBenefits.map((benefit) => {
@@ -905,6 +968,11 @@ const HomePage: React.FC = () => {
             setPosts(posts.filter(p => p.id !== postId));
             setSelectedPost(null);
             setSelectedUser(null);
+          }}
+          onEditInForm={(post) => {
+            // カテゴリページに遷移して編集モードで開く
+            const category = post.category || 'board';
+            navigate(`/category/${category}?edit=${post.id}`);
           }}
         />
       )}

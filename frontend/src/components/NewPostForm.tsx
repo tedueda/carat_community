@@ -12,6 +12,7 @@ interface NewPostFormProps {
   categoryKey: string;
   onPostCreated: (post: Post) => void;
   onCancel: () => void;
+  editingPost?: Post | null;
 }
 
 const categories = {
@@ -31,24 +32,40 @@ const subcategories: Record<string, string[]> = {
   board: ['悩み相談（カミングアウト／学校生活／職場環境）', '求人募集', '法律・手続き関係', '講座・勉強会', 'その他'],
   music: ['ジャズ', 'Jポップ', 'ポップス', 'R&B', 'ロック', 'AOR', 'クラシック', 'Hip-Hop', 'ラップ', 'ファンク', 'レゲエ', 'ワールド・ミュージック', 'AI生成音楽', 'その他'],
   shops: ['アパレル・ブティック', '雑貨店', 'レストラン・バー', '美容室・メイク', 'その他'],
+  food: ['料理・食品', '飲食店', 'ブティック', '雑貨店', 'バー', 'サロン', 'ライブハウス'],
   tourism: [],
   comics: ['映画', 'コミック', 'TVドラマ', '同人誌', 'その他'],
   art: []
 };
 
+const prefectures = [
+  '北海道', '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県',
+  '茨城県', '栃木県', '群馬県', '埼玉県', '千葉県', '東京都', '神奈川県',
+  '新潟県', '富山県', '石川県', '福井県', '山梨県', '長野県',
+  '岐阜県', '静岡県', '愛知県', '三重県',
+  '滋賀県', '京都府', '大阪府', '兵庫県', '奈良県', '和歌山県',
+  '鳥取県', '島根県', '岡山県', '広島県', '山口県',
+  '徳島県', '香川県', '愛媛県', '高知県',
+  '福岡県', '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県'
+];
+
 const NewPostForm: React.FC<NewPostFormProps> = ({
   categoryKey,
   onPostCreated,
   onCancel,
+  editingPost,
 }) => {
   const { token } = useAuth();
   const [formData, setFormData] = useState({
-    title: '',
-    body: '',
+    title: editingPost?.title || '',
+    body: editingPost?.body || '',
     tags: '',
     images: [] as File[],
-    youtubeUrl: '',
-    subcategory: '',
+    youtubeUrl: editingPost?.youtube_url || '',
+    subcategory: editingPost?.subcategory || '',
+    prefecture: editingPost?.prefecture || '',
+    eventDate: editingPost?.event_date || '',
+    fee: editingPost?.fee || '',
   });
   const [linkUrl, setLinkUrl] = useState('');
   const [visibility, setVisibility] = useState<'public' | 'members' | 'followers' | 'private'>('public');
@@ -92,7 +109,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       newErrors.title = 'タイトルは80文字以内で入力してください';
     }
 
-    if (categoryKey === 'music' && formData.youtubeUrl) {
+    if ((categoryKey === 'music' || categoryKey === 'comics' || categoryKey === 'art') && formData.youtubeUrl) {
       const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+/;
       if (!youtubeRegex.test(formData.youtubeUrl)) {
         newErrors.youtubeUrl = '有効なYouTube URLを入力してください';
@@ -167,7 +184,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
         ? `${formData.body} #${categoryKey}\n\nリンク: ${linkUrl.trim()}`
         : `${formData.body} #${categoryKey}`;
 
-      const postData = {
+      const postData: any = {
         title: formData.title || null,
         body: bodyWithLink,
         category: categoryKey,
@@ -177,8 +194,22 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
         subcategory: formData.subcategory || null,
       };
 
-      const response = await fetch(`${API_URL}/api/posts`, {
-        method: 'POST',
+      // ツーリズムの場合はtourism_detailsオブジェクトに含める
+      if (categoryKey === 'tourism') {
+        postData.post_type = 'tourism';
+        postData.tourism_details = {
+          prefecture: formData.prefecture || null,
+          event_datetime: formData.eventDate ? new Date(formData.eventDate).toISOString() : null,
+          fee: formData.fee ? parseInt(formData.fee) : null,
+        };
+      }
+
+      const isEditing = !!editingPost;
+      const url = isEditing ? `${API_URL}/api/posts/${editingPost.id}` : `${API_URL}/api/posts`;
+      const method = isEditing ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method: method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -208,6 +239,9 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
           images: [],
           youtubeUrl: '',
           subcategory: '',
+          prefecture: '',
+          eventDate: '',
+          fee: '',
         });
         setSubmitStartTime(null);
       } else {
@@ -294,6 +328,59 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
                 </SelectContent>
               </Select>
             </div>
+          )}
+
+          {categoryKey === 'tourism' && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-800 mb-2">
+                  開催地域 <span className="text-red-500">*</span>
+                </label>
+                <Select 
+                  value={formData.prefecture} 
+                  onValueChange={(value) => setFormData({ ...formData, prefecture: value })}
+                >
+                  <SelectTrigger className="border-gray-300 focus:border-gray-500 focus:ring-gray-500">
+                    <SelectValue placeholder="都道府県を選択..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {prefectures.map((pref) => (
+                      <SelectItem key={pref} value={pref}>
+                        {pref}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-800 mb-2">
+                  開催日 <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  type="date"
+                  value={formData.eventDate}
+                  onChange={(e) => setFormData({ ...formData, eventDate: e.target.value })}
+                  className="border-gray-300 focus:border-gray-500 focus:ring-gray-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-800 mb-2">
+                  会費
+                </label>
+                <Input
+                  type="text"
+                  placeholder="例: 3,000円"
+                  value={formData.fee}
+                  onChange={(e) => setFormData({ ...formData, fee: e.target.value })}
+                  className="border-gray-300 focus:border-gray-500 focus:ring-gray-500"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  会費がある場合は金額を入力してください
+                </p>
+              </div>
+            </>
           )}
 
           <div>
@@ -417,7 +504,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
             )}
           </div>
 
-          {categoryKey === 'music' && (
+          {(categoryKey === 'music' || categoryKey === 'comics' || categoryKey === 'art') && (
             <div>
               <label className="block text-sm font-medium text-gray-800 mb-2">
                 YouTube URL（任意）

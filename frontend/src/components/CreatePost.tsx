@@ -259,7 +259,7 @@ const CreatePost: React.FC = () => {
             <h2 className="text-xl font-semibold mb-2">会員登録が必要です</h2>
             <p className="text-gray-600 mb-4">
               投稿を作成するには会員登録が必要です。<br />
-              プレミアム会員になると投稿できるようになります。
+              有料会員になると投稿できるようになります。
             </p>
             <div className="flex flex-col gap-3">
               <Button 
@@ -296,12 +296,12 @@ const CreatePost: React.FC = () => {
             <div className="bg-gradient-to-r from-amber-400 to-yellow-500 p-3 rounded-full w-fit mx-auto mb-4">
               <Lock className="h-8 w-8 text-white" />
             </div>
-            <h2 className="text-xl font-semibold mb-2">プレミアム会員限定機能です</h2>
+            <h2 className="text-xl font-semibold mb-2">有料会員限定機能です</h2>
             <p className="text-gray-600 mb-4">
-              投稿を作成するにはプレミアム会員への登録が必要です。
+              投稿を作成するには有料会員への登録が必要です。
             </p>
             <div className="bg-gray-50 rounded-lg p-4 mb-4 text-left">
-              <h3 className="font-semibold text-gray-900 mb-2">プレミアム会員特典</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">有料会員特典</h3>
               <ul className="text-sm text-gray-600 space-y-1">
                 <li className="flex items-center gap-2">
                   <span className="text-green-500">✓</span>
@@ -329,7 +329,7 @@ const CreatePost: React.FC = () => {
                 onClick={() => navigate('/register')}
                 className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600"
               >
-                プレミアム会員に登録
+                有料会員に登録
               </Button>
               <Button 
                 onClick={() => navigate('/feed')}

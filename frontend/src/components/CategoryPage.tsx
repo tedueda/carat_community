@@ -22,7 +22,7 @@ const categories = {
     seoKeywords: "LGBTQ 相談,カミングアウト 相談,悩み相談,共感,居場所,仲間とつながる"
   },
   art: { 
-    title: "アート", 
+    title: "アート・動画", 
     emoji: "🎨", 
     desc: "イラスト・写真・映像作品の発表。自己表現を通じて本当の自分を表現", 
     slug: "art",
@@ -50,9 +50,9 @@ const categories = {
     seoKeywords: "LGBTQ ツアー,交流,仲間,体験"
   },
   comics: { 
-    title: "コミック・映画", 
+    title: "サブカルチャー", 
     emoji: "🎬", 
-    desc: "LGBTQ+テーマの作品レビューと感想。共感できる物語を共有", 
+    desc: "共感できるコミック、映画、ドラマ、同人誌などを投稿して共有しましょう", 
     slug: "comics",
     seoKeywords: "LGBTQ 映画,コミック,レビュー,共感"
   },
@@ -64,9 +64,9 @@ const categories = {
     seoKeywords: "LGBTQ ニュース,制度,条例,性の多様性"
   },
   food: { 
-    title: "食レポ", 
+    title: "食レポ・お店・ライブハウス", 
     emoji: "🍽️", 
-    desc: "単品メニュー・市販品のレビュー。自分の好きを発信", 
+    desc: "おすすめの食べ物、飲食店、バー、ライブハウス、ブティック、ヘアサロンなどコミュニティで共有しましょう", 
     slug: "food",
     seoKeywords: "食レポ,レビュー,発信"
   },
@@ -142,11 +142,13 @@ const CategoryPage: React.FC = () => {
   const [showNewPostForm, setShowNewPostForm] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
   
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'newest');
   const [timeRange, setTimeRange] = useState(searchParams.get('range') || 'all');
   const [selectedTag, setSelectedTag] = useState(searchParams.get('tag') || '');
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
+  const editPostId = searchParams.get('edit');
 
   const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
   const category = categoryKey ? categories[categoryKey as keyof typeof categories] : null;
@@ -155,6 +157,7 @@ const CategoryPage: React.FC = () => {
     board: ['悩み相談（カミングアウト／学校生活／職場環境）', '求人募集', '法律・手続き関係', '講座・勉強会', 'その他'],
     music: ['ジャズ', 'Jポップ', 'ポップス', 'R&B', 'ロック', 'AOR', 'クラシック', 'Hip-Hop', 'ラップ', 'ファンク', 'レゲエ', 'ワールド・ミュージック', 'AI生成音楽', 'その他'],
     shops: ['アパレル・ブティック', '雑貨店', 'レストラン・バー', '美容室・メイク', 'その他'],
+    food: ['料理・食品', '飲食店', 'ブティック', '雑貨店', 'バー', 'サロン', 'ライブハウス'],
     tourism: [],
     comics: ['映画', 'コミック', 'TVドラマ', '同人誌', 'その他'],
     art: []
@@ -247,6 +250,21 @@ const CategoryPage: React.FC = () => {
     fetchPosts();
   }, [categoryKey, token, sortBy, timeRange, selectedTag, selectedSubcategory]);
 
+  // URLパラメータに編集対象の投稿IDがある場合、該当する投稿を編集モードで開く
+  useEffect(() => {
+    if (editPostId && posts.length > 0) {
+      const postToEdit = posts.find(p => p.id === parseInt(editPostId));
+      if (postToEdit) {
+        setEditingPost(postToEdit);
+        setShowNewPostForm(true);
+        // URLパラメータから編集IDを削除
+        const params = new URLSearchParams(searchParams);
+        params.delete('edit');
+        setSearchParams(params);
+      }
+    }
+  }, [editPostId, posts]);
+
 
   if (!category) {
     return (
@@ -307,7 +325,7 @@ const CategoryPage: React.FC = () => {
               onClick={() => navigate('/login')}
               className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
             >
-              投稿するにはプレミアム登録
+              投稿するには有料会員登録
             </Button>
           )}
         </div>
@@ -378,7 +396,11 @@ const CategoryPage: React.FC = () => {
         <NewPostForm
           categoryKey={categoryKey || ''}
           onPostCreated={handlePostCreated}
-          onCancel={() => setShowNewPostForm(false)}
+          onCancel={() => {
+            setShowNewPostForm(false);
+            setEditingPost(null);
+          }}
+          editingPost={editingPost}
         />
       )}
 
@@ -534,6 +556,10 @@ const CategoryPage: React.FC = () => {
           onClose={closePostModal}
           onUpdated={handlePostUpdated}
           onDeleted={handlePostDeleted}
+          onEditInForm={(post) => {
+            setEditingPost(post);
+            setShowNewPostForm(true);
+          }}
         />
       )}
     </div>
