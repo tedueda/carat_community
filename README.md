@@ -10,11 +10,158 @@
 
 ---
 
-## 🔄 Handoff 2025-11-09
+## 🔄 Handoff 2026-01-17
 
-### 最新の変更内容
+### 最新の変更内容（2026年1月リニューアル）
 
-このブランチ (`2025-11-09`) には、以下のPRで実装された機能と修正が含まれています：
+このブランチ (`20260117`) には、以下のPRで実装された大規模リニューアルが含まれています：
+
+---
+
+#### PR #66, #67: サイトリニューアル - 特別メニューUI、ビジネスページ、フリマ機能
+
+**トップページの変更:**
+- カテゴリ一覧の直下に「特別メニュー」セクションを新設
+- 特別メニューには以下のカードを表示:
+  - 会員マッチング（有料会員限定）
+  - 会員サロン（有料会員限定）
+  - ビジネス（フリマ・作品販売・講座・Live配信）
+- 特別メニューの下にバナーUIを追加:
+  - ライブウェディング（フルサイズ画像バナー）
+  - ジュエリー販売（フルサイズ画像バナー）
+
+**ビジネスページ（/business）:**
+- タブUIで4つの機能を切り替え可能:
+  - フリマ
+  - 作品販売
+  - 講座
+  - Live配信
+
+**フリマ機能（ジモティー風）:**
+- 一覧ページ: キーワード検索、カテゴリフィルタ、地域フィルタ、ソート機能
+- 投稿フォーム: タイトル、商品画像（最大5枚）、説明文、希望価格、カテゴリ、地域、取引方法
+- 詳細ページ: 画像スライダー、商品情報、「連絡する」ボタン（サイト内チャット）
+- 権限制御: 無料会員は閲覧のみ、有料会員のみ投稿・連絡可能
+
+**データベーステーブル:**
+- `flea_market_items` - フリマ出品情報
+- `flea_market_item_images` - 商品画像
+- `flea_market_chats` - 購入者・出品者間のチャット
+- `flea_market_messages` - チャットメッセージ
+
+**実装ファイル:**
+- `frontend/src/components/HomePage.tsx` - 特別メニュー・バナー追加
+- `frontend/src/pages/members/BusinessPage.tsx` - ビジネスページ
+- `frontend/src/components/flea-market/FleaMarketList.tsx` - フリマ一覧
+- `frontend/src/components/flea-market/FleaMarketPostForm.tsx` - フリマ投稿フォーム
+- `frontend/src/components/flea-market/FleaMarketDetail.tsx` - フリマ詳細
+- `backend/app/routers/flea_market.py` - フリマAPI
+- `backend/alembic/versions/20260116_add_flea_market_tables.py` - マイグレーション
+
+---
+
+#### PR #68: ジュエリーショッピング機能（EC機能）
+
+**概要:**
+- フリマとは完全に分離したジュエリー専用EC機能
+- ブランド／公式販売を想定したEC構成
+- Stripe決済統合（テスト環境対応）
+
+**商品モデル:**
+- 商品画像（最大5点）
+- 商品名、金額（税込/税別設定可能）
+- 商品説明（素材、サイズ、補足情報）
+- 在庫数、カテゴリ（固定値: ジュエリー）
+
+**画面構成:**
+1. 商品一覧ページ（/jewelry）: 商品カード一覧、メイン画像・商品名・金額表示
+2. 商品詳細ページ（/jewelry/:id）: 画像スライダー、商品情報、「カートに入れる」ボタン
+3. カートページ（/jewelry/cart）: カート内商品一覧、数量、小計/合計金額
+4. 購入情報入力フォーム（/jewelry/checkout）: 氏名、住所、連絡先
+5. 決済処理: Stripe統合
+6. 購入完了画面（/jewelry/order-complete）: 購入完了メッセージ、購入内容サマリー
+
+**権限制御:**
+- 無料会員: 商品閲覧のみ可能、カート追加・決済は不可
+- 有料会員: 商品閲覧、カート追加、決済すべて可能
+- 操作時に有料会員誘導モーダル表示
+
+**データベーステーブル:**
+- `jewelry_products` - ジュエリー商品情報
+- `jewelry_product_images` - 商品画像
+- `carts` - カート
+- `cart_items` - カート内商品
+- `orders` - 注文情報
+- `order_items` - 注文商品
+
+**実装ファイル:**
+- `frontend/src/components/jewelry/JewelryProductList.tsx` - 商品一覧
+- `frontend/src/components/jewelry/JewelryProductDetail.tsx` - 商品詳細
+- `frontend/src/components/jewelry/JewelryCart.tsx` - カート
+- `frontend/src/components/jewelry/JewelryCheckout.tsx` - チェックアウト
+- `frontend/src/components/jewelry/JewelryOrderComplete.tsx` - 注文完了
+- `backend/app/routers/jewelry.py` - ジュエリーAPI
+- `backend/alembic/versions/20260116_add_jewelry_tables.py` - マイグレーション
+
+---
+
+#### PR #69: ジュエリー商品管理画面
+
+**概要:**
+- ジュエリー商品のCRUD操作を行う管理画面
+
+**機能:**
+- 商品一覧表示（テーブル形式）
+- 新規商品登録（モーダルフォーム）
+- 商品編集
+- 商品削除
+
+**アクセス方法:**
+- `/jewelry/admin` にアクセス（管理者としてログイン後）
+
+**入力項目:**
+- 商品名、商品説明、素材、サイズ、補足情報
+- 価格（税込/税別選択可）
+- 在庫数（0=無制限）
+- 商品画像URL（最大5枚）
+
+**実装ファイル:**
+- `frontend/src/components/jewelry/JewelryAdmin.tsx` - 管理画面コンポーネント
+- `frontend/src/App.tsx` - ルート追加
+
+---
+
+### Stripe決済設定
+
+ジュエリーEC機能でStripe決済を有効にするには、以下の環境変数を設定してください:
+
+**バックエンド（App Runner環境変数）:**
+- `STRIPE_SECRET_KEY` - Stripeのシークレットキー（sk_test_...）
+
+**フロントエンド（ビルド時環境変数）:**
+- `VITE_STRIPE_PUBLIC_KEY` - Stripeの公開キー（pk_test_...）
+
+**テスト用カード番号:** `4242 4242 4242 4242`
+
+---
+
+### 会員権限ルール（全機能共通）
+
+**無料会員（未ログイン含む）:**
+- 全ページ閲覧可能
+- 投稿、連絡、購入は不可
+- 操作時に有料会員誘導モーダル表示
+
+**有料会員:**
+- 投稿可能
+- チャット連絡可能
+- 購入、配信登録可能
+
+---
+
+### 過去の変更内容
+
+このブランチには、以下の過去のPRで実装された機能と修正も含まれています：
 
 #### PR #25: RDS スキーマミスマッチ修正
 - MatchingProfile モデルから余分なフィールドを削除
@@ -541,7 +688,7 @@ npm run dev
 
 ---
 
-**最終更新**: 2025-11-09  
+**最終更新**: 2026-01-17  
 **作成者**: Cascade AI + Devin AI + プロジェクトチーム  
-**Handoff Branch**: 2025-11-09
+**Handoff Branch**: 20260117
 
