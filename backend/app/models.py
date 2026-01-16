@@ -672,3 +672,115 @@ class FleaMarketMessage(Base):
 
     chat = relationship("FleaMarketChat", back_populates="messages")
     sender = relationship("User")
+
+
+# ===== Jewelry Shopping (ジュエリーEC) domain models =====
+
+class JewelryProduct(Base):
+    __tablename__ = "jewelry_products"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    material = Column(String(200))  # 素材
+    size = Column(String(100))  # サイズ
+    additional_info = Column(Text)  # その他補足情報
+    price = Column(Integer, nullable=False)  # 価格（円）
+    price_includes_tax = Column(Boolean, default=True)  # 税込みかどうか
+    stock = Column(Integer, default=0)  # 在庫数（0=無制限または管理しない）
+    category = Column(String(50), default="jewelry")  # 固定値: jewelry
+    is_active = Column(Boolean, default=True)  # 販売中かどうか
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    images = relationship("JewelryProductImage", back_populates="product", order_by="JewelryProductImage.display_order")
+    cart_items = relationship("CartItem", back_populates="product")
+    order_items = relationship("OrderItem", back_populates="product")
+
+
+class JewelryProductImage(Base):
+    __tablename__ = "jewelry_product_images"
+
+    id = Column(Integer, primary_key=True, index=True)
+    product_id = Column(Integer, ForeignKey("jewelry_products.id", ondelete="CASCADE"), nullable=False)
+    image_url = Column(String(500), nullable=False)
+    display_order = Column(Integer, nullable=False, default=0)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    product = relationship("JewelryProduct", back_populates="images")
+
+
+class Cart(Base):
+    __tablename__ = "carts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    user = relationship("User")
+    items = relationship("CartItem", back_populates="cart", cascade="all, delete-orphan")
+
+
+class CartItem(Base):
+    __tablename__ = "cart_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    cart_id = Column(Integer, ForeignKey("carts.id", ondelete="CASCADE"), nullable=False)
+    product_id = Column(Integer, ForeignKey("jewelry_products.id"), nullable=False)
+    quantity = Column(Integer, nullable=False, default=1)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("cart_id", "product_id", name="unique_cart_product"),
+    )
+
+    cart = relationship("Cart", back_populates="items")
+    product = relationship("JewelryProduct", back_populates="cart_items")
+
+
+class Order(Base):
+    __tablename__ = "orders"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    status = Column(String(20), nullable=False, default="pending")  # pending, paid, shipped, delivered, cancelled
+    total_amount = Column(Integer, nullable=False)  # 合計金額（円）
+    
+    # 配送先情報
+    recipient_name = Column(String(100), nullable=False)
+    postal_code = Column(String(10))
+    address = Column(Text, nullable=False)
+    phone = Column(String(20))
+    email = Column(String(255))
+    
+    # Stripe関連
+    stripe_payment_intent_id = Column(String(255))
+    stripe_charge_id = Column(String(255))
+    
+    paid_at = Column(DateTime(timezone=True))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        CheckConstraint("status IN ('pending', 'paid', 'shipped', 'delivered', 'cancelled')", name="check_order_status"),
+    )
+
+    user = relationship("User")
+    items = relationship("OrderItem", back_populates="order")
+
+
+class OrderItem(Base):
+    __tablename__ = "order_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    order_id = Column(Integer, ForeignKey("orders.id", ondelete="CASCADE"), nullable=False)
+    product_id = Column(Integer, ForeignKey("jewelry_products.id"), nullable=False)
+    product_name = Column(String(200), nullable=False)  # 注文時の商品名を保存
+    price = Column(Integer, nullable=False)  # 注文時の価格を保存
+    quantity = Column(Integer, nullable=False, default=1)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    order = relationship("Order", back_populates="items")
+    product = relationship("JewelryProduct", back_populates="order_items")
