@@ -12,14 +12,13 @@ import { extractYouTubeId } from '../utils/youtube';
 import HeroAudioPlayer from './HeroAudioPlayer';
 
 
-const memberBenefits = [
+const specialMenuItems = [
   {
     id: "matching",
     title: "会員マッチング",
     description: "理想のパートナーと出会える安心のマッチングサービス",
     icon: "💕",
     link: "/matching",
-    external: false,
     premiumOnly: true,
   },
   {
@@ -28,26 +27,15 @@ const memberBenefits = [
     description: "有料会員限定の専門チャットサロン",
     icon: "💬",
     link: "/salon",
-    external: false,
     premiumOnly: true,
   },
   {
-    id: "donation",
-    title: "寄付金募集",
-    description: "LGBTQ+コミュニティを支援する寄付プラットフォーム",
-    icon: "🤝",
-    link: "/funding",
-    external: false,
-    premiumOnly: true,
-  },
-  {
-    id: "marketplace",
-    title: "商品販売",
-    description: "会員同士で安心・安全な売買取引",
-    icon: "🛍️",
-    link: "/marketplace",
-    external: false,
-    premiumOnly: true,
+    id: "business",
+    title: "ビジネス",
+    description: "フリマ・作品販売・講座・Live配信",
+    icon: "💼",
+    link: "/business",
+    premiumOnly: false,
   },
 ];
 
@@ -641,64 +629,57 @@ const HomePage: React.FC = () => {
           </section>
         ))}
 
-        {/* 会員特典メニュー - 全員に表示、無料会員はロック表示 */}
+        {/* 特別メニュー - カテゴリ一覧の直下 */}
         <section className="py-12">
-          <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-3 gap-1 md:gap-0">
-            <h3 className="text-4xl md:text-5xl font-serif font-semibold text-slate-900">会員特典メニュー</h3>
-            <span className="text-base md:text-2xl text-slate-500 self-start md:self-auto">有料会員限定</span>
+          <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-6 gap-1 md:gap-0">
+            <h3 className="text-4xl md:text-5xl font-serif font-semibold text-slate-900">特別メニュー</h3>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-            {memberBenefits.map((benefit) => {
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {specialMenuItems.map((item) => {
               const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
-              const isLocked = !isPremium;
+              const isLocked = item.premiumOnly && !isPremium;
               
-              const handleBenefitClick = () => {
-                if (!user) {
+              const handleMenuClick = () => {
+                if (item.premiumOnly && !user) {
                   window.location.href = '/login';
                 } else if (isLocked) {
-                  setUpgradeFeatureName(benefit.title);
+                  setUpgradeFeatureName(item.title);
                   setShowUpgradeModal(true);
-                } else if (benefit.external === false && benefit.link) {
-                  navigate(benefit.link);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 } else {
-                  setShowConstructionModal(true);
+                  navigate(item.link);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
               };
               
               return (
                 <Card 
-                  key={benefit.id} 
+                  key={item.id} 
                   className={`group backdrop-blur-md border transition-all duration-300 cursor-pointer shadow-lg ${
                     isLocked 
                       ? 'bg-gray-100/90 border-gray-300 hover:bg-gray-200/90' 
                       : 'bg-gray-50/90 border-gray-200 hover:bg-white hover:border-gray-300 hover:scale-[1.02] hover:shadow-2xl'
                   }`}
-                  onClick={handleBenefitClick}
+                  onClick={handleMenuClick}
                 >
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className={`text-4xl transition-transform relative ${isLocked ? 'opacity-50' : 'group-hover:scale-110'}`}>
-                          {benefit.icon}
-                          {isLocked && (
-                            <div className="absolute -top-1 -right-1 bg-gray-600 rounded-full p-1">
-                              <Lock className="h-3 w-3 text-white" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="text-left">
-                          <h4 className={`font-serif font-semibold mb-1 flex items-center gap-2 ${isLocked ? 'text-slate-500' : 'text-slate-900 group-hover:gold-accent'}`}>
-                            {benefit.title}
-                            {isLocked && <Lock className="h-4 w-4 text-gray-400" />}
-                          </h4>
-                          <p className={`text-sm line-clamp-2 ${isLocked ? 'text-slate-400' : 'text-slate-600'}`}>
-                            {benefit.description}
-                          </p>
-                        </div>
+                    <div className="flex flex-col items-center text-center">
+                      <div className={`text-5xl mb-4 transition-transform relative ${isLocked ? 'opacity-50' : 'group-hover:scale-110'}`}>
+                        {item.icon}
+                        {isLocked && (
+                          <div className="absolute -top-1 -right-1 bg-gray-600 rounded-full p-1">
+                            <Lock className="h-3 w-3 text-white" />
+                          </div>
+                        )}
                       </div>
+                      <h4 className={`font-serif font-semibold text-xl mb-2 flex items-center gap-2 ${isLocked ? 'text-slate-500' : 'text-slate-900 group-hover:gold-accent'}`}>
+                        {item.title}
+                        {isLocked && <Lock className="h-4 w-4 text-gray-400" />}
+                      </h4>
+                      <p className={`text-sm mb-4 ${isLocked ? 'text-slate-400' : 'text-slate-600'}`}>
+                        {item.description}
+                      </p>
                       <Button 
-                        className={`font-medium ${
+                        className={`font-medium w-full ${
                           isLocked 
                             ? 'bg-gray-200 text-gray-500 border border-gray-300 hover:bg-gray-300' 
                             : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black group-hover:shadow-md'
@@ -706,17 +687,17 @@ const HomePage: React.FC = () => {
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleBenefitClick();
+                          handleMenuClick();
                         }}
                       >
                         {isLocked ? (
                           <>
                             <Lock className="h-3 w-3 mr-1" />
-                            ロック中
+                            有料会員限定
                           </>
                         ) : (
                           <>
-                            利用する
+                            詳細を見る
                             <ArrowRight className="h-3 w-3 ml-1" />
                           </>
                         )}
@@ -730,7 +711,7 @@ const HomePage: React.FC = () => {
         </section>
 
         {/* ライブウェディングバナー */}
-        <section className="py-12">
+        <section className="py-6">
           <Card 
             className="text-white border border-white/20 shadow-2xl relative overflow-hidden backdrop-blur-sm cursor-pointer hover:shadow-3xl transition-all duration-300"
             onClick={() => navigate('/live-wedding')}
@@ -757,6 +738,43 @@ const HomePage: React.FC = () => {
                 className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-6 py-2.5 shadow-lg"
               >
                 詳細を見る
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* ジュエリー販売バナー */}
+        <section className="py-6">
+          <Card 
+            className="text-white border border-white/20 shadow-2xl relative overflow-hidden backdrop-blur-sm cursor-pointer hover:shadow-3xl transition-all duration-300"
+            onClick={() => window.open('https://example.com/jewelry', '_blank')}
+          >
+            <div className="absolute inset-0">
+              <img 
+                src="/images/jewelry-banner.jpg" 
+                alt="Jewelry Collection"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/images/lgbtq-7-1536x1024.jpg';
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-600/70 via-yellow-500/60 to-amber-400/70"></div>
+            </div>
+            <CardContent className="p-6 md:p-8 text-center relative z-10">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <span className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">Jewelry Collection</span>
+              </div>
+              <h3 className="text-4xl md:text-5xl font-serif font-bold mb-4">ジュエリー販売</h3>
+              <p className="text-xl md:text-2xl mb-6 opacity-90">特別な瞬間を彩る、オリジナルジュエリー</p>
+              <Button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open('https://example.com/jewelry', '_blank');
+                }}
+                className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-6 py-2.5 shadow-lg"
+              >
+                ショップを見る
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </CardContent>

@@ -599,3 +599,76 @@ class SalonMessage(Base):
 
     room = relationship("SalonRoom", back_populates="messages")
     user = relationship("User")
+
+
+# ===== Flea Market (フリマ) domain models =====
+
+class FleaMarketItem(Base):
+    __tablename__ = "flea_market_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    title = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    price = Column(Integer, nullable=False)  # 希望価格（円）
+    category = Column(String(100), nullable=False)
+    region = Column(String(100))  # 地域
+    transaction_method = Column(String(50), nullable=False, default="negotiable")  # hand_off, shipping, negotiable
+    status = Column(String(20), nullable=False, default="active")  # active, sold, cancelled
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        CheckConstraint("transaction_method IN ('hand_off', 'shipping', 'negotiable')", name="check_transaction_method"),
+        CheckConstraint("status IN ('active', 'sold', 'cancelled')", name="check_flea_market_status"),
+    )
+
+    user = relationship("User")
+    images = relationship("FleaMarketItemImage", back_populates="item", order_by="FleaMarketItemImage.display_order")
+
+
+class FleaMarketItemImage(Base):
+    __tablename__ = "flea_market_item_images"
+
+    id = Column(Integer, primary_key=True, index=True)
+    item_id = Column(Integer, ForeignKey("flea_market_items.id"), nullable=False)
+    image_url = Column(String(500), nullable=False)
+    display_order = Column(Integer, nullable=False, default=0)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    item = relationship("FleaMarketItem", back_populates="images")
+
+
+class FleaMarketChat(Base):
+    __tablename__ = "flea_market_chats"
+
+    id = Column(Integer, primary_key=True, index=True)
+    item_id = Column(Integer, ForeignKey("flea_market_items.id"), nullable=False)
+    buyer_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    seller_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    status = Column(String(20), nullable=False, default="active")  # active, closed
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        CheckConstraint("status IN ('active', 'closed')", name="check_flea_market_chat_status"),
+        UniqueConstraint("item_id", "buyer_id", name="unique_item_buyer_chat"),
+    )
+
+    item = relationship("FleaMarketItem")
+    buyer = relationship("User", foreign_keys=[buyer_id])
+    seller = relationship("User", foreign_keys=[seller_id])
+    messages = relationship("FleaMarketMessage", back_populates="chat", order_by="FleaMarketMessage.created_at")
+
+
+class FleaMarketMessage(Base):
+    __tablename__ = "flea_market_messages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    chat_id = Column(Integer, ForeignKey("flea_market_chats.id"), nullable=False)
+    sender_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    body = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    chat = relationship("FleaMarketChat", back_populates="messages")
+    sender = relationship("User")

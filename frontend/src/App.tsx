@@ -32,6 +32,7 @@ import MarketplacePage from './pages/members/MarketplacePage';
 import FavoritesPage from './pages/members/FavoritesPage';
 import AccountPage from './pages/members/AccountPage';
 import { SalonPage, SalonRoomDetailPage } from './components/salon';
+import BusinessPage from './pages/members/BusinessPage';
 
 
 const FeedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -200,6 +201,12 @@ function AppContent() {
                         </PremiumGate>
                       </FeedRoute>
                     } />
+          {/* Business page - フリマ・作品販売・講座・Live配信 */}
+          <Route path="/business" element={
+            <FeedRoute>
+              <BusinessPage />
+            </FeedRoute>
+          } />
                     <Route path="/news" element={
             <FeedRoute>
               <NewsPage />
