@@ -33,6 +33,11 @@ import FavoritesPage from './pages/members/FavoritesPage';
 import AccountPage from './pages/members/AccountPage';
 import { SalonPage, SalonRoomDetailPage } from './components/salon';
 import BusinessPage from './pages/members/BusinessPage';
+import JewelryProductList from './components/jewelry/JewelryProductList';
+import JewelryProductDetail from './components/jewelry/JewelryProductDetail';
+import JewelryCart from './components/jewelry/JewelryCart';
+import JewelryCheckout from './components/jewelry/JewelryCheckout';
+import JewelryOrderComplete from './components/jewelry/JewelryOrderComplete';
 
 
 const FeedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -201,12 +206,38 @@ function AppContent() {
                         </PremiumGate>
                       </FeedRoute>
                     } />
-          {/* Business page - フリマ・作品販売・講座・Live配信 */}
-          <Route path="/business" element={
-            <FeedRoute>
-              <BusinessPage />
-            </FeedRoute>
-          } />
+                    {/* Business page - フリマ・作品販売・講座・Live配信 */}
+                    <Route path="/business" element={
+                      <FeedRoute>
+                        <BusinessPage />
+                      </FeedRoute>
+                    } />
+                    {/* Jewelry Shopping routes */}
+                    <Route path="/jewelry" element={
+                      <FeedRoute>
+                        <JewelryProductList />
+                      </FeedRoute>
+                    } />
+                    <Route path="/jewelry/:id" element={
+                      <FeedRoute>
+                        <JewelryProductDetail />
+                      </FeedRoute>
+                    } />
+                    <Route path="/jewelry/cart" element={
+                      <FeedRoute>
+                        <JewelryCart />
+                      </FeedRoute>
+                    } />
+                    <Route path="/jewelry/checkout" element={
+                      <FeedRoute>
+                        <JewelryCheckout />
+                      </FeedRoute>
+                    } />
+                    <Route path="/jewelry/complete/:orderId" element={
+                      <FeedRoute>
+                        <JewelryOrderComplete />
+                      </FeedRoute>
+                    } />
                     <Route path="/news" element={
             <FeedRoute>
               <NewsPage />

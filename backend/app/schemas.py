@@ -441,3 +441,171 @@ class FleaMarketMessage(FleaMarketMessageBase):
     
     class Config:
         from_attributes = True
+
+
+# ===== Jewelry Shopping (ジュエリーEC) Schemas =====
+
+class OrderStatusEnum(str, Enum):
+    pending = "pending"
+    paid = "paid"
+    shipped = "shipped"
+    delivered = "delivered"
+    cancelled = "cancelled"
+
+
+# Product schemas
+class JewelryProductImageBase(BaseModel):
+    image_url: str
+    display_order: int = 0
+
+
+class JewelryProductImage(JewelryProductImageBase):
+    id: int
+    product_id: int
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+
+class JewelryProductBase(BaseModel):
+    name: str
+    description: str
+    material: Optional[str] = None
+    size: Optional[str] = None
+    additional_info: Optional[str] = None
+    price: int
+    price_includes_tax: bool = True
+    stock: Optional[int] = 0
+
+
+class JewelryProductCreate(JewelryProductBase):
+    image_urls: Optional[List[str]] = None
+
+
+class JewelryProductUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    material: Optional[str] = None
+    size: Optional[str] = None
+    additional_info: Optional[str] = None
+    price: Optional[int] = None
+    price_includes_tax: Optional[bool] = None
+    stock: Optional[int] = None
+    is_active: Optional[bool] = None
+    image_urls: Optional[List[str]] = None
+
+
+class JewelryProduct(JewelryProductBase):
+    id: int
+    category: str
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+    images: List[JewelryProductImage] = []
+    
+    class Config:
+        from_attributes = True
+
+
+# Cart schemas
+class CartItemBase(BaseModel):
+    product_id: int
+    quantity: int = 1
+
+
+class CartItemCreate(CartItemBase):
+    pass
+
+
+class CartItemUpdate(BaseModel):
+    quantity: int
+
+
+class CartItem(CartItemBase):
+    id: int
+    cart_id: int
+    created_at: datetime
+    updated_at: datetime
+    product: Optional[JewelryProduct] = None
+    
+    class Config:
+        from_attributes = True
+
+
+class Cart(BaseModel):
+    id: int
+    user_id: int
+    created_at: datetime
+    updated_at: datetime
+    items: List[CartItem] = []
+    total_amount: int = 0
+    
+    class Config:
+        from_attributes = True
+
+
+# Order schemas
+class OrderItemBase(BaseModel):
+    product_id: int
+    quantity: int = 1
+
+
+class OrderItem(OrderItemBase):
+    id: int
+    order_id: int
+    product_name: str
+    price: int
+    created_at: datetime
+    product: Optional[JewelryProduct] = None
+    
+    class Config:
+        from_attributes = True
+
+
+class ShippingInfo(BaseModel):
+    recipient_name: str
+    postal_code: Optional[str] = None
+    address: str
+    phone: Optional[str] = None
+    email: Optional[str] = None
+
+
+class OrderCreate(BaseModel):
+    shipping_info: ShippingInfo
+
+
+class Order(BaseModel):
+    id: int
+    user_id: int
+    status: OrderStatusEnum
+    total_amount: int
+    recipient_name: str
+    postal_code: Optional[str] = None
+    address: str
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    stripe_payment_intent_id: Optional[str] = None
+    paid_at: Optional[datetime] = None
+    created_at: datetime
+    updated_at: datetime
+    items: List[OrderItem] = []
+    
+    class Config:
+        from_attributes = True
+
+
+# Stripe payment schemas
+class CreatePaymentIntentRequest(BaseModel):
+    order_id: int
+
+
+class CreatePaymentIntentResponse(BaseModel):
+    client_secret: str
+    payment_intent_id: str
+    amount: int
+
+
+class ConfirmPaymentRequest(BaseModel):
+    order_id: int
+    payment_intent_id: str
