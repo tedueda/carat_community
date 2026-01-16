@@ -4,8 +4,9 @@ from sqlalchemy.orm import sessionmaker
 import os
 from dotenv import load_dotenv
 
-# ローカル/開発では .env を常に優先して読み込む（過去のDATABASE_URLが残っていても上書きする）
-load_dotenv(override=True)
+# ローカル開発では .env を読み込むが、本番環境の環境変数を上書きしない
+# override=False により、既存の環境変数（App Runner等で設定）が優先される
+load_dotenv(override=False)
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 FLY_APP = os.getenv("FLY_APP_NAME")
