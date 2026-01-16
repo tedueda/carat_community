@@ -338,3 +338,106 @@ class SalonMessage(SalonMessageBase):
     
     class Config:
         from_attributes = True
+
+
+# ===== Flea Market (フリマ) Schemas =====
+
+class TransactionMethodEnum(str, Enum):
+    hand_off = "hand_off"
+    shipping = "shipping"
+    negotiable = "negotiable"
+
+
+class FleaMarketStatusEnum(str, Enum):
+    active = "active"
+    sold = "sold"
+    cancelled = "cancelled"
+
+
+class FleaMarketItemBase(BaseModel):
+    title: str
+    description: str
+    price: int
+    category: str
+    region: Optional[str] = None
+    transaction_method: TransactionMethodEnum = TransactionMethodEnum.negotiable
+
+
+class FleaMarketItemCreate(FleaMarketItemBase):
+    image_urls: Optional[List[str]] = None
+
+
+class FleaMarketItemUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[int] = None
+    category: Optional[str] = None
+    region: Optional[str] = None
+    transaction_method: Optional[TransactionMethodEnum] = None
+    status: Optional[FleaMarketStatusEnum] = None
+    image_urls: Optional[List[str]] = None
+
+
+class FleaMarketItemImage(BaseModel):
+    id: int
+    image_url: str
+    display_order: int
+    
+    class Config:
+        from_attributes = True
+
+
+class FleaMarketItem(FleaMarketItemBase):
+    id: int
+    user_id: int
+    status: FleaMarketStatusEnum
+    created_at: datetime
+    updated_at: datetime
+    images: List[FleaMarketItemImage] = []
+    user_display_name: Optional[str] = None
+    user_avatar_url: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
+
+
+class FleaMarketChatBase(BaseModel):
+    item_id: int
+
+
+class FleaMarketChatCreate(FleaMarketChatBase):
+    initial_message: Optional[str] = None
+
+
+class FleaMarketChat(FleaMarketChatBase):
+    id: int
+    buyer_id: int
+    seller_id: int
+    status: str
+    created_at: datetime
+    updated_at: datetime
+    item_title: Optional[str] = None
+    buyer_display_name: Optional[str] = None
+    seller_display_name: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
+
+
+class FleaMarketMessageBase(BaseModel):
+    body: str
+
+
+class FleaMarketMessageCreate(FleaMarketMessageBase):
+    chat_id: int
+
+
+class FleaMarketMessage(FleaMarketMessageBase):
+    id: int
+    chat_id: int
+    sender_id: int
+    created_at: datetime
+    sender_display_name: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
