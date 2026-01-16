@@ -38,6 +38,7 @@ import JewelryProductDetail from './components/jewelry/JewelryProductDetail';
 import JewelryCart from './components/jewelry/JewelryCart';
 import JewelryCheckout from './components/jewelry/JewelryCheckout';
 import JewelryOrderComplete from './components/jewelry/JewelryOrderComplete';
+import JewelryAdmin from './components/jewelry/JewelryAdmin';
 
 
 const FeedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -236,6 +237,12 @@ function AppContent() {
                     <Route path="/jewelry/complete/:orderId" element={
                       <FeedRoute>
                         <JewelryOrderComplete />
+                      </FeedRoute>
+                    } />
+                    {/* Jewelry Admin - 管理者のみ */}
+                    <Route path="/jewelry/admin" element={
+                      <FeedRoute>
+                        <JewelryAdmin />
                       </FeedRoute>
                     } />
                     <Route path="/news" element={
