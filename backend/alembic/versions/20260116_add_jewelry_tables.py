@@ -1,7 +1,7 @@
 """Add jewelry shopping tables
 
-Revision ID: 20260116_jewelry
-Revises: 20260116_flea_market
+Revision ID: add_jewelry_001
+Revises: add_flea_market_001
 Create Date: 2026-01-16
 
 """
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '20260116_jewelry'
-down_revision = '20260116_flea_market'
+revision = 'add_jewelry_001'
+down_revision = 'add_flea_market_001'
 branch_labels = None
 depends_on = None
 
