@@ -14,6 +14,7 @@ interface PostDetailModalProps {
   onClose: () => void;
   onUpdated?: (updated: Post) => void;
   onDeleted?: (postId: number) => void;
+  onEditInForm?: (post: Post) => void;
 }
 
 
@@ -23,7 +24,8 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
   isOpen,
   onClose,
   onUpdated,
-  onDeleted
+  onDeleted,
+  onEditInForm
 }) => {
   const { token, user: currentUser, isAnonymous, isLoading } = useAuth();
   const [comments, setComments] = useState<Comment[]>([]);
@@ -555,7 +557,14 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                       variant="ghost" 
                       size="sm" 
                       className="text-pink-700 hover:text-pink-900"
-                      onClick={() => setIsEditing(true)}
+                      onClick={() => {
+                        if (onEditInForm) {
+                          onEditInForm(post);
+                          onClose();
+                        } else {
+                          setIsEditing(true);
+                        }
+                      }}
                       aria-label="編集"
                     >
                       編集
@@ -775,6 +784,42 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
               </div>
             )}
             
+            {!isEditing && post.category === 'tourism' && (
+              <div className="mb-4 space-y-3 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 className="font-semibold text-gray-800 mb-2">イベント情報</h4>
+                {post.prefecture && (
+                  <div className="flex items-start gap-2">
+                    <span className="font-medium text-gray-700 min-w-[80px]">開催地域:</span>
+                    <span className="text-gray-800">{post.prefecture}</span>
+                  </div>
+                )}
+                {post.event_date && (
+                  <div className="flex items-start gap-2">
+                    <span className="font-medium text-gray-700 min-w-[80px]">開催日:</span>
+                    <span className="text-gray-800">{new Date(post.event_date).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                  </div>
+                )}
+                {post.fee && (
+                  <div className="flex items-start gap-2">
+                    <span className="font-medium text-gray-700 min-w-[80px]">会費:</span>
+                    <span className="text-gray-800">{post.fee}</span>
+                  </div>
+                )}
+                <div className="flex items-start gap-2">
+                  <span className="font-medium text-gray-700 min-w-[80px]">連絡先:</span>
+                  <a 
+                    href={`/profile/${post.user_id}`}
+                    className="text-blue-600 hover:text-blue-800 underline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    投稿者のプロフィールを見る
+                  </a>
+                </div>
+              </div>
+            )}
+
             <div className="text-gray-700 leading-7 mb-4">
               {isEditing ? (
                 <Textarea

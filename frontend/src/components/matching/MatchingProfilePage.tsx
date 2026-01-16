@@ -118,7 +118,7 @@ const MatchingProfilePage: React.FC = () => {
           const errorJson = JSON.parse(errorText);
           if (errorJson.detail) {
             if (typeof errorJson.detail === 'object' && errorJson.detail.error === 'premium_required') {
-              errorMessage = 'プレミアム会員限定機能です';
+              errorMessage = '有料会員限定機能です';
             } else {
               errorMessage = typeof errorJson.detail === 'string' ? errorJson.detail : JSON.stringify(errorJson.detail);
             }

@@ -14,18 +14,29 @@ interface HeroAudioPlayerProps {
 export const HeroAudioPlayer = ({ isHeroVisible }: HeroAudioPlayerProps) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true); // Start muted for autoplay
   const [volume, setVolume] = useState(0.5);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
 
   // Initialize audio element
   useEffect(() => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio();
-      audioRef.current.volume = 0; // Start muted
-      audioRef.current.muted = true;
-    }
+    const audio = new Audio();
+    audio.src = AUDIO_TRACKS[0];
+    audio.volume = volume;
+    audio.preload = 'auto';
+    audioRef.current = audio;
+    
+    console.log('🎵 Audio player initialized');
+    console.log('Audio src:', audio.src);
+    
+    audio.addEventListener('canplay', () => {
+      console.log('✅ Audio can play');
+    });
+    
+    audio.addEventListener('error', () => {
+      console.error('❌ Audio error:', audio.error);
+    });
+    
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -53,29 +64,6 @@ export const HeroAudioPlayer = ({ isHeroVisible }: HeroAudioPlayerProps) => {
     return () => audio.removeEventListener('ended', handleEnded);
   }, [currentTrackIndex, isPlaying, isHeroVisible]);
 
-  // Autoplay muted on mount
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const attemptAutoplay = async () => {
-      try {
-        audio.src = AUDIO_TRACKS[0];
-        audio.muted = true;
-        audio.volume = 0;
-        await audio.play();
-        setIsPlaying(true);
-        console.log('Autoplay started (muted)');
-      } catch (error) {
-        console.log('Autoplay failed:', error);
-        setIsPlaying(false);
-      }
-    };
-
-    // Small delay to ensure component is mounted
-    const timer = setTimeout(attemptAutoplay, 500);
-    return () => clearTimeout(timer);
-  }, []);
 
   // Handle hero visibility changes
   useEffect(() => {
@@ -89,60 +77,69 @@ export const HeroAudioPlayer = ({ isHeroVisible }: HeroAudioPlayerProps) => {
     }
   }, [isHeroVisible, isPlaying]);
 
-  // Update volume and muted state
+  // Update volume
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.muted = isMuted;
-      audioRef.current.volume = isMuted ? 0 : volume;
+      audioRef.current.volume = volume;
     }
-  }, [volume, isMuted]);
+  }, [volume]);
 
-  const togglePlay = useCallback(() => {
+  const handlePlayerClick = () => {
+    console.log('🎯 Player clicked!');
     const audio = audioRef.current;
-    if (!audio) return;
-
+    
+    if (!audio) {
+      console.error('❌ No audio element');
+      return;
+    }
+    
+    console.log('Current state - isPlaying:', isPlaying, 'paused:', audio.paused);
+    
     if (isPlaying) {
+      console.log('⏸️ Pausing and resetting...');
       audio.pause();
+      audio.currentTime = 0;
       setIsPlaying(false);
     } else {
+      console.log('▶️ Playing from start...');
+      audio.currentTime = 0;
+      
       audio.play()
         .then(() => {
+          console.log('✅ Playing successfully');
           setIsPlaying(true);
         })
-        .catch((error) => {
-          console.error('Play failed:', error);
+        .catch((err) => {
+          console.error('❌ Play error:', err);
         });
     }
-  }, [isPlaying]);
-
-  const toggleMute = useCallback(() => {
-    setIsMuted(!isMuted);
-  }, [isMuted]);
+  };
 
   const handleVolumeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
-    if (newVolume > 0 && isMuted) {
-      setIsMuted(false);
-    }
-  }, [isMuted]);
+  }, []);
 
   return (
     <div 
-      className="flex items-center justify-center gap-2 bg-black/50 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg"
+      className="flex items-center justify-center gap-2 bg-black/50 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg cursor-pointer relative z-50"
       onMouseEnter={() => setShowVolumeSlider(true)}
       onMouseLeave={() => setShowVolumeSlider(false)}
+      onClick={(e) => {
+        console.log('🎯 Container clicked!', e.target);
+      }}
     >
-      {/* Play/Pause button - always shown for control */}
+      {/* Play/Pause button */}
       <button
-        onClick={togglePlay}
-        className="text-white hover:text-gray-300 transition-colors p-1"
-        aria-label={isPlaying ? 'Pause' : 'Play'}
+        onClick={handlePlayerClick}
+        className="text-white hover:text-gray-300 transition-colors p-2 focus:outline-none focus:ring-2 focus:ring-white rounded"
+        aria-label={isPlaying ? 'Stop' : 'Play'}
+        type="button"
       >
         {isPlaying ? (
-          <Pause className="w-5 h-5" />
+          <Pause className="w-6 h-6" />
         ) : (
-          <Play className="w-5 h-5" />
+          <Play className="w-6 h-6" />
         )}
       </button>
 
@@ -153,28 +150,24 @@ export const HeroAudioPlayer = ({ isHeroVisible }: HeroAudioPlayerProps) => {
           min="0"
           max="1"
           step="0.01"
-          value={isMuted ? 0 : volume}
+          value={volume}
           onChange={handleVolumeChange}
           className="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-white"
           aria-label="Volume"
         />
       </div>
 
-      {/* Mute/Unmute button */}
-      <button
-        onClick={toggleMute}
-        className="text-white hover:text-gray-300 transition-colors p-1"
-        aria-label={isMuted ? 'Unmute' : 'Mute'}
-      >
-        {isMuted || volume === 0 ? (
+      {/* Volume icon */}
+      <div className="text-white">
+        {volume === 0 ? (
           <VolumeX className="w-5 h-5" />
         ) : (
           <Volume2 className="w-5 h-5" />
         )}
-      </button>
+      </div>
 
       {/* Status indicator */}
-      {isPlaying && !isMuted && (
+      {isPlaying && (
         <div className="flex items-center gap-0.5 ml-1">
           <span className="w-1 h-3 bg-white rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></span>
           <span className="w-1 h-4 bg-white rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></span>

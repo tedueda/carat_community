@@ -12,52 +12,75 @@ import { extractYouTubeId } from '../utils/youtube';
 import HeroAudioPlayer from './HeroAudioPlayer';
 
 
-const memberBenefits = [
+const specialMenuItems = [
   {
     id: "matching",
     title: "会員マッチング",
     description: "理想のパートナーと出会える安心のマッチングサービス",
     icon: "💕",
     link: "/matching",
-    external: false,
     premiumOnly: true,
   },
   {
     id: "salon",
     title: "会員サロン",
-    description: "プレミアム会員限定の専門チャットサロン",
+    description: "有料会員限定の専門チャットサロン",
     icon: "💬",
     link: "/salon",
-    external: false,
     premiumOnly: true,
   },
   {
-    id: "donation",
-    title: "寄付金募集",
-    description: "LGBTQ+コミュニティを支援する寄付プラットフォーム",
-    icon: "🤝",
-    link: "/funding",
-    external: false,
-    premiumOnly: true,
-  },
-  {
-    id: "marketplace",
-    title: "商品販売",
-    description: "会員同士で安心・安全な売買取引",
-    icon: "🛍️",
-    link: "/marketplace",
-    external: false,
-    premiumOnly: true,
+    id: "business",
+    title: "ビジネス",
+    description: "フリマ・作品販売・講座・Live配信",
+    icon: "💼",
+    link: "/business",
+    premiumOnly: false,
   },
 ];
 
 const boardCategories = [
   { key: "music", title: "ミュージック", desc: "あなたの好きな楽曲、作成した楽曲を投稿して共有しましょう！", emoji: "🎵", link: "/category/music" },
-  { key: "art", title: "アート", desc: "イラスト・写真・映像作品を発表して、アートの世界を広げましょう！", emoji: "🎨", link: "/category/art" },
+  { key: "art", title: "アート・動画", desc: "イラスト・写真・映像作品を発表して、アートの世界を広げましょう！", emoji: "🎨", link: "/category/art" },
   { key: "comics", title: "サブカルチャー", desc: "映画・アニメ・ゲーム・小説などの作品レビューと感想を共有しましょう！", emoji: "🎭", link: "/category/comics" },
-  { key: "food_shops", title: "食レポ・お店", desc: "美味しいグルメやLGBTQフレンドリーなお店を紹介しましょう！", emoji: "🍽️", link: "/category/food", categories: ["food", "shops"] },
+  { key: "food_shops", title: "食レポ・お店・ライブハウス", desc: "美味しいグルメやLGBTQフレンドリーなお店を紹介しましょう！", emoji: "🍽️", link: "/category/food", categories: ["food", "shops"] },
   { key: "tourism", title: "ツーリズム", desc: "おすすめの旅行先や観光スポットを紹介して、旅の楽しさを共有しましょう！", emoji: "📍", link: "/category/tourism" },
   { key: "board", title: "掲示板", desc: "悩み相談や雑談、日常の話題を自由に投稿しましょう！", emoji: "💬", link: "/category/board" },
+];
+
+const heroMessages = [
+  {
+    main: "自分を表現して、\n新しい仲間と出会おう",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  },
+  {
+    main: "安心して自分を表現できる\n安全性の高いコミュニティ",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  },
+  {
+    main: "心許せる仲間との\n繋がりがつくれる空間",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  },
+  {
+    main: "ジェンダーフリーの生き方を\n応援する唯一のサイト",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  },
+  {
+    main: "ひとりじゃない。\n\"自分らしさ\"を出せる居場所",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  },
+  {
+    main: "あなたの才能を認めてくれる\n仲間が集うコミュニティ",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  },
+  {
+    main: "価値観が響き合う仲間と作る\n上質なコミュニティ空間",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  },
+  {
+    main: "真っ白なキャンバスをあなたの\n「カラット」で輝かせましょう",
+    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+  }
 ];
 
 const getCategoryPlaceholder= (category: string | undefined): string => {
@@ -347,7 +370,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 0 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide1.png" 
+                src="/images/img10.jpg" 
                 alt="LGBTQ+ Community 1"
                 className="w-full h-full object-cover"
               />
@@ -356,7 +379,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 1 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide2.png" 
+                src="/images/img12.jpg" 
                 alt="LGBTQ+ Community 2"
                 className="w-full h-full object-cover"
               />
@@ -365,7 +388,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 2 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide3.png" 
+                src="/images/img14.jpg" 
                 alt="LGBTQ+ Community 3"
                 className="w-full h-full object-cover"
               />
@@ -374,7 +397,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 3 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide4.png" 
+                src="/images/hero1.png" 
                 alt="LGBTQ+ Community 4"
                 className="w-full h-full object-cover"
               />
@@ -383,7 +406,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 4 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide5.png" 
+                src="/images/hero2.png" 
                 alt="LGBTQ+ Community 5"
                 className="w-full h-full object-cover"
               />
@@ -392,7 +415,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 5 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide6.png" 
+                src="/images/hero3.png" 
                 alt="LGBTQ+ Community 6"
                 className="w-full h-full object-cover"
               />
@@ -401,7 +424,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 6 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide7.png" 
+                src="/images/hero4.png" 
                 alt="LGBTQ+ Community 7"
                 className="w-full h-full object-cover"
               />
@@ -410,26 +433,39 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 7 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/slide8.png" 
+                src="/images/hero5.png" 
                 alt="LGBTQ+ Community 8"
                 className="w-full h-full object-cover"
               />
             </div>
           </div>
           <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+          {/* Sound Credit and Audio Player */}
+          <div className="absolute bottom-16 right-8 z-50 flex flex-col items-end gap-2 pointer-events-auto">
+            <div className="text-white text-sm opacity-70 flex items-center gap-2">
+              <span className="text-lg">♫</span>
+              <span>Inspired by Marvin Gaye</span>
+            </div>
+            <HeroAudioPlayer isHeroVisible={isHeroVisible} />
+          </div>
           <div className="relative z-10 flex items-center justify-center h-full">
             <div className="text-center text-white px-4 max-w-6xl">
-              <h2 className="text-3xl md:text-7xl font-serif font-bold leading-tight mb-6">
-                自分を表現して、<br />新しい仲間と出会おう
+              <h2 className="text-3xl md:text-7xl font-serif font-bold leading-tight mb-6 transition-opacity duration-1000">
+                {heroMessages[currentSlide].main.split('\n').map((line, i) => (
+                  <React.Fragment key={i}>
+                    {line}
+                    {i < heroMessages[currentSlide].main.split('\n').length - 1 && <br />}
+                  </React.Fragment>
+                ))}
               </h2>
-              <p className="text-lg md:text-2xl mb-8 opacity-90">
-                悩み相談、アート、音楽、地元ツアー。<br />
-                ここから、あなたの物語が始まります。
+              <p className="text-lg md:text-2xl mb-8 opacity-90 transition-opacity duration-1000">
+                {heroMessages[currentSlide].sub.split('\n').map((line, i) => (
+                  <React.Fragment key={i}>
+                    {line}
+                    {i < heroMessages[currentSlide].sub.split('\n').length - 1 && <br />}
+                  </React.Fragment>
+                ))}
               </p>
-              {/* Hero Audio Player - centered below text */}
-              <div className="flex justify-center mt-4">
-                <HeroAudioPlayer isHeroVisible={isHeroVisible} />
-              </div>
             </div>
           </div>
         </section>
@@ -490,7 +526,11 @@ const HomePage: React.FC = () => {
               </Button>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {(categoryPosts[cat.key] || []).slice(0, 4).map((post) => (
+              {(categoryPosts[cat.key] || []).slice(0, 4).map((post) => {
+                // youtube_urlフィールドがない場合、本文からYouTubeのURLを抽出
+                const youtubeUrl = post.youtube_url || (post.body ? post.body.match(/https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)[^\s)<>"']+/i)?.[0] : null);
+                console.log(`📌 Post ${post.id} - youtube_url:`, post.youtube_url, 'extracted:', youtubeUrl, 'media_url:', post.media_url);
+                return (
                 <Card 
                   key={post.id} 
                   onClick={() => {
@@ -503,7 +543,30 @@ const HomePage: React.FC = () => {
                   }}
                   className="group backdrop-blur-md bg-gray-50/80 border border-gray-200 hover:bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer hover:scale-[1.02] shadow-lg hover:shadow-2xl"
                 >
-                  {(post.media_url || (post.media_urls && post.media_urls.length > 0)) ? (
+                  {youtubeUrl ? (
+                    <div className="h-40 overflow-hidden rounded-t-lg bg-black flex items-center justify-center relative">
+                      <img 
+                        src={`https://img.youtube.com/vi/${extractYouTubeId(youtubeUrl)}/maxresdefault.jpg`}
+                        alt={post.title || 'YouTube動画'}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const videoId = extractYouTubeId(youtubeUrl);
+                          if (videoId) {
+                            (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                          } else {
+                            (e.target as HTMLImageElement).src = getCategoryPlaceholder(post.category);
+                          }
+                        }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="bg-black/60 rounded-full p-3">
+                          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (post.media_url || (post.media_urls && post.media_urls.length > 0)) ? (
                     <div className="h-40 overflow-hidden rounded-t-lg bg-gray-100 flex items-center justify-center">
                       <img 
                         src={`${(() => {
@@ -517,19 +580,6 @@ const HomePage: React.FC = () => {
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = getCategoryPlaceholder(post.category);
-                        }}
-                      />
-                    </div>
-                  ) : post.youtube_url ? (
-                    <div className="h-40 overflow-hidden rounded-t-lg bg-black flex items-center justify-center">
-                      <img 
-                        src={`https://img.youtube.com/vi/${extractYouTubeId(post.youtube_url)}/maxresdefault.jpg`}
-                        alt={post.title || 'YouTube動画'}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          if (post.youtube_url) {
-                            (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${extractYouTubeId(post.youtube_url)}/hqdefault.jpg`;
-                          }
                         }}
                       />
                     </div>
@@ -568,7 +618,8 @@ const HomePage: React.FC = () => {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+              );
+              })}
               {(!categoryPosts[cat.key] || categoryPosts[cat.key].length === 0) && (
                 <div className="col-span-4 text-center py-8 text-slate-500">
                   投稿がまだありません
@@ -578,64 +629,57 @@ const HomePage: React.FC = () => {
           </section>
         ))}
 
-        {/* 会員特典メニュー - 全員に表示、無料会員はロック表示 */}
+        {/* 特別メニュー - カテゴリ一覧の直下 */}
         <section className="py-12">
-          <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-3 gap-1 md:gap-0">
-            <h3 className="text-4xl md:text-5xl font-serif font-semibold text-slate-900">会員特典メニュー</h3>
-            <span className="text-base md:text-2xl text-slate-500 self-start md:self-auto">プレミアム会員限定</span>
+          <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-6 gap-1 md:gap-0">
+            <h3 className="text-4xl md:text-5xl font-serif font-semibold text-slate-900">特別メニュー</h3>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-            {memberBenefits.map((benefit) => {
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {specialMenuItems.map((item) => {
               const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
-              const isLocked = !isPremium;
+              const isLocked = item.premiumOnly && !isPremium;
               
-              const handleBenefitClick = () => {
-                if (!user) {
+              const handleMenuClick = () => {
+                if (item.premiumOnly && !user) {
                   window.location.href = '/login';
                 } else if (isLocked) {
-                  setUpgradeFeatureName(benefit.title);
+                  setUpgradeFeatureName(item.title);
                   setShowUpgradeModal(true);
-                } else if (benefit.external === false && benefit.link) {
-                  navigate(benefit.link);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 } else {
-                  setShowConstructionModal(true);
+                  navigate(item.link);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
               };
               
               return (
                 <Card 
-                  key={benefit.id} 
+                  key={item.id} 
                   className={`group backdrop-blur-md border transition-all duration-300 cursor-pointer shadow-lg ${
                     isLocked 
                       ? 'bg-gray-100/90 border-gray-300 hover:bg-gray-200/90' 
                       : 'bg-gray-50/90 border-gray-200 hover:bg-white hover:border-gray-300 hover:scale-[1.02] hover:shadow-2xl'
                   }`}
-                  onClick={handleBenefitClick}
+                  onClick={handleMenuClick}
                 >
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className={`text-4xl transition-transform relative ${isLocked ? 'opacity-50' : 'group-hover:scale-110'}`}>
-                          {benefit.icon}
-                          {isLocked && (
-                            <div className="absolute -top-1 -right-1 bg-gray-600 rounded-full p-1">
-                              <Lock className="h-3 w-3 text-white" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="text-left">
-                          <h4 className={`font-serif font-semibold mb-1 flex items-center gap-2 ${isLocked ? 'text-slate-500' : 'text-slate-900 group-hover:gold-accent'}`}>
-                            {benefit.title}
-                            {isLocked && <Lock className="h-4 w-4 text-gray-400" />}
-                          </h4>
-                          <p className={`text-sm line-clamp-2 ${isLocked ? 'text-slate-400' : 'text-slate-600'}`}>
-                            {benefit.description}
-                          </p>
-                        </div>
+                    <div className="flex flex-col items-center text-center">
+                      <div className={`text-5xl mb-4 transition-transform relative ${isLocked ? 'opacity-50' : 'group-hover:scale-110'}`}>
+                        {item.icon}
+                        {isLocked && (
+                          <div className="absolute -top-1 -right-1 bg-gray-600 rounded-full p-1">
+                            <Lock className="h-3 w-3 text-white" />
+                          </div>
+                        )}
                       </div>
+                      <h4 className={`font-serif font-semibold text-xl mb-2 flex items-center gap-2 ${isLocked ? 'text-slate-500' : 'text-slate-900 group-hover:gold-accent'}`}>
+                        {item.title}
+                        {isLocked && <Lock className="h-4 w-4 text-gray-400" />}
+                      </h4>
+                      <p className={`text-sm mb-4 ${isLocked ? 'text-slate-400' : 'text-slate-600'}`}>
+                        {item.description}
+                      </p>
                       <Button 
-                        className={`font-medium ${
+                        className={`font-medium w-full ${
                           isLocked 
                             ? 'bg-gray-200 text-gray-500 border border-gray-300 hover:bg-gray-300' 
                             : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black group-hover:shadow-md'
@@ -643,17 +687,17 @@ const HomePage: React.FC = () => {
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleBenefitClick();
+                          handleMenuClick();
                         }}
                       >
                         {isLocked ? (
                           <>
                             <Lock className="h-3 w-3 mr-1" />
-                            ロック中
+                            有料会員限定
                           </>
                         ) : (
                           <>
-                            利用する
+                            詳細を見る
                             <ArrowRight className="h-3 w-3 ml-1" />
                           </>
                         )}
@@ -667,7 +711,7 @@ const HomePage: React.FC = () => {
         </section>
 
         {/* ライブウェディングバナー */}
-        <section className="py-12">
+        <section className="py-6">
           <Card 
             className="text-white border border-white/20 shadow-2xl relative overflow-hidden backdrop-blur-sm cursor-pointer hover:shadow-3xl transition-all duration-300"
             onClick={() => navigate('/live-wedding')}
@@ -694,6 +738,43 @@ const HomePage: React.FC = () => {
                 className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-6 py-2.5 shadow-lg"
               >
                 詳細を見る
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* ジュエリー販売バナー */}
+        <section className="py-6">
+          <Card 
+            className="text-white border border-white/20 shadow-2xl relative overflow-hidden backdrop-blur-sm cursor-pointer hover:shadow-3xl transition-all duration-300"
+            onClick={() => window.open('https://example.com/jewelry', '_blank')}
+          >
+            <div className="absolute inset-0">
+              <img 
+                src="/images/jewelry-banner.jpg" 
+                alt="Jewelry Collection"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/images/lgbtq-7-1536x1024.jpg';
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-600/70 via-yellow-500/60 to-amber-400/70"></div>
+            </div>
+            <CardContent className="p-6 md:p-8 text-center relative z-10">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <span className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">Jewelry Collection</span>
+              </div>
+              <h3 className="text-4xl md:text-5xl font-serif font-bold mb-4">ジュエリー販売</h3>
+              <p className="text-xl md:text-2xl mb-6 opacity-90">特別な瞬間を彩る、オリジナルジュエリー</p>
+              <Button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open('https://example.com/jewelry', '_blank');
+                }}
+                className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-6 py-2.5 shadow-lg"
+              >
+                ショップを見る
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </CardContent>
@@ -905,6 +986,11 @@ const HomePage: React.FC = () => {
             setPosts(posts.filter(p => p.id !== postId));
             setSelectedPost(null);
             setSelectedUser(null);
+          }}
+          onEditInForm={(post) => {
+            // カテゴリページに遷移して編集モードで開く
+            const category = post.category || 'board';
+            navigate(`/category/${category}?edit=${post.id}`);
           }}
         />
       )}

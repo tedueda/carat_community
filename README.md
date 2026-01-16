@@ -106,8 +106,14 @@
 ### デプロイ済み環境
 
 - **フロントエンド**: https://rainbow-community-app-lr7ap1j0.devinapps.com
-- **バックエンド**: https://ddxdewgmen.ap-northeast-1.awsapprunner.com
+- **バックエンド**: ローカル開発サーバー（http://localhost:8000）を使用
 - **データベース**: AWS RDS PostgreSQL 17.4 (ap-northeast-1)
+  - ホスト: `rainbow-community-db-tokyo.cj8agmy8kjhv.ap-northeast-1.rds.amazonaws.com`
+  - ユーザー: `dbadmin`
+  - パスワード: `NewPassword123!`
+  - データベース名: `lgbtq_community`
+
+> **注意**: 古いApp Runner URL（`https://ddxdewgmen.ap-northeast-1.awsapprunner.com`）は廃止されました。バックエンドはローカルで起動してください。
 
 ### テストアカウント
 
@@ -163,9 +169,15 @@
 ### デプロイ済み環境
 
 - **フロントエンド**: https://rainbow-community-app-lr7ap1j0.devinapps.com
-- **バックエンド API**: https://ddxdewgmen.ap-northeast-1.awsapprunner.com
+- **バックエンド API**: ローカル開発サーバー（http://localhost:8000）を使用
 - **データベース**: AWS RDS PostgreSQL 17.4 (ap-northeast-1)
-- **API ドキュメント**: https://ddxdewgmen.ap-northeast-1.awsapprunner.com/docs
+  - ホスト: `rainbow-community-db-tokyo.cj8agmy8kjhv.ap-northeast-1.rds.amazonaws.com`
+  - ユーザー: `dbadmin`
+  - パスワード: `NewPassword123!`
+  - データベース名: `lgbtq_community`
+- **API ドキュメント**: http://localhost:8000/docs（ローカル起動時）
+
+> **注意**: 古いApp Runner URL（`https://ddxdewgmen.ap-northeast-1.awsapprunner.com`）は廃止されました。
 
 ---
 

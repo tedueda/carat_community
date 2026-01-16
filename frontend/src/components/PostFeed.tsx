@@ -123,7 +123,7 @@ const PostFeed: React.FC = () => {
                 onClick={() => window.location.href = '/login'}
                 className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
               >
-                投稿するにはプレミアム登録
+                投稿するには有料会員登録
               </Button>
             )}
           </CardContent>
@@ -217,13 +217,13 @@ const PostFeed: React.FC = () => {
                   </>
                 ) : (
                   <div className="w-full text-center py-2">
-                    <p className="text-sm text-gray-500 mb-2">リアクションや投稿をするにはプレミアム会員登録が必要です</p>
+                    <p className="text-sm text-gray-500 mb-2">リアクションや投稿をするには有料会員登録が必要です</p>
                     <Button 
                       onClick={() => window.location.href = '/login'}
                       size="sm"
                       className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
                     >
-                      プレミアム登録
+                      有料会員登録
                     </Button>
                   </div>
                 )}

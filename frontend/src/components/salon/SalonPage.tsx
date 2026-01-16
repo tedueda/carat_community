@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
-import { Plus, Lock, MessageCircle, Grid3x3, List } from 'lucide-react';
+import { Plus, Lock, MessageCircle, Grid3x3, List, ArrowLeft } from 'lucide-react';
 import SalonRoomCard from './SalonRoomCard';
 import CreateSalonRoomModal from './CreateSalonRoomModal';
 
@@ -56,7 +56,7 @@ const SalonPage: React.FC = () => {
         const data = await response.json();
         setRooms(data);
       } else if (response.status === 403) {
-        setError('プレミアム会員のみ利用可能です');
+        setError('有料会員のみ利用可能です');
       } else {
         setError('ルームの取得に失敗しました');
       }
@@ -109,13 +109,13 @@ const SalonPage: React.FC = () => {
         <Card className="max-w-md w-full mx-4">
           <CardContent className="p-6 text-center">
             <Lock className="h-12 w-12 mx-auto text-yellow-500 mb-4" />
-            <h2 className="text-xl font-semibold mb-2">プレミアム会員限定</h2>
+            <h2 className="text-xl font-semibold mb-2">有料会員限定</h2>
             <p className="text-gray-600 mb-4">
-              会員サロンはプレミアム会員のみご利用いただけます。
-              プレミアム会員になると、専門チャットサロンで同じ悩みを持つ仲間と交流できます。
+              会員サロンは有料会員のみご利用いただけます。
+              有料会員になると、専門チャットサロンで同じ悩みを持つ仲間と交流できます。
             </p>
             <Button onClick={() => navigate('/account')} className="bg-yellow-500 hover:bg-yellow-600">
-              プレミアム会員になる
+              有料会員になる
             </Button>
           </CardContent>
         </Card>
@@ -126,10 +126,20 @@ const SalonPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="mb-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/feed')}
+            className="text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            ホームに戻る
+          </Button>
+        </div>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div>
             <h1 className="text-3xl font-serif font-bold text-gray-900">会員サロン</h1>
-            <p className="text-gray-600 mt-1">プレミアム会員限定の専門チャットサロン</p>
+            <p className="text-gray-600 mt-1">有料会員限定の専門チャットサロン</p>
           </div>
           <Button
             onClick={() => setShowCreateModal(true)}

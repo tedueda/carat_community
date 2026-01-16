@@ -28,6 +28,9 @@ export interface Post {
   status?: string;
   excerpt?: string;
   og_image_url?: string;
+  prefecture?: string;
+  event_date?: string;
+  fee?: string;
 }
 
 export interface Comment {
