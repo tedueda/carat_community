@@ -618,7 +618,7 @@ docker push 192933325498.dkr.ecr.ap-northeast-1.amazonaws.com/rainbow-community-
 
 AWS コンソール → App Runner → `rainbow-community-api` → **Deploy**
 
-**API URL**: https://7cjpf7nunm.ap-northeast-1.awsapprunner.com
+**API URL**: https://ddxdewgmen.ap-northeast-1.awsapprunner.com
 
 ### フロントエンド（予定）
 
