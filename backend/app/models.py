@@ -607,23 +607,25 @@ class FleaMarketItem(Base):
     __tablename__ = "flea_market_items"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    seller_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=False)
     price = Column(Integer, nullable=False)  # 希望価格（円）
+    is_negotiable = Column(Boolean, default=False)  # 価格交渉可能か
     category = Column(String(100), nullable=False)
     region = Column(String(100))  # 地域
-    transaction_method = Column(String(50), nullable=False, default="negotiable")  # hand_off, shipping, negotiable
-    status = Column(String(20), nullable=False, default="active")  # active, sold, cancelled
+    transaction_method = Column(String(50), nullable=False, default="negotiable")  # hand_delivery, shipping, negotiable
+    status = Column(String(20), nullable=False, default="active")  # active, reserved, sold, cancelled
+    view_count = Column(Integer, default=0)  # 閲覧数
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     __table_args__ = (
-        CheckConstraint("transaction_method IN ('hand_off', 'shipping', 'negotiable')", name="check_transaction_method"),
-        CheckConstraint("status IN ('active', 'sold', 'cancelled')", name="check_flea_market_status"),
+        CheckConstraint("transaction_method IN ('hand_delivery', 'shipping', 'negotiable')", name="check_transaction_method"),
+        CheckConstraint("status IN ('active', 'reserved', 'sold', 'cancelled')", name="check_flea_market_status"),
     )
 
-    user = relationship("User")
+    seller = relationship("User")
     images = relationship("FleaMarketItemImage", back_populates="item", order_by="FleaMarketItemImage.display_order")
 
 
