@@ -27,6 +27,7 @@ import MatchingChatShell from './components/matching/MatchingChatShell';
 import FoodPage from './pages/members/FoodPage';
 import BeautyPage from './pages/members/BeautyPage';
 import VirtualWeddingPage from './components/VirtualWeddingPage';
+import LiveWeddingApplicationForm from './components/LiveWeddingApplicationForm';
 import DonationPage from './components/DonationPage';
 import MarketplacePage from './pages/members/MarketplacePage';
 import FavoritesPage from './pages/members/FavoritesPage';
@@ -159,6 +160,11 @@ function AppContent() {
           <Route path="/live-wedding" element={
             <FeedRoute>
               <VirtualWeddingPage />
+            </FeedRoute>
+          } />
+          <Route path="/live-wedding/application" element={
+            <FeedRoute>
+              <LiveWeddingApplicationForm />
             </FeedRoute>
           } />
           <Route path="/funding" element={

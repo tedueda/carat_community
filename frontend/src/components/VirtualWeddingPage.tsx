@@ -4,64 +4,10 @@ import { Check, ChevronDown, ChevronUp, Home } from 'lucide-react';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Button } from './ui/button';
 
-interface InquiryForm {
-  name1: string;
-  name2: string;
-  phone: string;
-  email: string;
-  date1: string;
-  date2: string;
-  date3: string;
-  contact: string;
-  message: string;
-}
-
 const VirtualWeddingPage: React.FC = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<InquiryForm>({
-    name1: '',
-    name2: '',
-    phone: '',
-    email: '',
-    date1: '',
-    date2: '',
-    date3: '',
-    contact: '',
-    message: ''
-  });
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      alert('お問い合わせを受け付けました。担当者よりご連絡いたします。');
-      setFormData({
-        name1: '',
-        name2: '',
-        phone: '',
-        email: '',
-        date1: '',
-        date2: '',
-        date3: '',
-        contact: '',
-        message: ''
-      });
-    } catch (error) {
-      alert('エラーが発生しました。もう一度お試しください。');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   // const features = [
   //   {
@@ -97,11 +43,11 @@ const VirtualWeddingPage: React.FC = () => {
   ];
 
   const notIncludedFeatures = [
-    { item: "ヘアメイク・衣装", note: "お好みに合わせてご自身でご手配ください" },
-    { item: "司会・牧師・パートナー", note: "ご希望の場合は手配可能（別途お見積り）" },
-    { item: "コーディネーター・プランナー", note: "式全体の進行をサポートする専門家（任意）" },
-    { item: "花束・装飾", note: "ご自身のテーマに合わせたフラワーや小物" },
-    { item: "飲食", note: "パーティ用ケータリングなどご希望に応じて" }
+    "ヘアメイク・衣装",
+    "司会・牧師・パートナー",
+    "コーディネーター・プランナー",
+    "花束・装飾",
+    "飲食"
   ];
 
   const faqs = [
@@ -169,11 +115,15 @@ const VirtualWeddingPage: React.FC = () => {
             
             {/* Bottom Section - ボタン */}
             <div className="pb-16 text-center">
-              <a href="#contact-form">
-                <Button className="bg-black text-white hover:bg-gray-800 px-8 py-4 text-xl font-semibold transition-colors">
-                  相談予約
-                </Button>
-              </a>
+              <Button 
+                onClick={() => {
+                  navigate('/live-wedding/application');
+                  window.scrollTo(0, 0);
+                }}
+                className="bg-black text-white hover:bg-gray-800 px-8 py-4 text-xl font-semibold transition-colors"
+              >
+                相談予約
+              </Button>
             </div>
           </div>
         </div>
@@ -218,8 +168,11 @@ const VirtualWeddingPage: React.FC = () => {
             <Card className="bg-carat-white border-carat-gray2 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader className="text-center">
                 <h3 className="text-3xl font-bold text-carat-black mb-2">ライブ・ウエディングプラン</h3>
+                <p className="text-carat-gray5 text-lg mb-2">
+                  <span className="line-through">通常価格 ¥500,000</span>
+                </p>
                 <p className="text-4xl font-bold text-carat-black">¥300,000</p>
-                <p className="text-carat-gray5 mt-2">税込価格</p>
+                <p className="text-carat-gray5 mt-2">（税別）</p>
                 <div className="mt-4 px-4 py-2 bg-carat-black text-carat-white rounded-full inline-block">
                   <span className="text-sm font-semibold">Carat 会員価格</span>
                 </div>
@@ -250,26 +203,28 @@ const VirtualWeddingPage: React.FC = () => {
                       </svg>
                       含まれない内容
                     </h4>
-                    <ul className="space-y-3">
+                    <ul className="space-y-2 mb-4">
                       {notIncludedFeatures.map((feature, index) => (
-                        <li key={index} className="border-l-2 border-red-200 pl-3">
-                          <div className="flex items-start gap-2">
-                            <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                            <div>
-                              <span className="text-carat-black text-base font-medium">{feature.item}</span>
-                              <p className="text-carat-gray5 text-sm mt-1">{feature.note}</p>
-                            </div>
-                          </div>
+                        <li key={index} className="flex items-center gap-2">
+                          <svg className="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                          <span className="text-carat-gray6 text-base">{feature}</span>
                         </li>
                       ))}
                     </ul>
+                    <p className="text-carat-gray5 text-sm">必要な場合はお客様でお手配ください</p>
                   </div>
                 </div>
                 
                 <div className="mt-8 text-center">
-                  <Button className="bg-black text-white hover:bg-gray-800 px-8 py-4 text-lg font-semibold">
+                  <Button 
+                    onClick={() => {
+                      navigate('/live-wedding/application');
+                      window.scrollTo(0, 0);
+                    }}
+                    className="bg-black text-white hover:bg-gray-800 px-8 py-4 text-lg font-semibold"
+                  >
                     このプランでお申し込み
                   </Button>
                 </div>
@@ -293,11 +248,11 @@ const VirtualWeddingPage: React.FC = () => {
               >
                 <source src="https://test.studioq.co.jp/wp-content/uploads/2025/11/バーチャルウェディング（DEMO.mp4" type="video/mp4" />
               </video>
-              {/* 拡大アイコンオーバーレイ */}
-              <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="bg-carat-white rounded-full p-4">
-                  <svg className="w-8 h-8 text-carat-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+              {/* 再生ボタンオーバーレイ */}
+              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                <div className="bg-transparent border-2 border-white rounded-full p-6 group-hover:bg-white/20 group-hover:scale-110 transition-all duration-300">
+                  <svg className="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
                   </svg>
                 </div>
               </div>
@@ -353,135 +308,6 @@ const VirtualWeddingPage: React.FC = () => {
                 </div>
               </div>
             </a>
-          </div>
-        </div>
-
-        {/* Contact Form */}
-        <div id="contact-form" className="mb-16">
-          <h2 className="text-3xl font-bold text-center text-carat-black mb-12">お問い合わせ</h2>
-          <div className="max-w-2xl mx-auto">
-            <Card className="bg-carat-white border-carat-gray2 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <CardContent className="p-8">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="name1" className="block text-sm font-medium text-carat-black mb-2">
-                        お名前1 *
-                      </label>
-                      <input
-                        type="text"
-                        id="name1"
-                        name="name1"
-                        required
-                        value={formData.name1}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-carat-gray3 rounded-lg focus:outline-none focus:ring-2 focus:ring-carat-black/20"
-                        placeholder="代表者名"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="name2" className="block text-sm font-medium text-carat-black mb-2">
-                        お名前2 *
-                      </label>
-                      <input
-                        type="text"
-                        id="name2"
-                        name="name2"
-                        required
-                        value={formData.name2}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-carat-gray3 rounded-lg focus:outline-none focus:ring-2 focus:ring-carat-black/20"
-                        placeholder="パートナー名"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-carat-black mb-2">
-                      メールアドレス *
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      required
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-carat-gray3 rounded-lg focus:outline-none focus:ring-2 focus:ring-carat-black/20"
-                      placeholder="example@email.com"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-carat-black mb-2">
-                      電話番号 *
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      required
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-carat-gray3 rounded-lg focus:outline-none focus:ring-2 focus:ring-carat-black/20"
-                      placeholder="090-1234-5678"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-carat-black mb-2">
-                      希望日程（第3希望まで）
-                    </label>
-                    <div className="space-y-2">
-                      <input
-                        type="date"
-                        name="date1"
-                        value={formData.date1}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-carat-gray3 rounded-lg focus:outline-none focus:ring-2 focus:ring-carat-black/20"
-                      />
-                      <input
-                        type="date"
-                        name="date2"
-                        value={formData.date2}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-carat-gray3 rounded-lg focus:outline-none focus:ring-2 focus:ring-carat-black/20"
-                      />
-                      <input
-                        type="date"
-                        name="date3"
-                        value={formData.date3}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-carat-gray3 rounded-lg focus:outline-none focus:ring-2 focus:ring-carat-black/20"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-carat-black mb-2">
-                      ご要望・ご質問
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      rows={4}
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-carat-gray3 rounded-lg focus:outline-none focus:ring-2 focus:ring-carat-black/20"
-                      placeholder="ご要望やご質問がございましたらお聞かせください"
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-black text-white hover:bg-gray-800 disabled:opacity-50 py-4 text-lg font-semibold"
-                  >
-                    {isSubmitting ? '送信中...' : 'お問い合わせを送信'}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
           </div>
         </div>
 

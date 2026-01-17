@@ -710,7 +710,10 @@ const HomePage: React.FC = () => {
                 オンラインで叶える、あなただけの特別な結婚式
               </p>
               <button
-                onClick={() => navigate('/live-wedding')}
+                onClick={() => {
+                  navigate('/live-wedding');
+                  window.scrollTo(0, 0);
+                }}
                 className="inline-flex items-center gap-2 px-8 py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 詳細はこちら
