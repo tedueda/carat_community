@@ -609,3 +609,68 @@ class CreatePaymentIntentResponse(BaseModel):
 class ConfirmPaymentRequest(BaseModel):
     order_id: int
     payment_intent_id: str
+
+
+# ===== Art Sales (作品販売) Schemas =====
+
+class ArtSaleStatusEnum(str, Enum):
+    active = "active"
+    sold = "sold"
+    cancelled = "cancelled"
+
+
+class ArtSaleItemImageBase(BaseModel):
+    image_url: str
+    display_order: int = 0
+
+
+class ArtSaleItemImage(ArtSaleItemImageBase):
+    id: int
+    
+    class Config:
+        from_attributes = True
+
+
+class ArtSaleItemBase(BaseModel):
+    title: str
+    description: str
+    price: int
+    category: str
+    technique: Optional[str] = None
+    size: Optional[str] = None
+    year_created: Optional[int] = None
+    is_original: bool = True
+    transaction_method: TransactionMethodEnum = TransactionMethodEnum.negotiable
+
+
+class ArtSaleItemCreate(ArtSaleItemBase):
+    image_urls: Optional[List[str]] = None
+
+
+class ArtSaleItemUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[int] = None
+    category: Optional[str] = None
+    technique: Optional[str] = None
+    size: Optional[str] = None
+    year_created: Optional[int] = None
+    is_original: Optional[bool] = None
+    transaction_method: Optional[TransactionMethodEnum] = None
+    status: Optional[ArtSaleStatusEnum] = None
+    image_urls: Optional[List[str]] = None
+
+
+class ArtSaleItem(ArtSaleItemBase):
+    id: int
+    user_id: int
+    status: ArtSaleStatusEnum
+    view_count: int = 0
+    created_at: datetime
+    updated_at: datetime
+    images: List[ArtSaleItemImage] = []
+    user_display_name: Optional[str] = None
+    user_avatar_url: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
