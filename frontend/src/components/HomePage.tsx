@@ -171,6 +171,7 @@ const HomePage: React.FC = () => {
   const [selectedNewsArticle, setSelectedNewsArticle] = useState<any>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isHeroVisible] = useState(true);
   const heroSectionRef = useRef<HTMLElement>(null);
   const { token, user, isAnonymous } = useAuth();
   const navigate = useNavigate();
@@ -429,7 +430,7 @@ const HomePage: React.FC = () => {
               <span className="text-lg">♫</span>
               <span>Inspired by Marvin Gaye</span>
             </div>
-            <HeroAudioPlayer />
+            <HeroAudioPlayer isHeroVisible={isHeroVisible} />
           </div>
           <div className="relative z-10 flex items-center justify-center h-full">
             <div className="text-center text-white px-4 max-w-6xl">

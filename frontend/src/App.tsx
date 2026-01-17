@@ -126,13 +126,7 @@ function AppContent() {
             </FeedRoute>
           } />
           {/* Matching routes */}
-          <Route path="/matching" element={
-            <FeedRoute>
-              <PremiumGate>
-                <MatchingLayout />
-              </PremiumGate>
-            </FeedRoute>
-          }>
+          <Route path="/matching" element={<MatchingLayout />}>
             <Route index element={<MatchingSearchPage />} />
             <Route path="likes" element={<MatchingLikesPage />} />
             <Route path="matches" element={<MatchingMatchesPage />} />
@@ -157,16 +151,8 @@ function AppContent() {
               <BeautyPage />
             </FeedRoute>
           } />
-          <Route path="/live-wedding" element={
-            <FeedRoute>
-              <VirtualWeddingPage />
-            </FeedRoute>
-          } />
-          <Route path="/live-wedding/application" element={
-            <FeedRoute>
-              <LiveWeddingApplicationForm />
-            </FeedRoute>
-          } />
+          <Route path="/live-wedding" element={<VirtualWeddingPage />} />
+          <Route path="/live-wedding/application" element={<LiveWeddingApplicationForm />} />
           <Route path="/funding" element={
             <FeedRoute>
               <PremiumGate>
@@ -198,38 +184,14 @@ function AppContent() {
                         <AccountPage />
                       </FeedRoute>
                     } />
-                    {/* Salon routes - Premium only */}
-                    <Route path="/salon" element={
-                      <FeedRoute>
-                        <PremiumGate>
-                          <SalonPage />
-                        </PremiumGate>
-                      </FeedRoute>
-                    } />
-                    <Route path="/salon/rooms/:roomId" element={
-                      <FeedRoute>
-                        <PremiumGate>
-                          <SalonRoomDetailPage />
-                        </PremiumGate>
-                      </FeedRoute>
-                    } />
+                    {/* Salon routes */}
+                    <Route path="/salon" element={<SalonPage />} />
+                    <Route path="/salon/rooms/:roomId" element={<SalonRoomDetailPage />} />
                     {/* Business page - フリマ・作品販売・講座・Live配信 */}
-                    <Route path="/business" element={
-                      <FeedRoute>
-                        <BusinessPage />
-                      </FeedRoute>
-                    } />
+                    <Route path="/business" element={<BusinessPage />} />
                     {/* Jewelry Shopping routes */}
-                    <Route path="/jewelry" element={
-                      <FeedRoute>
-                        <JewelryProductList />
-                      </FeedRoute>
-                    } />
-                    <Route path="/jewelry/:id" element={
-                      <FeedRoute>
-                        <JewelryProductDetail />
-                      </FeedRoute>
-                    } />
+                    <Route path="/jewelry" element={<JewelryProductList />} />
+                    <Route path="/jewelry/:id" element={<JewelryProductDetail />} />
                     <Route path="/jewelry/cart" element={
                       <FeedRoute>
                         <JewelryCart />

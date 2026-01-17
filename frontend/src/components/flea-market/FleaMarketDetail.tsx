@@ -47,7 +47,7 @@ const TRANSACTION_METHOD_LABELS: Record<string, string> = {
   negotiable: '応相談',
 };
 
-const FleaMarketDetail: React.FC<FleaMarketDetailProps> = ({ item, onBack, onRefresh }) => {
+const FleaMarketDetail: React.FC<FleaMarketDetailProps> = ({ item, onBack }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const token = localStorage.getItem('token');

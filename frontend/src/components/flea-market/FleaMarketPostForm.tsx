@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Upload, X, Image as ImageIcon } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
+import { ArrowLeft, Upload, X } from 'lucide-react';
 
 interface Category {
   id: string;
@@ -39,7 +38,7 @@ const FleaMarketPostForm: React.FC<FleaMarketPostFormProps> = ({
   onCancel,
   onSuccess,
 }) => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const token = localStorage.getItem('token');
 
   const [title, setTitle] = useState('');
