@@ -676,6 +676,43 @@ class FleaMarketMessage(Base):
     sender = relationship("User")
 
 
+# ===== Art Sales (作品販売) domain models =====
+
+class ArtSaleItem(Base):
+    __tablename__ = "art_sale_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    seller_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    title = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    price = Column(Integer, nullable=False)  # 価格（円）
+    category = Column(String(100), nullable=False)
+    technique = Column(String(100))  # 技法
+    size = Column(String(100))  # サイズ
+    year_created = Column(Integer)  # 制作年
+    is_original = Column(Boolean, nullable=False, default=True)  # オリジナル作品かどうか
+    transaction_method = Column(String(50), nullable=False, default="negotiable")  # hand_delivery, shipping, negotiable
+    status = Column(String(20), nullable=False, default="active")  # active, sold, cancelled
+    view_count = Column(Integer, nullable=False, default=0)  # 閲覧数
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    seller = relationship("User")
+    images = relationship("ArtSaleItemImage", back_populates="item", order_by="ArtSaleItemImage.display_order")
+
+
+class ArtSaleItemImage(Base):
+    __tablename__ = "art_sale_item_images"
+
+    id = Column(Integer, primary_key=True, index=True)
+    item_id = Column(Integer, ForeignKey("art_sale_items.id"), nullable=False)
+    image_url = Column(String(500), nullable=False)
+    display_order = Column(Integer, nullable=False, default=0)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    item = relationship("ArtSaleItem", back_populates="images")
+
+
 # ===== Jewelry Shopping (ジュエリーEC) domain models =====
 
 class JewelryProduct(Base):
