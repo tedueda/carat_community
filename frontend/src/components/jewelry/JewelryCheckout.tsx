@@ -27,7 +27,9 @@ interface Cart {
 interface ShippingInfo {
   recipient_name: string;
   postal_code: string;
-  address: string;
+  prefecture: string;
+  city_address: string;
+  building: string;
   phone: string;
   email: string;
 }
@@ -68,7 +70,10 @@ const CheckoutForm: React.FC<{
           Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
-          shipping_info: shippingInfo
+          shipping_info: {
+            ...shippingInfo,
+            address: `${shippingInfo.prefecture}${shippingInfo.city_address}${shippingInfo.building ? ' ' + shippingInfo.building : ''}`
+          }
         })
       });
 
@@ -156,17 +161,33 @@ const CheckoutForm: React.FC<{
       {/* Order Summary */}
       <div className="bg-gray-50 rounded-lg p-4">
         <h3 className="font-semibold text-gray-800 mb-3">注文内容</h3>
-        {cart.items.map((item) => (
-          <div key={item.id} className="flex justify-between text-sm mb-2">
-            <span>
-              {item.product.name} x {item.quantity}
-            </span>
-            <span>{formatPrice(item.product.price * item.quantity)}</span>
-          </div>
-        ))}
-        <div className="border-t pt-2 mt-2 flex justify-between font-bold">
-          <span>合計</span>
-          <span className="text-pink-600">{formatPrice(cart.total_amount)}</span>
+        {cart.items.map((item) => {
+          const subtotal = item.product.price * item.quantity;
+          const tax = item.product.price_includes_tax ? 0 : Math.floor(subtotal * 0.1);
+          const shippingFee = 1100;
+          
+          return (
+            <div key={item.id} className="space-y-2 mb-4">
+              <div className="flex justify-between text-sm">
+                <span>{item.product.name} x {item.quantity}</span>
+                <span>{formatPrice(subtotal)}{item.product.price_includes_tax ? '（税込）' : '（税別）'}</span>
+              </div>
+              {!item.product.price_includes_tax && (
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>消費税（10%）</span>
+                  <span>{formatPrice(tax)}</span>
+                </div>
+              )}
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>送料</span>
+                <span>{formatPrice(shippingFee)}</span>
+              </div>
+            </div>
+          );
+        })}
+        <div className="border-t pt-3 mt-3 flex justify-between font-bold text-lg">
+          <span>合計金額</span>
+          <span className="text-gray-900">{formatPrice(cart.total_amount + 1100)}</span>
         </div>
       </div>
 
@@ -207,7 +228,7 @@ const CheckoutForm: React.FC<{
       <button
         type="submit"
         disabled={!stripe || processing}
-        className="w-full bg-pink-500 text-white py-4 rounded-lg font-bold text-lg hover:bg-pink-600 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        className="w-full bg-gray-900 text-white py-4 rounded-lg font-bold text-lg hover:bg-black disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {processing ? (
           <>
@@ -233,10 +254,13 @@ const JewelryCheckout: React.FC = () => {
   const [shippingInfo, setShippingInfo] = useState<ShippingInfo>({
     recipient_name: '',
     postal_code: '',
-    address: '',
+    prefecture: '',
+    city_address: '',
+    building: '',
     phone: '',
     email: ''
   });
+  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
   const [errors, setErrors] = useState<Partial<ShippingInfo>>({});
 
   useEffect(() => {
@@ -281,7 +305,7 @@ const JewelryCheckout: React.FC = () => {
     if (!token) return;
 
     try {
-      const response = await fetch(`${API_URL}/users/me`, {
+      const response = await fetch(`${API_URL}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -303,8 +327,11 @@ const JewelryCheckout: React.FC = () => {
     if (!shippingInfo.recipient_name.trim()) {
       newErrors.recipient_name = '氏名を入力してください';
     }
-    if (!shippingInfo.address.trim()) {
-      newErrors.address = '住所を入力してください';
+    if (!shippingInfo.prefecture.trim()) {
+      newErrors.prefecture = '都道府県を選択してください';
+    }
+    if (!shippingInfo.city_address.trim()) {
+      newErrors.city_address = '市町村・番地を入力してください';
     }
     if (!shippingInfo.phone.trim() && !shippingInfo.email.trim()) {
       newErrors.phone = '電話番号またはメールアドレスを入力してください';
@@ -332,7 +359,7 @@ const JewelryCheckout: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-800"></div>
       </div>
     );
   }
@@ -345,7 +372,7 @@ const JewelryCheckout: React.FC = () => {
     <div className="max-w-2xl mx-auto px-4 py-8">
       <button
         onClick={() => (step === 'payment' ? setStep('shipping') : navigate('/jewelry/cart'))}
-        className="flex items-center text-gray-600 hover:text-pink-500 mb-6"
+        className="flex items-center text-gray-600 hover:text-gray-900 mb-6"
       >
         <ChevronLeft className="w-5 h-5" />
         <span>{step === 'payment' ? '配送先情報に戻る' : 'カートに戻る'}</span>
@@ -356,7 +383,7 @@ const JewelryCheckout: React.FC = () => {
         <div className="flex items-center">
           <div
             className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              step === 'shipping' ? 'bg-pink-500 text-white' : 'bg-green-500 text-white'
+              step === 'shipping' ? 'bg-gray-900 text-white' : 'bg-gray-600 text-white'
             }`}
           >
             1
@@ -367,7 +394,7 @@ const JewelryCheckout: React.FC = () => {
         <div className="flex items-center">
           <div
             className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              step === 'payment' ? 'bg-pink-500 text-white' : 'bg-gray-300 text-gray-500'
+              step === 'payment' ? 'bg-gray-900 text-white' : 'bg-gray-300 text-gray-500'
             }`}
           >
             2
@@ -411,29 +438,111 @@ const JewelryCheckout: React.FC = () => {
                 onChange={(e) =>
                   setShippingInfo({ ...shippingInfo, postal_code: e.target.value })
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent"
                 placeholder="123-4567"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                住所 <span className="text-red-500">*</span>
+                住所1：都道府県 <span className="text-red-500">*</span>
               </label>
-              <textarea
-                value={shippingInfo.address}
+              <select
+                value={shippingInfo.prefecture}
                 onChange={(e) =>
-                  setShippingInfo({ ...shippingInfo, address: e.target.value })
+                  setShippingInfo({ ...shippingInfo, prefecture: e.target.value })
                 }
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                  errors.address ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent ${
+                  errors.prefecture ? 'border-red-500' : 'border-gray-300'
                 }`}
-                rows={3}
-                placeholder="東京都渋谷区..."
-              />
-              {errors.address && (
-                <p className="text-red-500 text-sm mt-1">{errors.address}</p>
+              >
+                <option value="">選択してください</option>
+                <option value="北海道">北海道</option>
+                <option value="青森県">青森県</option>
+                <option value="岩手県">岩手県</option>
+                <option value="宮城県">宮城県</option>
+                <option value="秋田県">秋田県</option>
+                <option value="山形県">山形県</option>
+                <option value="福島県">福島県</option>
+                <option value="茨城県">茨城県</option>
+                <option value="栃木県">栃木県</option>
+                <option value="群馬県">群馬県</option>
+                <option value="埼玉県">埼玉県</option>
+                <option value="千葉県">千葉県</option>
+                <option value="東京都">東京都</option>
+                <option value="神奈川県">神奈川県</option>
+                <option value="新潟県">新潟県</option>
+                <option value="富山県">富山県</option>
+                <option value="石川県">石川県</option>
+                <option value="福井県">福井県</option>
+                <option value="山梨県">山梨県</option>
+                <option value="長野県">長野県</option>
+                <option value="岐阜県">岐阜県</option>
+                <option value="静岡県">静岡県</option>
+                <option value="愛知県">愛知県</option>
+                <option value="三重県">三重県</option>
+                <option value="滋賀県">滋賀県</option>
+                <option value="京都府">京都府</option>
+                <option value="大阪府">大阪府</option>
+                <option value="兵庫県">兵庫県</option>
+                <option value="奈良県">奈良県</option>
+                <option value="和歌山県">和歌山県</option>
+                <option value="鳥取県">鳥取県</option>
+                <option value="島根県">島根県</option>
+                <option value="岡山県">岡山県</option>
+                <option value="広島県">広島県</option>
+                <option value="山口県">山口県</option>
+                <option value="徳島県">徳島県</option>
+                <option value="香川県">香川県</option>
+                <option value="愛媛県">愛媛県</option>
+                <option value="高知県">高知県</option>
+                <option value="福岡県">福岡県</option>
+                <option value="佐賀県">佐賀県</option>
+                <option value="長崎県">長崎県</option>
+                <option value="熊本県">熊本県</option>
+                <option value="大分県">大分県</option>
+                <option value="宮崎県">宮崎県</option>
+                <option value="鹿児島県">鹿児島県</option>
+                <option value="沖縄県">沖縄県</option>
+              </select>
+              {errors.prefecture && (
+                <p className="text-red-500 text-sm mt-1">{errors.prefecture}</p>
               )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                住所2：市町村・番地 <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={shippingInfo.city_address}
+                onChange={(e) =>
+                  setShippingInfo({ ...shippingInfo, city_address: e.target.value })
+                }
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent ${
+                  errors.city_address ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="大阪市阿倍野区阪南町6-1-5"
+              />
+              {errors.city_address && (
+                <p className="text-red-500 text-sm mt-1">{errors.city_address}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                住所3：マンション名・部屋番号
+              </label>
+              <input
+                type="text"
+                value={shippingInfo.building}
+                onChange={(e) =>
+                  setShippingInfo({ ...shippingInfo, building: e.target.value })
+                }
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent"
+                placeholder="レインボーマンション101号室"
+              />
             </div>
 
             <div>
@@ -466,23 +575,70 @@ const JewelryCheckout: React.FC = () => {
                 onChange={(e) =>
                   setShippingInfo({ ...shippingInfo, email: e.target.value })
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent"
                 placeholder="example@email.com"
               />
             </div>
 
             {/* Cart Summary */}
             <div className="bg-gray-50 rounded-lg p-4 mt-6">
-              <h3 className="font-semibold text-gray-800 mb-2">注文内容</h3>
-              <div className="flex justify-between font-bold">
-                <span>合計</span>
-                <span className="text-pink-600">{formatPrice(cart.total_amount)}</span>
+              <h3 className="font-semibold text-gray-800 mb-3">注文内容</h3>
+              {cart.items.map((item) => {
+                const subtotal = item.product.price * item.quantity;
+                const tax = item.product.price_includes_tax ? 0 : Math.floor(subtotal * 0.1);
+                const shippingFee = 1100; // 仮の送料
+                
+                return (
+                  <div key={item.id} className="space-y-2 mb-4">
+                    <div className="flex justify-between text-sm">
+                      <span>{item.product.name} x {item.quantity}</span>
+                      <span>{formatPrice(subtotal)}{item.product.price_includes_tax ? '（税込）' : '（税別）'}</span>
+                    </div>
+                    {!item.product.price_includes_tax && (
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>消費税（10%）</span>
+                        <span>{formatPrice(tax)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-sm text-gray-600">
+                      <span>送料</span>
+                      <span>{formatPrice(shippingFee)}</span>
+                    </div>
+                  </div>
+                );
+              })}
+              <div className="border-t pt-3 mt-3 flex justify-between font-bold text-lg">
+                <span>合計金額</span>
+                <span className="text-gray-900">{formatPrice(cart.total_amount + 1100)}</span>
               </div>
+            </div>
+
+            {/* Privacy Agreement */}
+            <div className="mt-6">
+              <label className="flex items-start cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={agreedToPrivacy}
+                  onChange={(e) => setAgreedToPrivacy(e.target.checked)}
+                  className="mt-1 mr-3 w-5 h-5"
+                />
+                <span className="text-sm text-gray-700">
+                  <a href="/privacy" target="_blank" className="text-gray-900 underline hover:text-gray-700">
+                    個人情報の取り扱い
+                  </a>
+                  に同意します <span className="text-red-500">*</span>
+                </span>
+              </label>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-pink-500 text-white py-4 rounded-lg font-bold text-lg hover:bg-pink-600"
+              disabled={!agreedToPrivacy}
+              className={`inline-flex items-center justify-center px-8 py-4 rounded-lg font-bold text-lg ${
+                agreedToPrivacy
+                  ? 'bg-gray-900 text-white hover:bg-black'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
             >
               お支払いへ進む
             </button>

@@ -122,7 +122,7 @@ const JewelryCart: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-800"></div>
       </div>
     );
   }
@@ -131,14 +131,14 @@ const JewelryCart: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 py-8">
       <button
         onClick={() => navigate('/jewelry')}
-        className="flex items-center text-gray-600 hover:text-pink-500 mb-6"
+        className="flex items-center text-gray-600 hover:text-gray-900 mb-6"
       >
         <ChevronLeft className="w-5 h-5" />
         <span>買い物を続ける</span>
       </button>
 
       <div className="flex items-center gap-2 mb-6">
-        <ShoppingCart className="w-8 h-8 text-pink-500" />
+        <ShoppingCart className="w-8 h-8 text-gray-800" />
         <h1 className="text-2xl font-bold text-gray-800">ショッピングカート</h1>
       </div>
 
@@ -157,7 +157,7 @@ const JewelryCart: React.FC = () => {
           <p className="text-gray-500 mb-4">カートは空です</p>
           <button
             onClick={() => navigate('/jewelry')}
-            className="bg-pink-500 text-white px-6 py-2 rounded-lg hover:bg-pink-600"
+            className="bg-gray-900 text-white px-6 py-2 rounded-lg hover:bg-black"
           >
             商品を見る
           </button>
@@ -191,12 +191,12 @@ const JewelryCart: React.FC = () => {
                 {/* Product Info */}
                 <div className="flex-1">
                   <h3
-                    className="font-semibold text-gray-800 cursor-pointer hover:text-pink-500"
+                    className="font-semibold text-gray-800 cursor-pointer hover:text-gray-900"
                     onClick={() => navigate(`/jewelry/${item.product_id}`)}
                   >
                     {item.product.name}
                   </h3>
-                  <p className="text-pink-600 font-bold mt-1">
+                  <p className="text-gray-900 font-bold mt-1">
                     {formatPrice(item.product.price)}
                     {item.product.price_includes_tax ? '（税込）' : '（税別）'}
                   </p>
@@ -249,16 +249,43 @@ const JewelryCart: React.FC = () => {
 
           {/* Cart Summary */}
           <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-lg text-gray-700">合計金額</span>
-              <span className="text-2xl font-bold text-pink-600">
-                {formatPrice(cart.total_amount)}
+            <h3 className="font-semibold text-gray-800 mb-4">注文内容</h3>
+            
+            {cart.items.map((item) => {
+              const subtotal = item.product.price * item.quantity;
+              const tax = item.product.price_includes_tax ? 0 : Math.floor(subtotal * 0.1);
+              const shippingFee = 1100;
+              
+              return (
+                <div key={item.id} className="space-y-2 mb-4">
+                  <div className="flex justify-between text-sm">
+                    <span>{item.product.name} x {item.quantity}</span>
+                    <span>{formatPrice(subtotal)}{item.product.price_includes_tax ? '（税込）' : '（税別）'}</span>
+                  </div>
+                  {!item.product.price_includes_tax && (
+                    <div className="flex justify-between text-sm text-gray-600">
+                      <span>消費税（10%）</span>
+                      <span>{formatPrice(tax)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-sm text-gray-600">
+                    <span>送料</span>
+                    <span>{formatPrice(shippingFee)}</span>
+                  </div>
+                </div>
+              );
+            })}
+            
+            <div className="border-t pt-4 mt-4 flex justify-between items-center">
+              <span className="text-lg font-semibold text-gray-800">合計金額</span>
+              <span className="text-2xl font-bold text-gray-900">
+                {formatPrice(cart.total_amount + 1100)}
               </span>
             </div>
 
             <button
               onClick={() => navigate('/jewelry/checkout')}
-              className="w-full bg-pink-500 text-white py-4 rounded-lg font-bold text-lg hover:bg-pink-600"
+              className="inline-flex items-center justify-center px-8 py-4 rounded-lg font-bold text-lg bg-gray-900 text-white hover:bg-black mt-6"
             >
               購入手続きへ
             </button>

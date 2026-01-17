@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ShoppingBag, ShoppingCart, ChevronLeft, ChevronRight, Minus, Plus } from 'lucide-react';
+import { ShoppingBag, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
 import PremiumUpgradeModal from '../PremiumUpgradeModal';
 
 interface JewelryProduct {
@@ -14,6 +14,10 @@ interface JewelryProduct {
   price_includes_tax: boolean;
   stock: number;
   is_active: boolean;
+  category: string;
+  has_certificate: boolean;
+  has_gem_id: boolean;
+  is_sold_out: boolean;
   images: { id: number; image_url: string; display_order: number }[];
   created_at: string;
 }
@@ -31,7 +35,6 @@ const JewelryProductDetail: React.FC = () => {
   const [product, setProduct] = useState<JewelryProduct | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -64,25 +67,38 @@ const JewelryProductDetail: React.FC = () => {
     if (!token) return;
 
     try {
-      const response = await fetch(`${API_URL}/users/me`, {
+      const response = await fetch(`${API_URL}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.ok) {
         const data = await response.json();
         setUser(data);
+      } else {
+        console.error('ユーザー情報の取得に失敗:', response.status);
       }
     } catch (error) {
       console.error('Failed to fetch user:', error);
     }
   };
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    console.log('=== カート追加開始 ===');
+    console.log('ユーザー情報:', user);
+    console.log('商品ID:', product?.id);
+
     if (!user) {
+      console.log('ユーザー未ログイン - ログインページへ');
       navigate('/login');
       return;
     }
 
     if (user.membership_type !== 'premium' && user.membership_type !== 'admin') {
+      console.log('プレミアム会員ではない - モーダル表示');
       setShowPremiumModal(true);
       return;
     }
@@ -92,6 +108,9 @@ const JewelryProductDetail: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
+      console.log('トークン:', token ? '存在する' : '存在しない');
+      console.log('APIエンドポイント:', `${API_URL}/jewelry/cart/items`);
+      
       const response = await fetch(`${API_URL}/jewelry/cart/items`, {
         method: 'POST',
         headers: {
@@ -100,21 +119,40 @@ const JewelryProductDetail: React.FC = () => {
         },
         body: JSON.stringify({
           product_id: product?.id,
-          quantity: quantity
+          quantity: 1
         })
       });
 
+      console.log('レスポンスステータス:', response.status);
+
       if (response.ok) {
+        console.log('カート追加成功');
         setMessage({ type: 'success', text: 'カートに追加しました' });
-        setTimeout(() => setMessage(null), 3000);
+        // カートページに遷移
+        setTimeout(() => {
+          console.log('カートページに遷移');
+          navigate('/jewelry/cart');
+        }, 1000);
       } else {
         const error = await response.json();
-        setMessage({ type: 'error', text: error.detail || 'カートへの追加に失敗しました' });
+        console.error('カート追加失敗:', error);
+        
+        // 在庫不足エラーの場合は、既にカートに入っている可能性があるため、カートページに遷移
+        if (error.detail && error.detail.includes('在庫が不足しています')) {
+          setMessage({ type: 'success', text: 'この商品は既にカートに入っています' });
+          setTimeout(() => {
+            navigate('/jewelry/cart');
+          }, 1000);
+        } else {
+          setMessage({ type: 'error', text: error.detail || 'カートへの追加に失敗しました' });
+        }
       }
     } catch (error) {
+      console.error('カート追加エラー:', error);
       setMessage({ type: 'error', text: 'カートへの追加に失敗しました' });
     } finally {
       setAddingToCart(false);
+      console.log('=== カート追加終了 ===');
     }
   };
 
@@ -138,7 +176,7 @@ const JewelryProductDetail: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-800"></div>
       </div>
     );
   }
@@ -152,13 +190,12 @@ const JewelryProductDetail: React.FC = () => {
   }
 
   const isSoldOut = product.stock === 0;
-  const maxQuantity = product.stock > 0 ? product.stock : 99;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <button
         onClick={() => navigate('/jewelry')}
-        className="flex items-center text-gray-600 hover:text-pink-500 mb-6"
+        className="flex items-center text-gray-600 hover:text-gray-900 mb-6"
       >
         <ChevronLeft className="w-5 h-5" />
         <span>商品一覧に戻る</span>
@@ -212,7 +249,7 @@ const JewelryProductDetail: React.FC = () => {
                   key={image.id}
                   onClick={() => setCurrentImageIndex(index)}
                   className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 ${
-                    index === currentImageIndex ? 'border-pink-500' : 'border-transparent'
+                    index === currentImageIndex ? 'border-gray-800' : 'border-transparent'
                   }`}
                 >
                   <img
@@ -229,40 +266,41 @@ const JewelryProductDetail: React.FC = () => {
         {/* Product Info */}
         <div>
           <h1 className="text-2xl font-bold text-gray-800 mb-4">{product.name}</h1>
-          <p className="text-3xl font-bold text-pink-600 mb-6">
+          
+          {/* Sold Out バッジ */}
+          {product.is_sold_out && (
+            <div className="inline-block px-4 py-2 bg-black text-white font-bold text-lg mb-4 rounded">
+              Sold Out
+            </div>
+          )}
+          
+          <p className="text-3xl font-bold text-gray-900 mb-4">
             {formatPrice(product.price, product.price_includes_tax)}
           </p>
 
+          {/* 鑑定証・宝石識別証バッジ */}
+          {(product.has_certificate || product.has_gem_id) && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {product.has_certificate && (
+                <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium border border-gray-300">
+                  鑑定証あり
+                </span>
+              )}
+              {product.has_gem_id && (
+                <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium border border-gray-300">
+                  宝石識別証あり
+                </span>
+              )}
+            </div>
+          )}
+
           {/* Stock Info */}
-          {product.stock > 0 && (
+          {product.stock > 0 && !product.is_sold_out && (
             <p className="text-sm text-gray-500 mb-4">
               在庫: {product.stock}点
             </p>
           )}
 
-          {/* Quantity Selector */}
-          {!isSoldOut && (
-            <div className="flex items-center gap-4 mb-6">
-              <span className="text-gray-700">数量:</span>
-              <div className="flex items-center border border-gray-300 rounded-lg">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="p-2 hover:bg-gray-100"
-                  disabled={quantity <= 1}
-                >
-                  <Minus className="w-5 h-5" />
-                </button>
-                <span className="px-4 py-2 min-w-[50px] text-center">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(Math.min(maxQuantity, quantity + 1))}
-                  className="p-2 hover:bg-gray-100"
-                  disabled={quantity >= maxQuantity}
-                >
-                  <Plus className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          )}
 
           {/* Message */}
           {message && (
@@ -275,49 +313,50 @@ const JewelryProductDetail: React.FC = () => {
             </div>
           )}
 
-          {/* Add to Cart Button */}
-          <button
-            onClick={handleAddToCart}
-            disabled={isSoldOut || addingToCart}
-            className={`w-full py-4 rounded-lg font-bold text-lg flex items-center justify-center gap-2 ${
-              isSoldOut
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-pink-500 text-white hover:bg-pink-600'
-            }`}
-          >
-            <ShoppingCart className="w-6 h-6" />
-            {addingToCart ? '追加中...' : isSoldOut ? '売り切れ' : 'カートに入れる'}
-          </button>
-
-          {/* View Cart Link */}
-          {user && (user.membership_type === 'premium' || user.membership_type === 'admin') && (
+          {/* Cart Buttons */}
+          <div className="flex gap-3">
             <button
-              onClick={() => navigate('/jewelry/cart')}
-              className="w-full mt-4 py-3 border border-pink-500 text-pink-500 rounded-lg font-bold hover:bg-pink-50"
+              onClick={handleAddToCart}
+              disabled={isSoldOut || addingToCart}
+              className={`flex-1 inline-flex items-center justify-center gap-2 py-4 rounded-lg font-bold text-lg ${
+                isSoldOut
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-gray-900 text-white hover:bg-black'
+              }`}
             >
-              カートを見る
+              <ShoppingCart className="w-6 h-6" />
+              {addingToCart ? '追加中...' : isSoldOut ? '売り切れ' : 'カートに入れる'}
             </button>
-          )}
+
+            {user && (user.membership_type === 'premium' || user.membership_type === 'admin') && (
+              <button
+                onClick={() => navigate('/jewelry/cart')}
+                className="flex-1 py-4 border border-gray-900 text-gray-900 rounded-lg font-bold hover:bg-gray-100"
+              >
+                カートを見る
+              </button>
+            )}
+          </div>
 
           {/* Product Details */}
           <div className="mt-8 space-y-4">
-            <h2 className="text-lg font-bold text-gray-800 border-b pb-2">商品詳細</h2>
+            <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">商品詳細</h2>
             
             <div className="prose prose-sm max-w-none">
-              <p className="text-gray-700 whitespace-pre-wrap">{product.description}</p>
+              <p className="text-sm text-gray-700 whitespace-pre-wrap">{product.description}</p>
             </div>
 
             {product.material && (
               <div>
-                <h3 className="font-semibold text-gray-700">素材</h3>
-                <p className="text-gray-600">{product.material}</p>
+                <h3 className="text-lg font-semibold text-gray-800">素材</h3>
+                <p className="text-sm text-gray-600">{product.material}</p>
               </div>
             )}
 
             {product.size && (
               <div>
-                <h3 className="font-semibold text-gray-700">サイズ</h3>
-                <p className="text-gray-600">{product.size}</p>
+                <h3 className="text-lg font-semibold text-gray-800">サイズ</h3>
+                <p className="text-sm text-gray-600">{product.size}</p>
               </div>
             )}
 
@@ -334,9 +373,9 @@ const JewelryProductDetail: React.FC = () => {
       {/* Premium Upgrade Modal */}
       {showPremiumModal && (
         <PremiumUpgradeModal
-          isOpen={showPremiumModal}
+          open={showPremiumModal}
           onClose={() => setShowPremiumModal(false)}
-          feature="ジュエリーの購入"
+          featureName="ジュエリーの購入"
         />
       )}
     </div>
