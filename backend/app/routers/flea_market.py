@@ -104,12 +104,12 @@ def list_items(
     # Enrich with user info
     result = []
     for item in items:
-        user = db.query(models.User).filter(models.User.id == item.user_id).first()
-        profile = db.query(models.Profile).filter(models.Profile.user_id == item.user_id).first()
+        user = db.query(models.User).filter(models.User.id == item.seller_id).first()
+        profile = db.query(models.Profile).filter(models.Profile.user_id == item.seller_id).first()
         
         item_dict = {
             "id": item.id,
-            "user_id": item.user_id,
+            "user_id": item.seller_id,
             "title": item.title,
             "description": item.description,
             "price": item.price,
@@ -139,12 +139,12 @@ def get_item(
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
     
-    user = db.query(models.User).filter(models.User.id == item.user_id).first()
-    profile = db.query(models.Profile).filter(models.Profile.user_id == item.user_id).first()
+    user = db.query(models.User).filter(models.User.id == item.seller_id).first()
+    profile = db.query(models.Profile).filter(models.Profile.user_id == item.seller_id).first()
     
     return {
         "id": item.id,
-        "user_id": item.user_id,
+        "user_id": item.seller_id,
         "title": item.title,
         "description": item.description,
         "price": item.price,
@@ -176,7 +176,7 @@ def create_item(
     
     # Create the item
     item = models.FleaMarketItem(
-        user_id=current_user.id,
+        seller_id=current_user.id,
         title=item_data.title,
         description=item_data.description,
         price=item_data.price,
@@ -205,7 +205,7 @@ def create_item(
     
     return {
         "id": item.id,
-        "user_id": item.user_id,
+        "user_id": item.seller_id,
         "title": item.title,
         "description": item.description,
         "price": item.price,
@@ -233,7 +233,7 @@ def update_item(
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
     
-    if item.user_id != current_user.id and current_user.membership_type != "admin":
+    if item.seller_id != current_user.id and current_user.membership_type != "admin":
         raise HTTPException(status_code=403, detail="Not authorized to update this item")
     
     # Update fields
@@ -266,7 +266,7 @@ def update_item(
     
     return {
         "id": item.id,
-        "user_id": item.user_id,
+        "user_id": item.seller_id,
         "title": item.title,
         "description": item.description,
         "price": item.price,
@@ -293,7 +293,7 @@ def delete_item(
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
     
-    if item.user_id != current_user.id and current_user.membership_type != "admin":
+    if item.seller_id != current_user.id and current_user.membership_type != "admin":
         raise HTTPException(status_code=403, detail="Not authorized to delete this item")
     
     # Delete images first
@@ -336,7 +336,7 @@ def create_chat(
         raise HTTPException(status_code=404, detail="Item not found")
     
     # Can't chat with yourself
-    if item.user_id == current_user.id:
+    if item.seller_id == current_user.id:
         raise HTTPException(status_code=400, detail="Cannot start a chat about your own item")
     
     # Check if chat already exists
@@ -366,7 +366,7 @@ def create_chat(
     chat = models.FleaMarketChat(
         item_id=chat_data.item_id,
         buyer_id=current_user.id,
-        seller_id=item.user_id,
+        seller_id=item.seller_id,
         status="active",
     )
     db.add(chat)
@@ -383,7 +383,7 @@ def create_chat(
         db.add(message)
         db.commit()
     
-    seller = db.query(models.User).filter(models.User.id == item.user_id).first()
+    seller = db.query(models.User).filter(models.User.id == item.seller_id).first()
     
     return {
         "id": chat.id,
@@ -517,7 +517,7 @@ def get_my_items(
 ):
     """Get all items posted by the current user"""
     items = db.query(models.FleaMarketItem).filter(
-        models.FleaMarketItem.user_id == current_user.id
+        models.FleaMarketItem.seller_id == current_user.id
     ).order_by(desc(models.FleaMarketItem.created_at)).all()
     
     profile = db.query(models.Profile).filter(models.Profile.user_id == current_user.id).first()
@@ -526,7 +526,7 @@ def get_my_items(
     for item in items:
         result.append({
             "id": item.id,
-            "user_id": item.user_id,
+            "user_id": item.seller_id,
             "title": item.title,
             "description": item.description,
             "price": item.price,
