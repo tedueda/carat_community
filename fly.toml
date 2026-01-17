@@ -1,0 +1,37 @@
+# fly.toml app configuration file generated for rainbow-community on 2025-09-19T07:09:59+09:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'rainbow-community'
+primary_region = 'nrt'
+
+[http_service]
+
+  [[http_service.checks]]
+    interval = "10s"
+    timeout  = "2s"
+    grace_period = "20s"
+    method = "GET"
+    path = "/api/health"
+
+  internal_port =   8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+# --- health check (FastAPI /api/health) ---
+[[http_service.checks]]
+  processes = ["app"]
+  method = "GET"
+  path = "/api/health"
+  interval = "10s"
+  timeout = "2s"
+  grace_period = "20s"
