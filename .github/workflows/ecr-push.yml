@@ -6,7 +6,7 @@ on:
       tag:
         description: 'Docker image tag'
         required: false
-        default: 'prod-v13'
+        default: 'prod-v14'
   push:
     branches:
       - main
@@ -53,7 +53,7 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: ${{ steps.ecr-url.outputs.ecr_url }}:${{ inputs.tag || 'prod-v13' }}
+          tags: ${{ steps.ecr-url.outputs.ecr_url }}:${{ inputs.tag || 'prod-v14' }}
 
       - name: Wait for deployment
         run: |
