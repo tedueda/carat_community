@@ -19,7 +19,7 @@ def require_premium(current_user: User = Depends(get_current_active_user)) -> Us
 
 
 @router.get("/profiles/me")
-def get_my_profile(current_user: User = Depends(require_premium), db: Session = Depends(get_db)):
+def get_my_profile(current_user: User = Depends(get_current_active_user), db: Session = Depends(get_db)):
     prof = db.query(MatchingProfile).filter(MatchingProfile.user_id == current_user.id).first()
     if not prof:
         prof = MatchingProfile(user_id=current_user.id)
@@ -74,7 +74,7 @@ def get_my_profile(current_user: User = Depends(require_premium), db: Session = 
 
 
 @router.put("/profiles/me")
-def update_my_profile(payload: dict, current_user: User = Depends(require_premium), db: Session = Depends(get_db)):
+def update_my_profile(payload: dict, current_user: User = Depends(get_current_active_user), db: Session = Depends(get_db)):
     prof = db.query(MatchingProfile).filter(MatchingProfile.user_id == current_user.id).first()
     if not prof:
         prof = MatchingProfile(user_id=current_user.id)
@@ -147,7 +147,7 @@ def update_my_profile(payload: dict, current_user: User = Depends(require_premiu
 
 
 @router.put("/profiles/me/visibility")
-def update_visibility(display_flag: bool, current_user: User = Depends(require_premium), db: Session = Depends(get_db)):
+def update_visibility(display_flag: bool, current_user: User = Depends(get_current_active_user), db: Session = Depends(get_db)):
     prof = db.query(MatchingProfile).filter(MatchingProfile.user_id == current_user.id).first()
     if not prof:
         prof = MatchingProfile(user_id=current_user.id)
@@ -160,7 +160,7 @@ def update_visibility(display_flag: bool, current_user: User = Depends(require_p
 @router.get("/profiles/{user_id}")
 def get_profile_by_id(
     user_id: int,
-    current_user: User = Depends(require_premium),
+    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db),
 ):
     prof = db.query(MatchingProfile).filter(MatchingProfile.user_id == user_id).first()
@@ -223,7 +223,7 @@ def search_profiles(
     identity: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
     size: int = Query(20, ge=1, le=50),
-    current_user: User = Depends(require_premium),
+    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db),
 ):
     q = db.query(MatchingProfile, User).join(User, User.id == MatchingProfile.user_id)
