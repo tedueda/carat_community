@@ -18,6 +18,36 @@
 
 ---
 
+#### 2026-01-17: データベース修正（音楽・アート・サブカルチャー投稿）
+
+**問題:**
+データベース復元後、音楽・アート・サブカルチャーカテゴリの投稿データに問題が発生していました。
+
+**実行した修正:**
+
+1. **重複投稿の削除（8件）**
+   - ID 159-166（2026-01-17作成の画像なし投稿）を削除
+   - 関連するコメント、タグ、リアクション、ポイントイベント、メディアレコードも削除
+
+2. **相対パスをS3 URLに変換（7件）**
+   - Post 57, 58, 59, 60, 61, 62, 63のog_image_urlを修正
+   - `/media/...` → `https://rainbow-community-media-prod.s3.ap-northeast-1.amazonaws.com/media/...`
+
+3. **AI動画投稿のyoutube_urlを更新（2件）**
+   - Post 146: https://youtu.be/PhZ3VnY_NfU
+   - Post 147: https://youtu.be/o6spUUaYII4
+
+**修正後の状態:**
+- 音楽: 5件（全てYouTube URLあり）
+- アート: 7件（AI動画2件含む、画像/動画あり）
+- コミック: 4件（画像/YouTubeあり）
+
+**対象データベース:**
+- RDS: rainbow-community-db-tokyo.cj8agmy8kjhv.ap-northeast-1.rds.amazonaws.com
+- データベース名: lgbtq_community
+
+---
+
 #### 2026-01-17: バナー画像とUI改善
 
 **ホームページバナーの変更:**
