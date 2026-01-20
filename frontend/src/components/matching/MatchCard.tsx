@@ -4,6 +4,8 @@ import { IdentityBadge } from "@/components/ui/IdentityBadge";
 import { API_URL } from "@/config";
 import { createApiClient } from "@/lib/apiClient";
 import { navigateToComposeOrChat } from "@/lib/chatNavigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { Lock } from "lucide-react";
 
 type Item = {
   user_id: number;
@@ -17,11 +19,24 @@ type Item = {
 export function MatchCard({ item }: { item: Item }) {
   const [liked, setLiked] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  const isLoggedIn = !!user;
 
   async function handleLike(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
+    if (!isLoggedIn) {
+      setShowLoginModal(true);
+      return;
+    }
+    if (!isPremium) {
+      setShowUpgradeModal(true);
+      return;
+    }
     if (loading || liked) return;
     
     setLoading(true);
@@ -54,12 +69,29 @@ export function MatchCard({ item }: { item: Item }) {
     }
   }
   function handleCardClick() {
+    if (!isLoggedIn) {
+      setShowLoginModal(true);
+      return;
+    }
+    if (!isPremium) {
+      setShowUpgradeModal(true);
+      return;
+    }
     navigate(`/matching/users/${item.user_id}`);
   }
 
   async function handleMessage(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
+    
+    if (!isLoggedIn) {
+      setShowLoginModal(true);
+      return;
+    }
+    if (!isPremium) {
+      setShowUpgradeModal(true);
+      return;
+    }
     
     const token = localStorage.getItem('token');
     if (!token) {
@@ -79,6 +111,61 @@ export function MatchCard({ item }: { item: Item }) {
   }
 
   return (
+    <>
+    {showLoginModal && (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowLoginModal(false)}>
+        <div className="bg-white rounded-xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
+          <div className="text-center">
+            <Lock className="h-12 w-12 mx-auto text-gray-500 mb-4" />
+            <h3 className="text-lg font-semibold mb-2">ログインが必要です</h3>
+            <p className="text-gray-600 mb-4 text-sm">
+              この機能を利用するにはログインしてください。
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowLoginModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              >
+                閉じる
+              </button>
+              <button
+                onClick={() => navigate('/login')}
+                className="flex-1 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800"
+              >
+                ログイン
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+    {showUpgradeModal && (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowUpgradeModal(false)}>
+        <div className="bg-white rounded-xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
+          <div className="text-center">
+            <Lock className="h-12 w-12 mx-auto text-yellow-500 mb-4" />
+            <h3 className="text-lg font-semibold mb-2">有料会員限定機能</h3>
+            <p className="text-gray-600 mb-4 text-sm">
+              プロフィール詳細の閲覧、いいね、チャットは有料会員のみご利用いただけます。
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowUpgradeModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              >
+                閉じる
+              </button>
+              <button
+                onClick={() => navigate('/account')}
+                className="flex-1 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
+              >
+                有料会員になる
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
     <article
       className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md cursor-pointer"
       onClick={handleCardClick}
@@ -153,6 +240,7 @@ export function MatchCard({ item }: { item: Item }) {
         </div>
       </div>
     </article>
+    </>
   );
 }
 

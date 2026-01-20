@@ -21,15 +21,15 @@ const specialMenuItems = [
     description: "理想のパートナーと出会える安心のマッチングサービス",
     icon: "💕",
     link: "/matching",
-    premiumOnly: true,
+    premiumOnly: false,
   },
   {
     id: "salon",
     title: "会員サロン",
-    description: "有料会員限定の専門チャットサロン",
+    description: "会員限定の専門チャットサロン",
     icon: "💬",
     link: "/salon",
-    premiumOnly: true,
+    premiumOnly: false,
   },
   {
     id: "business",
@@ -623,9 +623,7 @@ const HomePage: React.FC = () => {
               const isLocked = item.premiumOnly && !isPremium;
               
               const handleMenuClick = () => {
-                if (item.premiumOnly && !user) {
-                  window.location.href = '/login';
-                } else if (isLocked) {
+                if (isLocked) {
                   setUpgradeFeatureName(item.title);
                   setShowUpgradeModal(true);
                 } else {

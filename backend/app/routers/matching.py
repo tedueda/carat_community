@@ -4,7 +4,7 @@ from sqlalchemy import and_, or_, func, select
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import User, MatchingProfile, Hobby, MatchingProfileHobby, MatchingProfileImage, Like, Match, Chat, Message, ChatRequest, ChatRequestMessage
-from app.auth import get_current_active_user
+from app.auth import get_current_active_user, get_optional_user
 from jose import jwt, JWTError
 import os
 from datetime import datetime
@@ -223,12 +223,13 @@ def search_profiles(
     identity: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
     size: int = Query(20, ge=1, le=50),
-    current_user: User = Depends(require_premium),
+    current_user: Optional[User] = Depends(get_optional_user),
     db: Session = Depends(get_db),
 ):
     q = db.query(MatchingProfile, User).join(User, User.id == MatchingProfile.user_id)
     q = q.filter(MatchingProfile.display_flag == True)
-    q = q.filter(MatchingProfile.user_id != current_user.id)
+    if current_user:
+        q = q.filter(MatchingProfile.user_id != current_user.id)
     if prefecture:
         q = q.filter(MatchingProfile.prefecture == prefecture)
     if age_band:

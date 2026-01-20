@@ -8,10 +8,10 @@ const AUDIO_TRACKS = [
 ];
 
 interface HeroAudioPlayerProps {
-  isHeroVisible: boolean;
+  isHeroVisible?: boolean;
 }
 
-export const HeroAudioPlayer = ({ isHeroVisible }: HeroAudioPlayerProps) => {
+export const HeroAudioPlayer = ({ isHeroVisible = true }: HeroAudioPlayerProps) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);

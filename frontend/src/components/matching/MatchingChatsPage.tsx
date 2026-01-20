@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { Lock } from 'lucide-react';
 
 type ChatItem = {
   chat_id: number;
@@ -21,7 +23,9 @@ type ChatRequest = {
 };
 
 const MatchingChatsPage: React.FC = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
+  const navigate = useNavigate();
+  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<ChatItem[]>([]);
@@ -106,10 +110,31 @@ const MatchingChatsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchChats();
-    fetchRequests();
+    if (isPremium) {
+      fetchChats();
+      fetchRequests();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, isPremium]);
+
+  // 有料会員でない場合はアップグレード画面を表示
+  if (!isPremium) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
+        <Lock className="h-16 w-16 text-yellow-500 mb-4" />
+        <h2 className="text-xl font-semibold mb-2">有料会員限定機能</h2>
+        <p className="text-gray-600 mb-6 text-center">
+          チャット機能は有料会員のみご利用いただけます。
+        </p>
+        <button
+          onClick={() => navigate('/account')}
+          className="px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-medium"
+        >
+          有料会員になる
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
