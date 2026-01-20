@@ -37,7 +37,10 @@ const SalonPage: React.FC = () => {
   const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
 
   const fetchRooms = async () => {
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     
     try {
       setLoading(true);
@@ -68,12 +71,12 @@ const SalonPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isPremium) {
+    if (token) {
       fetchRooms();
     } else {
       setLoading(false);
     }
-  }, [token, selectedRoomType, isPremium]);
+  }, [token, selectedRoomType]);
 
   const handleRoomCreated = () => {
     setShowCreateModal(false);
@@ -88,40 +91,7 @@ const SalonPage: React.FC = () => {
     { value: 'other', label: 'その他' },
   ];
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Card className="max-w-md w-full mx-4">
-          <CardContent className="p-6 text-center">
-            <Lock className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-            <h2 className="text-xl font-semibold mb-2">ログインが必要です</h2>
-            <p className="text-gray-600 mb-4">会員サロンを利用するにはログインしてください</p>
-            <Button onClick={() => navigate('/login')}>ログイン</Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
-  if (!isPremium) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Card className="max-w-md w-full mx-4">
-          <CardContent className="p-6 text-center">
-            <Lock className="h-12 w-12 mx-auto text-yellow-500 mb-4" />
-            <h2 className="text-xl font-semibold mb-2">有料会員限定</h2>
-            <p className="text-gray-600 mb-4">
-              会員サロンは有料会員のみご利用いただけます。
-              有料会員になると、専門チャットサロンで同じ悩みを持つ仲間と交流できます。
-            </p>
-            <Button onClick={() => navigate('/account')} className="bg-yellow-500 hover:bg-yellow-600">
-              有料会員になる
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -141,13 +111,21 @@ const SalonPage: React.FC = () => {
             <h1 className="text-3xl font-serif font-bold text-gray-900">会員サロン</h1>
             <p className="text-gray-600 mt-1">有料会員限定の専門チャットサロン</p>
           </div>
-          <Button
-            onClick={() => setShowCreateModal(true)}
-            className="mt-4 md:mt-0 bg-black hover:bg-gray-800"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            ルームを作成
-          </Button>
+          {isPremium && (
+            <Button
+              onClick={() => setShowCreateModal(true)}
+              className="mt-4 md:mt-0 bg-black hover:bg-gray-800"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              ルームを作成
+            </Button>
+          )}
+          {!isPremium && (
+            <div className="mt-4 md:mt-0 text-sm text-gray-500 bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-2">
+              <Lock className="h-4 w-4 inline mr-1" />
+              ルーム作成・参加は有料会員限定
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">

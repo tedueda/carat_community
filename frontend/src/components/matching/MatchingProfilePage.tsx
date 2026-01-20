@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { resolveImageUrl } from '@/utils/imageUtils';
 import { API_URL } from '@/config';
+import { Lock } from 'lucide-react';
 
 type Profile = {
   user_id: number;
@@ -35,7 +37,9 @@ type MediaImage = {
 };
 
 const MatchingProfilePage: React.FC = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
+  const navigate = useNavigate();
+  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -437,6 +441,25 @@ const MatchingProfilePage: React.FC = () => {
   const closeModal = () => {
     setModalImageUrl(null);
   };
+
+  // 有料会員でない場合はアップグレード画面を表示
+  if (!isPremium) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
+        <Lock className="h-16 w-16 text-yellow-500 mb-4" />
+        <h2 className="text-xl font-semibold mb-2">有料会員限定機能</h2>
+        <p className="text-gray-600 mb-6 text-center">
+          プロフィール編集は有料会員のみご利用いただけます。
+        </p>
+        <button
+          onClick={() => navigate('/account')}
+          className="px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-medium"
+        >
+          有料会員になる
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div>

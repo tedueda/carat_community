@@ -4,7 +4,7 @@ from sqlalchemy import and_, or_, func, select
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import User, MatchingProfile, Hobby, MatchingProfileHobby, MatchingProfileImage, Like, Match, Chat, Message, ChatRequest, ChatRequestMessage
-from app.auth import get_current_active_user
+from app.auth import get_current_active_user, get_optional_user
 from jose import jwt, JWTError
 import os
 from datetime import datetime
@@ -19,7 +19,7 @@ def require_premium(current_user: User = Depends(get_current_active_user)) -> Us
 
 
 @router.get("/profiles/me")
-def get_my_profile(current_user: User = Depends(get_current_active_user), db: Session = Depends(get_db)):
+def get_my_profile(current_user: User = Depends(require_premium), db: Session = Depends(get_db)):
     prof = db.query(MatchingProfile).filter(MatchingProfile.user_id == current_user.id).first()
     if not prof:
         prof = MatchingProfile(user_id=current_user.id)
@@ -74,7 +74,7 @@ def get_my_profile(current_user: User = Depends(get_current_active_user), db: Se
 
 
 @router.put("/profiles/me")
-def update_my_profile(payload: dict, current_user: User = Depends(get_current_active_user), db: Session = Depends(get_db)):
+def update_my_profile(payload: dict, current_user: User = Depends(require_premium), db: Session = Depends(get_db)):
     prof = db.query(MatchingProfile).filter(MatchingProfile.user_id == current_user.id).first()
     if not prof:
         prof = MatchingProfile(user_id=current_user.id)
@@ -147,7 +147,7 @@ def update_my_profile(payload: dict, current_user: User = Depends(get_current_ac
 
 
 @router.put("/profiles/me/visibility")
-def update_visibility(display_flag: bool, current_user: User = Depends(get_current_active_user), db: Session = Depends(get_db)):
+def update_visibility(display_flag: bool, current_user: User = Depends(require_premium), db: Session = Depends(get_db)):
     prof = db.query(MatchingProfile).filter(MatchingProfile.user_id == current_user.id).first()
     if not prof:
         prof = MatchingProfile(user_id=current_user.id)
@@ -160,7 +160,7 @@ def update_visibility(display_flag: bool, current_user: User = Depends(get_curre
 @router.get("/profiles/{user_id}")
 def get_profile_by_id(
     user_id: int,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(require_premium),
     db: Session = Depends(get_db),
 ):
     prof = db.query(MatchingProfile).filter(MatchingProfile.user_id == user_id).first()
@@ -223,12 +223,13 @@ def search_profiles(
     identity: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
     size: int = Query(20, ge=1, le=50),
-    current_user: User = Depends(get_current_active_user),
+    current_user: Optional[User] = Depends(get_optional_user),
     db: Session = Depends(get_db),
 ):
     q = db.query(MatchingProfile, User).join(User, User.id == MatchingProfile.user_id)
     q = q.filter(MatchingProfile.display_flag == True)
-    q = q.filter(MatchingProfile.user_id != current_user.id)
+    if current_user:
+        q = q.filter(MatchingProfile.user_id != current_user.id)
     if prefecture:
         q = q.filter(MatchingProfile.prefecture == prefecture)
     if age_band:

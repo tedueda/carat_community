@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { API_URL } from '@/config';
 import { createApiClient } from '@/lib/apiClient';
 import { navigateToComposeOrChat } from '@/lib/chatNavigation';
+import { Lock } from 'lucide-react';
 
 type UserProfile = {
   user_id: number;
@@ -29,6 +30,7 @@ const MatchingUserProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
   const { token, user } = useAuth();
+  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +38,7 @@ const MatchingUserProfilePage: React.FC = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!token || !userId) return;
+      if (!token || !userId || !isPremium) return;
       setLoading(true);
       try {
         const res = await fetch(`${API_URL}/api/matching/profiles/${userId}`, {
@@ -61,7 +63,26 @@ const MatchingUserProfilePage: React.FC = () => {
     };
 
     fetchProfile();
-  }, [token, userId]);
+  }, [token, userId, isPremium]);
+
+  // 有料会員でない場合はアップグレード画面を表示
+  if (!isPremium) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
+        <Lock className="h-16 w-16 text-yellow-500 mb-4" />
+        <h2 className="text-xl font-semibold mb-2">有料会員限定機能</h2>
+        <p className="text-gray-600 mb-6 text-center">
+          会員プロフィールの閲覧は有料会員のみご利用いただけます。
+        </p>
+        <button
+          onClick={() => navigate('/account')}
+          className="px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-medium"
+        >
+          有料会員になる
+        </button>
+      </div>
+    );
+  }
 
   const handleSendMessage = async () => {
     if (!token || !userId) return;

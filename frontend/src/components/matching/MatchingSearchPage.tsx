@@ -35,7 +35,6 @@ const MatchingSearchPage: React.FC = () => {
   const [showFilterModal, setShowFilterModal] = useState(false);
 
   const fetchSearch = async () => {
-    if (!token) return;
     setLoading(true);
     setError(null);
     
@@ -43,12 +42,11 @@ const MatchingSearchPage: React.FC = () => {
       const params = new URLSearchParams({ page: "1", size: "50" });
       
       const url = `${API_URL}/api/matching/search?${params.toString()}&_t=${Date.now()}`;
-      const res = await fetch(url, {
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Cache-Control': 'no-cache'
-        },
-      });
+      const headers: Record<string, string> = { 'Cache-Control': 'no-cache' };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      const res = await fetch(url, { headers });
       
       if (!res.ok) {
         const text = await res.text();

@@ -56,7 +56,7 @@ const TRANSACTION_METHOD_LABELS: Record<string, string> = {
 const FleaMarketList: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  // const token = localStorage.getItem('token');
+  // token removed - not currently used
   const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
 
   const [items, setItems] = useState<FleaMarketItem[]>([]);

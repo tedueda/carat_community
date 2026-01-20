@@ -7,10 +7,10 @@ headers = []
 [functions."*"]
 
 [build]
-publish = "/Users/tedueda/rainbow_community/frontend/dist"
+publish = "/Users/tedueda/CascadeProjects/windsurf-project-3/rainbow_community/frontend/dist"
 publishOrigin = "config"
 commandOrigin = "config"
-base = "/Users/tedueda/rainbow_community/frontend"
+base = "/Users/tedueda/CascadeProjects/windsurf-project-3/rainbow_community/frontend"
 command = "npm run build"
 
 [build.environment]
