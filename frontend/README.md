@@ -2,6 +2,32 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+## ⚠️ API URL Configuration (IMPORTANT)
+
+**Never hardcode API URLs in the codebase!** This prevents deployment issues with stale URLs.
+
+### Development
+- Copy `.env.example` to `.env` and set `VITE_API_URL=http://localhost:8000`
+- Or leave it empty to use Vite's proxy
+
+### Production (Netlify)
+1. Go to **Netlify Dashboard** > **Site settings** > **Build & deploy** > **Environment**
+2. Add environment variable: `VITE_API_URL` = `https://your-backend-url.com`
+3. **Do NOT** add URLs to `netlify.toml` or `.env.production`
+
+### Code Guidelines
+- Always import `API_URL` from `src/config.ts`
+- Never define local `API_URL` constants in components
+- Never use fallback URLs like `|| 'https://...'`
+
+```typescript
+// ✅ Correct
+import { API_URL } from '../config';
+
+// ❌ Wrong - DO NOT DO THIS
+const API_URL = import.meta.env.VITE_API_URL || 'https://old-url.com';
+```
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh

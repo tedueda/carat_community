@@ -2,9 +2,10 @@
   publish = "dist"
   command = "npm run build"
 
-[build.environment]
-  VITE_API_URL = "https://7cjpf7nunm.ap-northeast-1.awsapprunner.com"
-  VITE_API_BASE_URL = "https://7cjpf7nunm.ap-northeast-1.awsapprunner.com"
+# IMPORTANT: Do NOT hardcode API URLs here!
+# Configure VITE_API_URL in Netlify Dashboard:
+# Site settings > Build & deploy > Environment > Environment variables
+# This prevents old URLs from being committed to the repository.
 
 # SPA redirect to index.html
 [[redirects]]

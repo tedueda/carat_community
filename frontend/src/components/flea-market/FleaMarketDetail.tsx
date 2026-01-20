@@ -3,6 +3,7 @@ import { ArrowLeft, MapPin, Clock, MessageCircle, ChevronLeft, ChevronRight, Use
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import PremiumUpgradeModal from '../PremiumUpgradeModal';
+import { API_URL } from '../../config';
 
 interface FleaMarketItem {
   id: number;
@@ -26,8 +27,6 @@ interface FleaMarketDetailProps {
   onBack: () => void;
   onRefresh: () => void;
 }
-
-const API_URL = import.meta.env.VITE_API_URL || 'https://ddxdewgmen.ap-northeast-1.awsapprunner.com';
 
 const CATEGORY_LABELS: Record<string, string> = {
   electronics: '家電・スマホ・カメラ',
