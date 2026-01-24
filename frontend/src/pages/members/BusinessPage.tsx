@@ -3,13 +3,14 @@ import { ArrowLeft, ShoppingBag, Palette, GraduationCap, Radio } from 'lucide-re
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import FleaMarketList from '../../components/flea-market/FleaMarketList';
 import ArtSaleList from '../../components/art-sales/ArtSaleList';
+import CourseList from '../../components/courses/CourseList';
 
 type TabType = 'flea-market' | 'art-sales' | 'courses' | 'live-streaming';
 
 const tabs: { id: TabType; label: string; icon: React.ReactNode; description: string }[] = [
   { id: 'flea-market', label: 'フリマ', icon: <ShoppingBag className="w-5 h-5" />, description: 'ジモティー風の個人間売買' },
   { id: 'art-sales', label: '作品販売', icon: <Palette className="w-5 h-5" />, description: 'アート作品の販売' },
-  { id: 'courses', label: '講座', icon: <GraduationCap className="w-5 h-5" />, description: 'オンライン講座' },
+  { id: 'courses', label: '講座・レッスン', icon: <GraduationCap className="w-5 h-5" />, description: 'オンライン講座・レッスン' },
   { id: 'live-streaming', label: 'Live配信', icon: <Radio className="w-5 h-5" />, description: 'ライブ配信サービス' },
 ];
 
@@ -31,13 +32,7 @@ const BusinessPage: React.FC = () => {
       case 'art-sales':
         return <ArtSaleList />;
       case 'courses':
-        return (
-          <div className="text-center py-16">
-            <GraduationCap className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">講座</h3>
-            <p className="text-gray-500">近日公開予定</p>
-          </div>
-        );
+        return <CourseList />;
       case 'live-streaming':
         return (
           <div className="text-center py-16">

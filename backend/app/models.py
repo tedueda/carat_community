@@ -823,3 +823,57 @@ class OrderItem(Base):
 
     order = relationship("Order", back_populates="items")
     product = relationship("JewelryProduct", back_populates="order_items")
+
+
+# ===== Course (講座) domain models =====
+
+class Course(Base):
+    __tablename__ = "courses"
+
+    id = Column(Integer, primary_key=True, index=True)
+    owner_user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    title = Column(String(80), nullable=False)
+    description = Column(Text, nullable=False)
+    category = Column(String(50), nullable=False)
+    price_label = Column(String(100), nullable=False)  # 自由記述: "¥5,000", "無料", "月額¥2,000"
+    external_url = Column(Text, nullable=False)
+    instructor_profile = Column(Text, nullable=True)  # 講師プロフィール（最大1000文字）
+    published = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        CheckConstraint(
+            "category IN ('business', 'creative', 'language', 'health', 'relationship', 'life', 'other')",
+            name="check_course_category"
+        ),
+    )
+
+    owner = relationship("User")
+    images = relationship("CourseImage", back_populates="course", order_by="CourseImage.sort_order", cascade="all, delete-orphan")
+    videos = relationship("CourseVideo", back_populates="course", order_by="CourseVideo.sort_order", cascade="all, delete-orphan")
+
+
+class CourseImage(Base):
+    __tablename__ = "course_images"
+
+    id = Column(Integer, primary_key=True, index=True)
+    course_id = Column(Integer, ForeignKey("courses.id", ondelete="CASCADE"), nullable=False, index=True)
+    image_url = Column(Text, nullable=False)
+    sort_order = Column(Integer, nullable=False, default=0)  # 0..4
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    course = relationship("Course", back_populates="images")
+
+
+class CourseVideo(Base):
+    __tablename__ = "course_videos"
+
+    id = Column(Integer, primary_key=True, index=True)
+    course_id = Column(Integer, ForeignKey("courses.id", ondelete="CASCADE"), nullable=False, index=True)
+    youtube_url = Column(Text, nullable=False)
+    youtube_video_id = Column(String(20), nullable=False)  # 抽出して保存
+    sort_order = Column(Integer, nullable=False, default=0)  # 0..5
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    course = relationship("Course", back_populates="videos")

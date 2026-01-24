@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV /Users/tedueda/rainbow_community/rainbow_community-1/backend/venv
+set -gx VIRTUAL_ENV /Users/tedueda/rainbow_community/backend/venv
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH

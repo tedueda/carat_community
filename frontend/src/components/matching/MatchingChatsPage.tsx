@@ -25,7 +25,8 @@ type ChatRequest = {
 const MatchingChatsPage: React.FC = () => {
   const { token, user } = useAuth();
   const navigate = useNavigate();
-  // 有料会員かどうか
+  // ログイン状態と有料会員かどうか
+  const isLoggedIn = !!user;
   const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
   const [loading, setLoading] = useState(false);
@@ -118,21 +119,61 @@ const MatchingChatsPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, isPaidUser]);
 
+  // 未ログインの場合は会員登録を促す
+  if (!isLoggedIn) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
+          <Lock className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-3">会員登録してください</h2>
+          <p className="text-gray-600 mb-6">
+            マッチング機能は会員限定サービスです。<br />
+            会員登録して、素敵な出会いを見つけましょう。
+          </p>
+          <div className="space-y-3">
+            <button
+              onClick={() => navigate('/register')}
+              className="w-full px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 font-medium"
+            >
+              新規会員登録
+            </button>
+            <button
+              onClick={() => navigate('/login')}
+              className="w-full px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
+            >
+              ログイン
+            </button>
+          </div>
+          <p className="text-sm text-gray-500 mt-4">
+            有料会員になると、チャット機能をご利用いただけます。<br />
+            月額1,000円・いつでも解約可能
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   // 有料会員でない場合はアップグレード画面を表示
   if (!isPaidUser) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
-        <Lock className="h-16 w-16 text-yellow-500 mb-4" />
-        <h2 className="text-xl font-semibold mb-2">有料会員限定機能</h2>
-        <p className="text-gray-600 mb-6 text-center">
-          チャット機能は有料会員のみご利用いただけます。
-        </p>
-        <button
-          onClick={() => navigate('/account')}
-          className="px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-medium"
-        >
-          有料会員になる
-        </button>
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
+          <Lock className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-3">有料会員限定機能</h2>
+          <p className="text-gray-600 mb-6">
+            チャット機能は有料会員のみご利用いただけます。<br />
+            有料会員になって、マッチング相手とチャットしましょう。
+          </p>
+          <button
+            onClick={() => navigate('/account')}
+            className="w-full px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-medium"
+          >
+            有料会員になる
+          </button>
+          <p className="text-sm text-gray-500 mt-4">
+            月額1,000円・いつでも解約可能
+          </p>
+        </div>
       </div>
     );
   }

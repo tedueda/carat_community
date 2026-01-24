@@ -674,3 +674,81 @@ class ArtSaleItem(ArtSaleItemBase):
     
     class Config:
         from_attributes = True
+
+
+# ===== Course (講座) Schemas =====
+
+class CourseCategoryEnum(str, Enum):
+    business = "business"        # ビジネス
+    creative = "creative"        # クリエイティブ
+    language = "language"        # 語学
+    health = "health"            # 健康
+    relationship = "relationship"  # 恋愛・関係
+    life = "life"                # ライフ
+    other = "other"              # その他
+
+
+class CourseImageBase(BaseModel):
+    image_url: str
+    sort_order: int = 0
+
+
+class CourseImage(CourseImageBase):
+    id: int
+    
+    class Config:
+        from_attributes = True
+
+
+class CourseVideoBase(BaseModel):
+    youtube_url: str
+    sort_order: int = 0
+
+
+class CourseVideo(CourseVideoBase):
+    id: int
+    youtube_video_id: str
+    
+    class Config:
+        from_attributes = True
+
+
+class CourseBase(BaseModel):
+    title: str
+    description: str
+    category: CourseCategoryEnum
+    price_label: str
+    external_url: str
+    instructor_profile: Optional[str] = None  # 講師プロフィール（最大1000文字）
+
+
+class CourseCreate(CourseBase):
+    image_urls: Optional[List[str]] = None  # 最大5件
+    youtube_urls: Optional[List[str]] = None  # 最大6件
+
+
+class CourseUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    category: Optional[CourseCategoryEnum] = None
+    price_label: Optional[str] = None
+    external_url: Optional[str] = None
+    instructor_profile: Optional[str] = None  # 講師プロフィール（最大1000文字）
+    image_urls: Optional[List[str]] = None  # 最大5件
+    youtube_urls: Optional[List[str]] = None  # 最大6件
+
+
+class Course(CourseBase):
+    id: int
+    owner_user_id: int
+    published: bool
+    created_at: datetime
+    updated_at: datetime
+    images: List[CourseImage] = []
+    videos: List[CourseVideo] = []
+    instructor_profile: Optional[str] = None
+    owner_display_name: Optional[str] = None
+    owner_avatar_url: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
