@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from app.routers import auth, users, profiles, posts, comments, reactions, follows, notifications, media, billing, matching, categories, ops, account, donation, salon, flea_market, jewelry, live_wedding
+from app.routers import auth, users, profiles, posts, comments, reactions, follows, notifications, media, billing, matching, categories, ops, account, donation, salon, flea_market, jewelry, live_wedding, art_sales
 from app.database import Base, engine, get_db
 import os
 from pathlib import Path
@@ -110,6 +110,7 @@ app.include_router(salon.router)
 app.include_router(flea_market.router)
 app.include_router(jewelry.router)
 app.include_router(live_wedding.router)
+app.include_router(art_sales.router)
 
 @app.on_event("startup")
 def on_startup():

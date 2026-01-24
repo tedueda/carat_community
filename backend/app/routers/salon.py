@@ -4,7 +4,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import User, Profile, MatchingProfile, MatchingProfileImage, SalonRoom, SalonParticipant, SalonMessage
-from app.auth import get_current_active_user
+from app.auth import get_current_active_user, get_optional_user
 from app.schemas import (
     SalonRoomCreate, SalonRoomUpdate, SalonRoom as SalonRoomSchema,
     SalonParticipantCreate, SalonParticipant as SalonParticipantSchema,
@@ -33,7 +33,10 @@ def get_user_identity(user_id: int, db: Session) -> Optional[str]:
     return None
 
 
-def check_identity_match(user_identity: Optional[str], target_identities: List[str]) -> bool:
+def check_identity_match(user_identity: Optional[str], target_identities: List[str], is_logged_in: bool = True) -> bool:
+    # 未ログインユーザーには全てのルームを表示（閲覧のみ）
+    if not is_logged_in:
+        return True
     if not target_identities:
         return True
     if 'ALL' in target_identities:
@@ -44,15 +47,15 @@ def check_identity_match(user_identity: Optional[str], target_identities: List[s
 
 
 @router.get("/rooms", response_model=List[SalonRoomSchema])
-def list_rooms(
+async def list_rooms(
     room_type: Optional[str] = Query(None),
     is_active: bool = Query(True),
     page: int = Query(1, ge=1),
     size: int = Query(20, ge=1, le=50),
-    current_user: User = Depends(get_current_active_user),
+    current_user: Optional[User] = Depends(get_optional_user),
     db: Session = Depends(get_db),
 ):
-    user_identity = get_user_identity(current_user.id, db)
+    user_identity = get_user_identity(current_user.id, db) if current_user else None
     
     q = db.query(SalonRoom).filter(SalonRoom.is_active == is_active)
     
@@ -63,9 +66,10 @@ def list_rooms(
     total = q.count()
     rooms = q.offset((page - 1) * size).limit(size).all()
     
+    is_logged_in = current_user is not None
     result = []
     for room in rooms:
-        if not check_identity_match(user_identity, room.target_identities):
+        if not check_identity_match(user_identity, room.target_identities, is_logged_in):
             continue
         
         participant_count = db.query(func.count(SalonParticipant.id)).filter(

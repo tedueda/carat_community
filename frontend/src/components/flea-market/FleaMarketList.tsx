@@ -119,7 +119,8 @@ const FleaMarketList: React.FC = () => {
       const response = await fetch(`${API_URL}/api/flea-market/items?${params.toString()}`);
       if (response.ok) {
         const data = await response.json();
-        setItems(data.items || []);
+        // APIは配列を直接返す
+        setItems(Array.isArray(data) ? data : (data.items || []));
       }
     } catch (error) {
       console.error('商品取得エラー:', error);
