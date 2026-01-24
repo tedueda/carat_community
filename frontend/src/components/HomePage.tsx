@@ -620,8 +620,9 @@ const HomePage: React.FC = () => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {specialMenuItems.map((item) => {
-              const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
-              const isLocked = item.premiumOnly && !isPremium;
+              // 有料会員かどうか
+              const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+              const isLocked = item.premiumOnly && !isPaidUser;
               
               const handleMenuClick = () => {
                 if (isLocked) {

@@ -247,7 +247,7 @@ const CreatePost: React.FC = () => {
   const CategoryIcon = selectedCategory?.icon || PlusCircle;
 
   // Check if user is premium member
-  const isPremiumMember = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
 
   // Show login prompt if not logged in
   if (showLoginPrompt && (!user || isAnonymous)) {
@@ -288,7 +288,7 @@ const CreatePost: React.FC = () => {
   }
 
   // Show premium upgrade prompt for free members
-  if (user && !isPremiumMember) {
+  if (user && !isPaidUser) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <Card className="max-w-md w-full">

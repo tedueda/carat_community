@@ -50,7 +50,7 @@ const FleaMarketDetail: React.FC<FleaMarketDetailProps> = ({ item, onBack, onRef
   const navigate = useNavigate();
   const { user } = useAuth();
   const token = localStorage.getItem('token');
-  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const isOwner = user?.id === item.user_id;
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -88,7 +88,7 @@ const FleaMarketDetail: React.FC<FleaMarketDetailProps> = ({ item, onBack, onRef
       navigate('/login');
       return;
     }
-    if (!isPremium) {
+    if (!isPaidUser) {
       setShowUpgradeModal(true);
       return;
     }

@@ -26,14 +26,14 @@ const PostFeed: React.FC = () => {
   const [users, setUsers] = useState<{ [key: number]: User }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const { token, user, isAnonymous } = useAuth();
+  const { token, user, isFreeUser } = useAuth();
 
   const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
 
   const fetchPosts = async () => {
     try {
       const headers: any = {};
-      if (token && !isAnonymous) {
+      if (token && !isFreeUser) {
         headers['Authorization'] = `Bearer ${token}`;
       }
       
@@ -51,7 +51,7 @@ const PostFeed: React.FC = () => {
         for (const userId of userIds) {
           try {
             const userHeaders: any = {};
-            if (token && !isAnonymous) {
+            if (token && !isFreeUser) {
               userHeaders['Authorization'] = `Bearer ${token}`;
             }
             
@@ -80,7 +80,7 @@ const PostFeed: React.FC = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [user, isAnonymous]);
+  }, [user, isFreeUser]);
 
   if (loading) {
     return (
@@ -111,7 +111,7 @@ const PostFeed: React.FC = () => {
             <Heart className="h-12 sm:h-16 w-12 sm:w-16 text-pink-300 mx-auto mb-4" />
             <h3 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">まだ投稿がありません。</h3>
             <p className="text-gray-500 mb-4">コミュニティの投稿をお待ちください。</p>
-            {user && !isAnonymous ? (
+            {user && !isFreeUser ? (
               <Button 
                 onClick={() => window.location.href = '/create'}
                 className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
@@ -160,7 +160,7 @@ const PostFeed: React.FC = () => {
               <p className="text-gray-700 mb-4 whitespace-pre-wrap text-sm sm:text-base">{post.body}</p>
               
               <div className="flex flex-wrap items-center gap-2 sm:gap-4 pt-3 border-t border-gray-100">
-                {user && !isAnonymous ? (
+                {user && !isFreeUser ? (
                   <>
                     <Button
                       variant="ghost"

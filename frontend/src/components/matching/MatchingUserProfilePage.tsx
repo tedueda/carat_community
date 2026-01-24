@@ -30,7 +30,8 @@ const MatchingUserProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
   const { token, user } = useAuth();
-  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  // 有料会員かどうか
+  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +39,7 @@ const MatchingUserProfilePage: React.FC = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!token || !userId || !isPremium) return;
+      if (!token || !userId || !isPaidUser) return;
       setLoading(true);
       try {
         const res = await fetch(`${API_URL}/api/matching/profiles/${userId}`, {
@@ -63,10 +64,10 @@ const MatchingUserProfilePage: React.FC = () => {
     };
 
     fetchProfile();
-  }, [token, userId, isPremium]);
+  }, [token, userId, isPaidUser]);
 
   // 有料会員でない場合はアップグレード画面を表示
-  if (!isPremium) {
+  if (!isPaidUser) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
         <Lock className="h-16 w-16 text-yellow-500 mb-4" />

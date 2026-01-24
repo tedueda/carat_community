@@ -135,7 +135,7 @@ const CategoryPage: React.FC = () => {
   const { categoryKey } = useParams<{ categoryKey: string }>();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { token, user, isAnonymous } = useAuth();
+  const { token, user, isFreeUser } = useAuth();
   
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -312,7 +312,7 @@ const CategoryPage: React.FC = () => {
 
         {/* 新規投稿ボタン */}
         <div className="flex gap-2">
-          {user && !isAnonymous ? (
+          {user && !isFreeUser ? (
             <Button 
               onClick={() => setShowNewPostForm(!showNewPostForm)}
               className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white rounded-full"
@@ -431,7 +431,7 @@ const CategoryPage: React.FC = () => {
             <p className="text-gray-500 mb-6">
               最初の投稿をして、コミュニティを盛り上げましょう！
             </p>
-            {user && !isAnonymous && (
+            {user && !isFreeUser && (
               <Button 
                 onClick={() => setShowNewPostForm(true)}
                 className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"

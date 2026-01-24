@@ -23,7 +23,8 @@ export function MatchCard({ item }: { item: Item }) {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
-  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  // 有料会員かどうか
+  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const isLoggedIn = !!user;
 
   async function handleLike(e: React.MouseEvent) {
@@ -33,7 +34,7 @@ export function MatchCard({ item }: { item: Item }) {
       setShowLoginModal(true);
       return;
     }
-    if (!isPremium) {
+    if (!isPaidUser) {
       setShowUpgradeModal(true);
       return;
     }
@@ -73,7 +74,7 @@ export function MatchCard({ item }: { item: Item }) {
       setShowLoginModal(true);
       return;
     }
-    if (!isPremium) {
+    if (!isPaidUser) {
       setShowUpgradeModal(true);
       return;
     }
@@ -88,7 +89,7 @@ export function MatchCard({ item }: { item: Item }) {
       setShowLoginModal(true);
       return;
     }
-    if (!isPremium) {
+    if (!isPaidUser) {
       setShowUpgradeModal(true);
       return;
     }

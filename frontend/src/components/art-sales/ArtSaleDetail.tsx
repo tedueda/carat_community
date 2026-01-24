@@ -54,7 +54,7 @@ const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) =
   const navigate = useNavigate();
   const { user } = useAuth();
   const token = localStorage.getItem('token');
-  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const isOwner = user?.id === item.user_id;
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -92,7 +92,7 @@ const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) =
       navigate('/login');
       return;
     }
-    if (!isPremium) {
+    if (!isPaidUser) {
       setShowUpgradeModal(true);
       return;
     }

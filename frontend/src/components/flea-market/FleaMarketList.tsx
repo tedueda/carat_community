@@ -56,7 +56,7 @@ const FleaMarketList: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   // token removed - not currently used
-  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
 
   const [items, setItems] = useState<FleaMarketItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -138,7 +138,7 @@ const FleaMarketList: React.FC = () => {
       navigate('/login');
       return;
     }
-    if (!isPremium) {
+    if (!isPaidUser) {
       setShowUpgradeModal(true);
       return;
     }

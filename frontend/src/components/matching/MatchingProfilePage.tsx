@@ -39,7 +39,8 @@ type MediaImage = {
 const MatchingProfilePage: React.FC = () => {
   const { token, user } = useAuth();
   const navigate = useNavigate();
-  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  // 有料会員かどうか
+  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -443,7 +444,7 @@ const MatchingProfilePage: React.FC = () => {
   };
 
   // 有料会員でない場合はアップグレード画面を表示
-  if (!isPremium) {
+  if (!isPaidUser) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
         <Lock className="h-16 w-16 text-yellow-500 mb-4" />

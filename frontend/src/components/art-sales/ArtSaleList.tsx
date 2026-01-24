@@ -45,7 +45,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const ArtSaleList: React.FC = () => {
   const { user } = useAuth();
-  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
 
   const [items, setItems] = useState<ArtSaleItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -151,7 +151,7 @@ const ArtSaleList: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-2xl font-bold text-gray-900">作品販売</h2>
-        {isPremium && (
+        {isPaidUser && (
           <button
             onClick={() => setShowPostForm(true)}
             className="flex items-center gap-2 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"

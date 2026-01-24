@@ -34,7 +34,8 @@ const SalonPage: React.FC = () => {
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  // 有料会員かどうか
+  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
 
   const fetchRooms = async () => {
     if (!token) return;
@@ -68,12 +69,12 @@ const SalonPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isPremium) {
+    if (isPaidUser) {
       fetchRooms();
     } else {
       setLoading(false);
     }
-  }, [token, selectedRoomType, isPremium]);
+  }, [token, selectedRoomType, isPaidUser]);
 
   const handleRoomCreated = () => {
     setShowCreateModal(false);
@@ -103,7 +104,7 @@ const SalonPage: React.FC = () => {
     );
   }
 
-  if (!isPremium) {
+  if (!isPaidUser) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Card className="max-w-md w-full mx-4">

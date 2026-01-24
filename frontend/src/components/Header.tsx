@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
-  const { user, isAnonymous, logout } = useAuth();
+  const { user, isFreeUser, logout } = useAuth();
   const [showMemberMenu, setShowMemberMenu] = useState(false);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -16,7 +16,7 @@ const Header: React.FC = () => {
   // 未読メッセージ数を取得
   useEffect(() => {
     const fetchUnreadCount = async () => {
-      if (isAnonymous || !user) return;
+      if (isFreeUser || !user) return;
       
       const token = localStorage.getItem('token');
       if (!token) return;
@@ -40,7 +40,7 @@ const Header: React.FC = () => {
     // 30秒ごとに更新
     const interval = setInterval(fetchUnreadCount, 30000);
     return () => clearInterval(interval);
-  }, [user, isAnonymous]);
+  }, [user, isFreeUser]);
 
   const handleLogout = () => {
     logout();
@@ -76,7 +76,7 @@ const Header: React.FC = () => {
           </Link>
           <div className="flex items-center gap-3">
             {/* チャット通知アイコン（モバイル） */}
-            {!isAnonymous && user && (
+            {!isFreeUser && user && (
               <button
                 onClick={() => navigate('/matching/chats')}
                 className="flex items-center gap-1 px-2 py-1 hover:bg-gray-100 rounded-full transition-colors"
@@ -95,10 +95,10 @@ const Header: React.FC = () => {
                 </span>
               </button>
             )}
-            {!isAnonymous && user && (
+            {!isFreeUser && user && (
               <span className="text-sm text-gray-700 font-medium">{user.display_name}</span>
             )}
-            {!isAnonymous && user && (
+            {!isFreeUser && user && (
               <Button 
                 variant="outline" 
                 size="sm"
@@ -184,7 +184,7 @@ const Header: React.FC = () => {
                 </Button>
               </Link>
 
-              {(isAnonymous || !user) && (
+              {(isFreeUser || !user) && (
                 <Link to="/login" onClick={() => setShowMobileMenu(false)}>
                   <Button className="w-full bg-black hover:bg-gray-800 text-white">
                     ログイン
@@ -343,7 +343,7 @@ const Header: React.FC = () => {
 
             {/* Bottom Row - User Info & Auth */}
             <div className="flex items-center gap-4">
-              {isAnonymous || !user ? (
+              {isFreeUser || !user ? (
                 <Link to="/login">
                   <Button className="bg-black hover:bg-gray-800 text-white text-sm px-6 py-2">
                     ログイン

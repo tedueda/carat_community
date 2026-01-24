@@ -15,6 +15,9 @@ interface User {
 interface AuthContextType {
   user: User | null;
   token: string | null;
+  /** 無料会員（未ログイン）かどうか */
+  isFreeUser: boolean;
+  /** @deprecated isFreeUser を使用してください */
   isAnonymous: boolean;
   isLoading: boolean;
   error: string | null;
@@ -40,7 +43,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const [isAnonymous, setIsAnonymous] = useState<boolean>(true);
+  const [isFreeUser, setIsFreeUser] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,24 +72,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             const userData = await response.json();
             console.log('✅ Token valid, user data loaded:', userData);
             setUser(userData);
-            setIsAnonymous(false);
+            setIsFreeUser(false);
           } else {
             console.log('❌ Token invalid, clearing...');
             localStorage.removeItem('token');
             localStorage.removeItem('rememberMe');
             setToken(null);
-            setIsAnonymous(true);
+            setIsFreeUser(true);
           }
         } catch (error) {
           console.error('Error validating token:', error);
           localStorage.removeItem('token');
           localStorage.removeItem('rememberMe');
           setToken(null);
-          setIsAnonymous(true);
+          setIsFreeUser(true);
         }
       } else {
         console.log('🔓 No stored token or anonymous mode, setting anonymous');
-        setIsAnonymous(true);
+        setIsFreeUser(true);
       }
       
       console.log('✅ Auth initialization complete');
@@ -137,7 +140,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           
           setUser(userData);
           setToken(newToken);
-          setIsAnonymous(false);
+          setIsFreeUser(false);
           
           if (rememberMe) {
             localStorage.setItem('token', newToken);
@@ -178,13 +181,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     
     setToken(null);
     setUser(null);
-    setIsAnonymous(true);
+    setIsFreeUser(true);
   };
 
   const value: AuthContextType = {
     user,
     token,
-    isAnonymous,
+    isFreeUser,
+    isAnonymous: isFreeUser, // 後方互換エイリアス
     login,
     logout,
     isLoading,
