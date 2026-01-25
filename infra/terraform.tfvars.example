@@ -1,0 +1,55 @@
+# AWS Configuration
+aws_region = "ap-northeast-1"
+
+# Network Configuration
+vpc_id             = "vpc-04c2a3263f6e1b99d"
+private_subnet_ids = [
+  "subnet-0a8c95bcd18e03b02",
+  "subnet-01c3ef5c6b01bf13a",
+  "subnet-0d9329f75ad639600"
+]
+
+# RDS Configuration
+rds_security_group_id = "sg-01cd3f6d3f5bec2cc"
+rds_endpoint          = "rainbow-community-db-tokyo.cj8agmy8kjhv.ap-northeast-1.rds.amazonaws.com"
+rds_port              = 5432
+
+# Database Credentials (NEVER commit these values - use secure input methods)
+db_app_user     = "app_user"
+db_app_password = "<<<REPLACE_WITH_ACTUAL_PASSWORD>>>"  # Set via terraform apply -var or TF_VAR_db_app_password
+database_name   = "lgbtq_community"
+
+# App Runner Configuration
+app_runner_service_name = "rainbow-community-api"
+ecr_repo_name           = "rainbow-community-api"
+container_port          = 8000
+health_check_path       = "/api/health"
+cpu                     = 1024
+memory                  = 2048
+desired_count           = 1
+
+# GitHub Configuration
+github_repo          = "tedueda/rainbow_community"
+github_oidc_role_arn = "arn:aws:iam::<<<ACCOUNT_ID>>>:role/<<<GHA_OIDC_ROLE>>>"
+
+# Dockerfile Configuration
+dockerfile_path = "backend/Dockerfile"
+
+# Service Environment Variables
+service_env = {
+  APP_ENV   = "production"
+  MEDIA_DIR = "/data/media"
+}
+
+# Legacy CIDR Access (for gradual migration)
+# Set to true initially, then false after verifying App Runner connectivity
+enable_legacy_cidrs = true
+legacy_cidrs = [
+  "182.164.39.211/32",  # Admin laptop
+  "52.183.72.253/32",   # Devin CI
+  "66.241.125.3/32",    # Legacy access 1
+  "217.178.235.97/32"   # Legacy access 2
+]
+
+# Monitoring Configuration (optional)
+alarm_email = ""  # Set to your email to receive CloudWatch alarm notifications

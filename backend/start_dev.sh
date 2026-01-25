@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# 開発環境用バックエンド起動スクリプト
+# 正しいRDS情報を確実に使用
+
+set -e
+
+echo "🚀 Starting Rainbow Community Backend (Development Mode)"
+echo ""
+
+# 正しいRDS接続情報を環境変数に設定（dbadmin使用）
+export DATABASE_URL="postgresql+psycopg2://dbadmin:NewPassword123!@rainbow-community-db-tokyo.cj8agmy8kjhv.ap-northeast-1.rds.amazonaws.com:5432/lgbtq_community?sslmode=require"
+export SECRET_KEY="rc_admin_2d7a7f0b1b1e4a20b7d239d0c2f1b5f5"
+export ALGORITHM="HS256"
+export ACCESS_TOKEN_EXPIRE_MINUTES="10080"
+export ALLOW_ORIGINS="https://rainbow-community-app-8osff5fg.devinapps.com,http://localhost:5173,http://127.0.0.1:5173"
+
+# AWS S3設定（ローカル開発ではローカルストレージを使用）
+export AWS_ACCESS_KEY_ID="AKIASZ25Y5K5CKMB2FWS"
+export AWS_SECRET_ACCESS_KEY="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"
+export AWS_REGION="ap-northeast-1"
+export AWS_S3_BUCKET="rainbow-community-media-prod"
+export USE_S3="true"
+
+echo "✅ Environment variables set"
+echo "📍 Region: ap-northeast-1 (Tokyo)"
+echo "🗄️  Database: rainbow-community-db-tokyo"
+echo ""
+
+# 仮想環境のPythonを使用してuvicornを起動
+./venv/bin/python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000

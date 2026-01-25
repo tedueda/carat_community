@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="tourismGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#tourismGrad)"/>
+  <g transform="translate(200, 150)">
+    <path d="M 0,-50 L 10,-30 L 30,-30 L 15,-15 L 25,5 L 0,-10 L -25,5 L -15,-15 L -30,-30 L -10,-30 Z" fill="white" opacity="0.3"/>
+    <circle cx="0" cy="0" r="45" fill="none" stroke="white" stroke-width="6" opacity="0.4"/>
+    <path d="M 0,-45 L 0,45" stroke="white" stroke-width="3" opacity="0.5"/>
+    <text x="0" y="90" font-family="sans-serif" font-size="24" fill="white" text-anchor="middle" opacity="0.8">ツーリズム</text>
+  </g>
+</svg>

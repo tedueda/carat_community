@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <rect width="400" height="300" fill="#F3F4F6"/>
+  <path d="M200 80L220 140H280L230 180L250 240L200 200L150 240L170 180L120 140H180L200 80Z" fill="#9CA3AF" stroke="#6B7280" stroke-width="2"/>
+  <circle cx="150" cy="120" r="15" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="2"/>
+  <rect x="220" y="180" width="40" height="60" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="2"/>
+  <path d="M160 200Q180 180 200 200T240 200" stroke="#9CA3AF" stroke-width="2" fill="none"/>
+  <text x="200" y="270" font-family="Arial, sans-serif" font-size="18" fill="#6B7280" text-anchor="middle">アート</text>
+</svg>

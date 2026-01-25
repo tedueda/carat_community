@@ -1,0 +1,26 @@
+# Environment files with secrets
+backend/.env
+frontend/.env
+
+backend/app/__pycache__/
+backend/__pycache__/
+backend/app/routers/__pycache__/
+*.pyc
+backend/lgbtq_community.db
+backend/debug_imports.py
+# Test and development scripts
+backend/test_*.py
+backend/apply_*.py
+backend/create_sqlite_*.py
+backend/fix_*.py
+backend/check_*.py
+backend/debug_*.py
+
+# Python cache
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Local Netlify folder
+.netlify
+node_modules

@@ -1,0 +1,88 @@
+[
+  {
+    "id": 1,
+    "name": "サブカルチャー",
+    "slug": "subculture",
+    "description": "コミック、映画、ドラマ、アニメ、ゲームなどのサブカルチャーコンテンツ",
+    "icon": "Sparkles",
+    "order_index": 1,
+    "subcategories": [
+      {"id": 1, "category_id": 1, "name": "コミック", "slug": "comics", "order_index": 1},
+      {"id": 2, "category_id": 1, "name": "映画", "slug": "movies", "order_index": 2},
+      {"id": 3, "category_id": 1, "name": "ドラマ", "slug": "drama", "order_index": 3},
+      {"id": 4, "category_id": 1, "name": "アニメ", "slug": "anime", "order_index": 4},
+      {"id": 5, "category_id": 1, "name": "ゲーム", "slug": "games", "order_index": 5}
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Queer アート",
+    "slug": "queer-art",
+    "description": "LGBTQ+コミュニティのアート作品と表現",
+    "icon": "Palette",
+    "order_index": 2,
+    "subcategories": [
+      {"id": 6, "category_id": 2, "name": "絵画", "slug": "painting", "order_index": 1},
+      {"id": 7, "category_id": 2, "name": "写真", "slug": "photography", "order_index": 2},
+      {"id": 8, "category_id": 2, "name": "デジタルアート", "slug": "digital-art", "order_index": 3},
+      {"id": 9, "category_id": 2, "name": "パフォーマンス", "slug": "performance", "order_index": 4},
+      {"id": 10, "category_id": 2, "name": "インスタレーション", "slug": "installation", "order_index": 5}
+    ]
+  },
+  {
+    "id": 3,
+    "name": "ライフスタイル",
+    "slug": "lifestyle",
+    "description": "日常生活、ファッション、美容、健康など",
+    "icon": "Heart",
+    "order_index": 3,
+    "subcategories": [
+      {"id": 11, "category_id": 3, "name": "ファッション", "slug": "fashion", "order_index": 1},
+      {"id": 12, "category_id": 3, "name": "美容", "slug": "beauty", "order_index": 2},
+      {"id": 13, "category_id": 3, "name": "健康", "slug": "health", "order_index": 3},
+      {"id": 14, "category_id": 3, "name": "料理", "slug": "cooking", "order_index": 4}
+    ]
+  },
+  {
+    "id": 4,
+    "name": "観光・トラベル",
+    "slug": "travel",
+    "description": "旅行、観光スポット、イベント情報",
+    "icon": "MapPin",
+    "order_index": 4,
+    "subcategories": [
+      {"id": 15, "category_id": 4, "name": "国内旅行", "slug": "domestic", "order_index": 1},
+      {"id": 16, "category_id": 4, "name": "海外旅行", "slug": "international", "order_index": 2},
+      {"id": 17, "category_id": 4, "name": "イベント", "slug": "events", "order_index": 3},
+      {"id": 18, "category_id": 4, "name": "プライドパレード", "slug": "pride", "order_index": 4}
+    ]
+  },
+  {
+    "id": 5,
+    "name": "ショップ・ビジネス",
+    "slug": "shops",
+    "description": "LGBTQ+フレンドリーなお店やビジネス情報",
+    "icon": "Store",
+    "order_index": 5,
+    "subcategories": [
+      {"id": 19, "category_id": 5, "name": "カフェ・レストラン", "slug": "cafe-restaurant", "order_index": 1},
+      {"id": 20, "category_id": 5, "name": "バー・クラブ", "slug": "bar-club", "order_index": 2},
+      {"id": 21, "category_id": 5, "name": "ショップ", "slug": "shop", "order_index": 3},
+      {"id": 22, "category_id": 5, "name": "サービス", "slug": "service", "order_index": 4}
+    ]
+  },
+  {
+    "id": 6,
+    "name": "掲示板",
+    "slug": "board",
+    "description": "コミュニティの交流・相談・情報交換",
+    "icon": "MessageSquare",
+    "order_index": 6,
+    "subcategories": [
+      {"id": 23, "category_id": 6, "name": "雑談", "slug": "chat", "order_index": 1},
+      {"id": 24, "category_id": 6, "name": "相談", "slug": "consultation", "order_index": 2},
+      {"id": 25, "category_id": 6, "name": "質問", "slug": "questions", "order_index": 3},
+      {"id": 26, "category_id": 6, "name": "告知", "slug": "announcements", "order_index": 4}
+    ]
+  }
+]

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="boardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fb923c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f472b6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#boardGrad)"/>
+  <g transform="translate(200, 150)">
+    <circle cx="0" cy="-20" r="40" fill="white" opacity="0.3"/>
+    <circle cx="-35" cy="25" r="30" fill="white" opacity="0.3"/>
+    <circle cx="35" cy="25" r="30" fill="white" opacity="0.3"/>
+    <path d="M -60,-10 Q -30,-30 0,-35 Q 30,-30 60,-10" stroke="white" stroke-width="8" fill="none" opacity="0.4" stroke-linecap="round"/>
+    <text x="0" y="90" font-family="sans-serif" font-size="24" fill="white" text-anchor="middle" opacity="0.8">掲示板</text>
+  </g>
+</svg>

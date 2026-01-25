@@ -1,0 +1,66 @@
+[
+  {
+    "id": 1,
+    "content": "Phase 1のUIリニューアルが完成しました！Cartier風のゴールド×シルバーホワイトのデザインで、LGBTQ+コミュニティの輝きを表現しています。✨",
+    "user": {
+      "id": 1,
+      "username": "designer_karat",
+      "display_name": "Karat Designer",
+      "avatar_url": null
+    },
+    "category_id": 1,
+    "subcategory_id": 1,
+    "created_at": "2025-10-29T12:00:00Z",
+    "updated_at": "2025-10-29T12:00:00Z",
+    "like_count": 42,
+    "comment_count": 8
+  },
+  {
+    "id": 2,
+    "content": "新しいカテゴリーナビゲーションが使いやすくなりました。サブカルチャー、Queerアート、ライフスタイルなど、6つのメインカテゴリーから選べます。🌈",
+    "user": {
+      "id": 2,
+      "username": "community_admin",
+      "display_name": "Community Admin",
+      "avatar_url": null
+    },
+    "category_id": 1,
+    "subcategory_id": 2,
+    "created_at": "2025-10-29T11:30:00Z",
+    "updated_at": "2025-10-29T11:30:00Z",
+    "like_count": 35,
+    "comment_count": 5
+  },
+  {
+    "id": 3,
+    "content": "Cormorant Garamondフォントを使った見出しが美しいですね。高級感のあるデザインがKaratのブランドイメージにぴったりです。💎",
+    "user": {
+      "id": 3,
+      "username": "typography_lover",
+      "display_name": "Typography Lover",
+      "avatar_url": null
+    },
+    "category_id": 2,
+    "subcategory_id": 6,
+    "created_at": "2025-10-29T11:00:00Z",
+    "updated_at": "2025-10-29T11:00:00Z",
+    "like_count": 28,
+    "comment_count": 3
+  },
+  {
+    "id": 4,
+    "content": "ゴールドのアクセントカラーが控えめで上品。レインボーグラデーションも派手すぎず、洗練された印象です。",
+    "user": {
+      "id": 4,
+      "username": "design_critic",
+      "display_name": "Design Critic",
+      "avatar_url": null
+    },
+    "category_id": 2,
+    "subcategory_id": 8,
+    "created_at": "2025-10-29T10:30:00Z",
+    "updated_at": "2025-10-29T10:30:00Z",
+    "like_count": 21,
+    "comment_count": 2
+  }
+]

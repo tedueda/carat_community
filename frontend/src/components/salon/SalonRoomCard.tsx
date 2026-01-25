@@ -1,0 +1,119 @@
+import React from 'react';
+import { Card, CardContent } from '../ui/card';
+import { Users, MessageCircle, Lock, Unlock } from 'lucide-react';
+
+interface SalonRoom {
+  id: number;
+  creator_id: number;
+  theme: string;
+  description: string;
+  target_identities: string[];
+  room_type: string;
+  allow_anonymous: boolean;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  participant_count: number;
+  creator_display_name: string | null;
+}
+
+interface SalonRoomCardProps {
+  room: SalonRoom;
+  onClick: () => void;
+}
+
+const roomTypeLabels: Record<string, string> = {
+  consultation: '相談',
+  exchange: '交流',
+  story: 'ストーリー',
+  other: 'その他',
+};
+
+const identityLabels: Record<string, string> = {
+  gay: 'ゲイ',
+  lesbian: 'レズビアン',
+  bisexual: 'バイセクシュアル',
+  transgender: 'トランスジェンダー',
+  questioning: 'クエスチョニング',
+  other: 'その他',
+  ALL: 'すべて',
+};
+
+const SalonRoomCard: React.FC<SalonRoomCardProps> = ({ room, onClick }) => {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ja-JP', {
+      month: 'short',
+      day: 'numeric',
+    });
+  };
+
+  const getIdentityLabels = (identities: string[]) => {
+    if (identities.includes('ALL')) {
+      return 'すべて';
+    }
+    return identities
+      .map((id) => identityLabels[id] || id)
+      .slice(0, 3)
+      .join('、') + (identities.length > 3 ? '...' : '');
+  };
+
+  return (
+    <Card
+      className="group cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
+      onClick={onClick}
+    >
+      <CardContent className="p-5">
+        <div className="flex items-start justify-between mb-3">
+          <span className="text-xs font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-700">
+            {roomTypeLabels[room.room_type] || room.room_type}
+          </span>
+          <div className="flex items-center gap-1 text-gray-500">
+            {room.allow_anonymous ? (
+              <Unlock className="h-4 w-4" />
+            ) : (
+              <Lock className="h-4 w-4" />
+            )}
+          </div>
+        </div>
+
+        <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-gray-700">
+          {room.theme}
+        </h3>
+
+        <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+          {room.description}
+        </p>
+
+        <div className="flex items-center gap-2 mb-3 flex-wrap">
+          <span className="text-xs px-2 py-1 rounded bg-blue-50 text-blue-700">
+            対象: {getIdentityLabels(room.target_identities)}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between text-sm text-gray-500 pt-3 border-t border-gray-100">
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1">
+              <Users className="h-4 w-4" />
+              {room.participant_count}人
+            </span>
+            <span className="flex items-center gap-1">
+              <MessageCircle className="h-4 w-4" />
+            </span>
+          </div>
+          <span className="text-xs">
+            {formatDate(room.created_at)}
+          </span>
+        </div>
+
+        {room.creator_display_name && (
+          <div className="mt-2 text-xs text-gray-400">
+            作成者: {room.creator_display_name}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+export default SalonRoomCard;

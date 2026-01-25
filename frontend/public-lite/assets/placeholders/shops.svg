@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="shopsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#34d399;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#shopsGrad)"/>
+  <g transform="translate(200, 150)">
+    <rect x="-50" y="-20" width="100" height="70" rx="5" fill="white" opacity="0.3"/>
+    <path d="M -60,-20 L -50,-40 L 50,-40 L 60,-20 Z" fill="white" opacity="0.4"/>
+    <rect x="-30" y="10" width="25" height="35" fill="white" opacity="0.5"/>
+    <circle cx="-5" cy="25" r="3" fill="white" opacity="0.6"/>
+    <text x="0" y="90" font-family="sans-serif" font-size="24" fill="white" text-anchor="middle" opacity="0.8">お店</text>
+  </g>
+</svg>
