@@ -244,6 +244,9 @@ async def create_post(
         ref_id=db_post.id
     )
     db.add(point_event)
+    
+    current_user.carats = (current_user.carats or 0) + 5
+    
     db.commit()
     db.refresh(db_post)
     return db_post

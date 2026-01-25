@@ -46,11 +46,15 @@ async def get_user_stats(
         Reaction.reaction_type == 'like'
     ).scalar() or 0
     
-    # Calculate total carat points: 1pt per like + 5pt per post
-    total_points = likes_received + (posts_count * 5)
+    # Get actual carats from database
+    actual_carats = current_user.carats or 0
+    
+    # Calculate total carat points: 1pt per like + 5pt per post (for reference)
+    calculated_points = likes_received + (posts_count * 5)
     
     return {
         "posts_count": posts_count,
         "likes_received": likes_received,
-        "total_points": total_points
+        "total_points": actual_carats,
+        "calculated_points": calculated_points
     }
