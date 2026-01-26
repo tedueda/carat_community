@@ -7,17 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from app.routers import auth, users, profiles, posts, comments, reactions, follows, notifications, media, billing, matching, categories, ops, account, donation, salon, flea_market, jewelry, live_wedding, art_sales
-
-# Import courses separately to catch any errors
-try:
-    from app.routers import courses
-    print("✅ Successfully imported courses router")
-except Exception as e:
-    print(f"❌ Failed to import courses router: {e}")
-    import traceback
-    traceback.print_exc()
-    courses = None
+from app.routers import auth, users, profiles, posts, comments, reactions, follows, notifications, media, billing, matching, categories, ops, account, donation, salon, flea_market, jewelry, live_wedding, art_sales, courses
 from app.database import Base, engine, get_db
 import os
 from pathlib import Path
@@ -121,11 +111,7 @@ app.include_router(flea_market.router)
 app.include_router(jewelry.router)
 app.include_router(live_wedding.router)
 app.include_router(art_sales.router)
-if courses:
-    app.include_router(courses.router)
-    print("✅ Courses router registered")
-else:
-    print("⚠️ Courses router not available")
+app.include_router(courses.router)
 
 @app.on_event("startup")
 def on_startup():

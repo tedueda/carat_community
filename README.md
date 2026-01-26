@@ -220,5 +220,64 @@ carat_community/
 
 ---
 
-**最終更新**: 2026-01-24  
+## 現在の課題（2026-01-26）
+
+### 講座・レッスン機能のデプロイ問題
+
+**問題の概要:**
+- ローカル環境では講座機能が正常に動作
+- データベースには講座データが存在（1件確認済み）
+- App Runnerにデプロイすると `/api/courses` エンドポイントが404エラー
+- coursesルーターがApp Runnerで登録されていない
+
+**試した対策:**
+1. ✅ `backend/app/main.py` でcoursesルーターのインポートと登録を確認
+2. ✅ Dockerイメージに `courses.py` が含まれていることを確認
+3. ✅ 新しいイメージタグ（v2.0, v2.1）でECRにプッシュ
+4. ✅ App Runnerでイメージタグを変更して再デプロイ
+5. ❌ すべて失敗 - App Runnerのキャッシュ問題が深刻
+
+**データベース確認結果:**
+```sql
+-- 講座データ: 1件存在
+SELECT COUNT(*) FROM courses; -- 1
+SELECT COUNT(*) FROM course_images WHERE course_id = 1; -- 1
+SELECT COUNT(*) FROM course_videos WHERE course_id = 1; -- 2
+```
+
+**次回の対策案:**
+
+1. **App Runnerサービスの完全削除と再作成**
+   - 現在のサービス `rainbow-community-api` を削除
+   - 同じ設定で新規サービスを作成（キャッシュを完全にクリア）
+
+2. **AWS ECS Fargateへの移行**
+   - App Runnerのキャッシュ問題を回避
+   - より細かい制御が可能
+
+3. **ローカルでDockerイメージを実行してデバッグ**
+   ```bash
+   docker run --rm -p 8001:8000 \
+     -e DATABASE_URL="postgresql+psycopg2://..." \
+     192933325498.dkr.ecr.ap-northeast-1.amazonaws.com/rainbow-community-api:v2.1
+   ```
+   起動ログでcoursesルーターが正常に登録されるか確認
+
+4. **GitHub Actionsでの自動デプロイを再設定**
+   - `.github/workflows/ecr-push.yml` を確認
+   - 手動トリガーでデプロイを実行
+
+**関連ファイル:**
+- `backend/app/routers/courses.py` - 講座APIエンドポイント
+- `backend/app/main.py` - coursesルーター登録（10行目、114行目）
+- `DEPLOYMENT_ISSUE.md` - 詳細なデプロイ問題の記録
+- `APP_RUNNER_NEW_SERVICE_SETUP.md` - 新サービス作成手順
+
+**ECRイメージ:**
+- リポジトリ: `192933325498.dkr.ecr.ap-northeast-1.amazonaws.com/rainbow-community-api`
+- 最新タグ: `v2.1` (coursesルーター含む)
+
+---
+
+**最終更新**: 2026-01-26  
 **リポジトリ**: https://github.com/tedueda/carat_community
