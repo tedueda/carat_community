@@ -16,7 +16,7 @@ from sqlalchemy import text
 
 PORT = int(os.getenv("PORT", 8000))
 
-app = FastAPI(title="LGBTQ Community API", version="1.0.0")
+app = FastAPI(title="LGBTQ Community API", version="1.0.1")
 
 @app.on_event("startup")
 def run_migrations():
