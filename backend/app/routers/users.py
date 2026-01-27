@@ -1,11 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from pydantic import BaseModel
+from typing import Optional
 from app.database import get_db
 from app.models import User, Post
 from app.auth import get_current_active_user
 
 router = APIRouter(prefix="/api/users", tags=["users"])
+
+# Supported languages
+SUPPORTED_LANGUAGES = ["ja", "en", "ko", "es", "pt", "fr", "it", "de"]
+
+class LanguagePreference(BaseModel):
+    preferred_lang: str
 
 @router.get("/{user_id}")
 async def get_user_by_id(
@@ -24,6 +32,38 @@ async def get_user_by_id(
         "membership_type": user.membership_type,
         "carats": user.carats or 0,
         "created_at": user.created_at
+    }
+
+@router.get("/me/language")
+async def get_user_language(
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """Get user's preferred language"""
+    return {
+        "preferred_lang": current_user.preferred_lang or "ja"
+    }
+
+@router.put("/me/language")
+async def update_user_language(
+    language: LanguagePreference,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """Update user's preferred language"""
+    if language.preferred_lang not in SUPPORTED_LANGUAGES:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Unsupported language. Supported: {', '.join(SUPPORTED_LANGUAGES)}"
+        )
+    
+    current_user.preferred_lang = language.preferred_lang
+    db.commit()
+    db.refresh(current_user)
+    
+    return {
+        "preferred_lang": current_user.preferred_lang,
+        "message": "Language preference updated successfully"
     }
 
 @router.get("/me/stats")

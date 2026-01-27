@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { LanguageProvider } from './contexts/LanguageContext';
 import Header from './components/Header';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
@@ -251,9 +252,11 @@ function App() {
 
   return (
     <AuthProvider>
-      <Router basename={import.meta.env.BASE_URL}>
-        <AppContent />
-      </Router>
+      <LanguageProvider>
+        <Router basename={import.meta.env.BASE_URL}>
+          <AppContent />
+        </Router>
+      </LanguageProvider>
     </AuthProvider>
   );
 }

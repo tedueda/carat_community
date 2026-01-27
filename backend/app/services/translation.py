@@ -1,11 +1,11 @@
-"""Translation service for posts."""
+"""Translation service for posts, comments, and messages."""
 import os
 import logging
 from typing import Optional
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-from app.models import Post, PostTranslation
+from app.models import Post, PostTranslation, Comment, CommentTranslation, Message, MessageTranslation
 from app.services.translation_providers.base import TranslationProvider, TranslationResult
 from app.services.translation_providers.openai_provider import OpenAITranslationProvider
 from app.services.translation_providers.dummy_provider import DummyTranslationProvider
@@ -134,6 +134,151 @@ async def get_or_create_translation(
             
     except Exception as e:
         logger.error(f"Translation failed for post {post.id}: {e}")
+        db.rollback()
+        return None
+
+
+async def get_or_create_comment_translation(
+    db: Session,
+    comment: Comment,
+    target_lang: str
+) -> Optional[CommentTranslation]:
+    """
+    Get existing comment translation or create a new one.
+    
+    Args:
+        db: Database session
+        comment: The comment to translate
+        target_lang: Target language code
+        
+    Returns:
+        CommentTranslation object or None if translation failed
+    """
+    if target_lang not in SUPPORTED_LANGUAGES:
+        logger.warning(f"Unsupported target language: {target_lang}")
+        return None
+    
+    # Check if translation already exists (cache hit)
+    existing = db.query(CommentTranslation).filter(
+        CommentTranslation.comment_id == comment.id,
+        CommentTranslation.lang == target_lang
+    ).first()
+    
+    if existing:
+        logger.info(f"Cache hit: translation for comment {comment.id} to {target_lang}")
+        return existing
+    
+    # No existing translation, create one
+    logger.info(f"Cache miss: creating translation for comment {comment.id} to {target_lang}")
+    
+    provider = get_translation_provider()
+    
+    try:
+        result = await provider.translate(
+            text=comment.body,
+            target_lang=target_lang,
+            source_lang=None
+        )
+        
+        # Create translation record
+        translation = CommentTranslation(
+            comment_id=comment.id,
+            lang=target_lang,
+            translated_text=result.translated_text,
+            provider=result.provider,
+            error_code=result.error_code if not result.success else None
+        )
+        
+        try:
+            db.add(translation)
+            db.commit()
+            db.refresh(translation)
+            return translation
+        except IntegrityError:
+            # Another request already created this translation (race condition)
+            db.rollback()
+            logger.info(f"Race condition: translation already exists for comment {comment.id} to {target_lang}")
+            return db.query(CommentTranslation).filter(
+                CommentTranslation.comment_id == comment.id,
+                CommentTranslation.lang == target_lang
+            ).first()
+            
+    except Exception as e:
+        logger.error(f"Translation failed for comment {comment.id}: {e}")
+        db.rollback()
+        return None
+
+
+async def get_or_create_message_translation(
+    db: Session,
+    message: Message,
+    target_lang: str
+) -> Optional[MessageTranslation]:
+    """
+    Get existing message translation or create a new one.
+    
+    Args:
+        db: Database session
+        message: The message to translate
+        target_lang: Target language code
+        
+    Returns:
+        MessageTranslation object or None if translation failed
+    """
+    if target_lang not in SUPPORTED_LANGUAGES:
+        logger.warning(f"Unsupported target language: {target_lang}")
+        return None
+    
+    if not message.body:
+        return None
+    
+    # Check if translation already exists (cache hit)
+    existing = db.query(MessageTranslation).filter(
+        MessageTranslation.message_id == message.id,
+        MessageTranslation.lang == target_lang
+    ).first()
+    
+    if existing:
+        logger.info(f"Cache hit: translation for message {message.id} to {target_lang}")
+        return existing
+    
+    # No existing translation, create one
+    logger.info(f"Cache miss: creating translation for message {message.id} to {target_lang}")
+    
+    provider = get_translation_provider()
+    
+    try:
+        result = await provider.translate(
+            text=message.body,
+            target_lang=target_lang,
+            source_lang=None
+        )
+        
+        # Create translation record
+        translation = MessageTranslation(
+            message_id=message.id,
+            lang=target_lang,
+            translated_text=result.translated_text,
+            provider=result.provider,
+            error_code=result.error_code if not result.success else None
+        )
+        
+        try:
+            db.add(translation)
+            db.commit()
+            db.refresh(translation)
+            return translation
+        except IntegrityError:
+            # Another request already created this translation (race condition)
+            db.rollback()
+            logger.info(f"Race condition: translation already exists for message {message.id} to {target_lang}")
+            return db.query(MessageTranslation).filter(
+                MessageTranslation.message_id == message.id,
+                MessageTranslation.lang == target_lang
+            ).first()
+            
+    except Exception as e:
+        logger.error(f"Translation failed for message {message.id}: {e}")
         db.rollback()
         return None
 

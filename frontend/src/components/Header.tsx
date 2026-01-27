@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Home, ChevronDown, Menu, X, MessageCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import LanguageSelector from './common/LanguageSelector';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -75,6 +76,8 @@ const Header: React.FC = () => {
             <img src="/images/logo02.png" alt="Carat Logo" className="h-20 w-auto" />
           </Link>
           <div className="flex items-center gap-3">
+            {/* 言語セレクター（モバイル） */}
+            <LanguageSelector variant="compact" />
             {/* チャット通知アイコン（モバイル） */}
             {!isFreeUser && user && (
               <button
@@ -343,6 +346,8 @@ const Header: React.FC = () => {
 
             {/* Bottom Row - User Info & Auth */}
             <div className="flex items-center gap-4">
+              {/* 言語セレクター（デスクトップ） */}
+              <LanguageSelector variant="header" />
               {isFreeUser || !user ? (
                 <Link to="/login">
                   <Button className="bg-black hover:bg-gray-800 text-white text-sm px-6 py-2">
