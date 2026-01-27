@@ -1,7 +1,7 @@
 """Add post_translations table and original_lang column
 
 Revision ID: 20260127_translations
-Revises: 68253ac0121c
+Revises: add_jewelry_001
 Create Date: 2026-01-27
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '20260127_translations'
-down_revision = '68253ac0121c'
+down_revision = 'add_jewelry_001'
 branch_labels = None
 depends_on = None
 
