@@ -752,3 +752,62 @@ class Course(CourseBase):
     
     class Config:
         from_attributes = True
+
+
+# ===== Post Translation Schemas =====
+
+class PostTranslationBase(BaseModel):
+    lang: str
+    translated_title: Optional[str] = None
+    translated_text: str
+
+
+class PostTranslation(PostTranslationBase):
+    id: int
+    post_id: int
+    provider: str
+    error_code: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+
+class PostWithTranslation(BaseModel):
+    """Post response with translation information."""
+    id: int
+    user_id: int
+    title: Optional[str] = None
+    body: str
+    visibility: str
+    youtube_url: Optional[str] = None
+    media_id: Optional[int] = None
+    media_url: Optional[str] = None
+    media_urls: Optional[List[str]] = None
+    category: Optional[str] = None
+    subcategory: Optional[str] = None
+    post_type: str = "post"
+    slug: Optional[str] = None
+    status: str = "published"
+    og_image_url: Optional[str] = None
+    excerpt: Optional[str] = None
+    goal_amount: Optional[int] = 0
+    current_amount: Optional[int] = 0
+    deadline: Optional[date] = None
+    tourism_details: Optional[PostTourismDetails] = None
+    created_at: datetime
+    updated_at: datetime
+    like_count: Optional[int] = 0
+    comment_count: Optional[int] = 0
+    user_display_name: Optional[str] = None
+    # Translation fields
+    original_lang: Optional[str] = None
+    view_lang: str = "ja"
+    display_title: Optional[str] = None
+    display_text: str
+    has_translation: bool = False
+    is_translated: bool = False
+    
+    class Config:
+        from_attributes = True
