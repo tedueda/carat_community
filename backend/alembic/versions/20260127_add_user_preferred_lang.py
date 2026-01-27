@@ -1,7 +1,7 @@
 """Add preferred_lang to users and translation tables for comments/messages
 
 Revision ID: 20260127_user_lang
-Revises: 20260127_add_post_translations
+Revises: 20260127_translations
 Create Date: 2026-01-27
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '20260127_user_lang'
-down_revision = '20260127_add_post_translations'
+down_revision = '20260127_translations'
 branch_labels = None
 depends_on = None
 
