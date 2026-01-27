@@ -31,6 +31,16 @@ export interface Post {
   prefecture?: string;
   event_date?: string;
   fee?: string;
+  // Translation fields
+  original_lang?: string;
+}
+
+export interface PostWithTranslation extends Post {
+  view_lang: string;
+  display_title?: string;
+  display_text: string;
+  has_translation: boolean;
+  is_translated: boolean;
 }
 
 export interface Comment {

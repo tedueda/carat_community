@@ -218,6 +218,15 @@ async def create_post(
             counter += 1
         post_data['slug'] = slug
     
+    # Detect language of the post content
+    try:
+        from app.services.translation import detect_post_language
+        detected_lang = await detect_post_language(post.body, post.title)
+        post_data['original_lang'] = detected_lang
+    except Exception as e:
+        logging.getLogger(__name__).warning(f"Language detection failed: {e}")
+        post_data['original_lang'] = 'unknown'
+    
     db_post = Post(**post_data, user_id=current_user.id)
     db.add(db_post)
     db.flush()

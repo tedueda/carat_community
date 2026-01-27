@@ -199,6 +199,8 @@ carat_community/
 - `DATABASE_URL` - PostgreSQL接続文字列
 - `PORT` - サーバーポート（デフォルト: 8000）
 - `STRIPE_SECRET_KEY` - Stripe決済用
+- `OPENAI_API_KEY` - OpenAI APIキー（翻訳機能用）
+- `TRANSLATION_PROVIDER` - 翻訳プロバイダー（`openai` または `dummy`、デフォルト: `openai`）
 
 ### フロントエンド
 
@@ -217,6 +219,60 @@ carat_community/
 ## ライセンス
 
 現在検討中
+
+---
+
+## リアルタイム翻訳機能（2026-01-27 追加）
+
+### 概要
+
+投稿（post）の本文・タイトルを閲覧者の言語に自動翻訳して表示する機能です。
+
+### 対応言語
+
+- 日本語 (ja)
+- 英語 (en)
+- 韓国語 (ko)
+- スペイン語 (es)
+- ポルトガル語 (pt)
+- フランス語 (fr)
+- イタリア語 (it)
+- ドイツ語 (de)
+
+### 機能仕様
+
+1. **オンデマンド翻訳**: 初回閲覧時に翻訳を生成し、データベースにキャッシュ
+2. **原文/翻訳トグル**: ユーザーは原文と翻訳を切り替え可能
+3. **言語検出優先順位**:
+   - クエリパラメータ (`?lang=en`)
+   - ブラウザ言語 (Accept-Language)
+   - デフォルト: 日本語 (ja)
+
+### API エンドポイント
+
+- `GET /api/posts/{post_id}/translated?lang=en&mode=translated` - 翻訳付き投稿取得
+- `GET /api/posts/languages` - 対応言語一覧
+
+### 環境変数設定
+
+```bash
+# OpenAI APIキー（必須）
+export OPENAI_API_KEY="sk-..."
+
+# 翻訳プロバイダー（オプション、デフォルト: openai）
+export TRANSLATION_PROVIDER="openai"
+```
+
+### データベースマイグレーション
+
+```bash
+cd backend
+alembic upgrade head
+```
+
+これにより以下が作成されます:
+- `posts` テーブルに `original_lang` カラム追加
+- `post_translations` テーブル新規作成（翻訳キャッシュ用）
 
 ---
 

@@ -156,6 +156,8 @@ class Post(Base):
     goal_amount = Column(Integer, default=0)
     current_amount = Column(Integer, default=0)
     deadline = Column(Date, nullable=True)
+    # Translation fields
+    original_lang = Column(String(10), nullable=True, default="unknown")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
@@ -171,6 +173,7 @@ class Post(Base):
     media = relationship("MediaAsset")
     media_assets = relationship("MediaAsset", secondary="post_media", order_by="PostMedia.order_index")
     tourism_details = relationship("PostTourism", back_populates="post", uselist=False)
+    translations = relationship("PostTranslation", back_populates="post", cascade="all, delete-orphan")
 
 class Comment(Base):
     __tablename__ = "comments"
@@ -877,3 +880,25 @@ class CourseVideo(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     course = relationship("Course", back_populates="videos")
+
+
+# ===== Post Translation Models =====
+
+class PostTranslation(Base):
+    __tablename__ = "post_translations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    post_id = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"), nullable=False, index=True)
+    lang = Column(String(10), nullable=False, index=True)
+    translated_title = Column(String(200), nullable=True)
+    translated_text = Column(Text, nullable=False)
+    provider = Column(String(50), nullable=False, default="openai")
+    error_code = Column(String(50), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("post_id", "lang", name="uq_post_translation_lang"),
+    )
+
+    post = relationship("Post", back_populates="translations")

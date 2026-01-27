@@ -3,9 +3,12 @@ import { X, MessageCircle, Send, Camera, ChevronLeft, ChevronRight, Maximize2, M
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { useAuth } from '../contexts/AuthContext';
-import { Post, User, Comment } from '../types/Post';
+import { Post, User, Comment, PostWithTranslation } from '../types/Post';
 import LikeButton from './common/LikeButton';
 import { compressImage } from '../utils/imageCompression';
+import TranslationToggle from './common/TranslationToggle';
+import { fetchPostWithTranslation } from '../services/translationService';
+import { getPreferredLanguage } from '../utils/languageUtils';
 
 interface PostDetailModalProps {
   post: Post;
@@ -45,9 +48,16 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
   const [removeCurrentImage, setRemoveCurrentImage] = useState<boolean>(false);
   const [isUploadingImage, setIsUploadingImage] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+    const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  
+    // Translation state
+    const [translatedPost, setTranslatedPost] = useState<PostWithTranslation | null>(null);
+    const [isTranslating, setIsTranslating] = useState<boolean>(false);
+    const [translationError, setTranslationError] = useState<string | null>(null);
+    const [showTranslated, setShowTranslated] = useState<boolean>(true);
+    const [viewLang, setViewLang] = useState<string>(getPreferredLanguage());
 
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
+    const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
 
   const formatNumber = (num: number): string => {
     if (num >= 1000) {
@@ -120,11 +130,59 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
     return null;
   };
 
-  const fetchComments = async () => {
-    if (!post) return;
+    // Fetch translation for the post
+    const fetchTranslation = async () => {
+      if (!post) return;
     
-    try {
-      const response = await fetch(`${API_URL}/api/posts/${post.id}/comments`, {
+      const userLang = getPreferredLanguage();
+      setViewLang(userLang);
+    
+      // Skip translation if original language matches user's preferred language
+      if (post.original_lang === userLang) {
+        setTranslatedPost(null);
+        setShowTranslated(false);
+        return;
+      }
+    
+      try {
+        setIsTranslating(true);
+        setTranslationError(null);
+        const translated = await fetchPostWithTranslation(post.id, userLang, 'translated');
+        setTranslatedPost(translated);
+        setShowTranslated(translated.is_translated);
+        console.log('[PostDetailModal] Translation fetched:', {
+          original_lang: translated.original_lang,
+          view_lang: translated.view_lang,
+          is_translated: translated.is_translated,
+          has_translation: translated.has_translation
+        });
+      } catch (error) {
+        console.error('[PostDetailModal] Translation fetch error:', error);
+        setTranslationError('翻訳の取得に失敗しました');
+        setShowTranslated(false);
+      } finally {
+        setIsTranslating(false);
+      }
+    };
+
+    const handleTranslationToggle = () => {
+      setShowTranslated(!showTranslated);
+    };
+
+    // Get display content (translated or original)
+    const displayTitle = showTranslated && translatedPost?.is_translated 
+      ? translatedPost.display_title 
+      : post.title;
+  
+    const displayBody = showTranslated && translatedPost?.is_translated 
+      ? translatedPost.display_text 
+      : post.body;
+
+    const fetchComments = async () => {
+      if (!post) return;
+    
+      try {
+        const response = await fetch(`${API_URL}/api/posts/${post.id}/comments`, {
         headers: token ? {
           'Authorization': `Bearer ${token}`,
         } : {},
@@ -235,26 +293,30 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
   // const nextImage = () => {};
   // const prevImage = () => {};
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      fetchComments();
-      setIsLiked(post.is_liked || false);
-      setLikeCount(post.like_count || 0);
-      setShowFullText(false);
-      setIsEditing(false);
-      setIsDeleting(false);
-      setEditTitle(post.title || '');
-      setEditBody(post.body || '');
-      setNewImageFile(null);
-      setNewImagePreview(null);
-      setRemoveCurrentImage(false);
-      setUploadError(null);
-      console.debug('[PostDetailModal] open', {
-        currentUserId: currentUser?.id,
-        postUserId: post.user_id,
-        isAnonymous
-      });
+    useEffect(() => {
+      if (isOpen) {
+        document.body.style.overflow = 'hidden';
+        fetchComments();
+        fetchTranslation();
+        setIsLiked(post.is_liked || false);
+        setLikeCount(post.like_count || 0);
+        setShowFullText(false);
+        setIsEditing(false);
+        setIsDeleting(false);
+        setEditTitle(post.title || '');
+        setEditBody(post.body || '');
+        setNewImageFile(null);
+        setNewImagePreview(null);
+        setRemoveCurrentImage(false);
+        setUploadError(null);
+        // Reset translation state
+        setTranslatedPost(null);
+        setTranslationError(null);
+        console.debug('[PostDetailModal] open', {
+          currentUserId: currentUser?.id,
+          postUserId: post.user_id,
+          isAnonymous
+        });
       
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
@@ -739,13 +801,28 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                 placeholder="タイトル"
                 aria-label="タイトル編集"
               />
-            ) : (
-              post.title && (
-                <h2 className="text-xl font-bold text-gray-900 mb-3">{post.title}</h2>
-              )
-            )}
+                        ) : (
+                          displayTitle && (
+                            <h2 className="text-xl font-bold text-gray-900 mb-3">{displayTitle}</h2>
+                          )
+                        )}
 
-            {isEditing && (
+                        {/* Translation toggle */}
+                        {!isEditing && (
+                          <div className="mb-3">
+                            <TranslationToggle
+                              isTranslated={showTranslated && (translatedPost?.is_translated || false)}
+                              isLoading={isTranslating}
+                              hasTranslation={translatedPost?.has_translation || false}
+                              originalLang={translatedPost?.original_lang || post.original_lang}
+                              viewLang={viewLang}
+                              onToggle={handleTranslationToggle}
+                              error={translationError}
+                            />
+                          </div>
+                        )}
+
+                        {isEditing && (
               <div className="mb-4 space-y-2">
                 <div className="text-sm font-medium text-gray-700">画像</div>
                 <div className="flex flex-wrap items-center gap-3">
@@ -830,23 +907,23 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                   rows={6}
                   aria-label="本文編集"
                 />
-              ) : (
-                <>
-                  {showFullText || post.body.length <= 500 
-                    ? post.body 
-                    : `${post.body.substring(0, 500)}...`
-                  }
-                  {post.body.length > 500 && (
-                    <Button
-                      variant="link"
-                      className="p-0 h-auto text-pink-600 hover:text-pink-700 ml-2"
-                      onClick={() => setShowFullText(!showFullText)}
-                    >
-                      {showFullText ? '折りたたむ' : 'もっと見る'}
-                    </Button>
-                  )}
-                </>
-              )}
+                            ) : (
+                              <>
+                                {showFullText || displayBody.length <= 500 
+                                  ? displayBody 
+                                  : `${displayBody.substring(0, 500)}...`
+                                }
+                                {displayBody.length > 500 && (
+                                  <Button
+                                    variant="link"
+                                    className="p-0 h-auto text-pink-600 hover:text-pink-700 ml-2"
+                                    onClick={() => setShowFullText(!showFullText)}
+                                  >
+                                    {showFullText ? '折りたたむ' : 'もっと見る'}
+                                  </Button>
+                                )}
+                              </>
+                            )}
             </div>
 
             {!isEditing && linkUrlFromBody && getLinkHostname(linkUrlFromBody) && (
