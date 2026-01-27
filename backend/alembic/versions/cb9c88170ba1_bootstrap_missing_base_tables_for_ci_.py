@@ -117,6 +117,19 @@ def upgrade():
             sa.Column("read_at", sa.DateTime(timezone=True), nullable=True),
         )
         op.execute("CREATE INDEX IF NOT EXISTS ix_messages_id ON messages (id)")
+    
+    if "comments" not in inspector.get_table_names():
+        op.create_table(
+            "comments",
+            sa.Column("id", sa.Integer, primary_key=True),
+            sa.Column("post_id", sa.Integer, sa.ForeignKey("posts.id"), nullable=False),
+            sa.Column("user_id", sa.Integer, sa.ForeignKey("users.id"), nullable=False),
+            sa.Column("body", sa.Text, nullable=False),
+            sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=True),
+            sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=True),
+        )
+        op.execute("CREATE INDEX IF NOT EXISTS ix_comments_id ON comments (id)")
+        op.execute("CREATE INDEX IF NOT EXISTS ix_comments_post_id ON comments (post_id)")
 
 
 def downgrade():

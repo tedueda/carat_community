@@ -19,6 +19,7 @@ class User(Base):
     two_factor_enabled = Column(Boolean, default=False)
     two_factor_secret = Column(String(255), nullable=True)
     carats = Column(Integer, default=0, nullable=False)
+    preferred_lang = Column(String(10), nullable=True, default="ja")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
@@ -189,6 +190,7 @@ class Comment(Base):
     post = relationship("Post", back_populates="comments")
     user = relationship("User", back_populates="comments")
     parent = relationship("Comment", remote_side=[id])
+    translations = relationship("CommentTranslation", back_populates="comment", cascade="all, delete-orphan")
 
 class Tag(Base):
     __tablename__ = "tags"
@@ -484,6 +486,8 @@ class Message(Base):
     body = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     read_at = Column(DateTime(timezone=True))
+    
+    translations = relationship("MessageTranslation", back_populates="message", cascade="all, delete-orphan")
 
 
 class ChatRequest(Base):
@@ -902,3 +906,41 @@ class PostTranslation(Base):
     )
 
     post = relationship("Post", back_populates="translations")
+
+
+class CommentTranslation(Base):
+    __tablename__ = "comment_translations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    comment_id = Column(Integer, ForeignKey("comments.id", ondelete="CASCADE"), nullable=False, index=True)
+    lang = Column(String(10), nullable=False, index=True)
+    translated_text = Column(Text, nullable=False)
+    provider = Column(String(50), nullable=False, default="openai")
+    error_code = Column(String(50), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("comment_id", "lang", name="uq_comment_translation_lang"),
+    )
+
+    comment = relationship("Comment", back_populates="translations")
+
+
+class MessageTranslation(Base):
+    __tablename__ = "message_translations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    message_id = Column(Integer, ForeignKey("messages.id", ondelete="CASCADE"), nullable=False, index=True)
+    lang = Column(String(10), nullable=False, index=True)
+    translated_text = Column(Text, nullable=False)
+    provider = Column(String(50), nullable=False, default="openai")
+    error_code = Column(String(50), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("message_id", "lang", name="uq_message_translation_lang"),
+    )
+
+    message = relationship("Message", back_populates="translations")
