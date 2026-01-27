@@ -220,64 +220,49 @@ carat_community/
 
 ---
 
-## 現在の課題（2026-01-26）
+## 解決済みの課題
 
-### 講座・レッスン機能のデプロイ問題
+### 講座・レッスン機能のデプロイ問題（2026-01-27 解決）
 
 **問題の概要:**
-- ローカル環境では講座機能が正常に動作
 - データベースには講座データが存在（1件確認済み）
 - App Runnerにデプロイすると `/api/courses` エンドポイントが404エラー
-- coursesルーターがApp Runnerで登録されていない
+- coursesルーターがApp Runnerで登録されていなかった
 
-**試した対策:**
-1. ✅ `backend/app/main.py` でcoursesルーターのインポートと登録を確認
-2. ✅ Dockerイメージに `courses.py` が含まれていることを確認
-3. ✅ 新しいイメージタグ（v2.0, v2.1）でECRにプッシュ
-4. ✅ App Runnerでイメージタグを変更して再デプロイ
-5. ❌ すべて失敗 - App Runnerのキャッシュ問題が深刻
+**根本原因:**
+1. GitHub ActionsのAWS認証がOIDC方式で設定されていたが、IAMロールが存在しなかった
+2. ECR Pushワークフローが `prod-v14` タグのみでプッシュしていたが、App Runnerは `latest` タグを参照していた
 
-**データベース確認結果:**
-```sql
--- 講座データ: 1件存在
-SELECT COUNT(*) FROM courses; -- 1
-SELECT COUNT(*) FROM course_images WHERE course_id = 1; -- 1
-SELECT COUNT(*) FROM course_videos WHERE course_id = 1; -- 2
-```
+**解決策:**
+1. **PR #2**: GitHub ActionsのAWS認証をOIDCからアクセスキー方式に変更
+   - `.github/workflows/ecr-push.yml` と `.github/workflows/deploy.yml` を修正
+   - GitHubリポジトリに `AWS_ACCESS_KEY_ID` と `AWS_SECRET_ACCESS_KEY` シークレットを追加
 
-**次回の対策案:**
-
-1. **App Runnerサービスの完全削除と再作成**
-   - 現在のサービス `rainbow-community-api` を削除
-   - 同じ設定で新規サービスを作成（キャッシュを完全にクリア）
-
-2. **AWS ECS Fargateへの移行**
-   - App Runnerのキャッシュ問題を回避
-   - より細かい制御が可能
-
-3. **ローカルでDockerイメージを実行してデバッグ**
-   ```bash
-   docker run --rm -p 8001:8000 \
-     -e DATABASE_URL="postgresql+psycopg2://..." \
-     192933325498.dkr.ecr.ap-northeast-1.amazonaws.com/rainbow-community-api:v2.1
+2. **PR #3**: ECR Pushワークフローで `latest` タグも同時にプッシュするよう修正
+   ```yaml
+   tags: |
+     ${{ steps.ecr-url.outputs.ecr_url }}:${{ inputs.tag || 'prod-v14' }}
+     ${{ steps.ecr-url.outputs.ecr_url }}:latest
    ```
-   起動ログでcoursesルーターが正常に登録されるか確認
 
-4. **GitHub Actionsでの自動デプロイを再設定**
-   - `.github/workflows/ecr-push.yml` を確認
-   - 手動トリガーでデプロイを実行
+3. App Runnerを手動で再デプロイ
 
-**関連ファイル:**
-- `backend/app/routers/courses.py` - 講座APIエンドポイント
-- `backend/app/main.py` - coursesルーター登録（10行目、114行目）
-- `DEPLOYMENT_ISSUE.md` - 詳細なデプロイ問題の記録
-- `APP_RUNNER_NEW_SERVICE_SETUP.md` - 新サービス作成手順
+**結果:**
+- `/api/courses` エンドポイントが正常に動作
+- フロントエンドで「スタジオQクリエイター総合塾 AIビジネス講座」が表示されることを確認
+- https://carat-rainbow-community.netlify.app/business?tab=courses
 
-**ECRイメージ:**
-- リポジトリ: `192933325498.dkr.ecr.ap-northeast-1.amazonaws.com/rainbow-community-api`
-- 最新タグ: `v2.1` (coursesルーター含む)
+**今後のデプロイ手順:**
+1. コードをmainブランチにマージ
+2. GitHub Actionsの「ECR Push」ワークフローを手動実行（または自動トリガー）
+3. App Runnerコンソールで手動デプロイ（デプロイ方法が「手動」に設定されているため）
+
+**関連PR:**
+- https://github.com/tedueda/carat_community/pull/1 - App Runner再デプロイ強制
+- https://github.com/tedueda/carat_community/pull/2 - AWS認証修正
+- https://github.com/tedueda/carat_community/pull/3 - ECR latestタグ追加
 
 ---
 
-**最終更新**: 2026-01-26  
+**最終更新**: 2026-01-27  
 **リポジトリ**: https://github.com/tedueda/carat_community
