@@ -34,7 +34,14 @@ class OpenAITranslationProvider(TranslationProvider):
         if self._client is None:
             try:
                 from openai import AsyncOpenAI
-                self._client = AsyncOpenAI(api_key=self.api_key)
+                import httpx
+                # Set explicit timeout to avoid connection issues
+                timeout = httpx.Timeout(60.0, connect=30.0)
+                self._client = AsyncOpenAI(
+                    api_key=self.api_key,
+                    timeout=timeout
+                )
+                logger.info(f"OpenAI client initialized with API key: {self.api_key[:10]}..." if self.api_key else "No API key")
             except ImportError:
                 logger.error("OpenAI package not installed")
                 raise
