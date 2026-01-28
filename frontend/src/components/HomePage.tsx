@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, MessageCircle, Gem as DiamondIcon, Lock } from 'lucide-react';
 import { Button } from './ui/button';
@@ -127,6 +128,7 @@ const dummyUsers: { [key: number]: User } = {
 
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
   const [posts, setPosts] = useState<Post[]>([]);
   const [categoryPosts, setCategoryPosts] = useState<{ [key: string]: Post[] }>({});
   const [newsArticles, setNewsArticles] = useState<any[]>([]);
@@ -167,19 +169,21 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const fetchCategoryPosts = async () => {
+  const fetchCategoryPosts = async (lang?: string) => {
     try {
       const headers: any = {};
       if (token && !isAnonymous) {
         headers['Authorization'] = `Bearer ${token}`;
       }
       
-      // 並列処理で全カテゴリのデータを同時取得
+      const targetLang = lang || currentLanguage;
+      
+      // 並列処理で全カテゴリのデータを同時取得（翻訳エンドポイント使用）
       const categoryPromises = boardCategories.map(async (cat) => {
         if (cat.categories) {
           // 複数カテゴリを統合（食レポ・お店）
           const subCatPromises = cat.categories.map(subCat =>
-            fetch(`${API_URL}/api/posts/?category=${subCat}&limit=8`, { headers })
+            fetch(`${API_URL}/api/translations/posts?category=${subCat}&limit=8&lang=${targetLang}`, { headers })
               .then(res => res.ok ? res.json() : [])
               .catch(() => [])
           );
@@ -189,8 +193,8 @@ const HomePage: React.FC = () => {
           combinedPosts.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
           return { key: cat.key, posts: combinedPosts.slice(0, 4) };
         } else {
-          // 単一カテゴリ
-          const posts = await fetch(`${API_URL}/api/posts/?category=${cat.key}&limit=4`, { headers })
+          // 単一カテゴリ（翻訳エンドポイント使用）
+          const posts = await fetch(`${API_URL}/api/translations/posts?category=${cat.key}&limit=4&lang=${targetLang}`, { headers })
             .then(res => res.ok ? res.json() : [])
             .catch(() => []);
           return { key: cat.key, posts };
@@ -286,8 +290,13 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     fetchPosts();
     fetchNews();
-    fetchCategoryPosts();
+    fetchCategoryPosts(currentLanguage);
   }, [user, isAnonymous]);
+
+  // Re-fetch category posts when language changes
+  useEffect(() => {
+    fetchCategoryPosts(currentLanguage);
+  }, [currentLanguage]);
 
   useEffect(() => {
     const slideInterval = setInterval(() => {
@@ -551,12 +560,12 @@ const HomePage: React.FC = () => {
                         {new Date(post.created_at).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' })}
                       </span>
                     </div>
-                    {post.title && (
+                    {(post.display_title || post.title) && (
                       <h4 className="font-serif font-semibold leading-snug text-slate-900 mb-2 group-hover:gold-accent line-clamp-2">
-                        {post.title}
+                        {post.display_title || post.title}
                       </h4>
                     )}
-                    <p className="text-sm text-slate-600 line-clamp-2">{post.body}</p>
+                    <p className="text-sm text-slate-600 line-clamp-2">{post.display_text || post.body}</p>
                     <div className="flex items-center justify-between text-sm mt-3">
                       <div className="flex items-center gap-3 text-slate-500">
                         <span className="flex items-center gap-1">
