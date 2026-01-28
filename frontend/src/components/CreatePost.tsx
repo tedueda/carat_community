@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlusCircle, Music, MessageSquare, Store, MapPin, Film, FileText, Palette, Upload, X, Lock } from 'lucide-react';
 
 const CreatePost: React.FC = () => {
+  const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [visibility, setVisibility] = useState('public');
@@ -128,31 +130,31 @@ const CreatePost: React.FC = () => {
     setError('');
 
     if (!body.trim()) {
-      setError('投稿内容は必須です');
+      setError(t('post.bodyRequired'));
       setIsLoading(false);
       return;
     }
 
     if (category === 'music' && youtubeUrl && !extractYouTubeVideoId(youtubeUrl)) {
-      setError('有効なYouTube URLを入力してください');
+      setError(t('post.invalidYoutubeUrl'));
       setIsLoading(false);
       return;
     }
 
     if (images.length > 5) {
-      setError('画像は5枚まで選択できます');
+      setError(t('post.maxImagesError'));
       setIsLoading(false);
       return;
     }
 
     for (const image of images) {
       if (image.size > 10 * 1024 * 1024) {
-        setError('画像ファイルは10MB以下にしてください');
+        setError(t('post.imageTooLarge'));
         setIsLoading(false);
         return;
       }
       if (!image.type.startsWith('image/')) {
-        setError('画像ファイルのみアップロード可能です');
+        setError(t('post.imageOnlyError'));
         setIsLoading(false);
         return;
       }
@@ -179,7 +181,7 @@ const CreatePost: React.FC = () => {
         } else {
           const errText = await uploadResponse.text().catch(() => '');
           console.error('Image upload failed', uploadResponse.status, errText);
-          setError(`画像アップロードに失敗しました (status ${uploadResponse.status})`);
+          setError(t('post.uploadFailed', { status: uploadResponse.status }));
           setIsLoading(false);
           return;
         }
@@ -233,11 +235,11 @@ const CreatePost: React.FC = () => {
         }
       } else {
         const errorData = await response.json();
-        setError(errorData.detail || '投稿の作成に失敗しました');
+        setError(errorData.detail || t('post.createFailed'));
       }
     } catch (error) {
       console.error('Error creating post:', error);
-      setError('投稿の作成に失敗しました。もう一度お試しください。');
+      setError(t('post.createFailedRetry'));
     } finally {
       setIsLoading(false);
     }
@@ -256,29 +258,29 @@ const CreatePost: React.FC = () => {
         <Card className="max-w-md w-full">
           <CardContent className="p-6 text-center">
             <Lock className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-            <h2 className="text-xl font-semibold mb-2">会員登録が必要です</h2>
+            <h2 className="text-xl font-semibold mb-2">{t('membership.registrationRequired')}</h2>
             <p className="text-gray-600 mb-4">
-              投稿を作成するには会員登録が必要です。<br />
-              有料会員になると投稿できるようになります。
+              {t('membership.postRequiresMembership')}<br />
+              {t('membership.paidMemberCanPost')}
             </p>
             <div className="flex flex-col gap-3">
               <Button 
                 onClick={() => navigate('/register')}
                 className="bg-black hover:bg-gray-800"
               >
-                会員登録（月額1,000円）
+                {t('membership.registerMonthly')}
               </Button>
               <Button 
                 onClick={() => navigate('/login')}
                 variant="outline"
               >
-                すでにアカウントをお持ちの方
+                {t('auth.alreadyHaveAccount')}
               </Button>
               <Button 
                 onClick={() => navigate('/feed')}
                 variant="ghost"
               >
-                ホームに戻る
+                {t('common.backToHome')}
               </Button>
             </div>
           </CardContent>
@@ -296,46 +298,46 @@ const CreatePost: React.FC = () => {
             <div className="bg-gradient-to-r from-amber-400 to-yellow-500 p-3 rounded-full w-fit mx-auto mb-4">
               <Lock className="h-8 w-8 text-white" />
             </div>
-            <h2 className="text-xl font-semibold mb-2">有料会員限定機能です</h2>
+            <h2 className="text-xl font-semibold mb-2">{t('membership.premiumOnly')}</h2>
             <p className="text-gray-600 mb-4">
-              投稿を作成するには有料会員への登録が必要です。
+              {t('membership.postRequiresPremium')}
             </p>
             <div className="bg-gray-50 rounded-lg p-4 mb-4 text-left">
-              <h3 className="font-semibold text-gray-900 mb-2">有料会員特典</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">{t('membership.premiumBenefits')}</h3>
               <ul className="text-sm text-gray-600 space-y-1">
                 <li className="flex items-center gap-2">
                   <span className="text-green-500">✓</span>
-                  すべてのカテゴリへの投稿
+                  {t('membership.benefitPostAll')}
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="text-green-500">✓</span>
-                  会員マッチング機能
+                  {t('membership.benefitMatching')}
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="text-green-500">✓</span>
-                  会員サロン（チャットルーム）
+                  {t('membership.benefitSalon')}
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="text-green-500">✓</span>
-                  寄付金募集・商品販売
+                  {t('membership.benefitDonation')}
                 </li>
               </ul>
             </div>
             <p className="text-xs text-gray-500 mb-4">
-              月額1,000円 ・ いつでも解約可能
+              {t('membership.monthlyPrice')}
             </p>
             <div className="flex flex-col gap-3">
               <Button 
                 onClick={() => navigate('/register')}
                 className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600"
               >
-                有料会員に登録
+                {t('membership.registerPremium')}
               </Button>
               <Button 
                 onClick={() => navigate('/feed')}
                 variant="ghost"
               >
-                ホームに戻る
+                {t('common.backToHome')}
               </Button>
             </div>
           </CardContent>

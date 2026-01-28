@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Eye, EyeOff } from 'lucide-react';
 
 const LoginForm: React.FC = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
@@ -37,7 +39,7 @@ const LoginForm: React.FC = () => {
     if (success) {
       navigate('/feed');
     } else {
-      setError('メールアドレスまたはパスワードが正しくありません');
+      setError(t('auth.loginFailed'));
     }
     
     setIsLoading(false);
@@ -50,15 +52,15 @@ const LoginForm: React.FC = () => {
           <div className="flex justify-center">
             <img src="/images/logo02.png" alt="Carat Logo" className="h-16 w-auto" />
           </div>
-          <CardTitle className="text-3xl font-bold text-black">会員ログイン</CardTitle>
+          <CardTitle className="text-3xl font-bold text-black">{t('common.login')}</CardTitle>
           <CardDescription className="text-gray-500">
-            会員アカウントでログインして全機能をご利用ください
+            {t('auth.loginDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-black font-medium">メールアドレス</Label>
+              <Label htmlFor="email" className="text-black font-medium">{t('auth.email')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -69,7 +71,7 @@ const LoginForm: React.FC = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-black font-medium">パスワード</Label>
+              <Label htmlFor="password" className="text-black font-medium">{t('auth.password')}</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -100,7 +102,7 @@ const LoginForm: React.FC = () => {
                 className="rounded border-gray-300 text-black focus:ring-black"
               />
               <Label htmlFor="rememberMe" className="text-sm text-gray-700 cursor-pointer">
-                ログイン状態を保持する（7日間）
+                {t('auth.rememberMe')}
               </Label>
             </div>
             <Button 
@@ -108,14 +110,14 @@ const LoginForm: React.FC = () => {
               className="w-full bg-black hover:bg-gray-800 text-white h-12 text-base font-medium"
               disabled={isLoading}
             >
-              {isLoading ? 'ログイン中...' : 'ログイン'}
+              {isLoading ? t('common.loading') : t('common.login')}
             </Button>
           </form>
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              会員でない方は、{' '}
+              {t('auth.dontHaveAccount')}{' '}
               <Link to="/register" className="text-purple-600 hover:text-purple-500 font-medium underline">
-                こちらから新規会員登録
+                {t('common.register')}
               </Link>
             </p>
           </div>
