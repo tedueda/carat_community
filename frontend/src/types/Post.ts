@@ -33,6 +33,11 @@ export interface Post {
   fee?: string;
   // Translation fields
   original_lang?: string;
+  display_title?: string;
+  display_text?: string;
+  is_translated?: boolean;
+  has_translation?: boolean;
+  view_lang?: string;
 }
 
 export interface PostWithTranslation extends Post {
