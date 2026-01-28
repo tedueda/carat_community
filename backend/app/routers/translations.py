@@ -123,7 +123,7 @@ async def get_supported_languages():
     }
 
 
-@router.get("/posts/translated")
+@router.get("/translations/posts")
 async def get_posts_with_translation(
     lang: Optional[str] = Query(None, description="Target language code (ja, en, ko, es, pt, fr, it, de)"),
     category: Optional[str] = Query(None, description="Filter by category"),

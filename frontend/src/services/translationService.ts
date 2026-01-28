@@ -70,7 +70,7 @@ export async function fetchPostsWithTranslation(
 ): Promise<PostWithTranslation[]> {
   const targetLang = lang || getPreferredLanguage();
   
-  const url = new URL(`${API_BASE_URL}/api/posts/translated`);
+  const url = new URL(`${API_BASE_URL}/api/translations/posts`);
   url.searchParams.set('lang', targetLang);
   if (category) {
     url.searchParams.set('category', category);
