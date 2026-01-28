@@ -1,4 +1,87 @@
 {
+  "hero": {
+    "messages": [
+      {
+        "main": "Drücke dich aus und\ntriff neue Freunde",
+        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
+      },
+      {
+        "main": "Eine sichere Community, in der\ndu dich ausdrücken kannst",
+        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
+      },
+      {
+        "main": "Ein Raum, um sich mit\nvertrauenswürdigen Begleitern zu verbinden",
+        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
+      },
+      {
+        "main": "Die einzige Seite, die\ngenderfreie Lebensstile unterstützt",
+        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
+      },
+      {
+        "main": "Du bist nicht allein.\nEin Ort, um du selbst zu sein",
+        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
+      },
+      {
+        "main": "Eine Community, in der Freunde\ndeine Talente anerkennen",
+        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
+      },
+      {
+        "main": "Ein hochwertiger Community-Raum\nmit gleichgesinnten Freunden",
+        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
+      },
+      {
+        "main": "Lass dein \"Carat\" auf einer\nleeren Leinwand erstrahlen",
+        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
+      }
+    ]
+  },
+  "homepage": {
+    "specialMenu": {
+      "matching": {
+        "title": "Mitglieder-Matching",
+        "description": "Ein sicherer Matching-Service, um deinen idealen Partner zu treffen"
+      },
+      "salon": {
+        "title": "Mitglieder-Salon",
+        "description": "Spezialisierter Chat-Salon nur für Mitglieder"
+      },
+      "business": {
+        "title": "Business",
+        "description": "Flohmarkt, Kunstverkauf, Kurse, Live-Streaming"
+      }
+    },
+    "categories": {
+      "music": {
+        "title": "Musik",
+        "desc": "Teile deine Lieblingslieder und deine eigenen Musikkreationen!"
+      },
+      "art": {
+        "title": "Kunst & Video",
+        "desc": "Zeige Illustrationen, Fotos und Videoarbeiten, um die Kunstwelt zu erweitern!"
+      },
+      "comics": {
+        "title": "Subkultur",
+        "desc": "Teile Rezensionen und Meinungen zu Filmen, Anime, Spielen und Romanen!"
+      },
+      "food_shops": {
+        "title": "Essen & Geschäfte & Konzertsäle",
+        "desc": "Stelle leckeres Essen und LGBTQ-freundliche Geschäfte vor!"
+      },
+      "tourism": {
+        "title": "Tourismus",
+        "desc": "Teile empfohlene Reiseziele und Sehenswürdigkeiten!"
+      },
+      "board": {
+        "title": "Board",
+        "desc": "Poste frei über Sorgen, Plaudereien und alltägliche Themen!"
+      }
+    },
+    "loadingContent": "Inhalt wird geladen...",
+    "viewAll": "Alle anzeigen",
+    "latestNews": "Neueste Nachrichten",
+    "premiumFeature": "Premium-Funktion",
+    "loginRequired": "Anmeldung erforderlich"
+  },
   "common": {
     "home": "Startseite",
     "login": "Anmelden",

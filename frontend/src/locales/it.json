@@ -1,4 +1,87 @@
 {
+  "hero": {
+    "messages": [
+      {
+        "main": "Esprimi te stesso e\nincontra nuovi amici",
+        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
+      },
+      {
+        "main": "Una comunità sicura dove\npuoi esprimerti",
+        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
+      },
+      {
+        "main": "Uno spazio per connettersi con\ncompagni fidati",
+        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
+      },
+      {
+        "main": "L'unico sito che supporta\nstili di vita gender-free",
+        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
+      },
+      {
+        "main": "Non sei solo.\nUn posto per essere te stesso",
+        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
+      },
+      {
+        "main": "Una comunità dove gli amici\nriconoscono i tuoi talenti",
+        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
+      },
+      {
+        "main": "Uno spazio comunitario di qualità\ncon amici che la pensano come te",
+        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
+      },
+      {
+        "main": "Lascia che il tuo \"Carat\" brilli\nsu una tela bianca",
+        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
+      }
+    ]
+  },
+  "homepage": {
+    "specialMenu": {
+      "matching": {
+        "title": "Matching Membri",
+        "description": "Un servizio di matching sicuro per incontrare il partner ideale"
+      },
+      "salon": {
+        "title": "Salone Membri",
+        "description": "Salone di chat specializzato solo per membri"
+      },
+      "business": {
+        "title": "Business",
+        "description": "Mercatino, vendita opere, corsi, streaming dal vivo"
+      }
+    },
+    "categories": {
+      "music": {
+        "title": "Musica",
+        "desc": "Condividi le tue canzoni preferite e le tue creazioni musicali!"
+      },
+      "art": {
+        "title": "Arte e Video",
+        "desc": "Mostra illustrazioni, foto e opere video per espandere il mondo dell'arte!"
+      },
+      "comics": {
+        "title": "Sottocultura",
+        "desc": "Condividi recensioni e opinioni su film, anime, giochi e romanzi!"
+      },
+      "food_shops": {
+        "title": "Cibo e Negozi e Sale Concerti",
+        "desc": "Presenta cibo delizioso e negozi LGBTQ-friendly!"
+      },
+      "tourism": {
+        "title": "Turismo",
+        "desc": "Condividi destinazioni di viaggio e luoghi turistici consigliati!"
+      },
+      "board": {
+        "title": "Bacheca",
+        "desc": "Pubblica liberamente su preoccupazioni, chiacchiere e argomenti quotidiani!"
+      }
+    },
+    "loadingContent": "Caricamento contenuto...",
+    "viewAll": "Vedi tutto",
+    "latestNews": "Ultime Notizie",
+    "premiumFeature": "Funzione Premium",
+    "loginRequired": "Login richiesto"
+  },
   "common": {
     "home": "Home",
     "login": "Accedi",
