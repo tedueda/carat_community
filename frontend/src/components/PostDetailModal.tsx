@@ -135,10 +135,10 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
   };
 
     // Fetch translation for the post
-    const fetchTranslation = async () => {
+    const fetchTranslation = async (targetLang?: string) => {
       if (!post) return;
     
-      const userLang = getPreferredLanguage();
+      const userLang = targetLang || currentLanguage;
       setViewLang(userLang);
     
       // Skip translation if original language matches user's preferred language
@@ -151,7 +151,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
       try {
         setIsTranslating(true);
         setTranslationError(null);
-        const translated = await fetchPostWithTranslation(post.id, userLang, 'translated');
+        const translated = await fetchPostWithTranslation(post.id, userLang as any, 'translated');
         setTranslatedPost(translated);
         setShowTranslated(translated.is_translated);
         console.log('[PostDetailModal] Translation fetched:', {
@@ -301,7 +301,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
       if (isOpen) {
         document.body.style.overflow = 'hidden';
         fetchComments();
-        fetchTranslation();
+        fetchTranslation(currentLanguage);
         setIsLiked(post.is_liked || false);
         setLikeCount(post.like_count || 0);
         setShowFullText(false);
@@ -362,7 +362,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
   // Re-fetch translation when language changes
   useEffect(() => {
     if (isOpen && !isTranslating) {
-      fetchTranslation();
+      fetchTranslation(currentLanguage);
     }
   }, [currentLanguage]);
 
