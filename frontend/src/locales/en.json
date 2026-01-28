@@ -317,6 +317,76 @@
     "hoursAgo": "{{count}}h ago",
     "daysAgo": "{{count}}d ago"
   },
+  "categoryPage": {
+    "postsCount": "{{count}} posts",
+    "newPost": "New Post",
+    "categoryNotFound": "Category not found",
+    "noPostsMessage": "Be the first to post and liven up the community!",
+    "all": "All",
+    "sort": {
+      "newest": "Newest",
+      "popular": "Popular",
+      "comments": "Most Comments",
+      "points": "Highest Points"
+    },
+    "timeRange": {
+      "all": "All Time",
+      "24h": "Last 24 Hours",
+      "7d": "Last 7 Days",
+      "30d": "Last 30 Days"
+    },
+    "categories": {
+      "board": {
+        "title": "Board",
+        "desc": "Concerns, casual chat, and daily topics. A place to express your true self and connect with like-minded friends"
+      },
+      "art": {
+        "title": "Art & Video",
+        "desc": "Showcase illustrations, photos, and video works. Express your true self through self-expression"
+      },
+      "music": {
+        "title": "Music",
+        "desc": "Share favorites and original/AI-generated songs. Express yourself through music"
+      },
+      "shops": {
+        "title": "Shops",
+        "desc": "Introduce LGBTQ-friendly shops. Find a safe place to spend time"
+      },
+      "tourism": {
+        "title": "Tourism",
+        "desc": "Interactive tours with member guides. New experiences with friends"
+      },
+      "comics": {
+        "title": "Subculture",
+        "desc": "Share comics, movies, dramas, and doujinshi that resonate with you"
+      },
+      "news": {
+        "title": "News",
+        "desc": "Latest policy and regulation information. Toward a society that respects gender diversity"
+      },
+      "food": {
+        "title": "Food & Shops & Live Houses",
+        "desc": "Share recommended food, restaurants, bars, live houses, boutiques, and hair salons"
+      },
+      "beauty": {
+        "title": "Beauty",
+        "desc": "Cosmetics and skincare reviews. Pursue your own beauty"
+      },
+      "funding": {
+        "title": "Fundraising",
+        "desc": "Support LGBTQ+ community members. Start projects and support each other"
+      }
+    }
+  },
+  "news": {
+    "title": "LGBTQ News",
+    "viewAll": "View all news →"
+  },
+  "cta": {
+    "communityTitle": "Members-only LGBTQ+ Community \"Carat\"",
+    "communitySubtitle": "Start your story with posts and matching.",
+    "freeUserNote": "* Free members can view all site content. Registration is required to post or access premium content."
+  },
   "membership": {
     "registrationRequired": "Registration required",
     "postRequiresMembership": "You need to register to create posts.",

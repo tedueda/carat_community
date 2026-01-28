@@ -731,13 +731,13 @@ const HomePage: React.FC = () => {
         {/* ニュースセクション */}
         <section className="py-12">
           <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-6 gap-1 md:gap-0">
-            <h3 className="text-3xl md:text-4xl font-bold text-slate-900">LGBTQニュース</h3>
+            <h3 className="text-3xl md:text-4xl font-bold text-slate-900">{t('news.title')}</h3>
             <Button 
               variant="ghost" 
               className="text-gray-600 hover:text-black hover:bg-gray-100 font-medium text-base self-start md:self-auto"
               onClick={() => navigate('/news')}
             >
-              すべてのニュースをみる→
+              {t('news.viewAll')}
             </Button>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -784,7 +784,7 @@ const HomePage: React.FC = () => {
                   <div className="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-gray-100">
                     <span>{new Date(article.created_at).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/')}</span>
                     <span className="text-gray-700 hover:text-black font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-                      続きを読む
+                      {t('post.readMore')}
                       <ArrowRight className="h-3 w-3" />
                     </span>
                   </div>
@@ -799,10 +799,10 @@ const HomePage: React.FC = () => {
           <div className="max-w-3xl mx-auto px-4">
             <div className="bg-white/95 border border-gray-200 shadow-xl rounded-2xl px-6 py-6 md:px-10 md:py-8 flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="text-left">
-                <p className="text-sm md:text-base text-slate-500 mb-1">会員制LGBTQ+コミュニティ "Carat"</p>
-                <p className="text-lg md:text-xl font-serif text-slate-900">投稿とマッチングで、あなたの物語をはじめましょう。</p>
+                <p className="text-sm md:text-base text-slate-500 mb-1">{t('cta.communityTitle')}</p>
+                <p className="text-lg md:text-xl font-serif text-slate-900">{t('cta.communitySubtitle')}</p>
                 <p className="mt-2 text-sm md:text-base text-slate-500">
-                  * 無料会員はサイト全体の内容を見ていただけます。投稿や有料会員限定サイトを閲覧するには会員登録が必要です。
+                  {t('cta.freeUserNote')}
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-end">
@@ -810,7 +810,7 @@ const HomePage: React.FC = () => {
                   onClick={() => window.location.href = '/login'}
                   className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
                 >
-                  会員登録（月1,000円）
+                  {t('membership.registerMonthly')}
                 </Button>
               </div>
             </div>
