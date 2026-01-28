@@ -60,6 +60,40 @@ export async function fetchPostWithTranslation(
 }
 
 /**
+ * Fetch multiple posts with translation
+ */
+export async function fetchPostsWithTranslation(
+  lang?: SupportedLanguage,
+  category?: string,
+  limit: number = 20,
+  offset: number = 0
+): Promise<PostWithTranslation[]> {
+  const targetLang = lang || getPreferredLanguage();
+  
+  const url = new URL(`${API_BASE_URL}/api/posts/translated`);
+  url.searchParams.set('lang', targetLang);
+  if (category) {
+    url.searchParams.set('category', category);
+  }
+  url.searchParams.set('limit', limit.toString());
+  url.searchParams.set('offset', offset.toString());
+  
+  const response = await fetch(url.toString(), {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept-Language': navigator.language || 'ja',
+    },
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch translated posts: ${response.status}`);
+  }
+  
+  return response.json();
+}
+
+/**
  * Get supported languages from the API
  */
 export async function fetchSupportedLanguages(): Promise<{

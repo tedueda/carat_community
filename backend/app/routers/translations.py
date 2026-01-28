@@ -123,6 +123,62 @@ async def get_supported_languages():
     }
 
 
+@router.get("/posts/translated")
+async def get_posts_with_translation(
+    lang: Optional[str] = Query(None, description="Target language code (ja, en, ko, es, pt, fr, it, de)"),
+    category: Optional[str] = Query(None, description="Filter by category"),
+    limit: int = Query(20, ge=1, le=100, description="Number of posts to return"),
+    offset: int = Query(0, ge=0, description="Offset for pagination"),
+    accept_language: Optional[str] = Header(None, alias="Accept-Language"),
+    db: Session = Depends(get_db),
+    current_user = Depends(get_optional_user)
+):
+    """
+    Get multiple posts with translation support.
+    Returns posts with translated content if available.
+    """
+    # Determine target language
+    target_lang = get_user_preferred_language(
+        user_lang=None,
+        accept_language=accept_language,
+        query_lang=lang
+    )
+    
+    # Build query
+    query = db.query(Post).filter(Post.visibility == "public")
+    if category:
+        query = query.filter(Post.category == category)
+    
+    posts = query.order_by(Post.created_at.desc()).offset(offset).limit(limit).all()
+    
+    result = []
+    for post in posts:
+        post_dict = build_post_dict(post, db)
+        
+        # Add translation fields
+        post_dict["original_lang"] = post.original_lang or "unknown"
+        post_dict["view_lang"] = target_lang
+        post_dict["display_title"] = post.title
+        post_dict["display_text"] = post.body
+        post_dict["has_translation"] = False
+        post_dict["is_translated"] = False
+        
+        # Skip translation if same language
+        if target_lang != post.original_lang:
+            # Try to get or create translation
+            translation = await get_or_create_translation(db, post, target_lang)
+            
+            if translation and not translation.error_code:
+                post_dict["display_title"] = translation.translated_title or post.title
+                post_dict["display_text"] = translation.translated_text
+                post_dict["has_translation"] = True
+                post_dict["is_translated"] = True
+        
+        result.append(post_dict)
+    
+    return result
+
+
 @router.get("/comments/{comment_id}/translated", response_model=CommentTranslationResponse)
 async def get_comment_with_translation(
     comment_id: int,
