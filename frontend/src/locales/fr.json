@@ -1,4 +1,87 @@
 {
+  "hero": {
+    "messages": [
+      {
+        "main": "Exprimez-vous et\nrencontrez de nouveaux amis",
+        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
+      },
+      {
+        "main": "Une communauté sûre où\nvous pouvez vous exprimer",
+        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
+      },
+      {
+        "main": "Un espace pour se connecter\navec des compagnons de confiance",
+        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
+      },
+      {
+        "main": "Le seul site soutenant\nles modes de vie sans genre",
+        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
+      },
+      {
+        "main": "Vous n'êtes pas seul.\nUn endroit pour être vous-même",
+        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
+      },
+      {
+        "main": "Une communauté où les amis\nreconnaissent vos talents",
+        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
+      },
+      {
+        "main": "Un espace communautaire de qualité\navec des amis partageant les mêmes idées",
+        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
+      },
+      {
+        "main": "Laissez votre \"Carat\" briller\nsur une toile vierge",
+        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
+      }
+    ]
+  },
+  "homepage": {
+    "specialMenu": {
+      "matching": {
+        "title": "Matching Membres",
+        "description": "Un service de matching sûr pour rencontrer votre partenaire idéal"
+      },
+      "salon": {
+        "title": "Salon Membres",
+        "description": "Salon de chat spécialisé réservé aux membres"
+      },
+      "business": {
+        "title": "Business",
+        "description": "Marché aux puces, vente d'œuvres, cours, streaming en direct"
+      }
+    },
+    "categories": {
+      "music": {
+        "title": "Musique",
+        "desc": "Partagez vos chansons préférées et vos propres créations musicales !"
+      },
+      "art": {
+        "title": "Art & Vidéo",
+        "desc": "Présentez illustrations, photos et œuvres vidéo pour élargir le monde de l'art !"
+      },
+      "comics": {
+        "title": "Sous-culture",
+        "desc": "Partagez critiques et avis sur films, anime, jeux et romans !"
+      },
+      "food_shops": {
+        "title": "Cuisine & Boutiques & Salles de concert",
+        "desc": "Présentez de délicieux plats et des boutiques LGBTQ-friendly !"
+      },
+      "tourism": {
+        "title": "Tourisme",
+        "desc": "Partagez destinations de voyage et sites touristiques recommandés !"
+      },
+      "board": {
+        "title": "Forum",
+        "desc": "Publiez librement sur vos préoccupations, discussions et sujets quotidiens !"
+      }
+    },
+    "loadingContent": "Chargement du contenu...",
+    "viewAll": "Voir tout",
+    "latestNews": "Dernières nouvelles",
+    "premiumFeature": "Fonctionnalité Premium",
+    "loginRequired": "Connexion requise"
+  },
   "common": {
     "home": "Accueil",
     "login": "Connexion",

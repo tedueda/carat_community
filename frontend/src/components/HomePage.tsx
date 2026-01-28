@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, MessageCircle, Gem as DiamondIcon, Lock } from 'lucide-react';
@@ -50,40 +51,7 @@ const boardCategories = [
   { key: "board", title: "掲示板", desc: "悩み相談や雑談、日常の話題を自由に投稿しましょう！", emoji: "💬", link: "/category/board" },
 ];
 
-const heroMessages = [
-  {
-    main: "自分を表現して、\n新しい仲間と出会おう",
-    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
-  },
-  {
-    main: "安心して自分を表現できる\n安全性の高いコミュニティ",
-    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
-  },
-  {
-    main: "心許せる仲間との\n繋がりがつくれる空間",
-    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
-  },
-  {
-    main: "ジェンダーフリーの生き方を\n応援する唯一のサイト",
-    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
-  },
-  {
-    main: "ひとりじゃない。\n\"自分らしさ\"を出せる居場所",
-    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
-  },
-  {
-    main: "あなたの才能を認めてくれる\n仲間が集うコミュニティ",
-    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
-  },
-  {
-    main: "価値観が響き合う仲間と作る\n上質なコミュニティ空間",
-    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
-  },
-  {
-    main: "真っ白なキャンバスをあなたの\n「カラット」で輝かせましょう",
-    sub: "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
-  }
-];
+// heroMessages are now loaded from i18n locale files
 
 const getCategoryPlaceholder= (category: string | undefined): string => {
   const categoryMap: { [key: string]: string } = {
@@ -158,6 +126,7 @@ const dummyUsers: { [key: number]: User } = {
 };
 
 const HomePage: React.FC = () => {
+  const { t } = useTranslation();
   const [posts, setPosts] = useState<Post[]>([]);
   const [categoryPosts, setCategoryPosts] = useState<{ [key: string]: Post[] }>({});
   const [newsArticles, setNewsArticles] = useState<any[]>([]);
@@ -331,7 +300,7 @@ const HomePage: React.FC = () => {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto p-4 sm:p-6">
-        <div className="text-center text-gray-600">コンテンツを読み込み中...</div>
+        <div className="text-center text-gray-600">{t('homepage.loadingContent')}</div>
       </div>
     );
   }
@@ -435,18 +404,18 @@ const HomePage: React.FC = () => {
           <div className="relative z-10 flex items-center justify-center h-full">
             <div className="text-center text-white px-4 max-w-6xl">
               <h2 className="text-3xl md:text-7xl font-serif font-bold leading-tight mb-6 transition-opacity duration-1000">
-                {heroMessages[currentSlide].main.split('\n').map((line, i) => (
+                {t(`hero.messages.${currentSlide}.main`).split('\n').map((line: string, i: number) => (
                   <React.Fragment key={i}>
                     {line}
-                    {i < heroMessages[currentSlide].main.split('\n').length - 1 && <br />}
+                    {i < t(`hero.messages.${currentSlide}.main`).split('\n').length - 1 && <br />}
                   </React.Fragment>
                 ))}
               </h2>
               <p className="text-lg md:text-2xl mb-8 opacity-90 transition-opacity duration-1000">
-                {heroMessages[currentSlide].sub.split('\n').map((line, i) => (
+                {t(`hero.messages.${currentSlide}.sub`).split('\n').map((line: string, i: number) => (
                   <React.Fragment key={i}>
                     {line}
-                    {i < heroMessages[currentSlide].sub.split('\n').length - 1 && <br />}
+                    {i < t(`hero.messages.${currentSlide}.sub`).split('\n').length - 1 && <br />}
                   </React.Fragment>
                 ))}
               </p>
@@ -497,16 +466,16 @@ const HomePage: React.FC = () => {
               <div className="flex-1">
                 <h3 className="text-3xl md:text-4xl font-serif font-semibold text-slate-900 flex items-center gap-2">
                   <span>{cat.emoji}</span>
-                  {cat.title}
+                  {t(`homepage.categories.${cat.key}.title`)}
                 </h3>
-                <p className="text-sm md:text-base text-slate-600 mt-1">{cat.desc}</p>
+                <p className="text-sm md:text-base text-slate-600 mt-1">{t(`homepage.categories.${cat.key}.desc`)}</p>
               </div>
               <Button 
                 variant="ghost" 
                 className="text-gray-700 hover:text-black hover:bg-gray-100 font-medium text-base md:text-xl self-start md:self-auto"
                 onClick={() => navigate(cat.link)}
               >
-                もっと見る→
+                {t('homepage.viewAll')}→
               </Button>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
