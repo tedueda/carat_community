@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { ArrowLeft, Plus, MessageCircle, Filter, SortAsc } from 'lucide-react';
+import { ArrowLeft, Plus, MessageCircle, Filter, SortAsc, Globe } from 'lucide-react';
 import PostDetailModal from './PostDetailModal';
 import NewPostForm from './NewPostForm';
 import LikeButton from './common/LikeButton';
@@ -132,6 +134,8 @@ const getRelativeTime = (dateString: string): string => {
 };
 
 const CategoryPage: React.FC = () => {
+  const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
   const { categoryKey } = useParams<{ categoryKey: string }>();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -163,14 +167,16 @@ const CategoryPage: React.FC = () => {
     art: []
   };
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (lang?: string) => {
     try {
       setLoading(true);
+      const targetLang = lang || currentLanguage;
+      
+      // Use translation endpoint to get posts with translations
       const params = new URLSearchParams({
         category: categoryKey || '',
-        sort: sortBy,
-        range: timeRange,
-        limit: '20'
+        limit: '20',
+        lang: targetLang
       });
       
       if (selectedTag) {
@@ -181,7 +187,7 @@ const CategoryPage: React.FC = () => {
         params.set('subcategory', selectedSubcategory);
       }
       
-      const response = await fetch(`${API_URL}/api/posts/?${params}`, {
+      const response = await fetch(`${API_URL}/api/translations/posts?${params}`, {
         headers: token ? {
           'Authorization': `Bearer ${token}`,
         } : {},
@@ -247,8 +253,15 @@ const CategoryPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchPosts();
+    fetchPosts(currentLanguage);
   }, [categoryKey, token, sortBy, timeRange, selectedTag, selectedSubcategory]);
+
+  // Re-fetch when language changes
+  useEffect(() => {
+    if (!loading) {
+      fetchPosts(currentLanguage);
+    }
+  }, [currentLanguage]);
 
   // URLパラメータに編集対象の投稿IDがある場合、該当する投稿を編集モードで開く
   useEffect(() => {
@@ -500,10 +513,16 @@ const CategoryPage: React.FC = () => {
               
               {/* コンテンツ */}
               <CardContent className="p-4">
-                {post.title && (
-                  <h3 className="font-bold text-gray-900 line-clamp-2 mb-2 text-lg">{post.title}</h3>
+                {(post.display_title || post.title) && (
+                  <h3 className="font-bold text-gray-900 line-clamp-2 mb-2 text-lg">{post.display_title || post.title}</h3>
                 )}
-                <p className="text-gray-700 text-sm line-clamp-3 mb-3">{post.body}</p>
+                <p className="text-gray-700 text-sm line-clamp-3 mb-3">{post.display_text || post.body}</p>
+                {post.is_translated && (
+                  <div className="flex items-center gap-1 text-xs text-blue-500 mb-2">
+                    <Globe className="h-3 w-3" />
+                    <span>{t('translation.autoTranslated')}</span>
+                  </div>
+                )}
                 
                 {/* メタ情報 */}
                 <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
