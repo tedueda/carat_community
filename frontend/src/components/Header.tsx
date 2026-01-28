@@ -4,10 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Home, ChevronDown, Menu, X, MessageCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import LanguageSelector from './common/LanguageSelector';
+import { useTranslation } from 'react-i18next';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const { user, isFreeUser, logout } = useAuth();
+  const { t } = useTranslation();
   const [showMemberMenu, setShowMemberMenu] = useState(false);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -49,22 +51,22 @@ const Header: React.FC = () => {
   };
 
   const memberBenefits = [
-    { title: "マッチング", link: "/matching", icon: "💕" },
-    { title: "ライブ・ウエディング", link: "/live-wedding", icon: "💒" },
-    { title: "寄付金を募る", link: "/funding", icon: "🤝" },
-    { title: "マーケット", link: "/marketplace", icon: "🛍️" },
-    { title: "お気に入り", link: "/members/favorites", icon: "❤️" },
-    { title: "食レポ", link: "/members/food", icon: "🍽" },
-    { title: "ビューティ", link: "/members/beauty", icon: "💄" },
+    { title: t('header.matching'), link: "/matching", icon: "💕" },
+    { title: t('header.liveWedding'), link: "/live-wedding", icon: "💒" },
+    { title: t('header.funding'), link: "/funding", icon: "🤝" },
+    { title: t('header.marketplace'), link: "/marketplace", icon: "🛍️" },
+    { title: t('header.favorites'), link: "/members/favorites", icon: "❤️" },
+    { title: t('header.foodReport'), link: "/members/food", icon: "🍽" },
+    { title: t('header.beauty'), link: "/members/beauty", icon: "💄" },
   ];
 
   const boardCategories = [
-    { title: "サブカルチャー", link: "/board/subculture", icon: "🎮" },
-    { title: "アート", link: "/board/art", icon: "🎨" },
-    { title: "音楽", link: "/board/music", icon: "🎵" },
-    { title: "掲示板", link: "/board/general", icon: "💬" },
-    { title: "お店", link: "/board/shops", icon: "🏪" },
-    { title: "ツーリズム", link: "/board/tourism", icon: "✈️" },
+    { title: t('header.subculture'), link: "/board/subculture", icon: "🎮" },
+    { title: t('header.art'), link: "/board/art", icon: "🎨" },
+    { title: t('header.music'), link: "/board/music", icon: "🎵" },
+    { title: t('header.general'), link: "/board/general", icon: "💬" },
+    { title: t('header.shops'), link: "/board/shops", icon: "🏪" },
+    { title: t('header.tourism'), link: "/board/tourism", icon: "✈️" },
   ];
 
   return (
@@ -108,7 +110,7 @@ const Header: React.FC = () => {
                 onClick={handleLogout} 
                 className="border-gray-300 text-gray-700 hover:bg-gray-50 text-xs px-3 py-1"
               >
-                ログアウト
+                {t('common.logout')}
               </Button>
             )}
             <button
@@ -127,12 +129,12 @@ const Header: React.FC = () => {
               <Link to="/feed" onClick={() => setShowMobileMenu(false)}>
                 <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-black hover:bg-gray-50">
                   <Home className="h-5 w-5 mr-2" />
-                  ホーム
+                  {t('common.home')}
                 </Button>
               </Link>
               
               <div className="border-t border-gray-100 pt-2 pb-2">
-                <div className="text-xs text-gray-500 font-medium px-4 mb-2">会員特典メニュー</div>
+                <div className="text-xs text-gray-500 font-medium px-4 mb-2">{t('header.memberBenefits')}</div>
                 {memberBenefits.map((benefit) => (
                   <Link
                     key={benefit.link}
@@ -147,7 +149,7 @@ const Header: React.FC = () => {
               </div>
 
               <div className="border-t border-gray-100 pt-2 pb-2">
-                <div className="text-xs text-gray-500 font-medium px-4 mb-2">掲示板</div>
+                <div className="text-xs text-gray-500 font-medium px-4 mb-2">{t('header.board')}</div>
                 {boardCategories.map((category) => (
                   <Link
                     key={category.link}
@@ -162,14 +164,14 @@ const Header: React.FC = () => {
               </div>
 
               <div className="border-t border-gray-100 pt-2 pb-2">
-                <div className="text-xs text-gray-500 font-medium px-4 mb-2">アカウント</div>
+                <div className="text-xs text-gray-500 font-medium px-4 mb-2">{t('common.account')}</div>
                 <Link
                   to="/account"
                   onClick={() => setShowMobileMenu(false)}
                   className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-md transition-colors"
                 >
                   <span className="text-xl">👤</span>
-                  <span className="text-sm text-gray-700">アカウント情報</span>
+                  <span className="text-sm text-gray-700">{t('header.accountInfo')}</span>
                 </Link>
                 <Link
                   to="/matching/profile"
@@ -177,20 +179,20 @@ const Header: React.FC = () => {
                   className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-md transition-colors"
                 >
                   <span className="text-xl">✏️</span>
-                  <span className="text-sm text-gray-700">プロフィール編集</span>
+                  <span className="text-sm text-gray-700">{t('header.editProfile')}</span>
                 </Link>
               </div>
 
               <Link to="/blog" onClick={() => setShowMobileMenu(false)}>
                 <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-black hover:bg-gray-50">
-                  ブログ
+                  {t('header.blog')}
                 </Button>
               </Link>
 
               {(isFreeUser || !user) && (
                 <Link to="/login" onClick={() => setShowMobileMenu(false)}>
                   <Button className="w-full bg-black hover:bg-gray-800 text-white">
-                    ログイン
+                    {t('common.login')}
                   </Button>
                 </Link>
               )}
@@ -222,7 +224,7 @@ const Header: React.FC = () => {
               }}>
                 <Button variant="ghost" className="text-gray-700 hover:text-black hover:bg-gray-50 text-base font-normal px-2">
                   <Home className="h-5 w-5 mr-2" />
-                  ホーム
+                  {t('common.home')}
                 </Button>
               </Link>
               
@@ -237,7 +239,7 @@ const Header: React.FC = () => {
                     setShowAccountMenu(false);
                   }}
                 >
-                  会員特典メニュー
+                  {t('header.memberBenefits')}
                   <ChevronDown className="h-5 w-5 ml-1" />
                 </Button>
                 
@@ -271,7 +273,7 @@ const Header: React.FC = () => {
                     setShowAccountMenu(false);
                   }}
                 >
-                  掲示板
+                  {t('header.board')}
                   <ChevronDown className="h-5 w-5 ml-1" />
                 </Button>
                 
@@ -305,7 +307,7 @@ const Header: React.FC = () => {
                     setShowBoardMenu(false);
                   }}
                 >
-                  アカウント
+                  {t('common.account')}
                   <ChevronDown className="h-5 w-5 ml-1" />
                 </Button>
                 
@@ -318,7 +320,7 @@ const Header: React.FC = () => {
                         className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-md transition-colors"
                       >
                         <span className="text-2xl">👤</span>
-                        <span className="text-sm text-gray-700">アカウント情報</span>
+                        <span className="text-sm text-gray-700">{t('header.accountInfo')}</span>
                       </Link>
                       <Link
                         to="/matching/profile"
@@ -326,7 +328,7 @@ const Header: React.FC = () => {
                         className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-md transition-colors"
                       >
                         <span className="text-2xl">✏️</span>
-                        <span className="text-sm text-gray-700">プロフィール編集</span>
+                        <span className="text-sm text-gray-700">{t('header.editProfile')}</span>
                       </Link>
                     </div>
                   </div>
@@ -339,7 +341,7 @@ const Header: React.FC = () => {
                 setShowAccountMenu(false);
               }}>
                 <Button variant="ghost" className="text-gray-700 hover:text-black hover:bg-gray-50 text-base font-normal px-2">
-                  ブログ
+                  {t('header.blog')}
                 </Button>
               </Link>
             </nav>
@@ -351,7 +353,7 @@ const Header: React.FC = () => {
               {isFreeUser || !user ? (
                 <Link to="/login">
                   <Button className="bg-black hover:bg-gray-800 text-white text-sm px-6 py-2">
-                    ログイン
+                    {t('common.login')}
                   </Button>
                 </Link>
               ) : (
@@ -360,7 +362,7 @@ const Header: React.FC = () => {
                   <button
                     onClick={() => navigate('/matching/chats')}
                     className="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-100 rounded-full transition-colors"
-                    aria-label="チャット"
+                    aria-label={t('header.chat')}
                   >
                     <div className="relative">
                       <MessageCircle className="h-5 w-5 text-gray-700" />
@@ -372,13 +374,13 @@ const Header: React.FC = () => {
                     </div>
                     <span className="text-xs text-gray-600">
                       {unreadCount > 0 
-                        ? `未読${unreadCount}件` 
-                        : 'チャット'}
+                        ? t('header.unreadMessages', { count: unreadCount })
+                        : t('header.chat')}
                     </span>
                   </button>
                   <span className="text-sm text-gray-600">{user.display_name}</span>
                   <Button variant="outline" onClick={handleLogout} className="border-gray-300 text-gray-700 hover:bg-gray-50 text-sm px-4">
-                    ログアウト
+                    {t('common.logout')}
                   </Button>
                 </>
               )}
