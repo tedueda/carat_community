@@ -317,6 +317,76 @@
     "hoursAgo": "{{count}}시간 전",
     "daysAgo": "{{count}}일 전"
   },
+  "categoryPage": {
+    "postsCount": "{{count}}개의 게시물",
+    "newPost": "새 게시물",
+    "categoryNotFound": "카테고리를 찾을 수 없습니다",
+    "noPostsMessage": "첫 번째 게시물을 작성하여 커뮤니티를 활성화하세요!",
+    "all": "전체",
+    "sort": {
+      "newest": "최신순",
+      "popular": "인기순",
+      "comments": "댓글 많은 순",
+      "points": "포인트 높은 순"
+    },
+    "timeRange": {
+      "all": "전체 기간",
+      "24h": "최근 24시간",
+      "7d": "최근 7일",
+      "30d": "최근 30일"
+    },
+    "categories": {
+      "board": {
+        "title": "게시판",
+        "desc": "고민 상담, 잡담, 일상 이야기. 진정한 자신을 표현하고 공감하는 친구들과 연결되는 공간"
+      },
+      "art": {
+        "title": "아트 & 비디오",
+        "desc": "일러스트, 사진, 영상 작품 발표. 자기 표현을 통해 진정한 자신을 표현"
+      },
+      "music": {
+        "title": "음악",
+        "desc": "좋아하는 곡과 자작/AI 생성 곡 공유. 음악으로 자신답게 표현"
+      },
+      "shops": {
+        "title": "상점",
+        "desc": "LGBTQ 친화적인 상점 소개. 안심하고 지낼 수 있는 공간 찾기"
+      },
+      "tourism": {
+        "title": "관광",
+        "desc": "회원 가이드와 함께하는 교류형 투어. 친구들과 새로운 경험"
+      },
+      "comics": {
+        "title": "서브컬처",
+        "desc": "공감할 수 있는 만화, 영화, 드라마, 동인지 등을 공유하세요"
+      },
+      "news": {
+        "title": "뉴스",
+        "desc": "최신 제도 및 조례 정보와 해설 기사. 성의 다양성을 존중하는 사회로"
+      },
+      "food": {
+        "title": "맛집 & 상점 & 라이브하우스",
+        "desc": "추천 음식, 음식점, 바, 라이브하우스, 부티크, 헤어살롱 등을 커뮤니티에서 공유하세요"
+      },
+      "beauty": {
+        "title": "뷰티",
+        "desc": "화장품 및 스킨케어 리뷰. 자신만의 아름다움 추구"
+      },
+      "funding": {
+        "title": "모금",
+        "desc": "LGBTQ+ 커뮤니티 구성원 지원. 프로젝트를 시작하고 서로 지원하세요"
+      }
+    }
+  },
+  "news": {
+    "title": "LGBTQ 뉴스",
+    "viewAll": "모든 뉴스 보기 →"
+  },
+  "cta": {
+    "communityTitle": "회원제 LGBTQ+ 커뮤니티 \"Carat\"",
+    "communitySubtitle": "게시물과 매칭으로 당신의 이야기를 시작하세요.",
+    "freeUserNote": "* 무료 회원은 사이트 전체 내용을 볼 수 있습니다. 게시물 작성이나 프리미엄 콘텐츠 열람에는 회원 등록이 필요합니다."
+  },
   "membership": {
     "registrationRequired": "회원 가입이 필요합니다",
     "postRequiresMembership": "게시물을 작성하려면 회원 가입이 필요합니다.",
