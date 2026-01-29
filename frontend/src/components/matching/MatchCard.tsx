@@ -17,19 +17,10 @@ type Item = {
   avatar_url?: string | null;
 };
 
-const getFlagEmoji = (code: string | null | undefined): string => {
-  if (!code) return '';
-  const flagMap: Record<string, string> = {
-    'JP': '🇯🇵', 'US': '🇺🇸', 'GB': '🇬🇧', 'CA': '🇨🇦', 'AU': '🇦🇺', 'NZ': '🇳🇿',
-    'DE': '🇩🇪', 'FR': '🇫🇷', 'IT': '🇮🇹', 'ES': '🇪🇸', 'PT': '🇵🇹', 'NL': '🇳🇱',
-    'BE': '🇧🇪', 'CH': '🇨🇭', 'AT': '🇦🇹', 'SE': '🇸🇪', 'NO': '🇳🇴', 'DK': '🇩🇰',
-    'FI': '🇫🇮', 'IE': '🇮🇪', 'KR': '🇰🇷', 'CN': '🇨🇳', 'TW': '🇹🇼', 'HK': '🇭🇰',
-    'SG': '🇸🇬', 'TH': '🇹🇭', 'VN': '🇻🇳', 'PH': '🇵🇭', 'ID': '🇮🇩', 'MY': '🇲🇾',
-    'IN': '🇮🇳', 'BR': '🇧🇷', 'MX': '🇲🇽', 'AR': '🇦🇷', 'CL': '🇨🇱', 'CO': '🇨🇴',
-    'PE': '🇵🇪', 'ZA': '🇿🇦', 'EG': '🇪🇬', 'IL': '🇮🇱', 'AE': '🇦🇪', 'RU': '🇷🇺',
-    'PL': '🇵🇱', 'CZ': '🇨🇿', 'GR': '🇬🇷', 'TR': '🇹🇷', 'OTHER': '🌍',
-  };
-  return flagMap[code] || '🌍';
+const getFlagImageUrl = (code: string | null | undefined): string => {
+  if (!code || code === 'OTHER') return '';
+  // Use flagcdn.com for reliable flag images
+  return `https://flagcdn.com/w40/${code.toLowerCase()}.png`;
 };
 
 export function MatchCard({ item }: { item: Item }) {
@@ -212,8 +203,21 @@ export function MatchCard({ item }: { item: Item }) {
         
         {/* 国旗バッジ（右上） */}
         {item.nationality && (
-          <div className="absolute right-2 top-2 bg-white/90 rounded-full px-2 py-1 shadow-sm z-10">
-            <span className="text-lg">{getFlagEmoji(item.nationality)}</span>
+          <div className="absolute right-2 top-2 bg-white/90 rounded-full px-1.5 py-1 shadow-sm z-10 flex items-center gap-1">
+            {getFlagImageUrl(item.nationality) ? (
+              <img 
+                src={getFlagImageUrl(item.nationality)} 
+                alt={item.nationality}
+                className="w-6 h-4 object-cover rounded-sm"
+                onError={(e) => {
+                  const target = e.currentTarget as HTMLImageElement;
+                  target.style.display = 'none';
+                  const span = target.nextElementSibling as HTMLSpanElement;
+                  if (span) span.style.display = 'inline';
+                }}
+              />
+            ) : null}
+            <span className="text-xs font-medium text-gray-700">{item.nationality}</span>
           </div>
         )}
         

@@ -17,19 +17,9 @@ type LikeItem = {
   avatar_url?: string | null;
 };
 
-const getFlagEmoji = (code: string | null | undefined): string => {
-  if (!code) return '';
-  const flagMap: Record<string, string> = {
-    'JP': '🇯🇵', 'US': '🇺🇸', 'GB': '🇬🇧', 'CA': '🇨🇦', 'AU': '🇦🇺', 'NZ': '🇳🇿',
-    'DE': '🇩🇪', 'FR': '🇫🇷', 'IT': '🇮🇹', 'ES': '🇪🇸', 'PT': '🇵🇹', 'NL': '🇳🇱',
-    'BE': '🇧🇪', 'CH': '🇨🇭', 'AT': '🇦🇹', 'SE': '🇸🇪', 'NO': '🇳🇴', 'DK': '🇩🇰',
-    'FI': '🇫🇮', 'IE': '🇮🇪', 'KR': '🇰🇷', 'CN': '🇨🇳', 'TW': '🇹🇼', 'HK': '🇭🇰',
-    'SG': '🇸🇬', 'TH': '🇹🇭', 'VN': '🇻🇳', 'PH': '🇵🇭', 'ID': '🇮🇩', 'MY': '🇲🇾',
-    'IN': '🇮🇳', 'BR': '🇧🇷', 'MX': '🇲🇽', 'AR': '🇦🇷', 'CL': '🇨🇱', 'CO': '🇨🇴',
-    'PE': '🇵🇪', 'ZA': '🇿🇦', 'EG': '🇪🇬', 'IL': '🇮🇱', 'AE': '🇦🇪', 'RU': '🇷🇺',
-    'PL': '🇵🇱', 'CZ': '🇨🇿', 'GR': '🇬🇷', 'TR': '🇹🇷', 'OTHER': '🌍',
-  };
-  return flagMap[code] || '🌍';
+const getFlagImageUrl = (code: string | null | undefined): string => {
+  if (!code || code === 'OTHER') return '';
+  return `https://flagcdn.com/w40/${code.toLowerCase()}.png`;
 };
 
 type ViewMode = 'list' | 'grid';
@@ -191,8 +181,15 @@ const MatchingLikesPage: React.FC = () => {
               >
                 {/* 国旗バッジ（右上） */}
                 {like.nationality && (
-                  <div className="absolute right-2 top-2 bg-white/90 rounded-full px-2 py-1 shadow-sm z-10">
-                    <span className="text-lg">{getFlagEmoji(like.nationality)}</span>
+                  <div className="absolute right-2 top-2 bg-white/90 rounded-full px-1.5 py-1 shadow-sm z-10 flex items-center gap-1">
+                    {getFlagImageUrl(like.nationality) && (
+                      <img 
+                        src={getFlagImageUrl(like.nationality)} 
+                        alt={like.nationality}
+                        className="w-6 h-4 object-cover rounded-sm"
+                      />
+                    )}
+                    <span className="text-xs font-medium text-gray-700">{like.nationality}</span>
                   </div>
                 )}
                 {like.avatar_url && like.avatar_url !== '' ? (
