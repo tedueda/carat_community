@@ -491,6 +491,145 @@
       "counselor": "Berater suchen",
       "member": "Mitglieder rekrutieren",
       "other": "Andere"
+    },
+    "profile": {
+      "title": "Profil bearbeiten (Matching)",
+      "premiumOnly": "Nur für Premium-Mitglieder",
+      "premiumOnlyDesc": "Die Profilbearbeitung ist nur für Premium-Mitglieder verfügbar.",
+      "becomePremium": "Premium werden",
+      "images": {
+        "title": "Profilbilder (max. 4)",
+        "main": "Haupt",
+        "add": "Hinzufügen",
+        "addButton": "Bild hinzufügen",
+        "uploading": "Bild wird hochgeladen...",
+        "noImages": "Keine Profilbilder",
+        "noImagesDesc": "Fügen Sie Bilder aus den Miniaturansichten unten hinzu",
+        "tips": "• Klicken Sie auf das Bild zum Vergrößern\n• Das erste Bild wird als Hauptbild angezeigt\n• Ziehen Sie Miniaturansichten zum Neuordnen\n• Verwenden Sie × zum Löschen, + zum Hinzufügen\n• JPEG/PNG/WEBP-Format, bis zu 20MB"
+      },
+      "visibility": {
+        "title": "Profil-Sichtbarkeit",
+        "public": "Ihr Profil ist öffentlich. Es erscheint in der Suche.",
+        "private": "Ihr Profil ist privat. Es erscheint nicht in der Suche.",
+        "tipOn": "Aktivieren, um Ihr Profil in der Suche anzuzeigen",
+        "tipOff": "Deaktivieren, um aus den Ergebnissen auszublenden (bestehende Matches und Chats bleiben)"
+      },
+      "account": {
+        "title": "Kontoinformationen",
+        "userId": "Benutzer-ID (Telefon)",
+        "displayName": "Anzeigename (immer sichtbar)",
+        "realName": "Echter Name",
+        "realNameTip": "Erforderlich zur Verifizierung. Wird nicht im Profil angezeigt.",
+        "email": "E-Mail-Adresse",
+        "password": "Passwort (nur bei Änderung)",
+        "newPassword": "Neues Passwort"
+      },
+      "basic": {
+        "title": "Grundinformationen",
+        "nationality": "Nationalität",
+        "residence": "Wohnort",
+        "residenceDetail": "Wohnort-Detail",
+        "ageBand": "Altersgruppe",
+        "occupation": "Beruf",
+        "bloodType": "Blutgruppe",
+        "zodiac": "Sternzeichen",
+        "meetPref": "Matching-Zweck",
+        "identity": "Geschlechtsidentität",
+        "identityTip": "Wird als Abzeichen auf Ihrem Profilbild angezeigt.",
+        "romanceTarget": "Romantisches Interesse (Kategorie)",
+        "romanceTargetTip": "Mehrfachauswahl möglich. Wird für die Suche verwendet."
+      },
+      "hobbies": {
+        "title": "Interessen & Hobbys",
+        "select": "Auswählen (max. 5)",
+        "notSelected": "Nicht ausgewählt",
+        "modalTitle": "Interessen & Hobbys auswählen (max. 5)",
+        "selected": "Ausgewählt",
+        "cancel": "Abbrechen",
+        "confirm": "Bestätigen"
+      },
+      "bio": {
+        "title": "Selbstvorstellung",
+        "placeholder": "Schreiben Sie frei über sich. Kontaktinformationen sind verboten.",
+        "tip": "Geben Sie keine Telefonnummer, E-Mail, LINE oder andere Kontaktinformationen an."
+      },
+      "preview": "Vorschau",
+      "previewTitle": "Profil-Vorschau",
+      "save": "Speichern",
+      "saving": "Speichern...",
+      "loading": "Laden...",
+      "selectPlaceholder": "Bitte auswählen",
+      "hidden": "Versteckt",
+      "notSelected": "Nicht ausgewählt",
+      "required": "Erforderlich"
+    },
+    "bloodTypes": {
+      "A": "Typ A",
+      "B": "Typ B",
+      "O": "Typ O",
+      "AB": "Typ AB",
+      "unknown": "Unbekannt"
+    },
+    "zodiacs": {
+      "aries": "Widder",
+      "taurus": "Stier",
+      "gemini": "Zwillinge",
+      "cancer": "Krebs",
+      "leo": "Löwe",
+      "virgo": "Jungfrau",
+      "libra": "Waage",
+      "scorpio": "Skorpion",
+      "sagittarius": "Schütze",
+      "capricorn": "Steinbock",
+      "aquarius": "Wassermann",
+      "pisces": "Fische"
+    },
+    "identities": {
+      "gay": "Schwul",
+      "lesbian": "Lesbisch",
+      "transgender": "Transgender",
+      "bisexual": "Bisexuell",
+      "queer": "Queer",
+      "male": "Mann",
+      "female": "Frau",
+      "hidden": "Versteckt"
+    },
+    "romanceTargets": {
+      "male": "Mann",
+      "female": "Frau",
+      "other": "Andere"
+    },
+    "hobbyCatalog": {
+      "music": "Musik",
+      "movies": "Filme",
+      "drama": "Drama",
+      "anime": "Anime",
+      "manga": "Manga",
+      "reading": "Lesen",
+      "cafe": "Café",
+      "cooking": "Kochen",
+      "gourmet": "Gastronomie",
+      "alcohol": "Alkohol",
+      "travel": "Reisen",
+      "domesticTravel": "Inlandsreisen",
+      "internationalTravel": "Auslandsreisen",
+      "photography": "Fotografie",
+      "camera": "Kamera",
+      "karaoke": "Karaoke",
+      "gaming": "Gaming",
+      "boardGames": "Brettspiele",
+      "sportsWatching": "Sport schauen",
+      "gym": "Fitnessstudio",
+      "running": "Laufen",
+      "hiking": "Wandern",
+      "camping": "Camping",
+      "fishing": "Angeln",
+      "yoga": "Yoga",
+      "dance": "Tanzen",
+      "artMuseum": "Kunstmuseum",
+      "museum": "Museum",
+      "volunteer": "Ehrenamt",
+      "pets": "Haustiere"
     }
   }
 }

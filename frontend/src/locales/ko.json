@@ -561,6 +561,145 @@
       "counselor": "상담 상대 찾기",
       "member": "멤버 모집",
       "other": "기타"
+    },
+    "profile": {
+      "title": "프로필 편집 (매칭)",
+      "premiumOnly": "유료 회원 전용",
+      "premiumOnlyDesc": "프로필 편집은 유료 회원만 이용할 수 있습니다.",
+      "becomePremium": "유료 회원 되기",
+      "images": {
+        "title": "프로필 이미지 (최대 4장)",
+        "main": "메인",
+        "add": "추가",
+        "addButton": "이미지 추가",
+        "uploading": "이미지 업로드 중...",
+        "noImages": "프로필 이미지가 없습니다",
+        "noImagesDesc": "아래 썸네일에서 이미지를 추가하세요",
+        "tips": "• 이미지를 클릭하면 확대됩니다\n• 첫 번째 이미지가 메인 이미지로 다른 사용자에게 표시됩니다\n• 썸네일을 드래그 앤 드롭하여 순서를 변경할 수 있습니다\n• ×로 삭제, +로 추가\n• JPEG/PNG/WEBP 형식, 총 20MB까지"
+      },
+      "visibility": {
+        "title": "프로필 공개 설정",
+        "public": "프로필이 공개되어 있습니다. 매칭 검색에 표시됩니다.",
+        "private": "프로필이 비공개입니다. 매칭 검색에 표시되지 않습니다.",
+        "tipOn": "ON으로 설정하면 매칭 검색에 프로필이 표시됩니다",
+        "tipOff": "OFF로 설정하면 검색 결과에 표시되지 않습니다 (기존 매치와 채팅은 계속됩니다)"
+      },
+      "account": {
+        "title": "계정 정보",
+        "userId": "사용자 ID (휴대폰 번호)",
+        "displayName": "표시 이름 (항상 표시됨)",
+        "realName": "실명",
+        "realNameTip": "신원 확인에 필요합니다. 프로필에는 표시되지 않습니다.",
+        "email": "이메일 주소",
+        "password": "비밀번호 (변경 시에만)",
+        "newPassword": "새 비밀번호"
+      },
+      "basic": {
+        "title": "기본 정보",
+        "nationality": "국적",
+        "residence": "거주지",
+        "residenceDetail": "거주지 상세",
+        "ageBand": "연령대",
+        "occupation": "직업",
+        "bloodType": "혈액형",
+        "zodiac": "별자리",
+        "meetPref": "매칭 목적",
+        "identity": "성 정체성",
+        "identityTip": "프로필 이미지에 배지로 표시됩니다.",
+        "romanceTarget": "연애 대상 (검색 분류)",
+        "romanceTargetTip": "복수 선택 가능. 매칭 검색에 사용됩니다."
+      },
+      "hobbies": {
+        "title": "관심사 및 취미",
+        "select": "선택 (최대 5개)",
+        "notSelected": "미선택",
+        "modalTitle": "관심사 및 취미 선택 (최대 5개)",
+        "selected": "선택됨",
+        "cancel": "취소",
+        "confirm": "확인"
+      },
+      "bio": {
+        "title": "자기소개",
+        "placeholder": "자유롭게 자신에 대해 작성하세요. 연락처 기재는 금지입니다.",
+        "tip": "전화번호, 이메일 주소, LINE 등의 연락처를 기재하지 마세요."
+      },
+      "preview": "미리보기",
+      "previewTitle": "프로필 미리보기",
+      "save": "저장",
+      "saving": "저장 중...",
+      "loading": "로딩 중...",
+      "selectPlaceholder": "선택하세요",
+      "hidden": "비공개",
+      "notSelected": "미선택",
+      "required": "필수"
+    },
+    "bloodTypes": {
+      "A": "A형",
+      "B": "B형",
+      "O": "O형",
+      "AB": "AB형",
+      "unknown": "모름"
+    },
+    "zodiacs": {
+      "aries": "양자리",
+      "taurus": "황소자리",
+      "gemini": "쌍둥이자리",
+      "cancer": "게자리",
+      "leo": "사자자리",
+      "virgo": "처녀자리",
+      "libra": "천칭자리",
+      "scorpio": "전갈자리",
+      "sagittarius": "사수자리",
+      "capricorn": "염소자리",
+      "aquarius": "물병자리",
+      "pisces": "물고기자리"
+    },
+    "identities": {
+      "gay": "게이",
+      "lesbian": "레즈비언",
+      "transgender": "트랜스젠더",
+      "bisexual": "바이섹슈얼",
+      "queer": "퀴어",
+      "male": "남성",
+      "female": "여성",
+      "hidden": "비공개"
+    },
+    "romanceTargets": {
+      "male": "남성",
+      "female": "여성",
+      "other": "기타"
+    },
+    "hobbyCatalog": {
+      "music": "음악",
+      "movies": "영화",
+      "drama": "드라마",
+      "anime": "애니메이션",
+      "manga": "만화",
+      "reading": "독서",
+      "cafe": "카페",
+      "cooking": "요리",
+      "gourmet": "맛집",
+      "alcohol": "술",
+      "travel": "여행",
+      "domesticTravel": "국내 여행",
+      "internationalTravel": "해외 여행",
+      "photography": "사진",
+      "camera": "카메라",
+      "karaoke": "노래방",
+      "gaming": "게임",
+      "boardGames": "보드게임",
+      "sportsWatching": "스포츠 관람",
+      "gym": "헬스",
+      "running": "러닝",
+      "hiking": "하이킹",
+      "camping": "캠핑",
+      "fishing": "낚시",
+      "yoga": "요가",
+      "dance": "댄스",
+      "artMuseum": "미술관",
+      "museum": "박물관",
+      "volunteer": "봉사활동",
+      "pets": "반려동물"
     }
   }
 }
