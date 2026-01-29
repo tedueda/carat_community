@@ -285,6 +285,9 @@
     "typing": "Escribiendo..."
   },
   "auth": {
+    "login": "Iniciar sesión",
+    "loginRequired": "Se requiere iniciar sesión",
+    "loginRequiredMessage": "Necesitas iniciar sesión como miembro para usar esta función.",
     "email": "Correo electrónico",
     "password": "Contraseña",
     "confirmPassword": "Confirmar contraseña",

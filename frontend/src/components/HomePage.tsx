@@ -150,19 +150,22 @@ const HomePage: React.FC = () => {
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 
-  const fetchNews = async () => {
+  const fetchNews = async (lang?: string) => {
     try {
-      const params = new URLSearchParams({
-        limit: '100',
-      });
-      console.log(`Fetching news from: ${API_URL}/api/posts/?${params}`);
-      const response = await fetch(`${API_URL}/api/posts/?${params}`);
+      const targetLang = lang || currentLanguage;
+      const headers: any = {};
+      if (token && !isAnonymous) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
+      // 翻訳エンドポイントを使用してニュースを取得
+      console.log(`Fetching news from: ${API_URL}/api/translations/posts?category=news&limit=4&lang=${targetLang}`);
+      const response = await fetch(`${API_URL}/api/translations/posts?category=news&limit=4&lang=${targetLang}`, { headers });
       console.log('News Response status:', response.status);
       if (response.ok) {
-        const data = await response.json();
-        const newsData = data.filter((post: any) => post.category === 'news');
-        console.log('📰 [HomePage] News articles filtered:', newsData.length, newsData);
-        setNewsArticles(newsData.slice(0, 4));  // 最新4件
+        const newsData = await response.json();
+        console.log('📰 [HomePage] News articles fetched:', newsData.length, newsData);
+        setNewsArticles(newsData);
       }
     } catch (error) {
       console.error('Failed to fetch news:', error);
@@ -293,9 +296,10 @@ const HomePage: React.FC = () => {
     fetchCategoryPosts(currentLanguage);
   }, [user, isAnonymous]);
 
-  // Re-fetch category posts when language changes
+  // Re-fetch category posts and news when language changes
   useEffect(() => {
     fetchCategoryPosts(currentLanguage);
+    fetchNews(currentLanguage);
   }, [currentLanguage]);
 
   useEffect(() => {
@@ -889,9 +893,9 @@ const HomePage: React.FC = () => {
       {showLoginPrompt && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowLoginPrompt(false)}>
           <div className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-2xl font-serif font-semibold text-slate-900 mb-4">ログインが必要です</h3>
+            <h3 className="text-2xl font-serif font-semibold text-slate-900 mb-4">{t('auth.loginRequired')}</h3>
             <p className="text-slate-600 mb-6">
-              この機能を利用するには、会員としてログインする必要があります。
+              {t('auth.loginRequiredMessage')}
             </p>
             <div className="flex gap-3">
               <Button 
@@ -901,14 +905,14 @@ const HomePage: React.FC = () => {
                 }}
                 className="flex-1 bg-black text-white hover:bg-gray-800"
               >
-                ログイン
+                {t('auth.login')}
               </Button>
               <Button 
                 onClick={() => setShowLoginPrompt(false)}
                 variant="outline"
                 className="flex-1"
               >
-                キャンセル
+                {t('common.cancel')}
               </Button>
             </div>
           </div>

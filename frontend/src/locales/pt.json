@@ -285,6 +285,9 @@
     "typing": "Digitando..."
   },
   "auth": {
+    "login": "Entrar",
+    "loginRequired": "Login necessário",
+    "loginRequiredMessage": "Você precisa fazer login como membro para usar este recurso.",
     "email": "E-mail",
     "password": "Senha",
     "confirmPassword": "Confirmar senha",

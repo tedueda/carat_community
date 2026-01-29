@@ -285,6 +285,9 @@
     "typing": "En train d'écrire..."
   },
   "auth": {
+    "login": "Connexion",
+    "loginRequired": "Connexion requise",
+    "loginRequiredMessage": "Vous devez vous connecter en tant que membre pour utiliser cette fonctionnalité.",
     "email": "E-mail",
     "password": "Mot de passe",
     "confirmPassword": "Confirmer le mot de passe",
