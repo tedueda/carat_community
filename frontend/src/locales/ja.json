@@ -285,6 +285,9 @@
     "typing": "入力中..."
   },
   "auth": {
+    "login": "ログイン",
+    "loginRequired": "ログインが必要です",
+    "loginRequiredMessage": "この機能を利用するには、会員としてログインする必要があります。",
     "email": "メールアドレス",
     "password": "パスワード",
     "confirmPassword": "パスワード（確認）",

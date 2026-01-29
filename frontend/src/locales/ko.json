@@ -285,6 +285,9 @@
     "typing": "입력 중..."
   },
   "auth": {
+    "login": "로그인",
+    "loginRequired": "로그인이 필요합니다",
+    "loginRequiredMessage": "이 기능을 사용하려면 회원으로 로그인해야 합니다.",
     "email": "이메일",
     "password": "비밀번호",
     "confirmPassword": "비밀번호 확인",

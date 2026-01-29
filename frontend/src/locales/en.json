@@ -285,6 +285,9 @@
     "typing": "Typing..."
   },
   "auth": {
+    "login": "Login",
+    "loginRequired": "Login required",
+    "loginRequiredMessage": "You need to login as a member to use this feature.",
     "email": "Email",
     "password": "Password",
     "confirmPassword": "Confirm password",

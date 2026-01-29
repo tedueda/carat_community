@@ -285,6 +285,9 @@
     "typing": "Sta scrivendo..."
   },
   "auth": {
+    "login": "Accedi",
+    "loginRequired": "Accesso richiesto",
+    "loginRequiredMessage": "Devi accedere come membro per utilizzare questa funzione.",
     "email": "E-mail",
     "password": "Password",
     "confirmPassword": "Conferma password",
