@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { IdentityBadge } from "@/components/ui/IdentityBadge";
 import { API_URL } from "@/config";
 import { createApiClient } from "@/lib/apiClient";
@@ -24,6 +25,7 @@ const getFlagImageUrl = (code: string | null | undefined): string => {
 };
 
 export function MatchCard({ item }: { item: Item }) {
+  const { t } = useTranslation();
   const [liked, setLiked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
@@ -64,14 +66,14 @@ export function MatchCard({ item }: { item: Item }) {
       setLiked(true);
       
       if (data.matched) {
-        alert('✨ マッチしました！');
+        alert(`✨ ${t('matching.matched')}`);
         navigate('/matching/matches');
       } else {
         navigate('/matching/likes');
       }
     } catch (err) {
       console.error("Like failed:", err);
-      alert('いいねに失敗しました');
+      alert(t('matching.likeFailed'));
     } finally {
       setLoading(false);
     }
@@ -114,7 +116,7 @@ export function MatchCard({ item }: { item: Item }) {
       await navigateToComposeOrChat(apiClient, navigate, item.user_id, currentUserId);
     } catch (err) {
       console.error('Failed to navigate to chat:', err);
-      alert('エラーが発生しました');
+      alert(t('matching.errorOccurred'));
     }
   }
 
@@ -125,22 +127,22 @@ export function MatchCard({ item }: { item: Item }) {
         <div className="bg-white rounded-xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
           <div className="text-center">
             <Lock className="h-12 w-12 mx-auto text-gray-500 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">ログインが必要です</h3>
+            <h3 className="text-lg font-semibold mb-2">{t('matching.loginRequired')}</h3>
             <p className="text-gray-600 mb-4 text-sm">
-              この機能を利用するにはログインしてください。
+              {t('matching.loginRequiredMessage')}
             </p>
             <div className="flex gap-2">
               <button
                 onClick={() => setShowLoginModal(false)}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
               >
-                閉じる
+                {t('common.close')}
               </button>
               <button
                 onClick={() => navigate('/login')}
                 className="flex-1 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800"
               >
-                ログイン
+                {t('auth.login')}
               </button>
             </div>
           </div>
@@ -152,22 +154,22 @@ export function MatchCard({ item }: { item: Item }) {
         <div className="bg-white rounded-xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
           <div className="text-center">
             <Lock className="h-12 w-12 mx-auto text-yellow-500 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">有料会員限定機能</h3>
+            <h3 className="text-lg font-semibold mb-2">{t('matching.paidMemberOnly')}</h3>
             <p className="text-gray-600 mb-4 text-sm">
-              プロフィール詳細の閲覧、いいね、チャットは有料会員のみご利用いただけます。
+              {t('matching.paidMemberOnlyMessage')}
             </p>
             <div className="flex gap-2">
               <button
                 onClick={() => setShowUpgradeModal(false)}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
               >
-                閉じる
+                {t('common.close')}
               </button>
               <button
                 onClick={() => navigate('/account')}
                 className="flex-1 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
               >
-                有料会員になる
+                {t('matching.becomePaidMember')}
               </button>
             </div>
           </div>
@@ -256,14 +258,14 @@ export function MatchCard({ item }: { item: Item }) {
               ${loading ? "opacity-50 cursor-wait" : ""}
             `}
           >
-            {liked ? "💎 お気に入り" : "💎 お気に入り"}
+            💎 {t('matching.favorite')}
           </button>
           <button
             onClick={handleMessage}
             className="flex-1 rounded-md border border-gray-300 px-2 py-1.5 text-center text-xs font-medium text-gray-700 transition-all hover:bg-gray-100 active:scale-95"
-            aria-label={`${item.display_name || "このユーザー"}とチャットする`}
+            aria-label={`${item.display_name || "User"}${t('matching.chat')}`}
           >
-            チャットをする
+            {t('matching.chat')}
           </button>
         </div>
       </div>

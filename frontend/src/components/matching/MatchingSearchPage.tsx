@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParams } from 'react-router-dom';
 import { TopTabs } from './TopTabs';
@@ -20,6 +21,7 @@ type MatchItem = {
 };
 
 const MatchingSearchPage: React.FC = () => {
+  const { t } = useTranslation();
   const { token } = useAuth();
   const [searchParams] = useSearchParams();
   const segment = searchParams.get("segment") || "gay";
@@ -149,7 +151,7 @@ const MatchingSearchPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50/30">
       <div className="mx-auto max-w-6xl px-4 py-6">
         <h1 className="mb-6 text-2xl font-bold text-gray-900">
-          検索一覧
+          {t('matching.searchList')}
         </h1>
         
         <TopTabs />
@@ -161,7 +163,7 @@ const MatchingSearchPage: React.FC = () => {
             className="w-full flex items-center justify-center gap-2 bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors"
           >
             <SlidersHorizontal className="h-5 w-5" />
-            <span className="font-medium">検索条件</span>
+            <span className="font-medium">{t('matching.searchConditions')}</span>
             {(selectedPrefecture || selectedAgeBand || selectedOccupation || selectedMeetPref) && (
               <span className="ml-2 bg-white text-black text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                 {[selectedPrefecture, selectedAgeBand, selectedOccupation, selectedMeetPref].filter(Boolean).length}
@@ -175,7 +177,7 @@ const MatchingSearchPage: React.FC = () => {
           <div className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end">
             <div className="bg-white w-full rounded-t-2xl max-h-[80vh] overflow-y-auto">
               <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">検索条件</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{t('matching.searchConditions')}</h3>
                 <button
                   onClick={() => setShowFilterModal(false)}
                   className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -186,13 +188,13 @@ const MatchingSearchPage: React.FC = () => {
               
               <div className="p-4 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">居住地</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('matching.residence')}</label>
                   <select
                     value={selectedPrefecture}
                     onChange={(e) => setSelectedPrefecture(e.target.value)}
                     className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                   >
-                    <option value="">すべて</option>
+                    <option value="">{t('matching.all')}</option>
                     {PREFECTURES.map((pref) => (
                       <option key={pref} value={pref}>{pref}</option>
                     ))}
@@ -200,13 +202,13 @@ const MatchingSearchPage: React.FC = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">年代</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('matching.ageGroup')}</label>
                   <select
                     value={selectedAgeBand}
                     onChange={(e) => setSelectedAgeBand(e.target.value)}
                     className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                   >
-                    <option value="">すべて</option>
+                    <option value="">{t('matching.all')}</option>
                     {AGE_BANDS.map((age) => (
                       <option key={age} value={age}>{age}</option>
                     ))}
@@ -214,13 +216,13 @@ const MatchingSearchPage: React.FC = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">職種</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('matching.occupation')}</label>
                   <select
                     value={selectedOccupation}
                     onChange={(e) => setSelectedOccupation(e.target.value)}
                     className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                   >
-                    <option value="">すべて</option>
+                    <option value="">{t('matching.all')}</option>
                     {OCCUPATIONS.map((occ) => (
                       <option key={occ} value={occ}>{occ}</option>
                     ))}
@@ -228,13 +230,13 @@ const MatchingSearchPage: React.FC = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">マッチングの目的</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('matching.matchingPurpose')}</label>
                   <select
                     value={selectedMeetPref}
                     onChange={(e) => setSelectedMeetPref(e.target.value)}
                     className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                   >
-                    <option value="">すべて</option>
+                    <option value="">{t('matching.all')}</option>
                     {MEET_PREFS.map((pref) => (
                       <option key={pref} value={pref}>{pref}</option>
                     ))}
@@ -249,13 +251,13 @@ const MatchingSearchPage: React.FC = () => {
                     }}
                     className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
                   >
-                    クリア
+                    {t('matching.clear')}
                   </button>
                   <button
                     onClick={() => setShowFilterModal(false)}
                     className="flex-1 px-4 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium"
                   >
-                    適用
+                    {t('matching.apply')}
                   </button>
                 </div>
               </div>
@@ -266,64 +268,64 @@ const MatchingSearchPage: React.FC = () => {
         {/* Desktop Filter Section */}
         <div className="hidden md:block mb-6 bg-white rounded-lg border border-gray-200 p-4">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-gray-700">条件検索</h3>
+            <h3 className="text-sm font-semibold text-gray-700">{t('matching.conditionalSearch')}</h3>
             {(selectedPrefecture || selectedAgeBand || selectedOccupation || selectedMeetPref) && (
               <button
                 onClick={clearFilters}
                 className="text-xs text-gray-500 hover:text-gray-700 underline"
               >
-                クリア
+                {t('matching.clear')}
               </button>
             )}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">居住地</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">{t('matching.residence')}</label>
               <select
                 value={selectedPrefecture}
                 onChange={(e) => setSelectedPrefecture(e.target.value)}
                 className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               >
-                <option value="">すべて</option>
+                <option value="">{t('matching.all')}</option>
                 {PREFECTURES.map((pref) => (
                   <option key={pref} value={pref}>{pref}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">年代</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">{t('matching.ageGroup')}</label>
               <select
                 value={selectedAgeBand}
                 onChange={(e) => setSelectedAgeBand(e.target.value)}
                 className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               >
-                <option value="">すべて</option>
+                <option value="">{t('matching.all')}</option>
                 {AGE_BANDS.map((age) => (
                   <option key={age} value={age}>{age}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">職種</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">{t('matching.occupation')}</label>
               <select
                 value={selectedOccupation}
                 onChange={(e) => setSelectedOccupation(e.target.value)}
                 className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               >
-                <option value="">すべて</option>
+                <option value="">{t('matching.all')}</option>
                 {OCCUPATIONS.map((occ) => (
                   <option key={occ} value={occ}>{occ}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">マッチングの目的</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">{t('matching.matchingPurpose')}</label>
               <select
                 value={selectedMeetPref}
                 onChange={(e) => setSelectedMeetPref(e.target.value)}
                 className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               >
-                <option value="">すべて</option>
+                <option value="">{t('matching.all')}</option>
                 {MEET_PREFS.map((pref) => (
                   <option key={pref} value={pref}>{pref}</option>
                 ))}
@@ -334,7 +336,7 @@ const MatchingSearchPage: React.FC = () => {
         
         {loading && (
           <div className="flex items-center justify-center py-12">
-            <div className="text-gray-600">読み込み中...</div>
+            <div className="text-gray-600">{t('matching.loading')}</div>
           </div>
         )}
         
@@ -355,8 +357,8 @@ const MatchingSearchPage: React.FC = () => {
         {!loading && !error && items.length === 0 && (
           <div className="flex min-h-[400px] items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-white">
             <div className="text-center">
-              <p className="text-lg font-medium text-gray-600">該当するユーザーがいません</p>
-              <p className="mt-2 text-sm text-gray-500">別のタブを試してみてください</p>
+              <p className="text-lg font-medium text-gray-600">{t('matching.noUsersFound')}</p>
+              <p className="mt-2 text-sm text-gray-500">{t('matching.tryOtherTab')}</p>
             </div>
           </div>
         )}

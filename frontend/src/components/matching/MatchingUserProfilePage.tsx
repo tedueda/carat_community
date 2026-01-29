@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { API_URL } from '@/config';
@@ -33,6 +34,7 @@ const getFlagImageUrl = (code: string | null | undefined): string => {
 };
 
 const MatchingUserProfilePage: React.FC = () => {
+  const { t } = useTranslation();
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
   const { token, user } = useAuth();
@@ -77,15 +79,15 @@ const MatchingUserProfilePage: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
         <Lock className="h-16 w-16 text-yellow-500 mb-4" />
-        <h2 className="text-xl font-semibold mb-2">有料会員限定機能</h2>
+        <h2 className="text-xl font-semibold mb-2">{t('matching.paidMemberOnly')}</h2>
         <p className="text-gray-600 mb-6 text-center">
-          会員プロフィールの閲覧は有料会員のみご利用いただけます。
+          {t('matching.profileViewOnlyForPaidMembers')}
         </p>
         <button
           onClick={() => navigate('/account')}
           className="px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-medium"
         >
-          有料会員になる
+          {t('matching.becomePaidMember')}
         </button>
       </div>
     );
@@ -99,7 +101,7 @@ const MatchingUserProfilePage: React.FC = () => {
       await navigateToComposeOrChat(apiClient, navigate, parseInt(userId), user?.id || null);
     } catch (e) {
       console.error('Failed to navigate to chat:', e);
-      alert('エラーが発生しました');
+      alert(t('matching.errorOccurred'));
     }
   };
 
@@ -110,18 +112,18 @@ const MatchingUserProfilePage: React.FC = () => {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error('いいねに失敗しました');
-      alert('❤️ いいね！を送信しました');
+      if (!res.ok) throw new Error(t('matching.likeFailed'));
+      alert(`❤️ ${t('matching.likeSent')}`);
       navigate('/matching/matches');
     } catch (e: any) {
-      alert(`エラー: ${e?.message || 'いいねに失敗しました'}`);
+      alert(`${t('matching.errorOccurred')}: ${e?.message || t('matching.likeFailed')}`);
     }
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-gray-500">読み込み中...</div>
+        <div className="text-gray-500">{t('matching.loading')}</div>
       </div>
     );
   }
@@ -129,7 +131,7 @@ const MatchingUserProfilePage: React.FC = () => {
   if (error || !profile) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-red-600">{error || 'プロフィールが見つかりません'}</div>
+        <div className="text-red-600">{error || t('matching.profileNotFound')}</div>
       </div>
     );
   }
@@ -142,7 +144,7 @@ const MatchingUserProfilePage: React.FC = () => {
           onClick={() => navigate(-1)}
           className="text-gray-600 hover:text-black"
         >
-          ← 戻る
+          ← {t('matching.back')}
         </button>
         <h1 className="text-lg font-semibold text-black">{profile.display_name}</h1>
       </div>
@@ -225,13 +227,13 @@ const MatchingUserProfilePage: React.FC = () => {
               onClick={handleLike}
               className="rounded-lg px-4 py-2.5 text-sm font-medium transition-all bg-black text-white hover:bg-gray-800 active:scale-95"
             >
-              ♡ お気に入り
+              ♡ {t('matching.favorite')}
             </button>
             <button
               onClick={handleSendMessage}
               className="rounded-lg px-4 py-2.5 text-sm font-medium text-gray-700 transition-all bg-white hover:bg-gray-50 active:scale-95 border border-gray-300"
             >
-              チャットをする
+              {t('matching.chat')}
             </button>
           </div>
         </div>
@@ -241,34 +243,34 @@ const MatchingUserProfilePage: React.FC = () => {
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-black mb-2">{profile.display_name}</h2>
             {profile.nickname && profile.nickname !== profile.display_name && (
-              <div className="text-gray-600 mb-2">ニックネーム: {profile.nickname}</div>
+              <div className="text-gray-600 mb-2">{t('matching.nickname')}: {profile.nickname}</div>
             )}
             <div className="text-gray-600 space-y-1">
-              {profile.age_band && <div>年齢: {profile.age_band}</div>}
+              {profile.age_band && <div>{t('matching.age')}: {profile.age_band}</div>}
               {profile.prefecture && (
                 <div>
-                  居住地: {profile.prefecture}
+                  {t('matching.residenceLocation')}: {profile.prefecture}
                   {profile.residence_detail && ` ${profile.residence_detail}`}
                 </div>
               )}
-              {profile.hometown && <div>出身地: {profile.hometown}</div>}
-              {profile.occupation && <div>職業: {profile.occupation}</div>}
-              <div>血液型: {profile.blood_type || '未設定'}</div>
-              <div>星座: {profile.zodiac || '未設定'}</div>
+              {profile.hometown && <div>{t('matching.hometown')}: {profile.hometown}</div>}
+              {profile.occupation && <div>{t('matching.occupation')}: {profile.occupation}</div>}
+              <div>{t('matching.bloodType')}: {profile.blood_type || t('matching.notSet')}</div>
+              <div>{t('matching.zodiac')}: {profile.zodiac || t('matching.notSet')}</div>
             </div>
           </div>
 
           {/* Identity & Romance Targets */}
           {profile.identity && (
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-black mb-3">アイデンティティ</h3>
+              <h3 className="text-lg font-semibold text-black mb-3">{t('matching.identity')}</h3>
               <div className="text-gray-700">{profile.identity}</div>
             </div>
           )}
 
           {profile.romance_targets && profile.romance_targets.length > 0 && (
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-black mb-3">恋愛対象</h3>
+              <h3 className="text-lg font-semibold text-black mb-3">{t('matching.romanceTargets')}</h3>
               <div className="flex flex-wrap gap-2">
                 {profile.romance_targets.map((target, idx) => (
                   <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm border border-gray-200">
@@ -282,7 +284,7 @@ const MatchingUserProfilePage: React.FC = () => {
           {/* Meet Preference */}
           {profile.meet_pref && (
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-black mb-3">出会いの目的</h3>
+              <h3 className="text-lg font-semibold text-black mb-3">{t('matching.meetingPurpose')}</h3>
               <div className="text-gray-700">{profile.meet_pref}</div>
             </div>
           )}
@@ -290,7 +292,7 @@ const MatchingUserProfilePage: React.FC = () => {
           {/* Self Introduction */}
           {profile.bio && (
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-black mb-3">自己紹介</h3>
+              <h3 className="text-lg font-semibold text-black mb-3">{t('matching.selfIntroduction')}</h3>
               <div className="text-gray-700 whitespace-pre-wrap">{profile.bio}</div>
             </div>
           )}
@@ -298,7 +300,7 @@ const MatchingUserProfilePage: React.FC = () => {
           {/* Hobbies */}
           {profile.hobbies && profile.hobbies.length > 0 && (
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-black mb-3">趣味</h3>
+              <h3 className="text-lg font-semibold text-black mb-3">{t('matching.hobbies')}</h3>
               <div className="flex flex-wrap gap-2">
                 {profile.hobbies.map((hobby, idx) => (
                   <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm border border-gray-200">
@@ -318,13 +320,13 @@ const MatchingUserProfilePage: React.FC = () => {
             onClick={handleLike}
             className="flex-1 rounded-full px-6 py-4 text-base font-semibold transition-all bg-black text-white hover:bg-gray-800 active:scale-95 shadow-xl"
           >
-            ♡ お気に入り
+            ♡ {t('matching.favorite')}
           </button>
           <button
             onClick={handleSendMessage}
             className="flex-1 rounded-full px-6 py-4 text-base font-semibold text-gray-800 transition-all bg-white hover:bg-gray-50 active:scale-95 shadow-xl border border-gray-200"
           >
-            💬 チャットをする
+            💬 {t('matching.chat')}
           </button>
         </div>
       </div>
