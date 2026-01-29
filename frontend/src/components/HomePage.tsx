@@ -780,10 +780,10 @@ const HomePage: React.FC = () => {
                     </span>
                   </div>
                   <h4 className="font-bold text-slate-900 mb-3 line-clamp-2 text-lg leading-snug group-hover:text-gray-700 transition-colors">
-                    {article.title}
+                    {article.display_title || article.title}
                   </h4>
                   <p className="text-sm text-slate-600 mb-4 line-clamp-3 leading-relaxed">
-                    {article.body}
+                    {article.display_text || article.body}
                   </p>
                   <div className="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-gray-100">
                     <span>{new Date(article.created_at).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/')}</span>
@@ -840,7 +840,7 @@ const HomePage: React.FC = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedNewsArticle(null)}>
           <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900">{selectedNewsArticle.title}</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{selectedNewsArticle.display_title || selectedNewsArticle.title}</h2>
               <button
                 onClick={() => setSelectedNewsArticle(null)}
                 className="text-gray-500 hover:text-gray-700"
@@ -876,7 +876,7 @@ const HomePage: React.FC = () => {
               </div>
               
               <div className="prose max-w-none">
-                <p className="text-gray-700 whitespace-pre-wrap">{selectedNewsArticle.body}</p>
+                <p className="text-gray-700 whitespace-pre-wrap">{selectedNewsArticle.display_text || selectedNewsArticle.body}</p>
               </div>
               
               <div className="pt-4 border-t border-gray-200">
