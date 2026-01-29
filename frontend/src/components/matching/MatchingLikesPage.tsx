@@ -11,9 +11,25 @@ type LikeItem = {
   user_id: number;
   display_name: string;
   identity?: string | null;
+  nationality?: string | null;
   prefecture?: string | null;
   age_band?: string | null;
   avatar_url?: string | null;
+};
+
+const getFlagEmoji = (code: string | null | undefined): string => {
+  if (!code) return '';
+  const flagMap: Record<string, string> = {
+    'JP': '🇯🇵', 'US': '🇺🇸', 'GB': '🇬🇧', 'CA': '🇨🇦', 'AU': '🇦🇺', 'NZ': '🇳🇿',
+    'DE': '🇩🇪', 'FR': '🇫🇷', 'IT': '🇮🇹', 'ES': '🇪🇸', 'PT': '🇵🇹', 'NL': '🇳🇱',
+    'BE': '🇧🇪', 'CH': '🇨🇭', 'AT': '🇦🇹', 'SE': '🇸🇪', 'NO': '🇳🇴', 'DK': '🇩🇰',
+    'FI': '🇫🇮', 'IE': '🇮🇪', 'KR': '🇰🇷', 'CN': '🇨🇳', 'TW': '🇹🇼', 'HK': '🇭🇰',
+    'SG': '🇸🇬', 'TH': '🇹🇭', 'VN': '🇻🇳', 'PH': '🇵🇭', 'ID': '🇮🇩', 'MY': '🇲🇾',
+    'IN': '🇮🇳', 'BR': '🇧🇷', 'MX': '🇲🇽', 'AR': '🇦🇷', 'CL': '🇨🇱', 'CO': '🇨🇴',
+    'PE': '🇵🇪', 'ZA': '🇿🇦', 'EG': '🇪🇬', 'IL': '🇮🇱', 'AE': '🇦🇪', 'RU': '🇷🇺',
+    'PL': '🇵🇱', 'CZ': '🇨🇿', 'GR': '🇬🇷', 'TR': '🇹🇷', 'OTHER': '🌍',
+  };
+  return flagMap[code] || '🌍';
 };
 
 type ViewMode = 'list' | 'grid';
@@ -170,9 +186,15 @@ const MatchingLikesPage: React.FC = () => {
             {items.map((like) => (
               <div 
                 key={like.like_id} 
-                className="border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                className="border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer relative"
                 onClick={() => navigate(`/matching/users/${like.user_id}`)}
               >
+                {/* 国旗バッジ（左上） */}
+                {like.nationality && (
+                  <div className="absolute left-2 top-2 bg-white/90 rounded-full px-2 py-1 shadow-sm z-10">
+                    <span className="text-lg">{getFlagEmoji(like.nationality)}</span>
+                  </div>
+                )}
                 {like.avatar_url && like.avatar_url !== '' ? (
                   <img 
                     src={like.avatar_url.startsWith('http') ? like.avatar_url : `${API_URL}${like.avatar_url}`}

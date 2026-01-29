@@ -11,6 +11,7 @@ type UserProfile = {
   display_name: string;
   nickname?: string;
   avatar_url?: string;
+  nationality?: string;
   age_band?: string;
   prefecture?: string;
   residence_detail?: string;
@@ -24,6 +25,21 @@ type UserProfile = {
   romance_targets?: string[];
   hobbies?: string[];
   images?: Array<{ id: number; image_url: string; order?: number }>;
+};
+
+const getFlagEmoji = (code: string | null | undefined): string => {
+  if (!code) return '';
+  const flagMap: Record<string, string> = {
+    'JP': '🇯🇵', 'US': '🇺🇸', 'GB': '🇬🇧', 'CA': '🇨🇦', 'AU': '🇦🇺', 'NZ': '🇳🇿',
+    'DE': '🇩🇪', 'FR': '🇫🇷', 'IT': '🇮🇹', 'ES': '🇪🇸', 'PT': '🇵🇹', 'NL': '🇳🇱',
+    'BE': '🇧🇪', 'CH': '🇨🇭', 'AT': '🇦🇹', 'SE': '🇸🇪', 'NO': '🇳🇴', 'DK': '🇩🇰',
+    'FI': '🇫🇮', 'IE': '🇮🇪', 'KR': '🇰🇷', 'CN': '🇨🇳', 'TW': '🇹🇼', 'HK': '🇭🇰',
+    'SG': '🇸🇬', 'TH': '🇹🇭', 'VN': '🇻🇳', 'PH': '🇵🇭', 'ID': '🇮🇩', 'MY': '🇲🇾',
+    'IN': '🇮🇳', 'BR': '🇧🇷', 'MX': '🇲🇽', 'AR': '🇦🇷', 'CL': '🇨🇱', 'CO': '🇨🇴',
+    'PE': '🇵🇪', 'ZA': '🇿🇦', 'EG': '🇪🇬', 'IL': '🇮🇱', 'AE': '🇦🇪', 'RU': '🇷🇺',
+    'PL': '🇵🇱', 'CZ': '🇨🇿', 'GR': '🇬🇷', 'TR': '🇹🇷', 'OTHER': '🌍',
+  };
+  return flagMap[code] || '🌍';
 };
 
 const MatchingUserProfilePage: React.FC = () => {
@@ -145,6 +161,12 @@ const MatchingUserProfilePage: React.FC = () => {
       <div className="max-w-2xl mx-auto">
         {/* Image Gallery */}
         <div className="relative mx-auto max-w-xl md:max-w-2xl max-h-[420px] md:max-h-[480px] aspect-[4/3] rounded-lg overflow-hidden bg-gray-100 mb-4 md:mb-0">
+          {/* 国旗バッジ（左上） */}
+          {profile.nationality && (
+            <div className="absolute left-3 top-3 bg-white/90 rounded-full px-3 py-1.5 shadow-md z-20">
+              <span className="text-2xl">{getFlagEmoji(profile.nationality)}</span>
+            </div>
+          )}
           {profile.images && profile.images.length > 0 ? (
             <>
               <img

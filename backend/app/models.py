@@ -389,6 +389,7 @@ class MatchingProfile(Base):
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     nickname = Column(String(100))
     display_flag = Column(Boolean, nullable=False, default=True)
+    nationality = Column(String(100), nullable=True)  # 国籍（ISO 3166-1 alpha-2 code, e.g., "JP", "US"）
     prefecture = Column(String(100), nullable=False, default="")
     residence_detail = Column(String(100))
     hometown = Column(String(100))
