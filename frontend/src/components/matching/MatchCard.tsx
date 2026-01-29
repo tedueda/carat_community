@@ -201,9 +201,9 @@ export function MatchCard({ item }: { item: Item }) {
           </div>
         )}
         
-        {/* 国旗バッジ（右上） */}
+        {/* 国旗バッジ（左上） */}
         {item.nationality && (
-          <div className="absolute right-2 top-2 bg-white/90 rounded-full px-1.5 py-1 shadow-sm z-10 flex items-center gap-1">
+          <div className="absolute left-2 top-2 bg-white/90 rounded-full px-1.5 py-1 shadow-sm z-10 flex items-center gap-1">
             {getFlagImageUrl(item.nationality) ? (
               <img 
                 src={getFlagImageUrl(item.nationality)} 
@@ -221,9 +221,9 @@ export function MatchCard({ item }: { item: Item }) {
           </div>
         )}
         
-        {/* 性自認バッジ（右上、国旗の下） */}
+        {/* 性自認バッジ（右上） */}
         {item.identity && (
-          <div className="absolute right-2 top-12">
+          <div className="absolute right-2 top-2">
             <IdentityBadge value={item.identity} />
           </div>
         )}
