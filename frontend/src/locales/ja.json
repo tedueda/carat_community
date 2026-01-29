@@ -478,6 +478,14 @@
       "gay": "G",
       "other": "その他"
     },
+    "nav": {
+      "search": "検索",
+      "favorites": "お気に入り",
+      "chats": "チャット",
+      "editProfile": "プロフィール編集",
+      "edit": "編集"
+    },
+    "pageTitle": "マッチング",
     "nationality": "国籍",
     "nationalities": {
       "JP": "日本",

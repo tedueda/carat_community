@@ -408,6 +408,14 @@
       "gay": "G",
       "other": "Outro"
     },
+    "nav": {
+      "search": "Buscar",
+      "favorites": "Favoritos",
+      "chats": "Chats",
+      "editProfile": "Editar perfil",
+      "edit": "Editar"
+    },
+    "pageTitle": "Matching",
     "nationality": "Nacionalidade",
     "nationalities": {
       "JP": "Japão",
