@@ -1,7 +1,7 @@
 """Add nationality column to matching_profiles table
 
 Revision ID: 20260129_nationality
-Revises: 
+Revises: 20260127_user_lang
 Create Date: 2026-01-29
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '20260129_nationality'
-down_revision = None
+down_revision = '20260127_user_lang'
 branch_labels = None
 depends_on = None
 

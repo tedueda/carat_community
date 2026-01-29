@@ -210,16 +210,16 @@ export function MatchCard({ item }: { item: Item }) {
           </div>
         )}
         
-        {/* 国旗バッジ（左上） */}
+        {/* 国旗バッジ（右上） */}
         {item.nationality && (
-          <div className="absolute left-2 top-2 bg-white/90 rounded-full px-2 py-1 shadow-sm">
+          <div className="absolute right-2 top-2 bg-white/90 rounded-full px-2 py-1 shadow-sm z-10">
             <span className="text-lg">{getFlagEmoji(item.nationality)}</span>
           </div>
         )}
         
-        {/* 性自認バッジ（右上） */}
+        {/* 性自認バッジ（右上、国旗の下） */}
         {item.identity && (
-          <div className="absolute right-2 top-2">
+          <div className="absolute right-2 top-12">
             <IdentityBadge value={item.identity} />
           </div>
         )}

@@ -189,9 +189,9 @@ const MatchingLikesPage: React.FC = () => {
                 className="border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer relative"
                 onClick={() => navigate(`/matching/users/${like.user_id}`)}
               >
-                {/* 国旗バッジ（左上） */}
+                {/* 国旗バッジ（右上） */}
                 {like.nationality && (
-                  <div className="absolute left-2 top-2 bg-white/90 rounded-full px-2 py-1 shadow-sm z-10">
+                  <div className="absolute right-2 top-2 bg-white/90 rounded-full px-2 py-1 shadow-sm z-10">
                     <span className="text-lg">{getFlagEmoji(like.nationality)}</span>
                   </div>
                 )}
