@@ -561,6 +561,145 @@
       "counselor": "Looking for Counselor",
       "member": "Recruiting Members",
       "other": "Other"
+    },
+    "profile": {
+      "title": "Edit Profile (Matching)",
+      "premiumOnly": "Premium Members Only",
+      "premiumOnlyDesc": "Profile editing is only available for premium members.",
+      "becomePremium": "Become Premium",
+      "images": {
+        "title": "Profile Images (up to 4)",
+        "main": "Main",
+        "add": "Add",
+        "addButton": "Add Image",
+        "uploading": "Uploading image...",
+        "noImages": "No profile images",
+        "noImagesDesc": "Add images from the thumbnails below",
+        "tips": "• Click image to enlarge\n• First image is shown as main image to other users\n• Drag & drop thumbnails to reorder\n• Use × to delete, + to add\n• JPEG/PNG/WEBP format, up to 20MB total"
+      },
+      "visibility": {
+        "title": "Profile Visibility",
+        "public": "Your profile is public. It will appear in matching search.",
+        "private": "Your profile is private. It will not appear in matching search.",
+        "tipOn": "Turn ON to show your profile in matching search",
+        "tipOff": "Turn OFF to hide from search results (existing matches and chats continue)"
+      },
+      "account": {
+        "title": "Account Information",
+        "userId": "User ID (Phone Number)",
+        "displayName": "Display Name (always shown)",
+        "realName": "Real Name",
+        "realNameTip": "Required for identity verification. Not shown on profile.",
+        "email": "Email Address",
+        "password": "Password (only if changing)",
+        "newPassword": "New Password"
+      },
+      "basic": {
+        "title": "Basic Information",
+        "nationality": "Nationality",
+        "residence": "Residence",
+        "residenceDetail": "Residence Detail",
+        "ageBand": "Age Range",
+        "occupation": "Occupation",
+        "bloodType": "Blood Type",
+        "zodiac": "Zodiac Sign",
+        "meetPref": "Matching Purpose",
+        "identity": "Gender Identity",
+        "identityTip": "Displayed as a badge on your profile image.",
+        "romanceTarget": "Romantic Interest (Search Category)",
+        "romanceTargetTip": "Multiple selections allowed. Used for matching search."
+      },
+      "hobbies": {
+        "title": "Interests & Hobbies",
+        "select": "Select (up to 5)",
+        "notSelected": "Not selected",
+        "modalTitle": "Select Interests & Hobbies (up to 5)",
+        "selected": "Selected",
+        "cancel": "Cancel",
+        "confirm": "Confirm"
+      },
+      "bio": {
+        "title": "Self Introduction",
+        "placeholder": "Write freely about yourself. Contact information is prohibited.",
+        "tip": "Do not include phone numbers, email addresses, LINE, or other contact information."
+      },
+      "preview": "Preview",
+      "previewTitle": "Profile Preview",
+      "save": "Save",
+      "saving": "Saving...",
+      "loading": "Loading...",
+      "selectPlaceholder": "Please select",
+      "hidden": "Hidden",
+      "notSelected": "Not selected",
+      "required": "Required"
+    },
+    "bloodTypes": {
+      "A": "Type A",
+      "B": "Type B",
+      "O": "Type O",
+      "AB": "Type AB",
+      "unknown": "Unknown"
+    },
+    "zodiacs": {
+      "aries": "Aries",
+      "taurus": "Taurus",
+      "gemini": "Gemini",
+      "cancer": "Cancer",
+      "leo": "Leo",
+      "virgo": "Virgo",
+      "libra": "Libra",
+      "scorpio": "Scorpio",
+      "sagittarius": "Sagittarius",
+      "capricorn": "Capricorn",
+      "aquarius": "Aquarius",
+      "pisces": "Pisces"
+    },
+    "identities": {
+      "gay": "Gay",
+      "lesbian": "Lesbian",
+      "transgender": "Transgender",
+      "bisexual": "Bisexual",
+      "queer": "Queer",
+      "male": "Male",
+      "female": "Female",
+      "hidden": "Hidden"
+    },
+    "romanceTargets": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "hobbyCatalog": {
+      "music": "Music",
+      "movies": "Movies",
+      "drama": "Drama",
+      "anime": "Anime",
+      "manga": "Manga",
+      "reading": "Reading",
+      "cafe": "Cafe",
+      "cooking": "Cooking",
+      "gourmet": "Gourmet",
+      "alcohol": "Alcohol",
+      "travel": "Travel",
+      "domesticTravel": "Domestic Travel",
+      "internationalTravel": "International Travel",
+      "photography": "Photography",
+      "camera": "Camera",
+      "karaoke": "Karaoke",
+      "gaming": "Gaming",
+      "boardGames": "Board Games",
+      "sportsWatching": "Sports Watching",
+      "gym": "Gym",
+      "running": "Running",
+      "hiking": "Hiking",
+      "camping": "Camping",
+      "fishing": "Fishing",
+      "yoga": "Yoga",
+      "dance": "Dance",
+      "artMuseum": "Art Museum",
+      "museum": "Museum",
+      "volunteer": "Volunteer",
+      "pets": "Pets"
     }
   }
 }

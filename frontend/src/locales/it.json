@@ -491,6 +491,145 @@
       "counselor": "Cerca consulente",
       "member": "Reclutamento membri",
       "other": "Altro"
+    },
+    "profile": {
+      "title": "Modifica profilo (Matching)",
+      "premiumOnly": "Solo membri premium",
+      "premiumOnlyDesc": "La modifica del profilo è disponibile solo per i membri premium.",
+      "becomePremium": "Diventa premium",
+      "images": {
+        "title": "Immagini profilo (max. 4)",
+        "main": "Principale",
+        "add": "Aggiungi",
+        "addButton": "Aggiungi immagine",
+        "uploading": "Caricamento immagine...",
+        "noImages": "Nessuna immagine profilo",
+        "noImagesDesc": "Aggiungi immagini dalle miniature qui sotto",
+        "tips": "• Clicca sull'immagine per ingrandire\n• La prima immagine viene mostrata come principale\n• Trascina e rilascia le miniature per riordinare\n• Usa × per eliminare, + per aggiungere\n• Formato JPEG/PNG/WEBP, fino a 20MB"
+      },
+      "visibility": {
+        "title": "Visibilità del profilo",
+        "public": "Il tuo profilo è pubblico. Apparirà nella ricerca.",
+        "private": "Il tuo profilo è privato. Non apparirà nella ricerca.",
+        "tipOn": "Attiva per mostrare il tuo profilo nella ricerca",
+        "tipOff": "Disattiva per nascondere dai risultati (match e chat esistenti continuano)"
+      },
+      "account": {
+        "title": "Informazioni account",
+        "userId": "ID utente (Telefono)",
+        "displayName": "Nome visualizzato (sempre mostrato)",
+        "realName": "Nome reale",
+        "realNameTip": "Richiesto per la verifica. Non mostrato nel profilo.",
+        "email": "Indirizzo e-mail",
+        "password": "Password (solo se cambi)",
+        "newPassword": "Nuova password"
+      },
+      "basic": {
+        "title": "Informazioni di base",
+        "nationality": "Nazionalità",
+        "residence": "Residenza",
+        "residenceDetail": "Dettaglio residenza",
+        "ageBand": "Fascia d'età",
+        "occupation": "Occupazione",
+        "bloodType": "Gruppo sanguigno",
+        "zodiac": "Segno zodiacale",
+        "meetPref": "Scopo del matching",
+        "identity": "Identità di genere",
+        "identityTip": "Mostrato come badge sulla tua immagine profilo.",
+        "romanceTarget": "Interesse romantico (Categoria)",
+        "romanceTargetTip": "Selezione multipla consentita. Usato per la ricerca."
+      },
+      "hobbies": {
+        "title": "Interessi e hobby",
+        "select": "Seleziona (max. 5)",
+        "notSelected": "Non selezionato",
+        "modalTitle": "Seleziona interessi e hobby (max. 5)",
+        "selected": "Selezionato",
+        "cancel": "Annulla",
+        "confirm": "Conferma"
+      },
+      "bio": {
+        "title": "Presentazione",
+        "placeholder": "Scrivi liberamente di te. Informazioni di contatto vietate.",
+        "tip": "Non includere telefono, e-mail, LINE o altre informazioni di contatto."
+      },
+      "preview": "Anteprima",
+      "previewTitle": "Anteprima profilo",
+      "save": "Salva",
+      "saving": "Salvataggio...",
+      "loading": "Caricamento...",
+      "selectPlaceholder": "Seleziona",
+      "hidden": "Nascosto",
+      "notSelected": "Non selezionato",
+      "required": "Obbligatorio"
+    },
+    "bloodTypes": {
+      "A": "Tipo A",
+      "B": "Tipo B",
+      "O": "Tipo O",
+      "AB": "Tipo AB",
+      "unknown": "Sconosciuto"
+    },
+    "zodiacs": {
+      "aries": "Ariete",
+      "taurus": "Toro",
+      "gemini": "Gemelli",
+      "cancer": "Cancro",
+      "leo": "Leone",
+      "virgo": "Vergine",
+      "libra": "Bilancia",
+      "scorpio": "Scorpione",
+      "sagittarius": "Sagittario",
+      "capricorn": "Capricorno",
+      "aquarius": "Acquario",
+      "pisces": "Pesci"
+    },
+    "identities": {
+      "gay": "Gay",
+      "lesbian": "Lesbica",
+      "transgender": "Transgender",
+      "bisexual": "Bisessuale",
+      "queer": "Queer",
+      "male": "Uomo",
+      "female": "Donna",
+      "hidden": "Nascosto"
+    },
+    "romanceTargets": {
+      "male": "Uomo",
+      "female": "Donna",
+      "other": "Altro"
+    },
+    "hobbyCatalog": {
+      "music": "Musica",
+      "movies": "Film",
+      "drama": "Drama",
+      "anime": "Anime",
+      "manga": "Manga",
+      "reading": "Lettura",
+      "cafe": "Caffè",
+      "cooking": "Cucina",
+      "gourmet": "Gastronomia",
+      "alcohol": "Alcol",
+      "travel": "Viaggi",
+      "domesticTravel": "Viaggi nazionali",
+      "internationalTravel": "Viaggi internazionali",
+      "photography": "Fotografia",
+      "camera": "Fotocamera",
+      "karaoke": "Karaoke",
+      "gaming": "Videogiochi",
+      "boardGames": "Giochi da tavolo",
+      "sportsWatching": "Guardare sport",
+      "gym": "Palestra",
+      "running": "Corsa",
+      "hiking": "Escursionismo",
+      "camping": "Campeggio",
+      "fishing": "Pesca",
+      "yoga": "Yoga",
+      "dance": "Danza",
+      "artMuseum": "Museo d'arte",
+      "museum": "Museo",
+      "volunteer": "Volontariato",
+      "pets": "Animali domestici"
     }
   }
 }

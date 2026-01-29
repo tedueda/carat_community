@@ -561,6 +561,145 @@
       "counselor": "相談相手探し",
       "member": "メンバー募集",
       "other": "その他"
+    },
+    "profile": {
+      "title": "プロフィール編集（マッチング）",
+      "premiumOnly": "有料会員限定機能",
+      "premiumOnlyDesc": "プロフィール編集は有料会員のみご利用いただけます。",
+      "becomePremium": "有料会員になる",
+      "images": {
+        "title": "プロフィール画像（最大4枚）",
+        "main": "メイン",
+        "add": "追加",
+        "addButton": "画像を追加",
+        "uploading": "画像をアップロード中...",
+        "noImages": "プロフィール画像がありません",
+        "noImagesDesc": "下のサムネイルから画像を追加してください",
+        "tips": "• 画像をクリックすると拡大表示されます\n• 1枚目の画像がメイン画像として他のユーザーに表示されます\n• サムネイルをドラッグ&ドロップで順序を変更できます\n• サムネイルの×ボタンで削除、+ボタンで追加できます\n• JPEG/PNG/WEBP形式、合計20MBまで"
+      },
+      "visibility": {
+        "title": "プロフィール公開設定",
+        "public": "プロフィールは公開されています。マッチング検索に表示されます。",
+        "private": "プロフィールは非公開です。マッチング検索に表示されません。",
+        "tipOn": "ONにすると、あなたのプロフィールがマッチング検索に表示されます",
+        "tipOff": "OFFにすると、検索結果に表示されなくなります（既存のマッチやチャットは継続）"
+      },
+      "account": {
+        "title": "アカウント情報",
+        "userId": "ユーザーID（携帯番号）",
+        "displayName": "表示名（常に表示される）",
+        "realName": "本名",
+        "realNameTip": "身分確認のために必要です。プロフィールには表示されません。",
+        "email": "メールアドレス",
+        "password": "パスワード（変更する場合のみ入力）",
+        "newPassword": "新しいパスワード"
+      },
+      "basic": {
+        "title": "基本情報",
+        "nationality": "国籍",
+        "residence": "居住地",
+        "residenceDetail": "居住地の詳細",
+        "ageBand": "年代",
+        "occupation": "職種",
+        "bloodType": "血液型",
+        "zodiac": "星座",
+        "meetPref": "マッチングの目的",
+        "identity": "性自認",
+        "identityTip": "プロフィール画像にバッジとして表示されます。",
+        "romanceTarget": "恋愛対象（検索分類）",
+        "romanceTargetTip": "複数選択可能。マッチング検索で使用されます。"
+      },
+      "hobbies": {
+        "title": "興味・趣味",
+        "select": "選ぶ（最大5個）",
+        "notSelected": "未選択",
+        "modalTitle": "興味・趣味を選択（最大5個）",
+        "selected": "選択中",
+        "cancel": "キャンセル",
+        "confirm": "決定"
+      },
+      "bio": {
+        "title": "自己紹介",
+        "placeholder": "あなたのことを自由に書いてください。連絡先の記載は禁止です。",
+        "tip": "電話番号、メールアドレス、LINEなどの連絡先は記載しないでください。"
+      },
+      "preview": "プレビュー",
+      "previewTitle": "プロフィールプレビュー",
+      "save": "保存",
+      "saving": "保存中...",
+      "loading": "読み込み中...",
+      "selectPlaceholder": "選択してください",
+      "hidden": "非表示",
+      "notSelected": "未選択",
+      "required": "必須"
+    },
+    "bloodTypes": {
+      "A": "A型",
+      "B": "B型",
+      "O": "O型",
+      "AB": "AB型",
+      "unknown": "不明"
+    },
+    "zodiacs": {
+      "aries": "牡羊座",
+      "taurus": "牡牛座",
+      "gemini": "双子座",
+      "cancer": "蟹座",
+      "leo": "獅子座",
+      "virgo": "乙女座",
+      "libra": "天秤座",
+      "scorpio": "蠍座",
+      "sagittarius": "射手座",
+      "capricorn": "山羊座",
+      "aquarius": "水瓶座",
+      "pisces": "魚座"
+    },
+    "identities": {
+      "gay": "ゲイ",
+      "lesbian": "レズ",
+      "transgender": "トランスジェンダー",
+      "bisexual": "バイセクシャル",
+      "queer": "クィア",
+      "male": "男性",
+      "female": "女性",
+      "hidden": "非表示"
+    },
+    "romanceTargets": {
+      "male": "男性",
+      "female": "女性",
+      "other": "その他"
+    },
+    "hobbyCatalog": {
+      "music": "音楽",
+      "movies": "映画",
+      "drama": "ドラマ",
+      "anime": "アニメ",
+      "manga": "漫画",
+      "reading": "読書",
+      "cafe": "カフェ",
+      "cooking": "料理",
+      "gourmet": "グルメ",
+      "alcohol": "お酒",
+      "travel": "旅行",
+      "domesticTravel": "国内旅行",
+      "internationalTravel": "海外旅行",
+      "photography": "写真",
+      "camera": "カメラ",
+      "karaoke": "カラオケ",
+      "gaming": "ゲーム",
+      "boardGames": "ボードゲーム",
+      "sportsWatching": "スポーツ観戦",
+      "gym": "筋トレ",
+      "running": "ランニング",
+      "hiking": "ハイキング",
+      "camping": "キャンプ",
+      "fishing": "釣り",
+      "yoga": "ヨガ",
+      "dance": "ダンス",
+      "artMuseum": "美術館",
+      "museum": "博物館",
+      "volunteer": "ボランティア",
+      "pets": "ペット"
     }
   }
 }
