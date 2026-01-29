@@ -151,9 +151,9 @@ const MatchingUserProfilePage: React.FC = () => {
       <div className="max-w-2xl mx-auto">
         {/* Image Gallery */}
         <div className="relative mx-auto max-w-xl md:max-w-2xl max-h-[420px] md:max-h-[480px] aspect-[4/3] rounded-lg overflow-hidden bg-gray-100 mb-4 md:mb-0">
-          {/* 国旗バッジ（右上） */}
+          {/* 国旗バッジ（左上） */}
           {profile.nationality && (
-            <div className="absolute right-3 top-3 bg-white/90 rounded-full px-2 py-1.5 shadow-md z-20 flex items-center gap-1.5">
+            <div className="absolute left-3 top-3 bg-white/90 rounded-full px-2 py-1.5 shadow-md z-20 flex items-center gap-1.5">
               {getFlagImageUrl(profile.nationality) && (
                 <img 
                   src={getFlagImageUrl(profile.nationality)} 
