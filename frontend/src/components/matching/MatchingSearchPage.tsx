@@ -31,7 +31,7 @@ const MatchingSearchPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [allItems, setAllItems] = useState<MatchItem[]>([]);
   
-  const [selectedPrefecture, setSelectedPrefecture] = useState<string>("");
+  const [selectedNationality, setSelectedNationality] = useState<string>("");
   const [selectedAgeBand, setSelectedAgeBand] = useState<string>("");
   const [selectedOccupation, setSelectedOccupation] = useState<string>("");
   const [selectedMeetPref, setSelectedMeetPref] = useState<string>("");
@@ -117,8 +117,8 @@ const MatchingSearchPage: React.FC = () => {
   useEffect(() => {
     let filtered = [...allItems];
     
-    if (selectedPrefecture) {
-      filtered = filtered.filter(it => it.prefecture === selectedPrefecture);
+    if (selectedNationality) {
+      filtered = filtered.filter(it => it.nationality === selectedNationality);
     }
     if (selectedAgeBand) {
       filtered = filtered.filter(it => it.age_band === selectedAgeBand);
@@ -131,17 +131,30 @@ const MatchingSearchPage: React.FC = () => {
     }
     
     setItems(filtered);
-  }, [allItems, selectedPrefecture, selectedAgeBand, selectedOccupation, selectedMeetPref]);
+  }, [allItems, selectedNationality, selectedAgeBand, selectedOccupation, selectedMeetPref]);
 
-  const PREFECTURES = [
-    '北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'
+  // Nationality codes for filtering
+  const NATIONALITY_CODES = [
+    'JP', 'US', 'KR', 'CN', 'TW', 'HK', 'TH', 'VN', 'PH', 'ID', 'MY', 'SG', 'IN',
+    'AU', 'NZ', 'GB', 'DE', 'FR', 'IT', 'ES', 'PT', 'NL', 'BE', 'CH', 'AT',
+    'SE', 'NO', 'DK', 'FI', 'RU', 'CA', 'MX', 'BR', 'AR', 'CL', 'CO', 'PE',
+    'ZA', 'EG', 'IL', 'AE', 'SA', 'TR', 'OTHER'
   ];
-  const AGE_BANDS = ['10代','20代前半','20代後半','30代前半','30代後半','40代前半','40代後半','50代前半','50代後半','60代以上'];
-  const OCCUPATIONS = ['会社員','自営業','フリーランス','学生','専門職','公務員','パート・アルバイト','その他'];
-  const MEET_PREFS = ['パートナー探し','友人探し','相談相手探し','メンバー募集','その他'];
+  // Age band keys for i18n
+  const AGE_BAND_KEYS = ['10s', '20sEarly', '20sLate', '30sEarly', '30sLate', '40sEarly', '40sLate', '50sEarly', '50sLate', '60sPlus'];
+  // Age band values (stored in DB)
+  const AGE_BAND_VALUES = ['10代', '20代前半', '20代後半', '30代前半', '30代後半', '40代前半', '40代後半', '50代前半', '50代後半', '60代以上'];
+  // Occupation keys for i18n
+  const OCCUPATION_KEYS = ['employee', 'selfEmployed', 'freelance', 'student', 'professional', 'publicServant', 'partTime', 'other'];
+  // Occupation values (stored in DB)
+  const OCCUPATION_VALUES = ['会社員', '自営業', 'フリーランス', '学生', '専門職', '公務員', 'パート・アルバイト', 'その他'];
+  // Meet pref keys for i18n
+  const MEET_PREF_KEYS = ['partner', 'friend', 'counselor', 'member', 'other'];
+  // Meet pref values (stored in DB)
+  const MEET_PREF_VALUES = ['パートナー探し', '友人探し', '相談相手探し', 'メンバー募集', 'その他'];
 
   const clearFilters = () => {
-    setSelectedPrefecture("");
+    setSelectedNationality("");
     setSelectedAgeBand("");
     setSelectedOccupation("");
     setSelectedMeetPref("");
@@ -164,9 +177,9 @@ const MatchingSearchPage: React.FC = () => {
           >
             <SlidersHorizontal className="h-5 w-5" />
             <span className="font-medium">{t('matching.searchConditions')}</span>
-            {(selectedPrefecture || selectedAgeBand || selectedOccupation || selectedMeetPref) && (
+            {(selectedNationality || selectedAgeBand || selectedOccupation || selectedMeetPref) && (
               <span className="ml-2 bg-white text-black text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                {[selectedPrefecture, selectedAgeBand, selectedOccupation, selectedMeetPref].filter(Boolean).length}
+                {[selectedNationality, selectedAgeBand, selectedOccupation, selectedMeetPref].filter(Boolean).length}
               </span>
             )}
           </button>
@@ -188,15 +201,15 @@ const MatchingSearchPage: React.FC = () => {
               
               <div className="p-4 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('matching.residence')}</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('matching.nationality')}</label>
                   <select
-                    value={selectedPrefecture}
-                    onChange={(e) => setSelectedPrefecture(e.target.value)}
+                    value={selectedNationality}
+                    onChange={(e) => setSelectedNationality(e.target.value)}
                     className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                   >
                     <option value="">{t('matching.all')}</option>
-                    {PREFECTURES.map((pref) => (
-                      <option key={pref} value={pref}>{pref}</option>
+                    {NATIONALITY_CODES.map((code) => (
+                      <option key={code} value={code}>{t(`matching.nationalities.${code}`)}</option>
                     ))}
                   </select>
                 </div>
@@ -209,8 +222,8 @@ const MatchingSearchPage: React.FC = () => {
                     className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                   >
                     <option value="">{t('matching.all')}</option>
-                    {AGE_BANDS.map((age) => (
-                      <option key={age} value={age}>{age}</option>
+                    {AGE_BAND_KEYS.map((key, idx) => (
+                      <option key={key} value={AGE_BAND_VALUES[idx]}>{t(`matching.ageBands.${key}`)}</option>
                     ))}
                   </select>
                 </div>
@@ -223,8 +236,8 @@ const MatchingSearchPage: React.FC = () => {
                     className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                   >
                     <option value="">{t('matching.all')}</option>
-                    {OCCUPATIONS.map((occ) => (
-                      <option key={occ} value={occ}>{occ}</option>
+                    {OCCUPATION_KEYS.map((key, idx) => (
+                      <option key={key} value={OCCUPATION_VALUES[idx]}>{t(`matching.occupations.${key}`)}</option>
                     ))}
                   </select>
                 </div>
@@ -237,8 +250,8 @@ const MatchingSearchPage: React.FC = () => {
                     className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                   >
                     <option value="">{t('matching.all')}</option>
-                    {MEET_PREFS.map((pref) => (
-                      <option key={pref} value={pref}>{pref}</option>
+                    {MEET_PREF_KEYS.map((key, idx) => (
+                      <option key={key} value={MEET_PREF_VALUES[idx]}>{t(`matching.meetPrefs.${key}`)}</option>
                     ))}
                   </select>
                 </div>
@@ -269,7 +282,7 @@ const MatchingSearchPage: React.FC = () => {
         <div className="hidden md:block mb-6 bg-white rounded-lg border border-gray-200 p-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-gray-700">{t('matching.conditionalSearch')}</h3>
-            {(selectedPrefecture || selectedAgeBand || selectedOccupation || selectedMeetPref) && (
+            {(selectedNationality || selectedAgeBand || selectedOccupation || selectedMeetPref) && (
               <button
                 onClick={clearFilters}
                 className="text-xs text-gray-500 hover:text-gray-700 underline"
@@ -280,15 +293,15 @@ const MatchingSearchPage: React.FC = () => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">{t('matching.residence')}</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">{t('matching.nationality')}</label>
               <select
-                value={selectedPrefecture}
-                onChange={(e) => setSelectedPrefecture(e.target.value)}
+                value={selectedNationality}
+                onChange={(e) => setSelectedNationality(e.target.value)}
                 className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               >
                 <option value="">{t('matching.all')}</option>
-                {PREFECTURES.map((pref) => (
-                  <option key={pref} value={pref}>{pref}</option>
+                {NATIONALITY_CODES.map((code) => (
+                  <option key={code} value={code}>{t(`matching.nationalities.${code}`)}</option>
                 ))}
               </select>
             </div>
@@ -300,8 +313,8 @@ const MatchingSearchPage: React.FC = () => {
                 className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               >
                 <option value="">{t('matching.all')}</option>
-                {AGE_BANDS.map((age) => (
-                  <option key={age} value={age}>{age}</option>
+                {AGE_BAND_KEYS.map((key, idx) => (
+                  <option key={key} value={AGE_BAND_VALUES[idx]}>{t(`matching.ageBands.${key}`)}</option>
                 ))}
               </select>
             </div>
@@ -313,8 +326,8 @@ const MatchingSearchPage: React.FC = () => {
                 className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               >
                 <option value="">{t('matching.all')}</option>
-                {OCCUPATIONS.map((occ) => (
-                  <option key={occ} value={occ}>{occ}</option>
+                {OCCUPATION_KEYS.map((key, idx) => (
+                  <option key={key} value={OCCUPATION_VALUES[idx]}>{t(`matching.occupations.${key}`)}</option>
                 ))}
               </select>
             </div>
@@ -326,8 +339,8 @@ const MatchingSearchPage: React.FC = () => {
                 className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               >
                 <option value="">{t('matching.all')}</option>
-                {MEET_PREFS.map((pref) => (
-                  <option key={pref} value={pref}>{pref}</option>
+                {MEET_PREF_KEYS.map((key, idx) => (
+                  <option key={key} value={MEET_PREF_VALUES[idx]}>{t(`matching.meetPrefs.${key}`)}</option>
                 ))}
               </select>
             </div>
