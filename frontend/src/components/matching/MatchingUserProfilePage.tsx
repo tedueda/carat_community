@@ -27,19 +27,9 @@ type UserProfile = {
   images?: Array<{ id: number; image_url: string; order?: number }>;
 };
 
-const getFlagEmoji = (code: string | null | undefined): string => {
-  if (!code) return '';
-  const flagMap: Record<string, string> = {
-    'JP': '🇯🇵', 'US': '🇺🇸', 'GB': '🇬🇧', 'CA': '🇨🇦', 'AU': '🇦🇺', 'NZ': '🇳🇿',
-    'DE': '🇩🇪', 'FR': '🇫🇷', 'IT': '🇮🇹', 'ES': '🇪🇸', 'PT': '🇵🇹', 'NL': '🇳🇱',
-    'BE': '🇧🇪', 'CH': '🇨🇭', 'AT': '🇦🇹', 'SE': '🇸🇪', 'NO': '🇳🇴', 'DK': '🇩🇰',
-    'FI': '🇫🇮', 'IE': '🇮🇪', 'KR': '🇰🇷', 'CN': '🇨🇳', 'TW': '🇹🇼', 'HK': '🇭🇰',
-    'SG': '🇸🇬', 'TH': '🇹🇭', 'VN': '🇻🇳', 'PH': '🇵🇭', 'ID': '🇮🇩', 'MY': '🇲🇾',
-    'IN': '🇮🇳', 'BR': '🇧🇷', 'MX': '🇲🇽', 'AR': '🇦🇷', 'CL': '🇨🇱', 'CO': '🇨🇴',
-    'PE': '🇵🇪', 'ZA': '🇿🇦', 'EG': '🇪🇬', 'IL': '🇮🇱', 'AE': '🇦🇪', 'RU': '🇷🇺',
-    'PL': '🇵🇱', 'CZ': '🇨🇿', 'GR': '🇬🇷', 'TR': '🇹🇷', 'OTHER': '🌍',
-  };
-  return flagMap[code] || '🌍';
+const getFlagImageUrl = (code: string | null | undefined): string => {
+  if (!code || code === 'OTHER') return '';
+  return `https://flagcdn.com/w40/${code.toLowerCase()}.png`;
 };
 
 const MatchingUserProfilePage: React.FC = () => {
@@ -163,8 +153,15 @@ const MatchingUserProfilePage: React.FC = () => {
         <div className="relative mx-auto max-w-xl md:max-w-2xl max-h-[420px] md:max-h-[480px] aspect-[4/3] rounded-lg overflow-hidden bg-gray-100 mb-4 md:mb-0">
           {/* 国旗バッジ（右上） */}
           {profile.nationality && (
-            <div className="absolute right-3 top-3 bg-white/90 rounded-full px-3 py-1.5 shadow-md z-20">
-              <span className="text-2xl">{getFlagEmoji(profile.nationality)}</span>
+            <div className="absolute right-3 top-3 bg-white/90 rounded-full px-2 py-1.5 shadow-md z-20 flex items-center gap-1.5">
+              {getFlagImageUrl(profile.nationality) && (
+                <img 
+                  src={getFlagImageUrl(profile.nationality)} 
+                  alt={profile.nationality}
+                  className="w-8 h-5 object-cover rounded-sm"
+                />
+              )}
+              <span className="text-sm font-medium text-gray-700">{profile.nationality}</span>
             </div>
           )}
           {profile.images && profile.images.length > 0 ? (
