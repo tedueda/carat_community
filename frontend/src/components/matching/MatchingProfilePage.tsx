@@ -13,6 +13,7 @@ type Profile = {
   display_name?: string;
   real_name?: string;
   display_flag: boolean;
+  nationality?: string;
   prefecture: string;
   residence_detail?: string;
   hometown?: string;
@@ -59,6 +60,58 @@ const MatchingProfilePage: React.FC = () => {
   const PREFECTURES = [
     '北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'
   ];
+  
+  // 国籍リスト（ISO 3166-1 alpha-2コードと国旗絵文字）
+  const NATIONALITIES: { code: string; name: string; flag: string }[] = [
+    { code: 'JP', name: '日本', flag: '🇯🇵' },
+    { code: 'US', name: 'アメリカ', flag: '🇺🇸' },
+    { code: 'GB', name: 'イギリス', flag: '🇬🇧' },
+    { code: 'CA', name: 'カナダ', flag: '🇨🇦' },
+    { code: 'AU', name: 'オーストラリア', flag: '🇦🇺' },
+    { code: 'NZ', name: 'ニュージーランド', flag: '🇳🇿' },
+    { code: 'DE', name: 'ドイツ', flag: '🇩🇪' },
+    { code: 'FR', name: 'フランス', flag: '🇫🇷' },
+    { code: 'IT', name: 'イタリア', flag: '🇮🇹' },
+    { code: 'ES', name: 'スペイン', flag: '🇪🇸' },
+    { code: 'PT', name: 'ポルトガル', flag: '🇵🇹' },
+    { code: 'NL', name: 'オランダ', flag: '🇳🇱' },
+    { code: 'BE', name: 'ベルギー', flag: '🇧🇪' },
+    { code: 'CH', name: 'スイス', flag: '🇨🇭' },
+    { code: 'AT', name: 'オーストリア', flag: '🇦🇹' },
+    { code: 'SE', name: 'スウェーデン', flag: '🇸🇪' },
+    { code: 'NO', name: 'ノルウェー', flag: '🇳🇴' },
+    { code: 'DK', name: 'デンマーク', flag: '🇩🇰' },
+    { code: 'FI', name: 'フィンランド', flag: '🇫🇮' },
+    { code: 'IE', name: 'アイルランド', flag: '🇮🇪' },
+    { code: 'KR', name: '韓国', flag: '🇰🇷' },
+    { code: 'CN', name: '中国', flag: '🇨🇳' },
+    { code: 'TW', name: '台湾', flag: '🇹🇼' },
+    { code: 'HK', name: '香港', flag: '🇭🇰' },
+    { code: 'SG', name: 'シンガポール', flag: '🇸🇬' },
+    { code: 'TH', name: 'タイ', flag: '🇹🇭' },
+    { code: 'VN', name: 'ベトナム', flag: '🇻🇳' },
+    { code: 'PH', name: 'フィリピン', flag: '🇵🇭' },
+    { code: 'ID', name: 'インドネシア', flag: '🇮🇩' },
+    { code: 'MY', name: 'マレーシア', flag: '🇲🇾' },
+    { code: 'IN', name: 'インド', flag: '🇮🇳' },
+    { code: 'BR', name: 'ブラジル', flag: '🇧🇷' },
+    { code: 'MX', name: 'メキシコ', flag: '🇲🇽' },
+    { code: 'AR', name: 'アルゼンチン', flag: '🇦🇷' },
+    { code: 'CL', name: 'チリ', flag: '🇨🇱' },
+    { code: 'CO', name: 'コロンビア', flag: '🇨🇴' },
+    { code: 'PE', name: 'ペルー', flag: '🇵🇪' },
+    { code: 'ZA', name: '南アフリカ', flag: '🇿🇦' },
+    { code: 'EG', name: 'エジプト', flag: '🇪🇬' },
+    { code: 'IL', name: 'イスラエル', flag: '🇮🇱' },
+    { code: 'AE', name: 'UAE', flag: '🇦🇪' },
+    { code: 'RU', name: 'ロシア', flag: '🇷🇺' },
+    { code: 'PL', name: 'ポーランド', flag: '🇵🇱' },
+    { code: 'CZ', name: 'チェコ', flag: '🇨🇿' },
+    { code: 'GR', name: 'ギリシャ', flag: '🇬🇷' },
+    { code: 'TR', name: 'トルコ', flag: '🇹🇷' },
+    { code: 'OTHER', name: 'その他', flag: '🌍' },
+  ];
+
   // 主要都市の区データ
   const CITY_WARDS: Record<string, string[]> = {
     '東京都': ['千代田区','中央区','港区','新宿区','文京区','台東区','墨田区','江東区','品川区','目黒区','大田区','世田谷区','渋谷区','中野区','杉並区','豊島区','北区','荒川区','板橋区','練馬区','足立区','葛飾区','江戸川区'],
@@ -234,6 +287,7 @@ const MatchingProfilePage: React.FC = () => {
         display_name: profile.display_name,
         real_name: profile.real_name,
         display_flag: profile.display_flag,
+        nationality: profile.nationality || '',
         prefecture: profile.prefecture,
         residence_detail: profile.residence_detail || '',
         hometown: profile.hometown || '',
@@ -923,6 +977,24 @@ const MatchingProfilePage: React.FC = () => {
                 <section>
                   <div className="font-medium mb-2">基本情報</div>
                   <div className="grid grid-cols-1 gap-4">
+                    <div>
+                      <label htmlFor="nationality" className="block text-sm mb-1">
+                        国籍 <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        id="nationality"
+                        aria-label="国籍"
+                        value={profile.nationality || ''}
+                        onChange={(e) => setProfile({ ...profile, nationality: e.target.value })}
+                        className="w-full border rounded px-3 py-2 text-sm"
+                        required
+                      >
+                        <option value="">選択してください</option>
+                        {NATIONALITIES.map((n) => (
+                          <option key={n.code} value={n.code}>{n.flag} {n.name}</option>
+                        ))}
+                      </select>
+                    </div>
                     <div>
                       <label htmlFor="prefecture" className="block text-sm mb-1">居住地</label>
                       <select

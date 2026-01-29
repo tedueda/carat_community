@@ -54,6 +54,7 @@ def get_my_profile(current_user: User = Depends(require_premium), db: Session = 
         "real_name": getattr(current_user, 'real_name', None) or "",
         "phone_number": getattr(current_user, 'phone_number', None) or "",
         "display_flag": prof.display_flag,
+        "nationality": getattr(prof, 'nationality', None) or "",
         "prefecture": prof.prefecture or "",
         "residence_detail": getattr(prof, 'residence_detail', None) or "",
         "hometown": getattr(prof, 'hometown', None) or "",
@@ -117,7 +118,7 @@ def update_my_profile(payload: dict, current_user: User = Depends(require_premiu
     
     # フィールド更新（カラムが存在しない場合はスキップ）
     # nicknameは除外（display_nameを使用）
-    for field in ["prefecture", "residence_detail", "hometown", "age_band", "occupation", "income_range", "blood_type", "zodiac", "meet_pref", "bio", "identity"]:
+    for field in ["nationality", "prefecture", "residence_detail", "hometown", "age_band", "occupation", "income_range", "blood_type", "zodiac", "meet_pref", "bio", "identity"]:
         if field in payload and hasattr(prof, field):
             setattr(prof, field, payload.get(field))
     
@@ -194,6 +195,7 @@ def get_profile_by_id(
         "nickname": getattr(prof, 'nickname', None) or "",
         "display_name": user.display_name,
         "display_flag": prof.display_flag,
+        "nationality": getattr(prof, 'nationality', None) or "",
         "prefecture": prof.prefecture or "",
         "residence_detail": getattr(prof, 'residence_detail', None) or "",
         "age_band": prof.age_band or "",
@@ -288,6 +290,7 @@ def search_profiles(
         {
             "user_id": prof.user_id,
             "display_name": user.display_name or f"User {prof.user_id}",
+            "nationality": getattr(prof, 'nationality', None) or "",
             "prefecture": prof.prefecture,
             "age_band": prof.age_band,
             "identity": prof.identity,

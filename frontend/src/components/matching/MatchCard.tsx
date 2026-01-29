@@ -11,9 +11,25 @@ type Item = {
   user_id: number;
   display_name?: string;
   identity?: string | null;
+  nationality?: string | null;
   prefecture?: string | null;
   age_band?: string | null;
   avatar_url?: string | null;
+};
+
+const getFlagEmoji = (code: string | null | undefined): string => {
+  if (!code) return '';
+  const flagMap: Record<string, string> = {
+    'JP': '🇯🇵', 'US': '🇺🇸', 'GB': '🇬🇧', 'CA': '🇨🇦', 'AU': '🇦🇺', 'NZ': '🇳🇿',
+    'DE': '🇩🇪', 'FR': '🇫🇷', 'IT': '🇮🇹', 'ES': '🇪🇸', 'PT': '🇵🇹', 'NL': '🇳🇱',
+    'BE': '🇧🇪', 'CH': '🇨🇭', 'AT': '🇦🇹', 'SE': '🇸🇪', 'NO': '🇳🇴', 'DK': '🇩🇰',
+    'FI': '🇫🇮', 'IE': '🇮🇪', 'KR': '🇰🇷', 'CN': '🇨🇳', 'TW': '🇹🇼', 'HK': '🇭🇰',
+    'SG': '🇸🇬', 'TH': '🇹🇭', 'VN': '🇻🇳', 'PH': '🇵🇭', 'ID': '🇮🇩', 'MY': '🇲🇾',
+    'IN': '🇮🇳', 'BR': '🇧🇷', 'MX': '🇲🇽', 'AR': '🇦🇷', 'CL': '🇨🇱', 'CO': '🇨🇴',
+    'PE': '🇵🇪', 'ZA': '🇿🇦', 'EG': '🇪🇬', 'IL': '🇮🇱', 'AE': '🇦🇪', 'RU': '🇷🇺',
+    'PL': '🇵🇱', 'CZ': '🇨🇿', 'GR': '🇬🇷', 'TR': '🇹🇷', 'OTHER': '🌍',
+  };
+  return flagMap[code] || '🌍';
 };
 
 export function MatchCard({ item }: { item: Item }) {
@@ -194,9 +210,16 @@ export function MatchCard({ item }: { item: Item }) {
           </div>
         )}
         
-        {/* 性自認バッジ（右上） */}
+        {/* 国旗バッジ（右上） */}
+        {item.nationality && (
+          <div className="absolute right-2 top-2 bg-white/90 rounded-full px-2 py-1 shadow-sm z-10">
+            <span className="text-lg">{getFlagEmoji(item.nationality)}</span>
+          </div>
+        )}
+        
+        {/* 性自認バッジ（右上、国旗の下） */}
         {item.identity && (
-          <div className="absolute right-2 top-2">
+          <div className="absolute right-2 top-12">
             <IdentityBadge value={item.identity} />
           </div>
         )}

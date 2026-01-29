@@ -10,6 +10,7 @@ type MatchItem = {
   user_id: number;
   display_name?: string;
   identity?: string | null;
+  nationality?: string | null;
   romance_targets?: string[];
   prefecture?: string | null;
   age_band?: string | null;

@@ -23,6 +23,7 @@ def run_migrations():
     """Run database migrations on startup"""
     try:
         db = next(get_db())
+        # Migration 1: Add phone_number column to users table
         result = db.execute(text("""
             SELECT column_name 
             FROM information_schema.columns 
@@ -34,6 +35,19 @@ def run_migrations():
             print("✅ Successfully added phone_number column to users table")
         else:
             print("✅ phone_number column already exists")
+        
+        # Migration 2: Add nationality column to matching_profiles table
+        result = db.execute(text("""
+            SELECT column_name 
+            FROM information_schema.columns 
+            WHERE table_name='matching_profiles' AND column_name='nationality'
+        """))
+        if not result.fetchone():
+            db.execute(text("ALTER TABLE matching_profiles ADD COLUMN nationality VARCHAR(100)"))
+            db.commit()
+            print("✅ Successfully added nationality column to matching_profiles table")
+        else:
+            print("✅ nationality column already exists")
     except Exception as e:
         print(f"⚠️ Migration error (may be safe to ignore if column exists): {e}")
     finally:
