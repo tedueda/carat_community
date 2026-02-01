@@ -206,17 +206,18 @@ const MatchingChatDetailPage: React.FC<MatchingChatDetailPageProps> = ({ embedde
         {loading && <div className="text-center py-4">読み込み中...</div>}
         {error && <div className="text-red-600 text-sm text-center py-4">{error}</div>}
         <div className="py-4">
-          {messages.map((msg) => (
-            <MessageBubble
-              key={msg.id}
-              isMe={msg.sender_id === user?.id}
-              avatarUrl={msg.sender_id !== user?.id ? chatMeta?.with_avatar_url : null}
-              myAvatarUrl={msg.sender_id === user?.id ? myAvatarUrl : null}
-              body={msg.body}
-              imageUrl={null}
-              createdAt={msg.created_at}
-            />
-          ))}
+                    {messages.map((msg) => (
+                      <MessageBubble
+                        key={msg.id}
+                        messageId={msg.id}
+                        isMe={msg.sender_id === user?.id}
+                        avatarUrl={msg.sender_id !== user?.id ? chatMeta?.with_avatar_url : null}
+                        myAvatarUrl={msg.sender_id === user?.id ? myAvatarUrl : null}
+                        body={msg.body}
+                        imageUrl={null}
+                        createdAt={msg.created_at}
+                      />
+                    ))}
           <div ref={bottomRef} />
         </div>
       </div>
