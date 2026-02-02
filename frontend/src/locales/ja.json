@@ -37,6 +37,9 @@
   },
   "homepage": {
     "specialMenu": {
+      "title": "特別メニュー",
+      "viewDetails": "詳細を見る",
+      "premiumOnly": "有料会員限定",
       "matching": {
         "title": "会員マッチング",
         "description": "理想のパートナーと出会える安心のマッチングサービス"

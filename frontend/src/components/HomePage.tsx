@@ -19,24 +19,24 @@ import jewelryBanner from '../assets/images/jewelry-banner.jpg';
 const specialMenuItems = [
   {
     id: "matching",
-    title: "会員マッチング",
-    description: "理想のパートナーと出会える安心のマッチングサービス",
+    titleKey: "homepage.specialMenu.matching.title",
+    descriptionKey: "homepage.specialMenu.matching.description",
     icon: "💕",
     link: "/matching",
     premiumOnly: false,
   },
   {
     id: "salon",
-    title: "会員サロン",
-    description: "会員限定の専門チャットサロン",
+    titleKey: "homepage.specialMenu.salon.title",
+    descriptionKey: "homepage.specialMenu.salon.description",
     icon: "💬",
     link: "/salon",
     premiumOnly: false,
   },
   {
     id: "business",
-    title: "ビジネス",
-    description: "フリマ・作品販売・講座・Live配信",
+    titleKey: "homepage.specialMenu.business.title",
+    descriptionKey: "homepage.specialMenu.business.description",
     icon: "💼",
     link: "/business",
     premiumOnly: false,
@@ -598,7 +598,7 @@ const HomePage: React.FC = () => {
         {/* 特別メニュー - カテゴリ一覧の直下 */}
         <section className="py-12">
           <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-6 gap-1 md:gap-0">
-            <h3 className="text-4xl md:text-5xl font-serif font-semibold text-slate-900">特別メニュー</h3>
+            <h3 className="text-4xl md:text-5xl font-serif font-semibold text-slate-900">{t('homepage.specialMenu.title')}</h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {specialMenuItems.map((item) => {
@@ -608,7 +608,7 @@ const HomePage: React.FC = () => {
               
               const handleMenuClick = () => {
                 if (isLocked) {
-                  setUpgradeFeatureName(item.title);
+                  setUpgradeFeatureName(t(item.titleKey));
                   setShowUpgradeModal(true);
                 } else {
                   navigate(item.link);
@@ -637,11 +637,11 @@ const HomePage: React.FC = () => {
                         )}
                       </div>
                       <h4 className={`font-serif font-semibold text-xl mb-2 flex items-center gap-2 ${isLocked ? 'text-slate-500' : 'text-slate-900 group-hover:gold-accent'}`}>
-                        {item.title}
+                        {t(item.titleKey)}
                         {isLocked && <Lock className="h-4 w-4 text-gray-400" />}
                       </h4>
                       <p className={`text-sm mb-4 ${isLocked ? 'text-slate-400' : 'text-slate-600'}`}>
-                        {item.description}
+                        {t(item.descriptionKey)}
                       </p>
                       <Button 
                         className={`font-medium w-full ${
@@ -658,11 +658,11 @@ const HomePage: React.FC = () => {
                         {isLocked ? (
                           <>
                             <Lock className="h-3 w-3 mr-1" />
-                            有料会員限定
+                            {t('homepage.specialMenu.premiumOnly')}
                           </>
                         ) : (
                           <>
-                            詳細を見る
+                            {t('homepage.specialMenu.viewDetails')}
                             <ArrowRight className="h-3 w-3 ml-1" />
                           </>
                         )}

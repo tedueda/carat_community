@@ -37,6 +37,9 @@
   },
   "homepage": {
     "specialMenu": {
+      "title": "특별 메뉴",
+      "viewDetails": "자세히 보기",
+      "premiumOnly": "프리미엄 전용",
       "matching": {
         "title": "회원 매칭",
         "description": "이상적인 파트너를 만날 수 있는 안전한 매칭 서비스"

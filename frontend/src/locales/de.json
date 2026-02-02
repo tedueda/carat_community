@@ -37,6 +37,9 @@
   },
   "homepage": {
     "specialMenu": {
+      "title": "Spezialmenü",
+      "viewDetails": "Details Anzeigen",
+      "premiumOnly": "Nur Premium",
       "matching": {
         "title": "Mitglieder-Matching",
         "description": "Ein sicherer Matching-Service, um deinen idealen Partner zu treffen"

@@ -37,6 +37,9 @@
   },
   "homepage": {
     "specialMenu": {
+      "title": "Menú Especial",
+      "viewDetails": "Ver Detalles",
+      "premiumOnly": "Solo Premium",
       "matching": {
         "title": "Matching de Miembros",
         "description": "Un servicio de matching seguro para conocer a tu pareja ideal"
