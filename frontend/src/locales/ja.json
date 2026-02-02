@@ -701,5 +701,55 @@
       "volunteer": "ボランティア",
       "pets": "ペット"
     }
+  },
+  "salon": {
+    "title": "会員サロン",
+    "subtitle": "有料会員限定の専門チャットサロン",
+    "backToHome": "ホームに戻る",
+    "createRoom": "ルームを作成",
+    "loading": "読み込み中...",
+    "noRoomsYet": "まだルームがありません",
+    "createFirstRoom": "最初のルームを作成してみましょう",
+    "paidMemberOnly": "有料会員のみ利用可能です",
+    "fetchFailed": "ルームの取得に失敗しました",
+    "networkError": "ネットワークエラーが発生しました",
+    "participants": "{{count}}人",
+    "creator": "作成者",
+    "target": "対象",
+    "anonymousAllowed": "匿名可",
+    "roomTypes": {
+      "all": "すべて",
+      "consultation": "相談",
+      "exchange": "交流",
+      "story": "ストーリー",
+      "other": "その他"
+    },
+    "identities": {
+      "gay": "ゲイ",
+      "lesbian": "レズビアン",
+      "bisexual": "バイセクシュアル",
+      "transgender": "トランスジェンダー",
+      "questioning": "クエスチョニング",
+      "other": "その他",
+      "ALL": "すべて"
+    },
+    "createModal": {
+      "title": "新しいルームを作成",
+      "theme": "テーマ",
+      "themePlaceholder": "例: ゲイの恋愛相談",
+      "description": "内容説明",
+      "descriptionPlaceholder": "ルームの目的や話し合いたい内容を説明してください",
+      "roomType": "種別",
+      "targetIdentity": "対象性自認",
+      "allowAnonymous": "匿名での参加を許可する",
+      "required": "*",
+      "cancel": "キャンセル",
+      "create": "作成する",
+      "creating": "作成中...",
+      "themeRequired": "テーマを入力してください",
+      "descriptionRequired": "内容説明を入力してください",
+      "identityRequired": "対象性自認を選択してください",
+      "createFailed": "ルームの作成に失敗しました"
+    }
   }
 }

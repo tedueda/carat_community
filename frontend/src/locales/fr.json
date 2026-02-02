@@ -631,5 +631,55 @@
       "volunteer": "Bénévolat",
       "pets": "Animaux de compagnie"
     }
+  },
+  "salon": {
+    "title": "Salon des Membres",
+    "subtitle": "Salon de chat exclusif pour les membres payants",
+    "backToHome": "Retour à l'accueil",
+    "createRoom": "Créer une salle",
+    "loading": "Chargement...",
+    "noRoomsYet": "Pas encore de salles",
+    "createFirstRoom": "Créez la première salle",
+    "paidMemberOnly": "Disponible uniquement pour les membres payants",
+    "fetchFailed": "Échec du chargement des salles",
+    "networkError": "Erreur réseau",
+    "participants": "{{count}} personnes",
+    "creator": "Créateur",
+    "target": "Cible",
+    "anonymousAllowed": "Anonyme autorisé",
+    "roomTypes": {
+      "all": "Tous",
+      "consultation": "Consultation",
+      "exchange": "Échange",
+      "story": "Histoire",
+      "other": "Autre"
+    },
+    "identities": {
+      "gay": "Gay",
+      "lesbian": "Lesbienne",
+      "bisexual": "Bisexuel",
+      "transgender": "Transgenre",
+      "questioning": "En questionnement",
+      "other": "Autre",
+      "ALL": "Tous"
+    },
+    "createModal": {
+      "title": "Créer une nouvelle salle",
+      "theme": "Thème",
+      "themePlaceholder": "Ex: Conseils relationnels gay",
+      "description": "Description",
+      "descriptionPlaceholder": "Décrivez le but et les sujets de cette salle",
+      "roomType": "Type",
+      "targetIdentity": "Identité cible",
+      "allowAnonymous": "Autoriser la participation anonyme",
+      "required": "*",
+      "cancel": "Annuler",
+      "create": "Créer",
+      "creating": "Création...",
+      "themeRequired": "Veuillez entrer un thème",
+      "descriptionRequired": "Veuillez entrer une description",
+      "identityRequired": "Veuillez sélectionner les identités cibles",
+      "createFailed": "Échec de la création de la salle"
+    }
   }
 }

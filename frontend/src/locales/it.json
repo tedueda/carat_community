@@ -631,5 +631,55 @@
       "volunteer": "Volontariato",
       "pets": "Animali domestici"
     }
+  },
+  "salon": {
+    "title": "Salone dei Membri",
+    "subtitle": "Salone chat esclusivo per membri a pagamento",
+    "backToHome": "Torna alla home",
+    "createRoom": "Crea stanza",
+    "loading": "Caricamento...",
+    "noRoomsYet": "Nessuna stanza ancora",
+    "createFirstRoom": "Crea la prima stanza",
+    "paidMemberOnly": "Disponibile solo per membri a pagamento",
+    "fetchFailed": "Impossibile caricare le stanze",
+    "networkError": "Errore di rete",
+    "participants": "{{count}} persone",
+    "creator": "Creatore",
+    "target": "Target",
+    "anonymousAllowed": "Anonimo consentito",
+    "roomTypes": {
+      "all": "Tutti",
+      "consultation": "Consulenza",
+      "exchange": "Scambio",
+      "story": "Storia",
+      "other": "Altro"
+    },
+    "identities": {
+      "gay": "Gay",
+      "lesbian": "Lesbica",
+      "bisexual": "Bisessuale",
+      "transgender": "Transgender",
+      "questioning": "In dubbio",
+      "other": "Altro",
+      "ALL": "Tutti"
+    },
+    "createModal": {
+      "title": "Crea nuova stanza",
+      "theme": "Tema",
+      "themePlaceholder": "Es: Consigli relazionali gay",
+      "description": "Descrizione",
+      "descriptionPlaceholder": "Descrivi lo scopo e gli argomenti di questa stanza",
+      "roomType": "Tipo",
+      "targetIdentity": "Identità target",
+      "allowAnonymous": "Consenti partecipazione anonima",
+      "required": "*",
+      "cancel": "Annulla",
+      "create": "Crea",
+      "creating": "Creazione...",
+      "themeRequired": "Inserisci un tema",
+      "descriptionRequired": "Inserisci una descrizione",
+      "identityRequired": "Seleziona le identità target",
+      "createFailed": "Impossibile creare la stanza"
+    }
   }
 }
