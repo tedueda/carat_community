@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { fetchSalonMessageWithTranslation } from '../../services/translationService';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { Input } from '../ui/input';
@@ -51,14 +53,20 @@ const roomTypeLabels: Record<string, string> = {
   other: 'その他',
 };
 
+interface TranslatedMessage extends SalonMessage {
+  displayText?: string;
+  isTranslating?: boolean;
+}
+
 const SalonRoomDetailPage: React.FC = () => {
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const { roomId } = useParams<{ roomId: string }>();
+  const { currentLanguage } = useLanguage();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [room, setRoom] = useState<SalonRoom | null>(null);
-  const [messages, setMessages] = useState<SalonMessage[]>([]);
+  const [messages, setMessages] = useState<TranslatedMessage[]>([]);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -155,6 +163,54 @@ const SalonRoomDetailPage: React.FC = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Translate messages when language changes
+  useEffect(() => {
+    const translateMessages = async () => {
+      if (messages.length === 0 || currentLanguage === 'ja') {
+        // Reset to original text if Japanese
+        setMessages(prev => prev.map(msg => ({
+          ...msg,
+          displayText: msg.body,
+          isTranslating: false
+        })));
+        return;
+      }
+
+      // Mark all messages as translating
+      setMessages(prev => prev.map(msg => ({
+        ...msg,
+        isTranslating: true
+      })));
+
+      // Translate each message
+      const translatedMessages = await Promise.all(
+        messages.map(async (msg) => {
+          try {
+            const result = await fetchSalonMessageWithTranslation(msg.id, currentLanguage as any);
+            return {
+              ...msg,
+              displayText: result.is_translated ? result.translated_text : msg.body,
+              isTranslating: false
+            };
+          } catch (error) {
+            console.error(`Failed to translate message ${msg.id}:`, error);
+            return {
+              ...msg,
+              displayText: msg.body,
+              isTranslating: false
+            };
+          }
+        })
+      );
+
+      setMessages(translatedMessages);
+    };
+
+    if (hasJoined && messages.length > 0) {
+      translateMessages();
+    }
+  }, [currentLanguage, hasJoined]);
 
   const handleJoinRoom = async () => {
     if (!token || !roomId) return;
@@ -395,7 +451,13 @@ const SalonRoomDetailPage: React.FC = () => {
                               </span>
                             </div>
                           )}
-                          <p className="text-sm whitespace-pre-wrap">{message.body}</p>
+                          <p className="text-sm whitespace-pre-wrap">
+                            {message.isTranslating ? (
+                              <span className="opacity-70">{message.body}</span>
+                            ) : (
+                              message.displayText || message.body
+                            )}
+                          </p>
                           <div
                             className={`text-xs mt-1 ${
                               isOwnMessage ? 'text-gray-300' : 'text-gray-400'

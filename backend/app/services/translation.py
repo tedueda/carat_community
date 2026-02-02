@@ -5,7 +5,7 @@ from typing import Optional
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-from app.models import Post, PostTranslation, Comment, CommentTranslation, Message, MessageTranslation
+from app.models import Post, PostTranslation, Comment, CommentTranslation, Message, MessageTranslation, SalonMessage, SalonMessageTranslation
 from app.services.translation_providers.base import TranslationProvider, TranslationResult
 from app.services.translation_providers.openai_provider import OpenAITranslationProvider
 from app.services.translation_providers.dummy_provider import DummyTranslationProvider
@@ -279,6 +279,80 @@ async def get_or_create_message_translation(
             
     except Exception as e:
         logger.error(f"Translation failed for message {message.id}: {e}")
+        db.rollback()
+        return None
+
+
+async def get_or_create_salon_message_translation(
+    db: Session,
+    salon_message: SalonMessage,
+    target_lang: str
+) -> Optional[SalonMessageTranslation]:
+    """
+    Get existing salon message translation or create a new one.
+    
+    Args:
+        db: Database session
+        salon_message: The salon message to translate
+        target_lang: Target language code
+        
+    Returns:
+        SalonMessageTranslation object or None if translation failed
+    """
+    if target_lang not in SUPPORTED_LANGUAGES:
+        logger.warning(f"Unsupported target language: {target_lang}")
+        return None
+    
+    if not salon_message.body:
+        return None
+    
+    # Check if translation already exists (cache hit)
+    existing = db.query(SalonMessageTranslation).filter(
+        SalonMessageTranslation.salon_message_id == salon_message.id,
+        SalonMessageTranslation.lang == target_lang
+    ).first()
+    
+    if existing:
+        logger.info(f"Cache hit: translation for salon message {salon_message.id} to {target_lang}")
+        return existing
+    
+    # No existing translation, create one
+    logger.info(f"Cache miss: creating translation for salon message {salon_message.id} to {target_lang}")
+    
+    provider = get_translation_provider()
+    
+    try:
+        result = await provider.translate(
+            text=salon_message.body,
+            target_lang=target_lang,
+            source_lang=None
+        )
+        
+        # Create translation record
+        translation = SalonMessageTranslation(
+            salon_message_id=salon_message.id,
+            lang=target_lang,
+            translated_text=result.translated_text,
+            provider=result.provider,
+            error_code=result.error_code if not result.success else None
+        )
+        
+        try:
+            db.add(translation)
+            db.commit()
+            db.refresh(translation)
+            return translation
+        except IntegrityError:
+            # Another request already created this translation (race condition)
+            db.rollback()
+            logger.info(f"Race condition: translation already exists for salon message {salon_message.id} to {target_lang}")
+            return db.query(SalonMessageTranslation).filter(
+                SalonMessageTranslation.salon_message_id == salon_message.id,
+                SalonMessageTranslation.lang == target_lang
+            ).first()
+            
+    except Exception as e:
+        logger.error(f"Translation failed for salon message {salon_message.id}: {e}")
         db.rollback()
         return None
 
