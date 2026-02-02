@@ -291,6 +291,68 @@ class SalonMessageTranslationResponse(BaseModel):
     has_translation: bool
 
 
+class TextTranslationRequest(BaseModel):
+    text: str
+    target_lang: str
+
+
+class TextTranslationResponse(BaseModel):
+    original_text: str
+    translated_text: str
+    target_lang: str
+    is_translated: bool
+
+
+@router.post("/translate-text", response_model=TextTranslationResponse)
+async def translate_text(
+    request: TextTranslationRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Translate arbitrary text to the target language.
+    Used for translating user-generated content like salon room themes and descriptions.
+    """
+    from app.services.translation import translate_text_with_openai
+    
+    text = request.text
+    target_lang = request.target_lang
+    
+    # If target language is Japanese, return original text
+    if target_lang == "ja":
+        return TextTranslationResponse(
+            original_text=text,
+            translated_text=text,
+            target_lang=target_lang,
+            is_translated=False
+        )
+    
+    # Validate target language
+    if target_lang not in SUPPORTED_LANGUAGES:
+        return TextTranslationResponse(
+            original_text=text,
+            translated_text=text,
+            target_lang=target_lang,
+            is_translated=False
+        )
+    
+    try:
+        translated_text = await translate_text_with_openai(text, target_lang)
+        return TextTranslationResponse(
+            original_text=text,
+            translated_text=translated_text,
+            target_lang=target_lang,
+            is_translated=True
+        )
+    except Exception as e:
+        logger.error(f"Translation error: {e}")
+        return TextTranslationResponse(
+            original_text=text,
+            translated_text=text,
+            target_lang=target_lang,
+            is_translated=False
+        )
+
+
 @router.get("/salon/messages/{salon_message_id}/translated", response_model=SalonMessageTranslationResponse)
 async def get_salon_message_with_translation(
     salon_message_id: int,

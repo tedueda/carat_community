@@ -39,6 +39,13 @@ export interface SalonMessageTranslationResponse {
   has_translation: boolean;
 }
 
+export interface TextTranslationResponse {
+  original_text: string;
+  translated_text: string;
+  target_lang: string;
+  is_translated: boolean;
+}
+
 /**
  * Fetch a post with translation
  */
@@ -206,6 +213,52 @@ export async function fetchSalonMessageWithTranslation(
   
   if (!response.ok) {
     throw new Error(`Failed to fetch translated salon message: ${response.status}`);
+  }
+  
+  return response.json();
+}
+
+/**
+ * Translate arbitrary text using the translation API
+ */
+export async function translateText(
+  text: string,
+  lang?: SupportedLanguage
+): Promise<TextTranslationResponse> {
+  const targetLang = lang || getPreferredLanguage();
+  
+  // If target language is Japanese, return original text
+  if (targetLang === 'ja') {
+    return {
+      original_text: text,
+      translated_text: text,
+      target_lang: targetLang,
+      is_translated: false,
+    };
+  }
+  
+  const url = new URL(`${API_BASE_URL}/api/translate-text`);
+  
+  const response = await fetch(url.toString(), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept-Language': navigator.language || 'ja',
+    },
+    body: JSON.stringify({
+      text: text,
+      target_lang: targetLang,
+    }),
+  });
+  
+  if (!response.ok) {
+    // Return original text if translation fails
+    return {
+      original_text: text,
+      translated_text: text,
+      target_lang: targetLang,
+      is_translated: false,
+    };
   }
   
   return response.json();
