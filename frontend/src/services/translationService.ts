@@ -30,6 +30,15 @@ export interface MessageTranslationResponse {
   has_translation: boolean;
 }
 
+export interface SalonMessageTranslationResponse {
+  salon_message_id: number;
+  original_text: string;
+  translated_text: string;
+  target_lang: string;
+  is_translated: boolean;
+  has_translation: boolean;
+}
+
 /**
  * Fetch a post with translation
  */
@@ -168,6 +177,35 @@ export async function fetchMessageWithTranslation(
   
   if (!response.ok) {
     throw new Error(`Failed to fetch translated message: ${response.status}`);
+  }
+  
+  return response.json();
+}
+
+/**
+ * Fetch a salon message with translation
+ */
+export async function fetchSalonMessageWithTranslation(
+  salonMessageId: number,
+  lang?: SupportedLanguage,
+  mode: 'translated' | 'original' = 'translated'
+): Promise<SalonMessageTranslationResponse> {
+  const targetLang = lang || getPreferredLanguage();
+  
+  const url = new URL(`${API_BASE_URL}/api/salon/messages/${salonMessageId}/translated`);
+  url.searchParams.set('lang', targetLang);
+  url.searchParams.set('mode', mode);
+  
+  const response = await fetch(url.toString(), {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept-Language': navigator.language || 'ja',
+    },
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch translated salon message: ${response.status}`);
   }
   
   return response.json();

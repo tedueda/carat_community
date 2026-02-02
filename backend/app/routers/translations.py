@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from app.database import get_db
 from app.models import (
     Post, PostTranslation as PostTranslationModel, MediaAsset, PostMedia, PostTourism,
-    Comment, CommentTranslation, Message, MessageTranslation
+    Comment, CommentTranslation, Message, MessageTranslation, SalonMessage, SalonMessageTranslation
 )
 from app.schemas import PostWithTranslation
 from app.auth import get_optional_user
@@ -16,6 +16,7 @@ from app.services.translation import (
     get_or_create_translation,
     get_or_create_comment_translation,
     get_or_create_message_translation,
+    get_or_create_salon_message_translation,
     get_user_preferred_language,
     detect_post_language,
     SUPPORTED_LANGUAGES,
@@ -279,6 +280,66 @@ async def get_message_with_translation(
         logger.info(f"Returning original message {message_id} (translation not available)")
     
     return MessageTranslationResponse(**response)
+
+
+class SalonMessageTranslationResponse(BaseModel):
+    salon_message_id: int
+    original_text: str
+    translated_text: str
+    target_lang: str
+    is_translated: bool
+    has_translation: bool
+
+
+@router.get("/salon/messages/{salon_message_id}/translated", response_model=SalonMessageTranslationResponse)
+async def get_salon_message_with_translation(
+    salon_message_id: int,
+    lang: Optional[str] = Query(None, description="Target language code"),
+    mode: Optional[str] = Query("translated", description="Display mode: 'translated' or 'original'"),
+    accept_language: Optional[str] = Header(None, alias="Accept-Language"),
+    db: Session = Depends(get_db),
+    current_user = Depends(get_optional_user)
+):
+    """
+    Get a salon message with translation support.
+    """
+    salon_message = db.query(SalonMessage).filter(SalonMessage.id == salon_message_id).first()
+    if salon_message is None:
+        raise HTTPException(status_code=404, detail="Salon message not found")
+    
+    # Determine target language
+    target_lang = get_user_preferred_language(
+        user_lang=None,
+        accept_language=accept_language,
+        query_lang=lang
+    )
+    
+    response = {
+        "salon_message_id": salon_message.id,
+        "original_text": salon_message.body or "",
+        "translated_text": salon_message.body or "",
+        "target_lang": target_lang,
+        "is_translated": False,
+        "has_translation": False
+    }
+    
+    # Return original if mode is original or body is empty
+    if mode == "original" or not salon_message.body:
+        return SalonMessageTranslationResponse(**response)
+    
+    # Try to get or create translation
+    translation = await get_or_create_salon_message_translation(db, salon_message, target_lang)
+    
+    if translation and not translation.error_code:
+        response["translated_text"] = translation.translated_text
+        response["has_translation"] = True
+        response["is_translated"] = True
+        logger.info(f"Returning translated salon message {salon_message_id} in {target_lang}")
+    else:
+        response["has_translation"] = translation is not None
+        logger.info(f"Returning original salon message {salon_message_id} (translation not available)")
+    
+    return SalonMessageTranslationResponse(**response)
 
 
 def build_post_dict(post: Post, db: Session) -> dict:

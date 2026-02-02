@@ -607,6 +607,7 @@ class SalonMessage(Base):
 
     room = relationship("SalonRoom", back_populates="messages")
     user = relationship("User")
+    translations = relationship("SalonMessageTranslation", back_populates="salon_message", cascade="all, delete-orphan")
 
 
 # ===== Flea Market (フリマ) domain models =====
@@ -945,3 +946,22 @@ class MessageTranslation(Base):
     )
 
     message = relationship("Message", back_populates="translations")
+
+
+class SalonMessageTranslation(Base):
+    __tablename__ = "salon_message_translations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    salon_message_id = Column(Integer, ForeignKey("salon_messages.id", ondelete="CASCADE"), nullable=False, index=True)
+    lang = Column(String(10), nullable=False, index=True)
+    translated_text = Column(Text, nullable=False)
+    provider = Column(String(50), nullable=False, default="openai")
+    error_code = Column(String(50), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("salon_message_id", "lang", name="uq_salon_message_translation_lang"),
+    )
+
+    salon_message = relationship("SalonMessage", back_populates="translations")
