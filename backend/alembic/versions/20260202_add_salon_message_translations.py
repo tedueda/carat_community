@@ -1,7 +1,7 @@
 """Add salon_message_translations table
 
 Revision ID: 20260202_salon_msg_trans
-Revises: 
+Revises: 20260129_nationality
 Create Date: 2026-02-02
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '20260202_salon_msg_trans'
-down_revision = None
+down_revision = '20260129_nationality'
 branch_labels = None
 depends_on = None
 
