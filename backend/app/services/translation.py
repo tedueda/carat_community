@@ -357,6 +357,34 @@ async def get_or_create_salon_message_translation(
         return None
 
 
+async def translate_text_with_openai(text: str, target_lang: str) -> str:
+    """
+    Translate arbitrary text using OpenAI.
+    
+    Args:
+        text: The text to translate
+        target_lang: Target language code
+        
+    Returns:
+        Translated text
+    """
+    if not text or not text.strip():
+        return text
+    
+    provider = get_translation_provider()
+    
+    try:
+        result = await provider.translate(
+            text=text,
+            target_lang=target_lang,
+            source_lang=None
+        )
+        return result.translated_text
+    except Exception as e:
+        logger.error(f"Translation failed: {e}")
+        return text
+
+
 def get_user_preferred_language(
     user_lang: Optional[str] = None,
     accept_language: Optional[str] = None,

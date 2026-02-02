@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '../ui/card';
 import { Users, MessageCircle, Lock, Unlock } from 'lucide-react';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translateText } from '../../services/translationService';
 
 interface SalonRoom {
   id: number;
@@ -25,6 +27,32 @@ interface SalonRoomCardProps {
 
 const SalonRoomCard: React.FC<SalonRoomCardProps> = ({ room, onClick }) => {
   const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
+  const [translatedTheme, setTranslatedTheme] = useState(room.theme);
+  const [translatedDescription, setTranslatedDescription] = useState(room.description);
+
+  useEffect(() => {
+    const translateContent = async () => {
+      if (currentLanguage === 'ja') {
+        setTranslatedTheme(room.theme);
+        setTranslatedDescription(room.description);
+        return;
+      }
+
+      try {
+        const [themeResult, descResult] = await Promise.all([
+          translateText(room.theme, currentLanguage as any),
+          translateText(room.description, currentLanguage as any)
+        ]);
+        setTranslatedTheme(themeResult.translated_text);
+        setTranslatedDescription(descResult.translated_text);
+      } catch (error) {
+        console.error('Translation error:', error);
+      }
+    };
+
+    translateContent();
+  }, [room.theme, room.description, currentLanguage]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -61,11 +89,11 @@ const SalonRoomCard: React.FC<SalonRoomCardProps> = ({ room, onClick }) => {
         </div>
 
         <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-gray-700">
-          {room.theme}
+          {translatedTheme}
         </h3>
 
         <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-          {room.description}
+          {translatedDescription}
         </p>
 
         <div className="flex items-center gap-2 mb-3 flex-wrap">
