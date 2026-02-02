@@ -631,5 +631,55 @@
       "volunteer": "Ehrenamt",
       "pets": "Haustiere"
     }
+  },
+  "salon": {
+    "title": "Mitglieder-Salon",
+    "subtitle": "Exklusiver Chat-Salon für zahlende Mitglieder",
+    "backToHome": "Zurück zur Startseite",
+    "createRoom": "Raum erstellen",
+    "loading": "Laden...",
+    "noRoomsYet": "Noch keine Räume",
+    "createFirstRoom": "Erstellen Sie den ersten Raum",
+    "paidMemberOnly": "Nur für zahlende Mitglieder verfügbar",
+    "fetchFailed": "Räume konnten nicht geladen werden",
+    "networkError": "Netzwerkfehler",
+    "participants": "{{count}} Personen",
+    "creator": "Ersteller",
+    "target": "Ziel",
+    "anonymousAllowed": "Anonym erlaubt",
+    "roomTypes": {
+      "all": "Alle",
+      "consultation": "Beratung",
+      "exchange": "Austausch",
+      "story": "Geschichte",
+      "other": "Andere"
+    },
+    "identities": {
+      "gay": "Schwul",
+      "lesbian": "Lesbisch",
+      "bisexual": "Bisexuell",
+      "transgender": "Transgender",
+      "questioning": "Hinterfragend",
+      "other": "Andere",
+      "ALL": "Alle"
+    },
+    "createModal": {
+      "title": "Neuen Raum erstellen",
+      "theme": "Thema",
+      "themePlaceholder": "Z.B.: Schwule Beziehungsberatung",
+      "description": "Beschreibung",
+      "descriptionPlaceholder": "Beschreiben Sie den Zweck und die Themen dieses Raums",
+      "roomType": "Typ",
+      "targetIdentity": "Zielidentität",
+      "allowAnonymous": "Anonyme Teilnahme erlauben",
+      "required": "*",
+      "cancel": "Abbrechen",
+      "create": "Erstellen",
+      "creating": "Erstellen...",
+      "themeRequired": "Bitte geben Sie ein Thema ein",
+      "descriptionRequired": "Bitte geben Sie eine Beschreibung ein",
+      "identityRequired": "Bitte wählen Sie Zielidentitäten",
+      "createFailed": "Raum konnte nicht erstellt werden"
+    }
   }
 }

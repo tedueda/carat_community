@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { Plus, MessageCircle, Grid3x3, List, ArrowLeft } from 'lucide-react';
@@ -25,6 +26,7 @@ interface SalonRoom {
 const SalonPage: React.FC = () => {
   const { user, token } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [rooms, setRooms] = useState<SalonRoom[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,12 +62,12 @@ const SalonPage: React.FC = () => {
         const data = await response.json();
         setRooms(data);
       } else if (response.status === 403) {
-        setError('有料会員のみ利用可能です');
+        setError(t('salon.paidMemberOnly'));
       } else {
-        setError('ルームの取得に失敗しました');
+        setError(t('salon.fetchFailed'));
       }
     } catch (err) {
-      setError('ネットワークエラーが発生しました');
+      setError(t('salon.networkError'));
     } finally {
       setLoading(false);
     }
@@ -81,11 +83,11 @@ const SalonPage: React.FC = () => {
   };
 
   const roomTypes = [
-    { value: null, label: 'すべて' },
-    { value: 'consultation', label: '相談' },
-    { value: 'exchange', label: '交流' },
-    { value: 'story', label: 'ストーリー' },
-    { value: 'other', label: 'その他' },
+    { value: null, label: t('salon.roomTypes.all') },
+    { value: 'consultation', label: t('salon.roomTypes.consultation') },
+    { value: 'exchange', label: t('salon.roomTypes.exchange') },
+    { value: 'story', label: t('salon.roomTypes.story') },
+    { value: 'other', label: t('salon.roomTypes.other') },
   ];
 
   const handleRoomClick = (roomId: number) => {
@@ -110,13 +112,13 @@ const SalonPage: React.FC = () => {
             className="text-gray-700 hover:text-gray-900 hover:bg-gray-100"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            ホームに戻る
+            {t('salon.backToHome')}
           </Button>
         </div>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-serif font-bold text-gray-900">会員サロン</h1>
-            <p className="text-gray-600 mt-1">有料会員限定の専門チャットサロン</p>
+            <h1 className="text-3xl font-serif font-bold text-gray-900">{t('salon.title')}</h1>
+            <p className="text-gray-600 mt-1">{t('salon.subtitle')}</p>
           </div>
           {isPaidUser && (
             <Button
@@ -124,7 +126,7 @@ const SalonPage: React.FC = () => {
               className="mt-4 md:mt-0 bg-black hover:bg-gray-800"
             >
               <Plus className="h-4 w-4 mr-2" />
-              ルームを作成
+              {t('salon.createRoom')}
             </Button>
           )}
         </div>
@@ -166,7 +168,7 @@ const SalonPage: React.FC = () => {
         {loading ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-            <p className="mt-4 text-gray-600">読み込み中...</p>
+            <p className="mt-4 text-gray-600">{t('salon.loading')}</p>
           </div>
         ) : error ? (
           <div className="text-center py-12">
@@ -175,10 +177,10 @@ const SalonPage: React.FC = () => {
         ) : rooms.length === 0 ? (
           <div className="text-center py-12">
             <MessageCircle className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-            <p className="text-gray-600">まだルームがありません</p>
-            <p className="text-gray-500 text-sm mt-2">最初のルームを作成してみましょう</p>
+            <p className="text-gray-600">{t('salon.noRoomsYet')}</p>
+            <p className="text-gray-500 text-sm mt-2">{t('salon.createFirstRoom')}</p>
           </div>
-        ) : viewMode === 'grid' ? (
+        ) : viewMode === 'grid' ?(
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {rooms.map((room) => (
               <SalonRoomCard
@@ -201,12 +203,10 @@ const SalonPage: React.FC = () => {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <span className="px-2 py-1 bg-gray-100 rounded text-xs font-medium">
-                          {room.room_type === 'consultation' ? '相談' :
-                           room.room_type === 'exchange' ? '交流' :
-                           room.room_type === 'story' ? 'ストーリー' : 'その他'}
+                          {t(`salon.roomTypes.${room.room_type}`)}
                         </span>
                         {room.allow_anonymous && (
-                          <span className="text-xs text-gray-500">匿名可</span>
+                          <span className="text-xs text-gray-500">{t('salon.anonymousAllowed')}</span>
                         )}
                       </div>
                       <h3 className="font-semibold text-lg mb-2">{room.theme}</h3>
@@ -216,10 +216,10 @@ const SalonPage: React.FC = () => {
                       <div className="flex items-center gap-4 text-sm text-gray-500">
                         <span className="flex items-center gap-1">
                           <MessageCircle className="h-4 w-4" />
-                          {room.participant_count}人
+                          {t('salon.participants', { count: room.participant_count })}
                         </span>
-                        <span>作成者: {room.creator_display_name || 'ユーザー'}</span>
-                        <span>{new Date(room.created_at).toLocaleDateString('ja-JP')}</span>
+                        <span>{t('salon.creator')}: {room.creator_display_name || t('common.unknownUser')}</span>
+                        <span>{new Date(room.created_at).toLocaleDateString()}</span>
                       </div>
                     </div>
                   </div>

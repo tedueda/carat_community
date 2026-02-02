@@ -701,5 +701,55 @@
       "volunteer": "Volunteer",
       "pets": "Pets"
     }
+  },
+  "salon": {
+    "title": "Member Salon",
+    "subtitle": "Exclusive chat salon for paid members",
+    "backToHome": "Back to Home",
+    "createRoom": "Create Room",
+    "loading": "Loading...",
+    "noRoomsYet": "No rooms yet",
+    "createFirstRoom": "Create the first room",
+    "paidMemberOnly": "Available for paid members only",
+    "fetchFailed": "Failed to fetch rooms",
+    "networkError": "Network error occurred",
+    "participants": "{{count}} people",
+    "creator": "Creator",
+    "target": "Target",
+    "anonymousAllowed": "Anonymous allowed",
+    "roomTypes": {
+      "all": "All",
+      "consultation": "Consultation",
+      "exchange": "Exchange",
+      "story": "Story",
+      "other": "Other"
+    },
+    "identities": {
+      "gay": "Gay",
+      "lesbian": "Lesbian",
+      "bisexual": "Bisexual",
+      "transgender": "Transgender",
+      "questioning": "Questioning",
+      "other": "Other",
+      "ALL": "All"
+    },
+    "createModal": {
+      "title": "Create New Room",
+      "theme": "Theme",
+      "themePlaceholder": "e.g., Gay relationship advice",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe the purpose and topics of this room",
+      "roomType": "Type",
+      "targetIdentity": "Target Identity",
+      "allowAnonymous": "Allow anonymous participation",
+      "required": "*",
+      "cancel": "Cancel",
+      "create": "Create",
+      "creating": "Creating...",
+      "themeRequired": "Please enter a theme",
+      "descriptionRequired": "Please enter a description",
+      "identityRequired": "Please select target identities",
+      "createFailed": "Failed to create room"
+    }
   }
 }

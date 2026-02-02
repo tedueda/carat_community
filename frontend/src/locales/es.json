@@ -631,5 +631,55 @@
       "volunteer": "Voluntariado",
       "pets": "Mascotas"
     }
+  },
+  "salon": {
+    "title": "Salón de Miembros",
+    "subtitle": "Salón de chat exclusivo para miembros de pago",
+    "backToHome": "Volver al inicio",
+    "createRoom": "Crear sala",
+    "loading": "Cargando...",
+    "noRoomsYet": "Aún no hay salas",
+    "createFirstRoom": "Crea la primera sala",
+    "paidMemberOnly": "Disponible solo para miembros de pago",
+    "fetchFailed": "Error al cargar las salas",
+    "networkError": "Error de red",
+    "participants": "{{count}} personas",
+    "creator": "Creador",
+    "target": "Objetivo",
+    "anonymousAllowed": "Anónimo permitido",
+    "roomTypes": {
+      "all": "Todos",
+      "consultation": "Consulta",
+      "exchange": "Intercambio",
+      "story": "Historia",
+      "other": "Otro"
+    },
+    "identities": {
+      "gay": "Gay",
+      "lesbian": "Lesbiana",
+      "bisexual": "Bisexual",
+      "transgender": "Transgénero",
+      "questioning": "Cuestionando",
+      "other": "Otro",
+      "ALL": "Todos"
+    },
+    "createModal": {
+      "title": "Crear nueva sala",
+      "theme": "Tema",
+      "themePlaceholder": "Ej: Consejos de relaciones gay",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Describe el propósito y los temas de esta sala",
+      "roomType": "Tipo",
+      "targetIdentity": "Identidad objetivo",
+      "allowAnonymous": "Permitir participación anónima",
+      "required": "*",
+      "cancel": "Cancelar",
+      "create": "Crear",
+      "creating": "Creando...",
+      "themeRequired": "Por favor ingresa un tema",
+      "descriptionRequired": "Por favor ingresa una descripción",
+      "identityRequired": "Por favor selecciona identidades objetivo",
+      "createFailed": "Error al crear la sala"
+    }
   }
 }

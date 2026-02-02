@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '../ui/card';
 import { Users, MessageCircle, Lock, Unlock } from 'lucide-react';
 
@@ -22,40 +23,22 @@ interface SalonRoomCardProps {
   onClick: () => void;
 }
 
-const roomTypeLabels: Record<string, string> = {
-  consultation: '相談',
-  exchange: '交流',
-  story: 'ストーリー',
-  other: 'その他',
-};
-
-const identityLabels: Record<string, string> = {
-  gay: 'ゲイ',
-  lesbian: 'レズビアン',
-  bisexual: 'バイセクシュアル',
-  transgender: 'トランスジェンダー',
-  questioning: 'クエスチョニング',
-  other: 'その他',
-  ALL: 'すべて',
-};
-
 const SalonRoomCard: React.FC<SalonRoomCardProps> = ({ room, onClick }) => {
+  const { t } = useTranslation();
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('ja-JP', {
-      month: 'short',
-      day: 'numeric',
-    });
+    return date.toLocaleDateString();
   };
 
   const getIdentityLabels = (identities: string[]) => {
     if (identities.includes('ALL')) {
-      return 'すべて';
+      return t('salon.identities.ALL');
     }
     return identities
-      .map((id) => identityLabels[id] || id)
+      .map((id) => t(`salon.identities.${id}`, { defaultValue: id }))
       .slice(0, 3)
-      .join('、') + (identities.length > 3 ? '...' : '');
+      .join(', ') + (identities.length > 3 ? '...' : '');
   };
 
   return (
@@ -66,7 +49,7 @@ const SalonRoomCard: React.FC<SalonRoomCardProps> = ({ room, onClick }) => {
       <CardContent className="p-5">
         <div className="flex items-start justify-between mb-3">
           <span className="text-xs font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-700">
-            {roomTypeLabels[room.room_type] || room.room_type}
+            {t(`salon.roomTypes.${room.room_type}`)}
           </span>
           <div className="flex items-center gap-1 text-gray-500">
             {room.allow_anonymous ? (
@@ -87,7 +70,7 @@ const SalonRoomCard: React.FC<SalonRoomCardProps> = ({ room, onClick }) => {
 
         <div className="flex items-center gap-2 mb-3 flex-wrap">
           <span className="text-xs px-2 py-1 rounded bg-blue-50 text-blue-700">
-            対象: {getIdentityLabels(room.target_identities)}
+            {t('salon.target')}: {getIdentityLabels(room.target_identities)}
           </span>
         </div>
 
@@ -95,7 +78,7 @@ const SalonRoomCard: React.FC<SalonRoomCardProps> = ({ room, onClick }) => {
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1">
               <Users className="h-4 w-4" />
-              {room.participant_count}人
+              {t('salon.participants', { count: room.participant_count })}
             </span>
             <span className="flex items-center gap-1">
               <MessageCircle className="h-4 w-4" />
@@ -108,7 +91,7 @@ const SalonRoomCard: React.FC<SalonRoomCardProps> = ({ room, onClick }) => {
 
         {room.creator_display_name && (
           <div className="mt-2 text-xs text-gray-400">
-            作成者: {room.creator_display_name}
+            {t('salon.creator')}: {room.creator_display_name}
           </div>
         )}
       </CardContent>
