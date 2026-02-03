@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, ExternalLink, ChevronLeft, ChevronRight, X, Play, Trash2, Edit, MessageCircle, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { API_URL } from '../../config';
+import { translateText } from '../../services/translationService';
 import PaidMemberUpgradeModal from '../PaidMemberUpgradeModal';
 
 interface CourseImage {
@@ -57,6 +59,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onDelete }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
   const { user, token } = useAuth();
   const isOwner = user?.id === course.owner_user_id;
   const isAdmin = user?.membership_type === 'admin';
@@ -70,6 +73,38 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
   const [deleting, setDeleting] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [contactLoading, setContactLoading] = useState(false);
+  const [translatedTitle, setTranslatedTitle] = useState(course.title);
+  const [translatedDescription, setTranslatedDescription] = useState(course.description);
+  const [translatedInstructorProfile, setTranslatedInstructorProfile] = useState(course.instructor_profile || '');
+
+  useEffect(() => {
+    const translateContent = async () => {
+      if (currentLanguage === 'ja') {
+        setTranslatedTitle(course.title);
+        setTranslatedDescription(course.description);
+        setTranslatedInstructorProfile(course.instructor_profile || '');
+        return;
+      }
+      try {
+        const promises = [
+          translateText(course.title, currentLanguage),
+          translateText(course.description, currentLanguage)
+        ];
+        if (course.instructor_profile) {
+          promises.push(translateText(course.instructor_profile, currentLanguage));
+        }
+        const results = await Promise.all(promises);
+        setTranslatedTitle(results[0].translated_text);
+        setTranslatedDescription(results[1].translated_text);
+        if (course.instructor_profile && results[2]) {
+          setTranslatedInstructorProfile(results[2].translated_text);
+        }
+      } catch (error) {
+        console.error('Translation error:', error);
+      }
+    };
+    translateContent();
+  }, [course.title, course.description, course.instructor_profile, currentLanguage]);
 
   const handlePrevImage = () => {
     setCurrentImageIndex((prev) =>
@@ -192,7 +227,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
       </div>
 
       {/* Title */}
-      <h1 className="text-3xl font-bold text-gray-900 mb-4">{course.title}</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-4">{translatedTitle}</h1>
 
       {/* Image Slider */}
       {course.images.length > 0 ? (
@@ -276,7 +311,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
       {/* Description */}
       <div className="mb-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-2">{t('courses.detail.description')}</h2>
-        <p className="text-gray-700 whitespace-pre-wrap">{course.description}</p>
+        <p className="text-gray-700 whitespace-pre-wrap">{translatedDescription}</p>
       </div>
 
       {/* Price */}
@@ -289,7 +324,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
       {course.instructor_profile && (
         <div className="mb-6 p-4 bg-gray-50 rounded-xl">
           <h2 className="text-lg font-semibold text-gray-900 mb-3">{t('courses.detail.instructorProfile')}</h2>
-          <p className="text-gray-700 whitespace-pre-wrap">{course.instructor_profile}</p>
+          <p className="text-gray-700 whitespace-pre-wrap">{translatedInstructorProfile}</p>
         </div>
       )}
 
