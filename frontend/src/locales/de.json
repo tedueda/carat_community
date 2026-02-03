@@ -684,5 +684,64 @@
       "identityRequired": "Bitte wählen Sie Zielidentitäten",
       "createFailed": "Raum konnte nicht erstellt werden"
     }
+  },
+  "business": {
+    "title": "Business",
+    "subtitle": "Flohmarkt, Kunstverkauf, Kurse, Live-Streaming",
+    "backToHome": "Zurück zur Startseite",
+    "tabs": {
+      "fleaMarket": "Flohmarkt",
+      "artSales": "Kunstverkauf",
+      "courses": "Kurse & Unterricht",
+      "liveStreaming": "Live-Streaming"
+    },
+    "tabDescriptions": {
+      "fleaMarket": "Marktplatz zwischen Privatpersonen",
+      "artSales": "Verkauf von Kunstwerken",
+      "courses": "Online-Kurse und Unterricht",
+      "liveStreaming": "Live-Streaming-Dienst"
+    },
+    "comingSoon": "Demnächst Verfügbar"
+  },
+  "fleaMarket": {
+    "searchPlaceholder": "Nach Stichwort suchen...",
+    "search": "Suchen",
+    "listItem": "Artikel Einstellen",
+    "filter": "Filtern",
+    "category": "Kategorie",
+    "region": "Region",
+    "sortBy": "Sortieren Nach",
+    "all": "Alle",
+    "loading": "Laden...",
+    "noItems": "Keine Artikel eingestellt",
+    "createFirstListing": "Erste Anzeige erstellen",
+    "anonymousUser": "Anonymer Benutzer",
+    "negotiable": "Verhandelbar",
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "daysAgo": "vor {{count}} Tagen",
+    "moreImages": "+{{count}} weitere",
+    "categories": {
+      "electronics": "Elektronik & Kameras",
+      "fashion": "Mode",
+      "furniture": "Möbel & Interieur",
+      "hobby": "Hobbys & Kunst",
+      "books": "Bücher, Musik & Spiele",
+      "sports": "Sport & Freizeit",
+      "beauty": "Schönheit & Kosmetik",
+      "handmade": "Handgemacht",
+      "other": "Sonstiges"
+    },
+    "transactionMethods": {
+      "hand_off": "Übergabe",
+      "shipping": "Versand",
+      "negotiable": "Verhandelbar"
+    },
+    "sort": {
+      "newest": "Neueste",
+      "priceAsc": "Preis: Aufsteigend",
+      "priceDesc": "Preis: Absteigend",
+      "negotiable": "Verhandelbare Zuerst"
+    }
   }
 }

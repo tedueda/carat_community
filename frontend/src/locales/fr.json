@@ -684,5 +684,64 @@
       "identityRequired": "Veuillez sélectionner les identités cibles",
       "createFailed": "Échec de la création de la salle"
     }
+  },
+  "business": {
+    "title": "Business",
+    "subtitle": "Marché aux Puces, Vente d'Art, Cours, Streaming en Direct",
+    "backToHome": "Retour à l'Accueil",
+    "tabs": {
+      "fleaMarket": "Marché aux Puces",
+      "artSales": "Vente d'Art",
+      "courses": "Cours et Leçons",
+      "liveStreaming": "Streaming en Direct"
+    },
+    "tabDescriptions": {
+      "fleaMarket": "Marché entre particuliers",
+      "artSales": "Vente d'œuvres d'art",
+      "courses": "Cours et leçons en ligne",
+      "liveStreaming": "Service de streaming en direct"
+    },
+    "comingSoon": "Bientôt Disponible"
+  },
+  "fleaMarket": {
+    "searchPlaceholder": "Rechercher par mot-clé...",
+    "search": "Rechercher",
+    "listItem": "Publier un Article",
+    "filter": "Filtrer",
+    "category": "Catégorie",
+    "region": "Région",
+    "sortBy": "Trier Par",
+    "all": "Tous",
+    "loading": "Chargement...",
+    "noItems": "Aucun article publié",
+    "createFirstListing": "Créer la première annonce",
+    "anonymousUser": "Utilisateur Anonyme",
+    "negotiable": "Négociable",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "daysAgo": "il y a {{count}} jours",
+    "moreImages": "+{{count}} de plus",
+    "categories": {
+      "electronics": "Électronique et Appareils Photo",
+      "fashion": "Mode",
+      "furniture": "Meubles et Intérieur",
+      "hobby": "Loisirs et Art",
+      "books": "Livres, Musique et Jeux",
+      "sports": "Sports et Loisirs",
+      "beauty": "Beauté et Cosmétiques",
+      "handmade": "Fait Main",
+      "other": "Autres"
+    },
+    "transactionMethods": {
+      "hand_off": "Remise en Main Propre",
+      "shipping": "Expédition",
+      "negotiable": "Négociable"
+    },
+    "sort": {
+      "newest": "Plus Récents",
+      "priceAsc": "Prix: Croissant",
+      "priceDesc": "Prix: Décroissant",
+      "negotiable": "Négociables en Premier"
+    }
   }
 }

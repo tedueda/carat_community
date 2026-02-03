@@ -684,5 +684,64 @@
       "identityRequired": "Por favor selecciona identidades objetivo",
       "createFailed": "Error al crear la sala"
     }
+  },
+  "business": {
+    "title": "Negocios",
+    "subtitle": "Mercadillo, Venta de Arte, Cursos, Streaming en Vivo",
+    "backToHome": "Volver al Inicio",
+    "tabs": {
+      "fleaMarket": "Mercadillo",
+      "artSales": "Venta de Arte",
+      "courses": "Cursos y Lecciones",
+      "liveStreaming": "Streaming en Vivo"
+    },
+    "tabDescriptions": {
+      "fleaMarket": "Mercado entre particulares",
+      "artSales": "Venta de obras de arte",
+      "courses": "Cursos y lecciones en línea",
+      "liveStreaming": "Servicio de streaming en vivo"
+    },
+    "comingSoon": "Próximamente"
+  },
+  "fleaMarket": {
+    "searchPlaceholder": "Buscar por palabra clave...",
+    "search": "Buscar",
+    "listItem": "Publicar Artículo",
+    "filter": "Filtrar",
+    "category": "Categoría",
+    "region": "Región",
+    "sortBy": "Ordenar Por",
+    "all": "Todos",
+    "loading": "Cargando...",
+    "noItems": "No hay artículos publicados",
+    "createFirstListing": "Crear la primera publicación",
+    "anonymousUser": "Usuario Anónimo",
+    "negotiable": "Negociable",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "daysAgo": "hace {{count}} días",
+    "moreImages": "+{{count}} más",
+    "categories": {
+      "electronics": "Electrónica y Cámaras",
+      "fashion": "Moda",
+      "furniture": "Muebles e Interior",
+      "hobby": "Hobbies y Arte",
+      "books": "Libros, Música y Juegos",
+      "sports": "Deportes y Ocio",
+      "beauty": "Belleza y Cosméticos",
+      "handmade": "Hecho a Mano",
+      "other": "Otros"
+    },
+    "transactionMethods": {
+      "hand_off": "Entrega en Mano",
+      "shipping": "Envío",
+      "negotiable": "Negociable"
+    },
+    "sort": {
+      "newest": "Más Recientes",
+      "priceAsc": "Precio: Menor a Mayor",
+      "priceDesc": "Precio: Mayor a Menor",
+      "negotiable": "Negociables Primero"
+    }
   }
 }

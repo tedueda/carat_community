@@ -754,5 +754,64 @@
       "identityRequired": "対象性自認を選択してください",
       "createFailed": "ルームの作成に失敗しました"
     }
+  },
+  "business": {
+    "title": "ビジネス",
+    "subtitle": "フリマ・作品販売・講座・Live配信",
+    "backToHome": "ホームに戻る",
+    "tabs": {
+      "fleaMarket": "フリマ",
+      "artSales": "作品販売",
+      "courses": "講座・レッスン",
+      "liveStreaming": "Live配信"
+    },
+    "tabDescriptions": {
+      "fleaMarket": "ジモティー風の個人間売買",
+      "artSales": "アート作品の販売",
+      "courses": "オンライン講座・レッスン",
+      "liveStreaming": "ライブ配信サービス"
+    },
+    "comingSoon": "近日公開予定"
+  },
+  "fleaMarket": {
+    "searchPlaceholder": "キーワードで検索...",
+    "search": "検索",
+    "listItem": "出品する",
+    "filter": "フィルター",
+    "category": "カテゴリ",
+    "region": "地域",
+    "sortBy": "並び替え",
+    "all": "すべて",
+    "loading": "読み込み中...",
+    "noItems": "出品がありません",
+    "createFirstListing": "最初の出品をする",
+    "anonymousUser": "匿名ユーザー",
+    "negotiable": "応相談",
+    "today": "今日",
+    "yesterday": "昨日",
+    "daysAgo": "{{count}}日前",
+    "moreImages": "+{{count}}枚",
+    "categories": {
+      "electronics": "家電・スマホ・カメラ",
+      "fashion": "ファッション",
+      "furniture": "家具・インテリア",
+      "hobby": "ホビー・楽器・アート",
+      "books": "本・音楽・ゲーム",
+      "sports": "スポーツ・レジャー",
+      "beauty": "コスメ・美容",
+      "handmade": "ハンドメイド",
+      "other": "その他"
+    },
+    "transactionMethods": {
+      "hand_off": "手渡し",
+      "shipping": "発送",
+      "negotiable": "応相談"
+    },
+    "sort": {
+      "newest": "新着順",
+      "priceAsc": "価格が安い順",
+      "priceDesc": "価格が高い順",
+      "negotiable": "応相談優先"
+    }
   }
 }
