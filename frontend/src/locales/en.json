@@ -812,6 +812,22 @@
       "priceAsc": "Price: Low to High",
       "priceDesc": "Price: High to Low",
       "negotiable": "Negotiable First"
+    },
+    "detail": {
+      "backToList": "Back to List",
+      "productDescription": "Product Description",
+      "seller": "Seller",
+      "member": "Member",
+      "yourListing": "This is your listing",
+      "contact": "Contact",
+      "processing": "Processing...",
+      "chatAlreadyExists": "Chat already started. Please check your chat list.",
+      "chatStartFailed": "Failed to start chat",
+      "errorOccurred": "An error occurred",
+      "transactionNotes": "Transaction Notes",
+      "note1": "Please use the dedicated chat for communication",
+      "note2": "Exchange of personal information is prohibited",
+      "note3": "Transactions are at your own risk"
     }
   }
 }

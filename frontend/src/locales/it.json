@@ -742,6 +742,22 @@
       "priceAsc": "Prezzo: Crescente",
       "priceDesc": "Prezzo: Decrescente",
       "negotiable": "Trattabili Prima"
+    },
+    "detail": {
+      "backToList": "Torna alla Lista",
+      "productDescription": "Descrizione del Prodotto",
+      "seller": "Venditore",
+      "member": "Membro",
+      "yourListing": "Questo è il tuo annuncio",
+      "contact": "Contatta",
+      "processing": "Elaborazione...",
+      "chatAlreadyExists": "La chat è già iniziata. Controlla la tua lista di chat.",
+      "chatStartFailed": "Impossibile avviare la chat",
+      "errorOccurred": "Si è verificato un errore",
+      "transactionNotes": "Note sulla Transazione",
+      "note1": "Si prega di utilizzare la chat dedicata per comunicare",
+      "note2": "Lo scambio di informazioni personali è vietato",
+      "note3": "Le transazioni sono a proprio rischio"
     }
   }
 }
