@@ -684,5 +684,64 @@
       "identityRequired": "Por favor selecione identidades alvo",
       "createFailed": "Falha ao criar sala"
     }
+  },
+  "business": {
+    "title": "Negócios",
+    "subtitle": "Brechó, Venda de Arte, Cursos, Streaming ao Vivo",
+    "backToHome": "Voltar ao Início",
+    "tabs": {
+      "fleaMarket": "Brechó",
+      "artSales": "Venda de Arte",
+      "courses": "Cursos e Aulas",
+      "liveStreaming": "Streaming ao Vivo"
+    },
+    "tabDescriptions": {
+      "fleaMarket": "Mercado entre pessoas",
+      "artSales": "Venda de obras de arte",
+      "courses": "Cursos e aulas online",
+      "liveStreaming": "Serviço de streaming ao vivo"
+    },
+    "comingSoon": "Em Breve"
+  },
+  "fleaMarket": {
+    "searchPlaceholder": "Pesquisar por palavra-chave...",
+    "search": "Pesquisar",
+    "listItem": "Anunciar Item",
+    "filter": "Filtrar",
+    "category": "Categoria",
+    "region": "Região",
+    "sortBy": "Ordenar Por",
+    "all": "Todos",
+    "loading": "Carregando...",
+    "noItems": "Nenhum item anunciado",
+    "createFirstListing": "Criar o primeiro anúncio",
+    "anonymousUser": "Usuário Anônimo",
+    "negotiable": "Negociável",
+    "today": "Hoje",
+    "yesterday": "Ontem",
+    "daysAgo": "há {{count}} dias",
+    "moreImages": "+{{count}} mais",
+    "categories": {
+      "electronics": "Eletrônicos e Câmeras",
+      "fashion": "Moda",
+      "furniture": "Móveis e Interior",
+      "hobby": "Hobbies e Arte",
+      "books": "Livros, Música e Jogos",
+      "sports": "Esportes e Lazer",
+      "beauty": "Beleza e Cosméticos",
+      "handmade": "Feito à Mão",
+      "other": "Outros"
+    },
+    "transactionMethods": {
+      "hand_off": "Entrega em Mãos",
+      "shipping": "Envio",
+      "negotiable": "Negociável"
+    },
+    "sort": {
+      "newest": "Mais Recentes",
+      "priceAsc": "Preço: Menor para Maior",
+      "priceDesc": "Preço: Maior para Menor",
+      "negotiable": "Negociáveis Primeiro"
+    }
   }
 }

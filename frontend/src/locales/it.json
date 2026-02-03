@@ -684,5 +684,64 @@
       "identityRequired": "Seleziona le identità target",
       "createFailed": "Impossibile creare la stanza"
     }
+  },
+  "business": {
+    "title": "Business",
+    "subtitle": "Mercatino, Vendita Arte, Corsi, Streaming Live",
+    "backToHome": "Torna alla Home",
+    "tabs": {
+      "fleaMarket": "Mercatino",
+      "artSales": "Vendita Arte",
+      "courses": "Corsi e Lezioni",
+      "liveStreaming": "Streaming Live"
+    },
+    "tabDescriptions": {
+      "fleaMarket": "Mercato tra privati",
+      "artSales": "Vendita di opere d'arte",
+      "courses": "Corsi e lezioni online",
+      "liveStreaming": "Servizio di streaming live"
+    },
+    "comingSoon": "Prossimamente"
+  },
+  "fleaMarket": {
+    "searchPlaceholder": "Cerca per parola chiave...",
+    "search": "Cerca",
+    "listItem": "Pubblica Articolo",
+    "filter": "Filtra",
+    "category": "Categoria",
+    "region": "Regione",
+    "sortBy": "Ordina Per",
+    "all": "Tutti",
+    "loading": "Caricamento...",
+    "noItems": "Nessun articolo pubblicato",
+    "createFirstListing": "Crea il primo annuncio",
+    "anonymousUser": "Utente Anonimo",
+    "negotiable": "Trattabile",
+    "today": "Oggi",
+    "yesterday": "Ieri",
+    "daysAgo": "{{count}} giorni fa",
+    "moreImages": "+{{count}} altre",
+    "categories": {
+      "electronics": "Elettronica e Fotocamere",
+      "fashion": "Moda",
+      "furniture": "Mobili e Interni",
+      "hobby": "Hobby e Arte",
+      "books": "Libri, Musica e Giochi",
+      "sports": "Sport e Tempo Libero",
+      "beauty": "Bellezza e Cosmetici",
+      "handmade": "Fatto a Mano",
+      "other": "Altri"
+    },
+    "transactionMethods": {
+      "hand_off": "Consegna a Mano",
+      "shipping": "Spedizione",
+      "negotiable": "Trattabile"
+    },
+    "sort": {
+      "newest": "Più Recenti",
+      "priceAsc": "Prezzo: Crescente",
+      "priceDesc": "Prezzo: Decrescente",
+      "negotiable": "Trattabili Prima"
+    }
   }
 }

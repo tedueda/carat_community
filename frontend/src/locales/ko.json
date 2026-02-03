@@ -754,5 +754,64 @@
       "identityRequired": "대상 정체성을 선택해 주세요",
       "createFailed": "방 만들기에 실패했습니다"
     }
+  },
+  "business": {
+    "title": "비즈니스",
+    "subtitle": "중고마켓, 작품 판매, 강좌, 라이브 스트리밍",
+    "backToHome": "홈으로 돌아가기",
+    "tabs": {
+      "fleaMarket": "중고마켓",
+      "artSales": "작품 판매",
+      "courses": "강좌 & 레슨",
+      "liveStreaming": "라이브 스트리밍"
+    },
+    "tabDescriptions": {
+      "fleaMarket": "개인 간 거래 마켓플레이스",
+      "artSales": "아트 작품 판매",
+      "courses": "온라인 강좌 및 레슨",
+      "liveStreaming": "라이브 스트리밍 서비스"
+    },
+    "comingSoon": "곧 출시 예정"
+  },
+  "fleaMarket": {
+    "searchPlaceholder": "키워드로 검색...",
+    "search": "검색",
+    "listItem": "출품하기",
+    "filter": "필터",
+    "category": "카테고리",
+    "region": "지역",
+    "sortBy": "정렬",
+    "all": "전체",
+    "loading": "로딩 중...",
+    "noItems": "출품된 상품이 없습니다",
+    "createFirstListing": "첫 번째 출품하기",
+    "anonymousUser": "익명 사용자",
+    "negotiable": "협의 가능",
+    "today": "오늘",
+    "yesterday": "어제",
+    "daysAgo": "{{count}}일 전",
+    "moreImages": "+{{count}}장",
+    "categories": {
+      "electronics": "전자제품 & 카메라",
+      "fashion": "패션",
+      "furniture": "가구 & 인테리어",
+      "hobby": "취미 & 아트",
+      "books": "도서 & 음악 & 게임",
+      "sports": "스포츠 & 레저",
+      "beauty": "뷰티 & 화장품",
+      "handmade": "핸드메이드",
+      "other": "기타"
+    },
+    "transactionMethods": {
+      "hand_off": "직거래",
+      "shipping": "배송",
+      "negotiable": "협의 가능"
+    },
+    "sort": {
+      "newest": "최신순",
+      "priceAsc": "가격: 낮은순",
+      "priceDesc": "가격: 높은순",
+      "negotiable": "협의 가능 우선"
+    }
   }
 }

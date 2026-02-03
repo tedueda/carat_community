@@ -754,5 +754,64 @@
       "identityRequired": "Please select target identities",
       "createFailed": "Failed to create room"
     }
+  },
+  "business": {
+    "title": "Business",
+    "subtitle": "Flea Market, Artwork Sales, Courses, Live Streaming",
+    "backToHome": "Back to Home",
+    "tabs": {
+      "fleaMarket": "Flea Market",
+      "artSales": "Artwork Sales",
+      "courses": "Courses & Lessons",
+      "liveStreaming": "Live Streaming"
+    },
+    "tabDescriptions": {
+      "fleaMarket": "Person-to-person marketplace",
+      "artSales": "Art and artwork sales",
+      "courses": "Online courses and lessons",
+      "liveStreaming": "Live streaming service"
+    },
+    "comingSoon": "Coming Soon"
+  },
+  "fleaMarket": {
+    "searchPlaceholder": "Search by keyword...",
+    "search": "Search",
+    "listItem": "List Item",
+    "filter": "Filter",
+    "category": "Category",
+    "region": "Region",
+    "sortBy": "Sort By",
+    "all": "All",
+    "loading": "Loading...",
+    "noItems": "No items listed",
+    "createFirstListing": "Create the first listing",
+    "anonymousUser": "Anonymous User",
+    "negotiable": "Negotiable",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "daysAgo": "{{count}} days ago",
+    "moreImages": "+{{count}} more",
+    "categories": {
+      "electronics": "Electronics & Cameras",
+      "fashion": "Fashion",
+      "furniture": "Furniture & Interior",
+      "hobby": "Hobbies & Art",
+      "books": "Books & Music & Games",
+      "sports": "Sports & Leisure",
+      "beauty": "Beauty & Cosmetics",
+      "handmade": "Handmade",
+      "other": "Other"
+    },
+    "transactionMethods": {
+      "hand_off": "Hand-off",
+      "shipping": "Shipping",
+      "negotiable": "Negotiable"
+    },
+    "sort": {
+      "newest": "Newest",
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low",
+      "negotiable": "Negotiable First"
+    }
   }
 }
