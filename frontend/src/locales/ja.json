@@ -831,6 +831,15 @@
     }
   },
   "artSales": {
+    "title": "作品販売",
+    "listArtwork": "作品を出品",
+    "searchPlaceholder": "作品を検索...",
+    "selectCategory": "カテゴリを選択",
+    "allCategories": "すべてのカテゴリ",
+    "gridView": "グリッド表示",
+    "listView": "リスト表示",
+    "noItemsFound": "作品が見つかりませんでした",
+    "negotiable": "応相談",
     "categories": {
       "painting": "絵画",
       "sculpture": "彫刻",

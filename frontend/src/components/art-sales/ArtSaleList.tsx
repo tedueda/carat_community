@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Grid, List, Search } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import ArtSaleDetail from './ArtSaleDetail';
 import ArtSalePostForm from './ArtSalePostForm';
@@ -44,6 +45,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 const ArtSaleList: React.FC = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
 
@@ -70,7 +72,7 @@ const ArtSaleList: React.FC = () => {
         setCategories(data);
       }
     } catch (error) {
-      console.error('カテゴリの取得に失敗しました:', error);
+      console.error('Failed to fetch categories:', error);
     }
   };
 
@@ -86,7 +88,7 @@ const ArtSaleList: React.FC = () => {
         setItems(data);
       }
     } catch (error) {
-      console.error('作品の取得に失敗しました:', error);
+      console.error('Failed to fetch items:', error);
     } finally {
       setLoading(false);
     }
@@ -116,7 +118,7 @@ const ArtSaleList: React.FC = () => {
   });
 
   const formatPrice = (price: number) => {
-    if (price === 0) return '応相談';
+    if (price === 0) return t('artSales.negotiable');
     return `¥${price.toLocaleString()}`;
   };
 
@@ -150,14 +152,14 @@ const ArtSaleList: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl font-bold text-gray-900">作品販売</h2>
+        <h2 className="text-2xl font-bold text-gray-900">{t('artSales.title')}</h2>
         {isPaidUser && (
           <button
             onClick={() => setShowPostForm(true)}
             className="flex items-center gap-2 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
           >
             <Plus className="w-5 h-5" />
-            作品を出品
+            {t('artSales.listArtwork')}
           </button>
         )}
       </div>
@@ -167,7 +169,7 @@ const ArtSaleList: React.FC = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="text"
-            placeholder="作品を検索..."
+            placeholder={t('artSales.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
@@ -178,12 +180,12 @@ const ArtSaleList: React.FC = () => {
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-            aria-label="カテゴリを選択"
+            aria-label={t('artSales.selectCategory')}
           >
-            <option value="">すべてのカテゴリ</option>
+            <option value="">{t('artSales.allCategories')}</option>
             {categories.map((cat) => (
               <option key={cat.id} value={cat.id}>
-                {CATEGORY_LABELS[cat.id] || cat.name}
+                {t(`artSales.categories.${cat.id}`, { defaultValue: CATEGORY_LABELS[cat.id] || cat.name })}
               </option>
             ))}
           </select>
@@ -191,14 +193,14 @@ const ArtSaleList: React.FC = () => {
             <button
               onClick={() => setViewMode('grid')}
               className={`p-2 ${viewMode === 'grid' ? 'bg-pink-100 text-pink-600' : 'bg-white text-gray-600'}`}
-              aria-label="グリッド表示"
+              aria-label={t('artSales.gridView')}
             >
               <Grid className="w-5 h-5" />
             </button>
             <button
               onClick={() => setViewMode('list')}
               className={`p-2 ${viewMode === 'list' ? 'bg-pink-100 text-pink-600' : 'bg-white text-gray-600'}`}
-              aria-label="リスト表示"
+              aria-label={t('artSales.listView')}
             >
               <List className="w-5 h-5" />
             </button>
@@ -212,7 +214,7 @@ const ArtSaleList: React.FC = () => {
         </div>
       ) : filteredItems.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500">作品が見つかりませんでした</p>
+          <p className="text-gray-500">{t('artSales.noItemsFound')}</p>
         </div>
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -239,7 +241,7 @@ const ArtSaleList: React.FC = () => {
                 <h3 className="font-medium text-gray-900 truncate">{item.title}</h3>
                 <p className="text-pink-600 font-bold">{formatPrice(item.price)}</p>
                 <p className="text-xs text-gray-500 mt-1">
-                  {CATEGORY_LABELS[item.category] || item.category}
+                  {t(`artSales.categories.${item.category}`, { defaultValue: CATEGORY_LABELS[item.category] || item.category })}
                 </p>
               </div>
             </div>
@@ -272,11 +274,11 @@ const ArtSaleList: React.FC = () => {
                 <p className="text-sm text-gray-500 mt-1 line-clamp-2">{item.description}</p>
                 <div className="flex gap-2 mt-2">
                   <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-                    {CATEGORY_LABELS[item.category] || item.category}
+                    {t(`artSales.categories.${item.category}`, { defaultValue: CATEGORY_LABELS[item.category] || item.category })}
                   </span>
                   {item.is_original && (
                     <span className="text-xs bg-pink-100 text-pink-600 px-2 py-1 rounded">
-                      オリジナル
+                      {t('artSales.detail.original')}
                     </span>
                   )}
                 </div>

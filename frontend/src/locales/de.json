@@ -831,6 +831,15 @@
     }
   },
   "artSales": {
+    "title": "Artwork Sales",
+    "listArtwork": "List Artwork",
+    "searchPlaceholder": "Search artworks...",
+    "selectCategory": "Select category",
+    "allCategories": "All Categories",
+    "gridView": "Grid view",
+    "listView": "List view",
+    "noItemsFound": "No artworks found",
+    "negotiable": "Negotiable",
     "categories": {
       "painting": "Painting",
       "sculpture": "Sculpture",
