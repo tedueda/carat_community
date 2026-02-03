@@ -829,5 +829,52 @@
       "note2": "Exchange of personal information is prohibited",
       "note3": "Transactions are at your own risk"
     }
+  },
+  "artSales": {
+    "categories": {
+      "painting": "Painting",
+      "sculpture": "Sculpture",
+      "digital": "Digital Art",
+      "photography": "Photography",
+      "calligraphy": "Calligraphy",
+      "crafts": "Crafts",
+      "illustration": "Illustration",
+      "other": "Other"
+    },
+    "transactionMethods": {
+      "negotiable": "Negotiable",
+      "hand_off": "Hand-off",
+      "shipping": "Shipping"
+    },
+    "form": {
+      "createTitle": "List Artwork",
+      "editTitle": "Edit Artwork",
+      "images": "Images (Max 5)",
+      "clickToAddImage": "Click to add images",
+      "title": "Title",
+      "titlePlaceholder": "Artwork title",
+      "description": "Description",
+      "descriptionPlaceholder": "Artwork description, background, etc.",
+      "price": "Price (¥)",
+      "pricePlaceholder": "0 for negotiable",
+      "category": "Category",
+      "categoryLabel": "Select category",
+      "technique": "Technique",
+      "techniquePlaceholder": "Oil, watercolor, etc.",
+      "size": "Size",
+      "sizePlaceholder": "30cm x 40cm",
+      "yearCreated": "Year Created",
+      "transactionMethod": "Transaction Method",
+      "transactionMethodLabel": "Select transaction method",
+      "isOriginal": "Original Artwork",
+      "submit": "List",
+      "errors": {
+        "titleRequired": "Please enter a title",
+        "descriptionRequired": "Please enter a description",
+        "categoryRequired": "Please select a category",
+        "submitFailed": "Failed to list artwork",
+        "errorOccurred": "An error occurred"
+      }
+    }
   }
 }

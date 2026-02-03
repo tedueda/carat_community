@@ -829,5 +829,52 @@
       "note2": "個人情報の交換は禁止されています",
       "note3": "取引は自己責任で行ってください"
     }
+  },
+  "artSales": {
+    "categories": {
+      "painting": "絵画",
+      "sculpture": "彫刻",
+      "digital": "デジタルアート",
+      "photography": "写真",
+      "calligraphy": "書道",
+      "crafts": "工芸",
+      "illustration": "イラスト",
+      "other": "その他"
+    },
+    "transactionMethods": {
+      "negotiable": "応相談",
+      "hand_off": "手渡し",
+      "shipping": "発送"
+    },
+    "form": {
+      "createTitle": "作品を出品",
+      "editTitle": "作品を編集",
+      "images": "画像（最大5枚）",
+      "clickToAddImage": "クリックして画像を追加",
+      "title": "タイトル",
+      "titlePlaceholder": "作品のタイトル",
+      "description": "説明",
+      "descriptionPlaceholder": "作品の説明、制作背景など",
+      "price": "価格（円）",
+      "pricePlaceholder": "0で応相談",
+      "category": "カテゴリ",
+      "categoryLabel": "カテゴリを選択",
+      "technique": "技法",
+      "techniquePlaceholder": "油彩、水彩など",
+      "size": "サイズ",
+      "sizePlaceholder": "30cm x 40cm",
+      "yearCreated": "制作年",
+      "transactionMethod": "取引方法",
+      "transactionMethodLabel": "取引方法を選択",
+      "isOriginal": "オリジナル作品",
+      "submit": "出品する",
+      "errors": {
+        "titleRequired": "タイトルを入力してください",
+        "descriptionRequired": "説明を入力してください",
+        "categoryRequired": "カテゴリを選択してください",
+        "submitFailed": "出品に失敗しました",
+        "errorOccurred": "エラーが発生しました"
+      }
+    }
   }
 }
