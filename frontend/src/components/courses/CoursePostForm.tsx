@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Plus, X, Video, Upload, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { API_URL } from '../../config';
 
@@ -49,6 +50,7 @@ const MAX_IMAGES = 5;
 const MAX_VIDEOS = 6;
 
 const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuccess }) => {
+  const { t } = useTranslation();
   const { token } = useAuth();
   const isEditing = !!course;
 
@@ -89,7 +91,7 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
         setCategories(data);
       }
     } catch (error) {
-      console.error('カテゴリ取得エラー:', error);
+      console.error('Failed to fetch categories:', error);
     }
   };
 
@@ -98,19 +100,19 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
     if (!files || files.length === 0) return;
     
     if (imageUrls.length >= MAX_IMAGES) {
-      setError(`画像は最大${MAX_IMAGES}枚までです`);
+      setError(t('courses.form.maxImagesError', { max: MAX_IMAGES }));
       return;
     }
 
     const file = files[0];
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      setError('JPEG、PNG、WebP形式の画像のみアップロードできます');
+      setError(t('courses.form.invalidImageFormat'));
       return;
     }
 
     if (file.size > 10 * 1024 * 1024) {
-      setError('ファイルサイズは10MB以下にしてください');
+      setError(t('courses.form.fileSizeError'));
       return;
     }
 
@@ -134,11 +136,11 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
         setImageUrls([...imageUrls, data.url]);
       } else {
         const errorData = await response.json();
-        setError(errorData.detail || 'アップロードに失敗しました');
+        setError(errorData.detail || t('courses.form.uploadFailed'));
       }
     } catch (error) {
-      console.error('アップロードエラー:', error);
-      setError('アップロードに失敗しました');
+      console.error('Upload error:', error);
+      setError(t('courses.form.uploadFailed'));
     } finally {
       setUploading(false);
       // Reset file input
@@ -155,12 +157,12 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
   const handleAddVideo = () => {
     if (!newYoutubeUrl.trim()) return;
     if (youtubeUrls.length >= MAX_VIDEOS) {
-      setError(`動画は最大${MAX_VIDEOS}件までです`);
+      setError(t('courses.form.maxVideosError', { max: MAX_VIDEOS }));
       return;
     }
     // Basic YouTube URL validation
     if (!newYoutubeUrl.includes('youtube.com') && !newYoutubeUrl.includes('youtu.be')) {
-      setError('有効なYouTube URLを入力してください');
+      setError(t('courses.form.invalidYoutubeUrl'));
       return;
     }
     setYoutubeUrls([...youtubeUrls, newYoutubeUrl.trim()]);
@@ -189,35 +191,35 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
 
     // Validation
     if (!title.trim()) {
-      setError('タイトルを入力してください');
+      setError(t('courses.form.titleRequired'));
       return;
     }
     if (title.length > 80) {
-      setError('タイトルは80文字以内で入力してください');
+      setError(t('courses.form.titleMaxLength'));
       return;
     }
     if (!description.trim()) {
-      setError('説明を入力してください');
+      setError(t('courses.form.descriptionRequired'));
       return;
     }
     if (description.length > 3000) {
-      setError('説明は3000文字以内で入力してください');
+      setError(t('courses.form.descriptionMaxLength'));
       return;
     }
     if (!category) {
-      setError('カテゴリーを選択してください');
+      setError(t('courses.form.categoryRequired'));
       return;
     }
     if (!priceLabel.trim()) {
-      setError('料金を入力してください');
+      setError(t('courses.form.priceRequired'));
       return;
     }
     if (!externalUrl.trim()) {
-      setError('外部URLを入力してください');
+      setError(t('courses.form.urlRequired'));
       return;
     }
     if (!externalUrl.startsWith('http://') && !externalUrl.startsWith('https://')) {
-      setError('外部URLはhttp://またはhttps://で始まる必要があります');
+      setError(t('courses.form.invalidUrl'));
       return;
     }
 
@@ -253,11 +255,11 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
         onSuccess();
       } else {
         const data = await response.json();
-        setError(data.detail || '保存に失敗しました');
+        setError(data.detail || t('courses.form.saveFailed'));
       }
     } catch (error) {
-      console.error('保存エラー:', error);
-      setError('保存に失敗しました');
+      console.error('Save error:', error);
+      setError(t('courses.form.saveFailed'));
     } finally {
       setLoading(false);
     }
@@ -272,10 +274,10 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="w-5 h-5" />
-          戻る
+          {t('common.back')}
         </button>
         <h1 className="text-2xl font-bold text-gray-900">
-          {isEditing ? '講座を編集' : '講座を出品'}
+          {isEditing ? t('courses.form.editTitle') : t('courses.form.createTitle')}
         </h1>
       </div>
 
@@ -289,19 +291,19 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
         {/* Category */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            カテゴリー <span className="text-red-500">*</span>
+            {t('courses.form.category')} <span className="text-red-500">*</span>
           </label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
             required
-            aria-label="カテゴリーを選択"
+            aria-label={t('courses.form.selectCategory')}
           >
-            <option value="">カテゴリーを選択してください</option>
+            <option value="">{t('courses.form.selectCategoryPlaceholder')}</option>
             {categories.map((cat) => (
               <option key={cat.id} value={cat.id}>
-                {cat.name}
+                {t(`courses.categories.${cat.id}`, { defaultValue: cat.name })}
               </option>
             ))}
           </select>
@@ -310,7 +312,7 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
         {/* Images */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            画像（最大{MAX_IMAGES}枚）
+            {t('courses.form.images', { max: MAX_IMAGES })}
           </label>
           <div className="space-y-3">
             {/* Uploaded images preview */}
@@ -327,7 +329,7 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
                       type="button"
                       onClick={() => handleRemoveImage(index)}
                       className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      aria-label="画像を削除"
+                      aria-label={t('courses.form.removeImage')}
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -353,17 +355,17 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
                   {uploading ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin text-gray-500" />
-                      <span className="text-gray-500">アップロード中...</span>
+                      <span className="text-gray-500">{t('courses.form.uploading')}</span>
                     </>
                   ) : (
                     <>
                       <Upload className="w-5 h-5 text-gray-500" />
-                      <span className="text-gray-500">画像をアップロード</span>
+                      <span className="text-gray-500">{t('courses.form.uploadImage')}</span>
                     </>
                   )}
                 </label>
                 <p className="mt-1 text-xs text-gray-500">
-                  JPEG、PNG、WebP形式（最大10MB）
+                  {t('courses.form.imageFormatInfo')}
                 </p>
               </div>
             )}
@@ -373,7 +375,7 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
         {/* Videos */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            YouTube動画（最大{MAX_VIDEOS}件）
+            {t('courses.form.videos', { max: MAX_VIDEOS })}
           </label>
           <div className="space-y-3">
             {youtubeUrls.map((url, index) => {
@@ -384,7 +386,7 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
                     {videoId && (
                       <img
                         src={`https://img.youtube.com/vi/${videoId}/default.jpg`}
-                        alt="サムネイル"
+                        alt={t('courses.form.thumbnail')}
                         className="w-16 h-12 object-cover rounded"
                       />
                     )}
@@ -395,7 +397,7 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
                     type="button"
                     onClick={() => handleRemoveVideo(index)}
                     className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
-                    aria-label="動画を削除"
+                    aria-label={t('courses.form.removeVideo')}
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -408,14 +410,14 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
                   type="url"
                   value={newYoutubeUrl}
                   onChange={(e) => setNewYoutubeUrl(e.target.value)}
-                  placeholder="YouTube URLを入力"
+                  placeholder={t('courses.form.youtubeUrlPlaceholder')}
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                 />
                 <button
                   type="button"
                   onClick={handleAddVideo}
                   className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
-                  aria-label="動画を追加"
+                  aria-label={t('courses.form.addVideo')}
                 >
                   <Plus className="w-5 h-5" />
                 </button>
@@ -427,77 +429,77 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
         {/* Title */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            タイトル <span className="text-red-500">*</span>
+            {t('courses.form.title')} <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             maxLength={80}
-            placeholder="講座のタイトルを入力（最大80文字）"
+            placeholder={t('courses.form.titlePlaceholder')}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
             required
           />
-          <p className="mt-1 text-sm text-gray-500">{title.length}/80文字</p>
+          <p className="mt-1 text-sm text-gray-500">{title.length}/80{t('courses.form.characters')}</p>
         </div>
 
         {/* Description */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            講座の説明 <span className="text-red-500">*</span>
+            {t('courses.form.description')} <span className="text-red-500">*</span>
           </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             maxLength={3000}
             rows={8}
-            placeholder="講座の内容、対象者、学べることなどを詳しく説明してください（最大3000文字）"
+            placeholder={t('courses.form.descriptionPlaceholder')}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent resize-none"
             required
           />
-          <p className="mt-1 text-sm text-gray-500">{description.length}/3000文字</p>
+          <p className="mt-1 text-sm text-gray-500">{description.length}/3000{t('courses.form.characters')}</p>
         </div>
 
         {/* Price */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            講座料金 <span className="text-red-500">*</span>
+            {t('courses.form.price')} <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             value={priceLabel}
             onChange={(e) => setPriceLabel(e.target.value)}
-            placeholder="例: ¥5,000、無料、月額¥2,000"
+            placeholder={t('courses.form.pricePlaceholder')}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
             required
           />
           <p className="mt-1 text-sm text-gray-500">
-            自由に入力できます（例: ¥5,000、無料、月額¥2,000〜）
+            {t('courses.form.priceInfo')}
           </p>
         </div>
 
         {/* External URL */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            講座サイトURL <span className="text-red-500">*</span>
+            {t('courses.form.externalUrl')} <span className="text-red-500">*</span>
           </label>
           <input
             type="url"
             value={externalUrl}
             onChange={(e) => setExternalUrl(e.target.value)}
-            placeholder="https://example.com/course"
+            placeholder={t('courses.form.urlPlaceholder')}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
             required
           />
           <p className="mt-1 text-sm text-gray-500">
-            申し込みページや詳細ページのURLを入力してください
+            {t('courses.form.urlInfo')}
           </p>
         </div>
 
         {/* Instructor Profile (moved here for better visibility) */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            講師プロフィール（最大1000文字）
+            {t('courses.form.instructorProfile')}
           </label>
           <textarea
             value={instructorProfile}
@@ -505,10 +507,10 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
             rows={5}
             maxLength={1000}
-            placeholder="講師の経歴、実績、専門分野などを記入してください"
+            placeholder={t('courses.form.instructorProfilePlaceholder')}
           />
           <p className="mt-1 text-sm text-gray-500 text-right">
-            {instructorProfile.length}/1000文字
+            {instructorProfile.length}/1000{t('courses.form.characters')}
           </p>
         </div>
 
@@ -520,14 +522,14 @@ const CoursePostForm: React.FC<CoursePostFormProps> = ({ course, onCancel, onSuc
             className="flex-1 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
             disabled={loading}
           >
-            キャンセル
+            {t('common.cancel')}
           </button>
           <button
             type="submit"
             className="flex-1 py-3 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
             disabled={loading}
           >
-            {loading ? '保存中...' : isEditing ? '更新する' : '出品する'}
+            {loading ? t('common.saving') : isEditing ? t('common.update') : t('courses.form.submit')}
           </button>
         </div>
       </form>

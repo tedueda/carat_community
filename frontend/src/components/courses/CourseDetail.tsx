@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ExternalLink, ChevronLeft, ChevronRight, X, Play, Trash2, Edit, MessageCircle, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { API_URL } from '../../config';
 import PaidMemberUpgradeModal from '../PaidMemberUpgradeModal';
@@ -55,6 +56,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onDelete }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user, token } = useAuth();
   const isOwner = user?.id === course.owner_user_id;
   const isAdmin = user?.membership_type === 'admin';
@@ -99,11 +101,11 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
       if (response.ok) {
         onDelete();
       } else {
-        alert('削除に失敗しました');
+        alert(t('courses.detail.deleteFailed'));
       }
     } catch (error) {
-      console.error('削除エラー:', error);
-      alert('削除に失敗しました');
+      console.error('Delete error:', error);
+      alert(t('courses.detail.deleteFailed'));
     } finally {
       setDeleting(false);
       setShowDeleteConfirm(false);
@@ -137,22 +139,22 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
           navigate(`/matching/chats/${data.chat_id}`);
         } else if (data.status === 'pending') {
           // リクエスト送信済み
-          alert('問い合わせを送信しました。相手からの返信をお待ちください。');
+          alert(t('courses.detail.inquirySent'));
           navigate('/matching/chats');
         } else if (data.status === 'accepted') {
           // 承認済み
           navigate('/matching/chats');
         } else {
-          alert('問い合わせを送信しました。');
+          alert(t('courses.detail.inquirySent'));
           navigate('/matching/chats');
         }
       } else {
         const errorData = await response.json();
-        alert(errorData.detail || 'チャットの開始に失敗しました');
+        alert(errorData.detail || t('courses.detail.chatStartFailed'));
       }
     } catch (error) {
-      console.error('チャット開始エラー:', error);
-      alert('エラーが発生しました');
+      console.error('Chat start error:', error);
+      alert(t('common.errorOccurred'));
     } finally {
       setContactLoading(false);
     }
@@ -167,7 +169,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="w-5 h-5" />
-          一覧に戻る
+          {t('courses.detail.backToList')}
         </button>
         {canEdit && (
           <div className="flex items-center gap-2">
@@ -176,14 +178,14 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
               className="flex items-center gap-2 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
             >
               <Edit className="w-4 h-4" />
-              編集
+              {t('common.edit')}
             </button>
             <button
               onClick={() => setShowDeleteConfirm(true)}
               className="flex items-center gap-2 px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50"
             >
               <Trash2 className="w-4 h-4" />
-              削除
+              {t('common.delete')}
             </button>
           </div>
         )}
@@ -207,14 +209,14 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
               <button
                 onClick={handlePrevImage}
                 className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 text-white rounded-full hover:bg-black/70"
-                aria-label="前の画像"
+                aria-label={t('courses.detail.previousImage')}
               >
                 <ChevronLeft className="w-6 h-6" />
               </button>
               <button
                 onClick={handleNextImage}
                 className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 text-white rounded-full hover:bg-black/70"
-                aria-label="次の画像"
+                aria-label={t('courses.detail.nextImage')}
               >
                 <ChevronRight className="w-6 h-6" />
               </button>
@@ -226,7 +228,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
                     className={`w-2 h-2 rounded-full ${
                       index === currentImageIndex ? 'bg-white' : 'bg-white/50'
                     }`}
-                    aria-label={`画像 ${index + 1}`}
+                    aria-label={`${t('courses.detail.image')} ${index + 1}`}
                   />
                 ))}
               </div>
@@ -242,7 +244,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
       {/* Video Thumbnails */}
       {course.videos.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">デモ動画</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">{t('courses.detail.demoVideos')}</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {course.videos.map((video) => (
               <button
@@ -252,7 +254,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
               >
                 <img
                   src={`https://img.youtube.com/vi/${video.youtube_video_id}/hqdefault.jpg`}
-                  alt="動画サムネイル"
+                  alt={t('courses.detail.videoThumbnail')}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/50 transition-colors">
@@ -267,33 +269,33 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
       {/* Category */}
       <div className="mb-4">
         <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
-          {CATEGORY_LABELS[course.category] || course.category}
+          {t(`courses.categories.${course.category}`, { defaultValue: CATEGORY_LABELS[course.category] || course.category })}
         </span>
       </div>
 
       {/* Description */}
       <div className="mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-2">講座の説明</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-2">{t('courses.detail.description')}</h2>
         <p className="text-gray-700 whitespace-pre-wrap">{course.description}</p>
       </div>
 
       {/* Price */}
       <div className="mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-2">講座料金</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-2">{t('courses.detail.price')}</h2>
         <p className="text-2xl font-bold text-gray-900">{course.price_label}</p>
       </div>
 
       {/* Instructor Profile */}
       {course.instructor_profile && (
         <div className="mb-6 p-4 bg-gray-50 rounded-xl">
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">講師プロフィール</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">{t('courses.detail.instructorProfile')}</h2>
           <p className="text-gray-700 whitespace-pre-wrap">{course.instructor_profile}</p>
         </div>
       )}
 
       {/* Instructor Info (会員限定でプロフィールリンク) */}
       <div className="mb-8 p-4 bg-gray-50 rounded-xl">
-        <h2 className="text-lg font-semibold text-gray-900 mb-3">投稿者</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-3">{t('courses.detail.instructor')}</h2>
         {user ? (
           <button
             onClick={() => navigate(`/matching/users/${course.owner_user_id}`)}
@@ -312,9 +314,9 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
             )}
             <div>
               <p className="font-medium text-gray-900">
-                {course.owner_display_name || '匿名'}
+                {course.owner_display_name || t('common.anonymous')}
               </p>
-              <p className="text-sm text-blue-600">プロフィールを見る →</p>
+              <p className="text-sm text-blue-600">{t('courses.detail.viewProfile')} →</p>
             </div>
           </button>
         ) : (
@@ -332,9 +334,9 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
             )}
             <div>
               <p className="font-medium text-gray-900">
-                {course.owner_display_name || '匿名'}
+                {course.owner_display_name || t('common.anonymous')}
               </p>
-              <p className="text-sm text-gray-500">プロフィールは会員限定</p>
+              <p className="text-sm text-gray-500">{t('courses.detail.profileMembersOnly')}</p>
             </div>
           </div>
         )}
@@ -350,7 +352,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
             className="flex items-center justify-center gap-2 w-full py-4 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-medium text-lg disabled:opacity-50"
           >
             <MessageCircle className="w-5 h-5" />
-            {contactLoading ? '接続中...' : '投稿者に問い合わせる'}
+            {contactLoading ? t('courses.detail.connecting') : t('courses.detail.contactInstructor')}
           </button>
         )}
         {/* 講座サイトで申し込むボタン（有料会員のみ） */}
@@ -362,7 +364,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
             className="flex items-center justify-center gap-2 w-full py-4 bg-black text-white rounded-lg hover:bg-gray-800 font-medium text-lg"
           >
             <ExternalLink className="w-5 h-5" />
-            サイトから申し込む
+            {t('courses.detail.applyOnSite')}
           </a>
         ) : (
           <button
@@ -376,7 +378,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
             className="flex items-center justify-center gap-2 w-full py-4 bg-gray-400 text-white rounded-lg hover:bg-gray-500 font-medium text-lg"
           >
             <ExternalLink className="w-5 h-5" />
-            サイトから申し込む（有料会員限定）
+            {t('courses.detail.applyOnSitePremium')}
           </button>
         )}
       </div>
@@ -385,7 +387,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
       <PaidMemberUpgradeModal
         open={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
-        featureName="投稿者への問い合わせ"
+        featureName={t('courses.detail.contactInstructor')}
       />
 
       {/* Video Modal */}
@@ -395,7 +397,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
             <button
               onClick={() => setShowVideoModal(false)}
               className="absolute -top-12 right-0 text-white hover:text-gray-300"
-              aria-label="閉じる"
+              aria-label={t('common.close')}
             >
               <X className="w-8 h-8" />
             </button>
@@ -416,9 +418,9 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl p-6 max-w-md w-full">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">講座を削除しますか？</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-4">{t('courses.detail.deleteConfirmTitle')}</h3>
             <p className="text-gray-600 mb-6">
-              この操作は取り消せません。講座に関連するすべてのデータが削除されます。
+              {t('courses.detail.deleteConfirmMessage')}
             </p>
             <div className="flex gap-3">
               <button
@@ -426,14 +428,14 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course, onBack, onEdit, onD
                 className="flex-1 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
                 disabled={deleting}
               >
-                キャンセル
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleDelete}
                 className="flex-1 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
                 disabled={deleting}
               >
-                {deleting ? '削除中...' : '削除する'}
+                {deleting ? t('common.deleting') : t('common.delete')}
               </button>
             </div>
           </div>
