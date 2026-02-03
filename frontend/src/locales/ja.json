@@ -875,6 +875,23 @@
         "submitFailed": "出品に失敗しました",
         "errorOccurred": "エラーが発生しました"
       }
+    },
+    "detail": {
+      "original": "オリジナル",
+      "technique": "技法",
+      "size": "サイズ",
+      "yearCreated": "制作年",
+      "year": "年",
+      "description": "作品説明",
+      "transactionMethod": "取引方法",
+      "seller": "出品者",
+      "member": "会員",
+      "contact": "連絡する",
+      "yourListing": "これはあなたの出品です",
+      "transactionNotes": "取引時の注意",
+      "note1": "連絡は専用チャットで行ってください",
+      "note2": "個人情報の交換は禁止されています",
+      "note3": "取引は自己責任で行ってください"
     }
   }
 }

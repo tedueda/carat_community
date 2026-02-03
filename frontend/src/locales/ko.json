@@ -875,6 +875,23 @@
         "submitFailed": "출품에 실패했습니다",
         "errorOccurred": "오류가 발생했습니다"
       }
+    },
+    "detail": {
+      "original": "오리지널",
+      "technique": "기법",
+      "size": "크기",
+      "yearCreated": "제작년도",
+      "year": "년",
+      "description": "작품 설명",
+      "transactionMethod": "거래 방법",
+      "seller": "판매자",
+      "member": "회원",
+      "contact": "연락하기",
+      "yourListing": "내 상품입니다",
+      "transactionNotes": "거래 시 주의사항",
+      "note1": "전용 채팅으로 연락해 주세요",
+      "note2": "개인정보 교환은 금지되어 있습니다",
+      "note3": "거래는 본인 책임하에 진행해 주세요"
     }
   }
 }

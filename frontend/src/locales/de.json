@@ -875,6 +875,23 @@
         "submitFailed": "Failed to list artwork",
         "errorOccurred": "An error occurred"
       }
+    },
+    "detail": {
+      "original": "Original",
+      "technique": "Technique",
+      "size": "Size",
+      "yearCreated": "Year Created",
+      "year": "",
+      "description": "Artwork Description",
+      "transactionMethod": "Transaction Method",
+      "seller": "Seller",
+      "member": "Member",
+      "contact": "Contact",
+      "yourListing": "This is your listing",
+      "transactionNotes": "Transaction Notes",
+      "note1": "Please use the dedicated chat for communication",
+      "note2": "Exchange of personal information is prohibited",
+      "note3": "Transactions are at your own risk"
     }
   }
 }
