@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, ExternalLink, User, Filter, ChevronDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { API_URL } from '../../config';
 import CourseDetail from './CourseDetail';
@@ -55,6 +56,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const CourseList: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
 
@@ -82,7 +84,7 @@ const CourseList: React.FC = () => {
         setCategories(data);
       }
     } catch (error) {
-      console.error('カテゴリ取得エラー:', error);
+      console.error('Failed to fetch categories:', error);
     }
   };
 
@@ -98,7 +100,7 @@ const CourseList: React.FC = () => {
         setCourses(Array.isArray(data) ? data : []);
       }
     } catch (error) {
-      console.error('講座取得エラー:', error);
+      console.error('Failed to fetch courses:', error);
     } finally {
       setLoading(false);
     }
@@ -174,15 +176,15 @@ const CourseList: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">講座一覧</h2>
-          <p className="text-gray-600 mt-1">スキルアップのための講座を探そう</p>
+          <h2 className="text-2xl font-bold text-gray-900">{t('courses.title')}</h2>
+          <p className="text-gray-600 mt-1">{t('courses.subtitle')}</p>
         </div>
         <button
           onClick={handlePostClick}
           className="flex items-center justify-center gap-2 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
         >
           <Plus className="w-5 h-5" />
-          講座を出品する
+          {t('courses.listCourse')}
         </button>
       </div>
 
@@ -193,24 +195,24 @@ const CourseList: React.FC = () => {
           className="flex items-center gap-2 text-gray-700 font-medium"
         >
           <Filter className="w-5 h-5" />
-          フィルター
+          {t('courses.filter')}
           <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
         </button>
 
         {showFilters && (
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">カテゴリー</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('courses.category')}</label>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-                aria-label="カテゴリーを選択"
+                aria-label={t('courses.selectCategory')}
               >
-                <option value="">すべてのカテゴリー</option>
+                <option value="">{t('courses.allCategories')}</option>
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
-                    {cat.name}
+                    {t(`courses.categories.${cat.id}`, { defaultValue: cat.name })}
                   </option>
                 ))}
               </select>
@@ -226,13 +228,13 @@ const CourseList: React.FC = () => {
         </div>
       ) : courses.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-gray-500 text-lg">講座がまだありません</p>
+          <p className="text-gray-500 text-lg">{t('courses.noCourses')}</p>
           {isPaidUser && (
             <button
               onClick={handlePostClick}
               className="mt-4 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800"
             >
-              最初の講座を出品する
+              {t('courses.listFirstCourse')}
             </button>
           )}
         </div>
@@ -259,7 +261,7 @@ const CourseList: React.FC = () => {
                 )}
                 <div className="absolute top-2 left-2">
                   <span className="px-2 py-1 bg-black/70 text-white text-xs rounded-full">
-                    {CATEGORY_LABELS[course.category] || course.category}
+                    {t(`courses.categories.${course.category}`, { defaultValue: CATEGORY_LABELS[course.category] || course.category })}
                   </span>
                 </div>
               </div>
@@ -293,7 +295,7 @@ const CourseList: React.FC = () => {
                       </div>
                     )}
                     <span className="text-sm text-gray-600">
-                      {course.owner_display_name || '匿名'}
+                      {course.owner_display_name || t('common.anonymous')}
                     </span>
                   </div>
                   <ExternalLink className="w-4 h-4 text-gray-400" />
@@ -308,7 +310,7 @@ const CourseList: React.FC = () => {
       <PaidMemberUpgradeModal 
         open={showUpgradeModal} 
         onClose={() => setShowUpgradeModal(false)} 
-        featureName="講座出品"
+        featureName={t('courses.listCourse')}
       />
     </div>
   );

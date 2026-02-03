@@ -830,6 +830,26 @@
       "note3": "Transactions are at your own risk"
     }
   },
+  "courses": {
+    "title": "Courses",
+    "subtitle": "Find courses to level up your skills",
+    "listCourse": "List a Course",
+    "filter": "Filter",
+    "category": "Category",
+    "selectCategory": "Select category",
+    "allCategories": "All Categories",
+    "noCourses": "No courses yet",
+    "listFirstCourse": "List the first course",
+    "categories": {
+      "business": "Business",
+      "creative": "Creative",
+      "language": "Language",
+      "health": "Health",
+      "relationship": "Relationship",
+      "life": "Life",
+      "other": "Other"
+    }
+  },
   "artSales": {
     "title": "Artwork Sales",
     "listArtwork": "List Artwork",

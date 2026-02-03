@@ -830,6 +830,26 @@
       "note3": "거래는 본인 책임하에 진행해 주세요"
     }
   },
+  "courses": {
+    "title": "강좌 목록",
+    "subtitle": "스킬 향상을 위한 강좌를 찾아보세요",
+    "listCourse": "강좌 등록하기",
+    "filter": "필터",
+    "category": "카테고리",
+    "selectCategory": "카테고리 선택",
+    "allCategories": "모든 카테고리",
+    "noCourses": "아직 강좌가 없습니다",
+    "listFirstCourse": "첫 강좌를 등록하세요",
+    "categories": {
+      "business": "비즈니스",
+      "creative": "크리에이티브",
+      "language": "언어",
+      "health": "건강",
+      "relationship": "연애·관계",
+      "life": "라이프",
+      "other": "기타"
+    }
+  },
   "artSales": {
     "title": "작품 판매",
     "listArtwork": "작품 출품",

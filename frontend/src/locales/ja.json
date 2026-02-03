@@ -830,6 +830,26 @@
       "note3": "取引は自己責任で行ってください"
     }
   },
+  "courses": {
+    "title": "講座一覧",
+    "subtitle": "スキルアップのための講座を探そう",
+    "listCourse": "講座を出品する",
+    "filter": "フィルター",
+    "category": "カテゴリー",
+    "selectCategory": "カテゴリーを選択",
+    "allCategories": "すべてのカテゴリー",
+    "noCourses": "講座がまだありません",
+    "listFirstCourse": "最初の講座を出品する",
+    "categories": {
+      "business": "ビジネス",
+      "creative": "クリエイティブ",
+      "language": "語学",
+      "health": "健康",
+      "relationship": "恋愛・関係",
+      "life": "ライフ",
+      "other": "その他"
+    }
+  },
   "artSales": {
     "title": "作品販売",
     "listArtwork": "作品を出品",
