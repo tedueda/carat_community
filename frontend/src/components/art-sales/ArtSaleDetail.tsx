@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Clock, MessageCircle, ChevronLeft, ChevronRight, User, Edit, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import PremiumUpgradeModal from '../PremiumUpgradeModal';
+import { translateText } from '../../services/translationService';
 
 interface ArtSaleItem {
   id: number;
@@ -52,6 +55,8 @@ const TRANSACTION_METHOD_LABELS: Record<string, string> = {
 
 const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
   const { user } = useAuth();
   const token = localStorage.getItem('token');
   const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
@@ -60,6 +65,29 @@ const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) =
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [translatedTitle, setTranslatedTitle] = useState(item.title);
+  const [translatedDescription, setTranslatedDescription] = useState(item.description);
+
+  useEffect(() => {
+    const translateContent = async () => {
+      if (currentLanguage === 'ja') {
+        setTranslatedTitle(item.title);
+        setTranslatedDescription(item.description);
+        return;
+      }
+      try {
+        const [titleResult, descResult] = await Promise.all([
+          translateText(item.title, currentLanguage),
+          translateText(item.description, currentLanguage)
+        ]);
+        setTranslatedTitle(titleResult.translated_text);
+        setTranslatedDescription(descResult.translated_text);
+      } catch (error) {
+        console.error('Translation error:', error);
+      }
+    };
+    translateContent();
+  }, [item.title, item.description, currentLanguage]);
 
   const formatPrice = (price: number) => {
     if (price === 0) return '応相談';
@@ -192,7 +220,7 @@ const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) =
         <div className="p-6">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">{item.title}</h1>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">{translatedTitle}</h1>
               <p className="text-3xl font-bold text-pink-600">{formatPrice(item.price)}</p>
             </div>
             <div className="flex flex-col gap-2">
@@ -231,7 +259,7 @@ const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) =
 
           <div className="border-t border-gray-200 pt-6 mb-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-3">作品説明</h2>
-            <p className="text-gray-700 whitespace-pre-wrap">{item.description}</p>
+            <p className="text-gray-700 whitespace-pre-wrap">{translatedDescription}</p>
           </div>
 
           <div className="border-t border-gray-200 pt-6 mb-6">
