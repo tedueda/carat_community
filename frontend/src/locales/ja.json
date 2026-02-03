@@ -812,6 +812,22 @@
       "priceAsc": "価格が安い順",
       "priceDesc": "価格が高い順",
       "negotiable": "応相談優先"
+    },
+    "detail": {
+      "backToList": "一覧に戻る",
+      "productDescription": "商品説明",
+      "seller": "出品者",
+      "member": "会員",
+      "yourListing": "これはあなたの出品です",
+      "contact": "連絡する",
+      "processing": "処理中...",
+      "chatAlreadyExists": "既にチャットが開始されています。チャット一覧から確認してください。",
+      "chatStartFailed": "チャットの開始に失敗しました",
+      "errorOccurred": "エラーが発生しました",
+      "transactionNotes": "取引時の注意",
+      "note1": "連絡は専用チャットで行ってください",
+      "note2": "個人情報の交換は禁止されています",
+      "note3": "取引は自己責任で行ってください"
     }
   }
 }

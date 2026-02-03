@@ -812,6 +812,22 @@
       "priceAsc": "가격: 낮은순",
       "priceDesc": "가격: 높은순",
       "negotiable": "협의 가능 우선"
+    },
+    "detail": {
+      "backToList": "목록으로 돌아가기",
+      "productDescription": "상품 설명",
+      "seller": "판매자",
+      "member": "회원",
+      "yourListing": "내 상품입니다",
+      "contact": "연락하기",
+      "processing": "처리 중...",
+      "chatAlreadyExists": "이미 채팅이 시작되었습니다. 채팅 목록에서 확인하세요.",
+      "chatStartFailed": "채팅 시작에 실패했습니다",
+      "errorOccurred": "오류가 발생했습니다",
+      "transactionNotes": "거래 시 주의사항",
+      "note1": "전용 채팅으로 연락해 주세요",
+      "note2": "개인정보 교환은 금지되어 있습니다",
+      "note3": "거래는 자기 책임으로 진행해 주세요"
     }
   }
 }
