@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ShoppingBag, Search } from 'lucide-react';
 import jewelryBanner from '../../assets/images/jewelry-banner.jpg';
 
@@ -22,18 +23,19 @@ interface JewelryProduct {
 }
 
 const JEWELRY_CATEGORIES = [
-  { id: 'earring', name: 'イヤリング・ピアス' },
-  { id: 'necklace', name: 'ネックレス' },
-  { id: 'bracelet', name: 'ブレスレット' },
-  { id: 'brooch', name: 'ブローチ' },
-  { id: 'ring', name: 'リング' },
-  { id: 'other', name: 'その他' },
+  { id: 'earring' },
+  { id: 'necklace' },
+  { id: 'bracelet' },
+  { id: 'brooch' },
+  { id: 'ring' },
+  { id: 'other' },
 ];
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const JewelryProductList: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [products, setProducts] = useState<JewelryProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -83,11 +85,11 @@ const JewelryProductList: React.FC = () => {
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-2 mb-4">
           <ShoppingBag className="w-8 h-8 text-gray-800" />
-          <h1 className="text-3xl font-bold text-gray-800">会員限定 ジュエリー特別販売</h1>
+          <h1 className="text-3xl font-bold text-gray-800">{t('jewelry.title')}</h1>
         </div>
         <img 
           src={jewelryBanner} 
-          alt="ジュエリーコレクション" 
+          alt={t('jewelry.bannerAlt')} 
           className="w-full max-w-2xl mx-auto rounded-lg shadow-md object-cover h-48"
         />
       </div>
@@ -97,7 +99,7 @@ const JewelryProductList: React.FC = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="text"
-            placeholder="商品を検索..."
+            placeholder={t('jewelry.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent"
@@ -114,7 +116,7 @@ const JewelryProductList: React.FC = () => {
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            すべて
+            {t('jewelry.allCategories')}
           </button>
           {JEWELRY_CATEGORIES.map((cat) => (
             <button
@@ -126,7 +128,7 @@ const JewelryProductList: React.FC = () => {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              {cat.name}
+              {t(`jewelry.categories.${cat.id}`)}
             </button>
           ))}
         </div>
@@ -135,7 +137,7 @@ const JewelryProductList: React.FC = () => {
       {filteredProducts.length === 0 ? (
         <div className="text-center py-12">
           <ShoppingBag className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500">商品がありません</p>
+          <p className="text-gray-500">{t('jewelry.noProducts')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -160,7 +162,7 @@ const JewelryProductList: React.FC = () => {
                 {/* カテゴリーバッジ */}
                 <div className="absolute top-2 left-2">
                   <span className="px-2 py-1 bg-gray-900 text-white text-xs font-medium rounded">
-                    {JEWELRY_CATEGORIES.find(cat => cat.id === product.category)?.name || product.category}
+                    {t(`jewelry.categories.${product.category}`)}
                   </span>
                 </div>
                 {product.is_sold_out && (

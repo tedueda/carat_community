@@ -817,5 +817,20 @@
       "note2": "Exchange of personal information is prohibited",
       "note3": "Transactions are at your own risk"
     }
+  },
+  "jewelry": {
+    "title": "Members Only - Special Jewelry Sale",
+    "bannerAlt": "Jewelry Collection",
+    "searchPlaceholder": "Search products...",
+    "allCategories": "All",
+    "noProducts": "No products available",
+    "categories": {
+      "earring": "Earrings & Piercings",
+      "necklace": "Necklaces",
+      "bracelet": "Bracelets",
+      "brooch": "Brooches",
+      "ring": "Rings",
+      "other": "Other"
+    }
   }
 }

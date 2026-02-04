@@ -817,5 +817,20 @@
       "note2": "個人情報の交換は禁止されています",
       "note3": "取引は自己責任で行ってください"
     }
+  },
+  "jewelry": {
+    "title": "会員限定 ジュエリー特別販売",
+    "bannerAlt": "ジュエリーコレクション",
+    "searchPlaceholder": "商品を検索...",
+    "allCategories": "すべて",
+    "noProducts": "商品がありません",
+    "categories": {
+      "earring": "イヤリング・ピアス",
+      "necklace": "ネックレス",
+      "bracelet": "ブレスレット",
+      "brooch": "ブローチ",
+      "ring": "リング",
+      "other": "その他"
+    }
   }
 }
