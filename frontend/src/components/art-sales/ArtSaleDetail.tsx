@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Clock, MessageCircle, ChevronLeft, ChevronRight, User, Edit, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import PremiumUpgradeModal from '../PremiumUpgradeModal';
@@ -55,7 +54,6 @@ const TRANSACTION_METHOD_LABELS: Record<string, string> = {
 
 const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const { currentLanguage } = useLanguage();
   const { user } = useAuth();
   const token = localStorage.getItem('token');

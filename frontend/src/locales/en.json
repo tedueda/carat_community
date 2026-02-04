@@ -2,19 +2,15 @@
   "hero": {
     "messages": [
       {
-        "main": "Express yourself and\nmeet new friends",
-        "sub": "Counseling, art, music, local tours.\nYour story begins here."
+        "main": "Creating a World\nWithout Borders",
+        "sub": "Beyond language, gender, and differences!"
       },
       {
-        "main": "A safe community where\nyou can express yourself",
+        "main": "The only site supporting\ngender-free lifestyles",
         "sub": "Counseling, art, music, local tours.\nYour story begins here."
       },
       {
         "main": "A space to connect with\ntrusted companions",
-        "sub": "Counseling, art, music, local tours.\nYour story begins here."
-      },
-      {
-        "main": "The only site supporting\ngender-free lifestyles",
         "sub": "Counseling, art, music, local tours.\nYour story begins here."
       },
       {
@@ -23,14 +19,6 @@
       },
       {
         "main": "A community where friends\nrecognize your talents",
-        "sub": "Counseling, art, music, local tours.\nYour story begins here."
-      },
-      {
-        "main": "A quality community space\nwith like-minded friends",
-        "sub": "Counseling, art, music, local tours.\nYour story begins here."
-      },
-      {
-        "main": "Let your \"Carat\" shine\non a blank canvas",
         "sub": "Counseling, art, music, local tours.\nYour story begins here."
       }
     ]

@@ -304,7 +304,7 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const slideInterval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 8);
+      setCurrentSlide((prev) => (prev + 1) % 5);
     }, 8000);
 
     return () => clearInterval(slideInterval);
@@ -336,7 +336,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 0 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/img10.jpg" 
+                src="/images/hero5.png" 
                 alt="LGBTQ+ Community 1"
                 className="w-full h-full object-cover"
               />
@@ -345,7 +345,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 1 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/img12.jpg" 
+                src="/images/hero5.png" 
                 alt="LGBTQ+ Community 2"
                 className="w-full h-full object-cover"
               />
@@ -363,7 +363,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 3 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/hero1.png" 
+                src="/images/hero2.png" 
                 alt="LGBTQ+ Community 4"
                 className="w-full h-full object-cover"
               />
@@ -372,35 +372,8 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 4 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/hero2.png" 
-                alt="LGBTQ+ Community 5"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div 
-              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 5 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
                 src="/images/hero3.png" 
-                alt="LGBTQ+ Community 6"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div 
-              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 6 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
-                src="/images/hero4.png" 
-                alt="LGBTQ+ Community 7"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div 
-              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 7 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
-                src="/images/hero5.png" 
-                alt="LGBTQ+ Community 8"
+                alt="LGBTQ+ Community 5"
                 className="w-full h-full object-cover"
               />
             </div>
