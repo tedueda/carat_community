@@ -61,7 +61,8 @@ const JewelryProductList: React.FC = () => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = !selectedCategory || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    const hasImage = product.images && product.images.length > 0;
+    return matchesSearch && matchesCategory && hasImage;
   });
 
   const formatPrice = (price: number, includesTax: boolean) => {
