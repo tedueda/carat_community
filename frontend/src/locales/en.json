@@ -824,6 +824,11 @@
     "searchPlaceholder": "Search products...",
     "allCategories": "All",
     "noProducts": "No products available",
+    "banner": {
+      "title": "Jewelry Sale",
+      "subtitle": "Special prices for members only",
+      "viewDetails": "View Details"
+    },
     "categories": {
       "earring": "Earrings & Piercings",
       "necklace": "Necklaces",

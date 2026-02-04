@@ -683,22 +683,22 @@ const HomePage: React.FC = () => {
           <div className="relative rounded-xl shadow-2xl overflow-hidden" style={{ maxHeight: '400px' }}>
             <img 
               src={jewelryBanner} 
-              alt="Jewelry Collection"
+              alt={t('jewelry.bannerAlt')}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black/40"></div>
             <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-8 md:px-16">
               <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
-                ジュエリー販売
+                {t('jewelry.banner.title')}
               </h2>
               <p className="text-xl md:text-2xl text-white/90 mb-6 max-w-2xl">
-                会員限定で特別な価格にてご提供
+                {t('jewelry.banner.subtitle')}
               </p>
               <button
                 onClick={() => navigate('/jewelry')}
                 className="inline-flex items-center gap-2 px-8 py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl"
               >
-                詳細はこちら
+                {t('jewelry.banner.viewDetails')}
                 <ArrowRight className="h-5 w-5" />
               </button>
             </div>

@@ -824,6 +824,11 @@
     "searchPlaceholder": "商品を検索...",
     "allCategories": "すべて",
     "noProducts": "商品がありません",
+    "banner": {
+      "title": "ジュエリー販売",
+      "subtitle": "会員限定で特別な価格にてご提供",
+      "viewDetails": "詳細はこちら"
+    },
     "categories": {
       "earring": "イヤリング・ピアス",
       "necklace": "ネックレス",
