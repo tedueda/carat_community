@@ -829,6 +829,24 @@
       "subtitle": "Special prices for members only",
       "viewDetails": "View Details"
     },
+    "detail": {
+      "backToList": "Back to Product List",
+      "soldOut": "Sold Out",
+      "stock": "Stock",
+      "pieces": "pcs",
+      "hasCertificate": "With Certificate",
+      "hasGemId": "With Gem ID",
+      "addToCart": "Add to Cart",
+      "adding": "Adding...",
+      "viewCart": "View Cart",
+      "productDetails": "Product Details",
+      "material": "Material",
+      "size": "Size",
+      "additionalInfo": "Additional Information",
+      "productNotFound": "Product not found",
+      "cartAddSuccess": "Added to cart",
+      "cartAddError": "Failed to add to cart"
+    },
     "categories": {
       "earring": "Earrings & Piercings",
       "necklace": "Necklaces",

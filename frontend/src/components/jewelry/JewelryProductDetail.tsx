@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ShoppingBag, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
 import PremiumUpgradeModal from '../PremiumUpgradeModal';
 
@@ -32,6 +33,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const JewelryProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [product, setProduct] = useState<JewelryProduct | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -127,7 +129,7 @@ const JewelryProductDetail: React.FC = () => {
 
       if (response.ok) {
         console.log('カート追加成功');
-        setMessage({ type: 'success', text: 'カートに追加しました' });
+        setMessage({ type: 'success', text: t('jewelry.detail.cartAddSuccess') });
         // カートページに遷移
         setTimeout(() => {
           console.log('カートページに遷移');
@@ -149,7 +151,7 @@ const JewelryProductDetail: React.FC = () => {
       }
     } catch (error) {
       console.error('カート追加エラー:', error);
-      setMessage({ type: 'error', text: 'カートへの追加に失敗しました' });
+      setMessage({ type: 'error', text: t('jewelry.detail.cartAddError') });
     } finally {
       setAddingToCart(false);
       console.log('=== カート追加終了 ===');
@@ -184,7 +186,7 @@ const JewelryProductDetail: React.FC = () => {
   if (!product) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500">商品が見つかりません</p>
+        <p className="text-gray-500">{t('jewelry.detail.productNotFound')}</p>
       </div>
     );
   }
@@ -198,7 +200,7 @@ const JewelryProductDetail: React.FC = () => {
         className="flex items-center text-gray-600 hover:text-gray-900 mb-6"
       >
         <ChevronLeft className="w-5 h-5" />
-        <span>商品一覧に戻る</span>
+        <span>{t('jewelry.detail.backToList')}</span>
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -270,7 +272,7 @@ const JewelryProductDetail: React.FC = () => {
           {/* Sold Out バッジ */}
           {product.is_sold_out && (
             <div className="inline-block px-4 py-2 bg-black text-white font-bold text-lg mb-4 rounded">
-              Sold Out
+              {t('jewelry.detail.soldOut')}
             </div>
           )}
           
@@ -283,12 +285,12 @@ const JewelryProductDetail: React.FC = () => {
             <div className="flex flex-wrap gap-2 mb-4">
               {product.has_certificate && (
                 <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium border border-gray-300">
-                  鑑定証あり
+                  {t('jewelry.detail.hasCertificate')}
                 </span>
               )}
               {product.has_gem_id && (
                 <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium border border-gray-300">
-                  宝石識別証あり
+                  {t('jewelry.detail.hasGemId')}
                 </span>
               )}
             </div>
@@ -297,7 +299,7 @@ const JewelryProductDetail: React.FC = () => {
           {/* Stock Info */}
           {product.stock > 0 && !product.is_sold_out && (
             <p className="text-sm text-gray-500 mb-4">
-              在庫: {product.stock}点
+              {t('jewelry.detail.stock')}: {product.stock}{t('jewelry.detail.pieces')}
             </p>
           )}
 
@@ -325,7 +327,7 @@ const JewelryProductDetail: React.FC = () => {
               }`}
             >
               <ShoppingCart className="w-6 h-6" />
-              {addingToCart ? '追加中...' : isSoldOut ? '売り切れ' : 'カートに入れる'}
+              {addingToCart ? t('jewelry.detail.adding') : isSoldOut ? t('jewelry.detail.soldOut') : t('jewelry.detail.addToCart')}
             </button>
 
             {user && (user.membership_type === 'premium' || user.membership_type === 'admin') && (
@@ -333,14 +335,14 @@ const JewelryProductDetail: React.FC = () => {
                 onClick={() => navigate('/jewelry/cart')}
                 className="flex-1 py-4 border border-gray-900 text-gray-900 rounded-lg font-bold hover:bg-gray-100"
               >
-                カートを見る
+                {t('jewelry.detail.viewCart')}
               </button>
             )}
           </div>
 
           {/* Product Details */}
           <div className="mt-8 space-y-4">
-            <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">商品詳細</h2>
+            <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">{t('jewelry.detail.productDetails')}</h2>
             
             <div className="prose prose-sm max-w-none">
               <p className="text-sm text-gray-700 whitespace-pre-wrap">{product.description}</p>
@@ -348,14 +350,14 @@ const JewelryProductDetail: React.FC = () => {
 
             {product.material && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">素材</h3>
+                <h3 className="text-lg font-semibold text-gray-800">{t('jewelry.detail.material')}</h3>
                 <p className="text-sm text-gray-600">{product.material}</p>
               </div>
             )}
 
             {product.size && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">サイズ</h3>
+                <h3 className="text-lg font-semibold text-gray-800">{t('jewelry.detail.size')}</h3>
                 <p className="text-sm text-gray-600">{product.size}</p>
               </div>
             )}

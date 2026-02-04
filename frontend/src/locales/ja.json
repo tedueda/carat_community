@@ -829,6 +829,24 @@
       "subtitle": "会員限定で特別な価格にてご提供",
       "viewDetails": "詳細はこちら"
     },
+    "detail": {
+      "backToList": "商品一覧に戻る",
+      "soldOut": "売り切れ",
+      "stock": "在庫",
+      "pieces": "点",
+      "hasCertificate": "鑑定証あり",
+      "hasGemId": "宝石識別証あり",
+      "addToCart": "カートに入れる",
+      "adding": "追加中...",
+      "viewCart": "カートを見る",
+      "productDetails": "商品詳細",
+      "material": "素材",
+      "size": "サイズ",
+      "additionalInfo": "追加情報",
+      "productNotFound": "商品が見つかりません",
+      "cartAddSuccess": "カートに追加しました",
+      "cartAddError": "カートへの追加に失敗しました"
+    },
     "categories": {
       "earring": "イヤリング・ピアス",
       "necklace": "ネックレス",
