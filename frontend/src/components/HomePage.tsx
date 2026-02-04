@@ -333,7 +333,7 @@ const HomePage: React.FC = () => {
         <section ref={heroSectionRef} className="relative w-full overflow-hidden" style={{height: '860px'}}>
           <div className="absolute inset-0">
             <div 
-              className={`absolute inset-0 transition-opacity duration-2000 ${currentSlide === 0 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 0 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
                 src="/images/hero5.png" 
@@ -342,7 +342,7 @@ const HomePage: React.FC = () => {
               />
             </div>
             <div 
-              className={`absolute inset-0 transition-opacity duration-2000 ${currentSlide === 1 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 1 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
                 src="/images/hero1.png" 
@@ -351,7 +351,7 @@ const HomePage: React.FC = () => {
               />
             </div>
             <div 
-              className={`absolute inset-0 transition-opacity duration-2000 ${currentSlide === 2 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 2 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
                 src="/images/img14.jpg" 
@@ -360,7 +360,7 @@ const HomePage: React.FC = () => {
               />
             </div>
             <div 
-              className={`absolute inset-0 transition-opacity duration-2000 ${currentSlide === 3 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 3 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
                 src="/images/hero2.png" 
@@ -369,7 +369,7 @@ const HomePage: React.FC = () => {
               />
             </div>
             <div 
-              className={`absolute inset-0 transition-opacity duration-2000 ${currentSlide === 4 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 4 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
                 src="/images/hero3.png" 
@@ -389,7 +389,7 @@ const HomePage: React.FC = () => {
           </div>
           <div className="relative z-10 flex items-center justify-center h-full">
             <div className="text-center text-white px-4 max-w-6xl">
-              <h2 className="text-3xl md:text-7xl font-serif font-bold leading-tight mb-6 transition-opacity duration-2000">
+              <h2 key={`main-${currentSlide}`} className="text-3xl md:text-7xl font-serif font-bold leading-tight mb-6 transition-opacity duration-[3000ms] ease-in-out">
                 {t(`hero.messages.${currentSlide}.main`).split('\n').map((line: string, i: number) => (
                   <React.Fragment key={i}>
                     {line}
@@ -397,7 +397,7 @@ const HomePage: React.FC = () => {
                   </React.Fragment>
                 ))}
               </h2>
-              <p className="text-lg md:text-2xl mb-8 opacity-90 transition-opacity duration-2000">
+              <p key={`sub-${currentSlide}`} className="text-lg md:text-2xl mb-8 opacity-90 transition-opacity duration-[3000ms] ease-in-out">
                 {t(`hero.messages.${currentSlide}.sub`).split('\n').map((line: string, i: number) => (
                   <React.Fragment key={i}>
                     {line}
