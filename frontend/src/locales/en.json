@@ -855,5 +855,13 @@
       "ring": "Rings",
       "other": "Other"
     }
+  },
+  "liveWedding": {
+    "banner": {
+      "title": "Live Wedding",
+      "subtitle": "Your special online wedding ceremony",
+      "viewDetails": "View Details",
+      "bannerAlt": "Live Wedding"
+    }
   }
 }

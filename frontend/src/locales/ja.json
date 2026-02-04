@@ -855,5 +855,13 @@
       "ring": "リング",
       "other": "その他"
     }
+  },
+  "liveWedding": {
+    "banner": {
+      "title": "Live Wedding",
+      "subtitle": "オンラインで叶える、あなただけの特別な結婚式",
+      "viewDetails": "詳細はこちら",
+      "bannerAlt": "Live Wedding"
+    }
   }
 }
