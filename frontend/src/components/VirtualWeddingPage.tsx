@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Check, ChevronDown, ChevronUp, Home } from 'lucide-react';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Button } from './ui/button';
 
 const VirtualWeddingPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
@@ -31,43 +33,6 @@ const VirtualWeddingPage: React.FC = () => {
   //     description: "録画データをお渡しし、いつでも振り返れます"
   //   }
   // ];
-
-  const includedFeatures = [
-    "カメラ4台によるマルチアングル収録",
-    "配信用音響設備（マイク・ミキサー）",
-    "高画質映像収録",
-    "バーチャル背景作成（教会／披露宴／海外風景 等）",
-    "配信サポート（Zoom等）",
-    "オンラインメッセージ・お祝儀受け取り機能",
-    "スタッフ1〜2名による運営サポート"
-  ];
-
-  const notIncludedFeatures = [
-    "ヘアメイク・衣装",
-    "司会・牧師・パートナー",
-    "コーディネーター・プランナー",
-    "花束・装飾",
-    "飲食"
-  ];
-
-  const faqs = [
-    {
-      question: "どのような機材が必要ですか？",
-      answer: "基本的な機材は全て弊社でご用意いたします。会場にインターネット環境があれば配信可能です。"
-    },
-    {
-      question: "配信の品質はどの程度ですか？",
-      answer: "プランに応じてHD〜4K画質での配信が可能です。安定したインターネット環境で高品質な配信を実現します。"
-    },
-    {
-      question: "当日のサポート体制は？",
-      answer: "専任スタッフが当日の進行をサポートいたします。技術的なトラブルにも迅速に対応いたします。"
-    },
-    {
-      question: "録画データはいつ受け取れますか？",
-      answer: "配信終了後、編集作業を経て約1週間以内にデータをお渡しいたします。"
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-carat-gray1">
@@ -99,17 +64,17 @@ const VirtualWeddingPage: React.FC = () => {
                 className="flex items-center gap-2 text-white/80 hover:text-white transition-colors bg-black/30 px-4 py-2 rounded-full"
               >
                 <Home className="h-5 w-5" />
-                ホームに戻る
+                {t('liveWedding.page.backToHome')}
               </button>
             </div>
 
             {/* Top Section - キャッチ */}
             <div className="flex-1 flex flex-col justify-start pt-8">
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-center">
-                ライブ・ウェディング
+                {t('liveWedding.page.title')}
               </h1>
               <p className="text-xl sm:text-2xl max-w-4xl mx-auto leading-relaxed text-center">
-                オンライン上で"二人の誓い"を公開し、世界中の大切な人と感動を共有。
+                {t('liveWedding.page.subtitle')}
               </p>
             </div>
             
@@ -122,7 +87,7 @@ const VirtualWeddingPage: React.FC = () => {
                 }}
                 className="bg-black text-white hover:bg-gray-800 px-8 py-4 text-xl font-semibold transition-colors"
               >
-                相談予約
+                {t('liveWedding.page.consultationButton')}
               </Button>
             </div>
           </div>
@@ -133,19 +98,18 @@ const VirtualWeddingPage: React.FC = () => {
         {/* Concept Section */}
         <div className="mb-16 pt-16">
           <div className="max-w-4xl mx-auto bg-carat-white rounded-2xl border border-carat-gray2 shadow-lg hover:shadow-xl transition-shadow duration-300 p-8">
-            <h2 className="text-3xl font-bold text-center text-carat-black mb-8">コンセプト</h2>
+            <h2 className="text-3xl font-bold text-center text-carat-black mb-8">{t('liveWedding.page.conceptTitle')}</h2>
             <div className="mb-8">
               <p className="text-xl text-carat-gray6 leading-relaxed">
-                オンライン上で親しい人に『二人の誓い』を公開し、祝福を受ける新しいスタイルのウェディング
+                {t('liveWedding.page.conceptDescription')}
               </p>
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-carat-black mb-4">【ライブ・ウェディングをおすすめの理由】</h3>
+              <h3 className="text-xl font-semibold text-carat-black mb-4">{t('liveWedding.page.recommendTitle')}</h3>
               <ul className="space-y-3 text-carat-gray6 text-lg">
-                <li>• 公で挙式が難しい方に、堂々と愛を誓える場を提供</li>
-                <li>• バーチャル背景で理想のウェディングシーンを演出</li>
-                <li>• 遠方の友人・家族とオンラインで祝福を共有</li>
-                <li>• スタジオQの設備を活かした唯一無二の体験</li>
+                {(t('liveWedding.page.recommendReasons', { returnObjects: true }) as string[]).map((reason: string, index: number) => (
+                  <li key={index}>• {reason}</li>
+                ))}
               </ul>
             </div>
           </div>
@@ -153,28 +117,28 @@ const VirtualWeddingPage: React.FC = () => {
 
         {/* Features Section */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center text-carat-black mb-12">特徴</h2>
+          <h2 className="text-3xl font-bold text-center text-carat-black mb-12">{t('liveWedding.page.featuresTitle')}</h2>
           <div className="max-w-4xl mx-auto bg-carat-white rounded-2xl border border-carat-gray2 shadow-card p-8">
             <p className="text-carat-gray6 leading-relaxed text-xl">
-              西日本随一の設備を誇り、業界のプロからも高い評価を得ているバーチャルスタジオ「Studio Q」を利用し、世界にたった一つのオンラインウェディングを提供します。AIによる背景合成技術により、夢に描いたあらゆるシーンを演出可能。教会や海外リゾート、花畑、夜景など、どんな世界観も自由に再現できます。遠方に住む両親、親戚、友人、知人をオンラインで招待し、リアルタイムで「誓い」と「祝福」を共有。さらに、お祝儀やメッセージをオンラインで受け取れる機能も搭載。二人の愛を形にし、永遠に残す"唯一無二"のウェディングを実現します。
+              {t('liveWedding.page.featuresDescription')}
             </p>
           </div>
         </div>
 
         {/* Single Plan Section */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center text-carat-black mb-12">料金プラン</h2>
+          <h2 className="text-3xl font-bold text-center text-carat-black mb-12">{t('liveWedding.page.pricingTitle')}</h2>
           <div className="max-w-4xl mx-auto">
             <Card className="bg-carat-white border-carat-gray2 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader className="text-center">
-                <h3 className="text-3xl font-bold text-carat-black mb-2">ライブ・ウエディングプラン</h3>
+                <h3 className="text-3xl font-bold text-carat-black mb-2">{t('liveWedding.page.planTitle')}</h3>
                 <p className="text-carat-gray5 text-lg mb-2">
-                  <span className="line-through">通常価格 ¥500,000</span>
+                  <span className="line-through">{t('liveWedding.page.regularPrice')} ¥500,000</span>
                 </p>
                 <p className="text-4xl font-bold text-carat-black">¥300,000</p>
-                <p className="text-carat-gray5 mt-2">（税別）</p>
+                <p className="text-carat-gray5 mt-2">{t('liveWedding.page.taxExcluded')}</p>
                 <div className="mt-4 px-4 py-2 bg-carat-black text-carat-white rounded-full inline-block">
-                  <span className="text-sm font-semibold">Carat 会員価格</span>
+                  <span className="text-sm font-semibold">{t('liveWedding.page.memberPrice')}</span>
                 </div>
               </CardHeader>
               <CardContent>
@@ -183,10 +147,10 @@ const VirtualWeddingPage: React.FC = () => {
                   <div>
                     <h4 className="text-xl font-semibold text-carat-black mb-4 flex items-center gap-2">
                       <Check className="w-5 h-5 text-green-500" />
-                      含まれる内容
+                      {t('liveWedding.page.includedTitle')}
                     </h4>
                     <ul className="space-y-2">
-                      {includedFeatures.map((feature, index) => (
+                      {(t('liveWedding.page.includedFeatures', { returnObjects: true }) as string[]).map((feature: string, index: number) => (
                         <li key={index} className="flex items-center gap-2">
                           <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                           <span className="text-carat-gray6 text-base">{feature}</span>
@@ -201,10 +165,10 @@ const VirtualWeddingPage: React.FC = () => {
                       <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
-                      含まれない内容
+                      {t('liveWedding.page.notIncludedTitle')}
                     </h4>
                     <ul className="space-y-2 mb-4">
-                      {notIncludedFeatures.map((feature, index) => (
+                      {(t('liveWedding.page.notIncludedFeatures', { returnObjects: true }) as string[]).map((feature: string, index: number) => (
                         <li key={index} className="flex items-center gap-2">
                           <svg className="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -213,7 +177,7 @@ const VirtualWeddingPage: React.FC = () => {
                         </li>
                       ))}
                     </ul>
-                    <p className="text-carat-gray5 text-sm">必要な場合はお客様でお手配ください</p>
+                    <p className="text-carat-gray5 text-sm">{t('liveWedding.page.notIncludedNote')}</p>
                   </div>
                 </div>
                 
@@ -225,7 +189,7 @@ const VirtualWeddingPage: React.FC = () => {
                     }}
                     className="bg-black text-white hover:bg-gray-800 px-8 py-4 text-lg font-semibold"
                   >
-                    このプランでお申し込み
+                    {t('liveWedding.page.applyButton')}
                   </Button>
                 </div>
               </CardContent>
@@ -235,7 +199,7 @@ const VirtualWeddingPage: React.FC = () => {
         
         {/* Background Composite Video Section */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center text-carat-black mb-12">背景合成イメージ動画</h2>
+          <h2 className="text-3xl font-bold text-center text-carat-black mb-12">{t('liveWedding.page.videoTitle')}</h2>
           <div className="max-w-4xl mx-auto bg-carat-white rounded-2xl border border-carat-gray2 shadow-lg hover:shadow-xl transition-shadow duration-300 p-8">
             <div 
               className="aspect-video rounded-xl overflow-hidden mb-6 cursor-pointer relative group"
@@ -257,10 +221,9 @@ const VirtualWeddingPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-carat-black mb-4">美しい背景で特別な演出</h3>
+            <h3 className="text-2xl font-bold text-carat-black mb-4">{t('liveWedding.page.videoSubtitle')}</h3>
             <p className="text-carat-gray6 leading-relaxed text-lg">
-              AIによる背景合成技術により、夢に描いたあらゆるシーンを演出可能。教会や海外リゾート、花畑、夜景など、
-              どんな世界観も自由に再現できます。Studio Qの最新技術で、理想のウェディングシーンを実現いたします。
+              {t('liveWedding.page.videoDescription')}
             </p>
           </div>
         </div>
@@ -282,21 +245,20 @@ const VirtualWeddingPage: React.FC = () => {
                     </div>
                     <div>
                       <h3 className="text-2xl font-bold text-carat-black group-hover:text-carat-gray6 transition-colors">
-                        Studio Q
+                        {t('liveWedding.page.studioQTitle')}
                       </h3>
-                      <p className="text-carat-gray5">バーチャルスタジオ</p>
+                      <p className="text-carat-gray5">{t('liveWedding.page.studioQSubtitle')}</p>
                     </div>
                   </div>
                   <p className="text-carat-gray6 leading-relaxed mb-4 text-lg">
-                    西日本随一の設備を誇るバーチャルスタジオ。業界のプロからも高い評価を得ている最新技術で、
-                    あなたの理想のウェディングシーンを実現します。
+                    {t('liveWedding.page.studioQDescription')}
                   </p>
                   <div className="flex items-center gap-2 text-carat-gray5">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    <span>大阪市浪速区</span>
+                    <span>{t('liveWedding.page.studioQLocation')}</span>
                   </div>
                 </div>
                 <div className="ml-6">
@@ -313,9 +275,9 @@ const VirtualWeddingPage: React.FC = () => {
 
         {/* FAQ Section */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center text-carat-black mb-12">よくある質問</h2>
+          <h2 className="text-3xl font-bold text-center text-carat-black mb-12">{t('liveWedding.page.faqTitle')}</h2>
           <div className="max-w-4xl mx-auto space-y-4">
-            {faqs.map((faq, index) => (
+            {(t('liveWedding.page.faqs', { returnObjects: true }) as Array<{question: string; answer: string}>).map((faq, index) => (
               <Card key={index} className="bg-carat-white border-carat-gray2 shadow-card">
                 <button
                   onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
@@ -347,7 +309,7 @@ const VirtualWeddingPage: React.FC = () => {
             <button
               onClick={() => setIsVideoModalOpen(false)}
               className="absolute -top-12 right-0 text-white hover:text-carat-gray2 transition-colors"
-              aria-label="動画を閉じる"
+              aria-label={t('liveWedding.page.closeVideo')}
             >
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

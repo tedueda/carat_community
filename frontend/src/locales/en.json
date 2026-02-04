@@ -862,6 +862,75 @@
       "subtitle": "Your special online wedding ceremony",
       "viewDetails": "View Details",
       "bannerAlt": "Live Wedding"
+    },
+    "page": {
+      "backToHome": "Back to Home",
+      "title": "Live Wedding",
+      "subtitle": "Share your vows online and celebrate with loved ones around the world.",
+      "consultationButton": "Book Consultation",
+      "conceptTitle": "Concept",
+      "conceptDescription": "A new style of wedding where you share your vows with close friends and family online and receive their blessings",
+      "recommendTitle": "Why We Recommend Live Wedding",
+      "recommendReasons": [
+        "Provides a place to proudly declare your love for those who find it difficult to have a public ceremony",
+        "Create your ideal wedding scene with virtual backgrounds",
+        "Share blessings online with friends and family from afar",
+        "A unique experience utilizing Studio Q's facilities"
+      ],
+      "featuresTitle": "Features",
+      "featuresDescription": "We provide a one-of-a-kind online wedding using Studio Q, a virtual studio with the best facilities in western Japan and highly regarded by industry professionals. With AI background compositing technology, you can create any scene you dream of. Churches, overseas resorts, flower fields, night views - any atmosphere can be freely recreated. Invite parents, relatives, friends, and acquaintances from afar online to share vows and blessings in real-time. Additionally, features for receiving congratulatory gifts and messages online are included. We realize a truly unique wedding that shapes your love and preserves it forever.",
+      "pricingTitle": "Pricing Plan",
+      "planTitle": "Live Wedding Plan",
+      "regularPrice": "Regular Price",
+      "memberPrice": "Carat Member Price",
+      "taxExcluded": "(Tax Excluded)",
+      "includedTitle": "What's Included",
+      "notIncludedTitle": "Not Included",
+      "notIncludedNote": "Please arrange these items yourself if needed",
+      "applyButton": "Apply with This Plan",
+      "includedFeatures": [
+        "Multi-angle recording with 4 cameras",
+        "Audio equipment for streaming (microphones, mixer)",
+        "High-quality video recording",
+        "Virtual background creation (church/reception/overseas scenery, etc.)",
+        "Streaming support (Zoom, etc.)",
+        "Online message and gift receiving function",
+        "Operational support by 1-2 staff members"
+      ],
+      "notIncludedFeatures": [
+        "Hair, makeup, and attire",
+        "MC, minister, partner",
+        "Coordinator/planner",
+        "Bouquets and decorations",
+        "Food and beverages"
+      ],
+      "videoTitle": "Background Composite Video",
+      "videoSubtitle": "Special Production with Beautiful Backgrounds",
+      "videoDescription": "With AI background compositing technology, you can create any scene you dream of. Churches, overseas resorts, flower fields, night views - any atmosphere can be freely recreated. Studio Q's latest technology realizes your ideal wedding scene.",
+      "studioQTitle": "Studio Q",
+      "studioQSubtitle": "Virtual Studio",
+      "studioQDescription": "A virtual studio with the best facilities in western Japan. With cutting-edge technology highly regarded by industry professionals, we realize your ideal wedding scene.",
+      "studioQLocation": "Naniwa-ku, Osaka",
+      "faqTitle": "Frequently Asked Questions",
+      "closeVideo": "Close Video",
+      "faqs": [
+        {
+          "question": "What equipment is needed?",
+          "answer": "We provide all basic equipment. Streaming is possible if the venue has an internet connection."
+        },
+        {
+          "question": "What is the streaming quality?",
+          "answer": "Depending on the plan, streaming in HD to 4K quality is possible. We achieve high-quality streaming with a stable internet connection."
+        },
+        {
+          "question": "What is the support system on the day?",
+          "answer": "Dedicated staff will support the day's proceedings. We respond quickly to technical troubles."
+        },
+        {
+          "question": "When can I receive the recorded data?",
+          "answer": "After the streaming ends, we will deliver the data within about one week after editing."
+        }
+      ]
     }
   }
 }
