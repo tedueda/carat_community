@@ -759,5 +759,120 @@
       "note2": "L'échange d'informations personnelles est interdit",
       "note3": "Les transactions sont à vos propres risques"
     }
+  },
+  "jewelry": {
+    "title": "Membres Uniquement - Vente Spéciale de Bijoux",
+    "bannerAlt": "Collection de Bijoux",
+    "searchPlaceholder": "Rechercher des produits...",
+    "allCategories": "Tous",
+    "noProducts": "Aucun produit disponible",
+    "banner": {
+      "title": "Vente de Bijoux",
+      "subtitle": "Prix spéciaux réservés aux membres",
+      "viewDetails": "Voir les Détails"
+    },
+    "detail": {
+      "backToList": "Retour à la Liste des Produits",
+      "soldOut": "Épuisé",
+      "stock": "Stock",
+      "pieces": "pcs",
+      "hasCertificate": "Avec Certificat",
+      "hasGemId": "Avec ID de Gemme",
+      "addToCart": "Ajouter au Panier",
+      "adding": "Ajout...",
+      "viewCart": "Voir le Panier",
+      "productDetails": "Détails du Produit",
+      "material": "Matériau",
+      "size": "Taille",
+      "additionalInfo": "Informations Supplémentaires",
+      "productNotFound": "Produit non trouvé",
+      "cartAddSuccess": "Ajouté au panier",
+      "cartAddError": "Échec de l'ajout au panier"
+    },
+    "categories": {
+      "earring": "Boucles d'Oreilles et Piercings",
+      "necklace": "Colliers",
+      "bracelet": "Bracelets",
+      "brooch": "Broches",
+      "ring": "Bagues",
+      "other": "Autres"
+    }
+  },
+  "liveWedding": {
+    "banner": {
+      "title": "Mariage en Direct",
+      "subtitle": "Votre cérémonie de mariage spéciale en ligne",
+      "viewDetails": "Voir les Détails",
+      "bannerAlt": "Mariage en Direct"
+    },
+    "page": {
+      "backToHome": "Retour à l'Accueil",
+      "title": "Mariage en Direct",
+      "subtitle": "Partagez vos vœux en ligne et célébrez avec vos proches du monde entier.",
+      "consultationButton": "Réserver une Consultation",
+      "conceptTitle": "Concept",
+      "conceptDescription": "Un nouveau style de mariage où vous partagez vos vœux avec vos proches en ligne et recevez leurs bénédictions",
+      "recommendTitle": "Pourquoi Nous Recommandons le Mariage en Direct",
+      "recommendReasons": [
+        "Offre un lieu pour déclarer votre amour fièrement pour ceux qui ont du mal à avoir une cérémonie publique",
+        "Créez votre scène de mariage idéale avec des arrière-plans virtuels",
+        "Partagez les bénédictions en ligne avec des amis et la famille éloignés",
+        "Une expérience unique utilisant les installations de Studio Q"
+      ],
+      "featuresTitle": "Caractéristiques",
+      "featuresDescription": "Nous proposons un mariage en ligne unique utilisant Studio Q, un studio virtuel avec les meilleures installations de l'ouest du Japon et hautement apprécié par les professionnels de l'industrie. Avec la technologie de composition d'arrière-plan IA, vous pouvez créer n'importe quelle scène dont vous rêvez. Églises, stations balnéaires à l'étranger, champs de fleurs, vues nocturnes - toute atmosphère peut être recréée librement. Invitez parents, proches, amis et connaissances de loin en ligne pour partager vœux et bénédictions en temps réel. De plus, des fonctionnalités pour recevoir des cadeaux de félicitations et des messages en ligne sont incluses. Nous réalisons un mariage vraiment unique qui façonne votre amour et le préserve pour toujours.",
+      "pricingTitle": "Plan Tarifaire",
+      "planTitle": "Plan Mariage en Direct",
+      "regularPrice": "Prix Régulier",
+      "memberPrice": "Prix Membre Carat",
+      "taxExcluded": "(Taxes Exclues)",
+      "includedTitle": "Ce Qui Est Inclus",
+      "notIncludedTitle": "Non Inclus",
+      "notIncludedNote": "Veuillez organiser ces éléments vous-même si nécessaire",
+      "applyButton": "Postuler avec Ce Plan",
+      "includedFeatures": [
+        "Enregistrement multi-angles avec 4 caméras",
+        "Équipement audio pour la diffusion (microphones, mixeur)",
+        "Enregistrement vidéo haute qualité",
+        "Création d'arrière-plan virtuel (église/réception/paysage étranger, etc.)",
+        "Support de diffusion (Zoom, etc.)",
+        "Fonction de réception de messages et cadeaux en ligne",
+        "Support opérationnel par 1-2 membres du personnel"
+      ],
+      "notIncludedFeatures": [
+        "Coiffure, maquillage et tenue",
+        "MC, ministre, partenaire",
+        "Coordinateur/planificateur",
+        "Bouquets et décorations",
+        "Nourriture et boissons"
+      ],
+      "videoTitle": "Vidéo de Composition d'Arrière-plan",
+      "videoSubtitle": "Production Spéciale avec de Beaux Arrière-plans",
+      "videoDescription": "Avec la technologie de composition d'arrière-plan IA, vous pouvez créer n'importe quelle scène dont vous rêvez. Églises, stations balnéaires à l'étranger, champs de fleurs, vues nocturnes - toute atmosphère peut être recréée librement. La dernière technologie de Studio Q réalise votre scène de mariage idéale.",
+      "studioQTitle": "Studio Q",
+      "studioQSubtitle": "Studio Virtuel",
+      "studioQDescription": "Un studio virtuel avec les meilleures installations de l'ouest du Japon. Avec une technologie de pointe hautement appréciée par les professionnels de l'industrie, nous réalisons votre scène de mariage idéale.",
+      "studioQLocation": "Naniwa-ku, Osaka",
+      "faqTitle": "Questions Fréquemment Posées",
+      "closeVideo": "Fermer la Vidéo",
+      "faqs": [
+        {
+          "question": "Quel équipement est nécessaire?",
+          "answer": "Nous fournissons tout l'équipement de base. La diffusion est possible si le lieu dispose d'une connexion Internet."
+        },
+        {
+          "question": "Quelle est la qualité de la diffusion?",
+          "answer": "Selon le plan, la diffusion en qualité HD à 4K est possible. Nous réalisons une diffusion de haute qualité avec une connexion Internet stable."
+        },
+        {
+          "question": "Quel est le système de support le jour de l'événement?",
+          "answer": "Le personnel dédié soutiendra les procédures de la journée. Nous répondons rapidement aux problèmes techniques."
+        },
+        {
+          "question": "Quand puis-je recevoir les données enregistrées?",
+          "answer": "Après la fin de la diffusion, nous livrerons les données dans environ une semaine après l'édition."
+        }
+      ]
+    }
   }
 }

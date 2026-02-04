@@ -759,5 +759,120 @@
       "note2": "Lo scambio di informazioni personali è vietato",
       "note3": "Le transazioni sono a proprio rischio"
     }
+  },
+  "jewelry": {
+    "title": "Solo Membri - Vendita Speciale di Gioielli",
+    "bannerAlt": "Collezione di Gioielli",
+    "searchPlaceholder": "Cerca prodotti...",
+    "allCategories": "Tutti",
+    "noProducts": "Nessun prodotto disponibile",
+    "banner": {
+      "title": "Vendita di Gioielli",
+      "subtitle": "Prezzi speciali solo per membri",
+      "viewDetails": "Vedi Dettagli"
+    },
+    "detail": {
+      "backToList": "Torna all'Elenco Prodotti",
+      "soldOut": "Esaurito",
+      "stock": "Scorta",
+      "pieces": "pz",
+      "hasCertificate": "Con Certificato",
+      "hasGemId": "Con ID Gemma",
+      "addToCart": "Aggiungi al Carrello",
+      "adding": "Aggiunta...",
+      "viewCart": "Vedi Carrello",
+      "productDetails": "Dettagli Prodotto",
+      "material": "Materiale",
+      "size": "Dimensione",
+      "additionalInfo": "Informazioni Aggiuntive",
+      "productNotFound": "Prodotto non trovato",
+      "cartAddSuccess": "Aggiunto al carrello",
+      "cartAddError": "Impossibile aggiungere al carrello"
+    },
+    "categories": {
+      "earring": "Orecchini e Piercing",
+      "necklace": "Collane",
+      "bracelet": "Braccialetti",
+      "brooch": "Spille",
+      "ring": "Anelli",
+      "other": "Altri"
+    }
+  },
+  "liveWedding": {
+    "banner": {
+      "title": "Matrimonio in Diretta",
+      "subtitle": "La tua cerimonia di matrimonio speciale online",
+      "viewDetails": "Vedi Dettagli",
+      "bannerAlt": "Matrimonio in Diretta"
+    },
+    "page": {
+      "backToHome": "Torna alla Home",
+      "title": "Matrimonio in Diretta",
+      "subtitle": "Condividi i tuoi voti online e celebra con i tuoi cari da tutto il mondo.",
+      "consultationButton": "Prenota Consulenza",
+      "conceptTitle": "Concetto",
+      "conceptDescription": "Un nuovo stile di matrimonio dove condividi i tuoi voti con amici intimi e familiari online e ricevi le loro benedizioni",
+      "recommendTitle": "Perché Raccomandiamo il Matrimonio in Diretta",
+      "recommendReasons": [
+        "Fornisce un luogo per dichiarare il tuo amore con orgoglio per coloro che hanno difficoltà ad avere una cerimonia pubblica",
+        "Crea la tua scena di matrimonio ideale con sfondi virtuali",
+        "Condividi benedizioni online con amici e familiari lontani",
+        "Un'esperienza unica utilizzando le strutture di Studio Q"
+      ],
+      "featuresTitle": "Caratteristiche",
+      "featuresDescription": "Forniamo un matrimonio online unico utilizzando Studio Q, uno studio virtuale con le migliori strutture del Giappone occidentale e altamente apprezzato dai professionisti del settore. Con la tecnologia di composizione dello sfondo AI, puoi creare qualsiasi scena che sogni. Chiese, resort all'estero, campi di fiori, vedute notturne - qualsiasi atmosfera può essere ricreata liberamente. Invita genitori, parenti, amici e conoscenti da lontano online per condividere voti e benedizioni in tempo reale. Inoltre, sono incluse funzionalità per ricevere regali di congratulazioni e messaggi online. Realizziamo un matrimonio veramente unico che dà forma al tuo amore e lo preserva per sempre.",
+      "pricingTitle": "Piano Tariffario",
+      "planTitle": "Piano Matrimonio in Diretta",
+      "regularPrice": "Prezzo Regolare",
+      "memberPrice": "Prezzo Membro Carat",
+      "taxExcluded": "(Tasse Escluse)",
+      "includedTitle": "Cosa È Incluso",
+      "notIncludedTitle": "Non Incluso",
+      "notIncludedNote": "Si prega di organizzare questi elementi da soli se necessario",
+      "applyButton": "Applica con Questo Piano",
+      "includedFeatures": [
+        "Registrazione multi-angolo con 4 telecamere",
+        "Attrezzatura audio per lo streaming (microfoni, mixer)",
+        "Registrazione video ad alta qualità",
+        "Creazione di sfondo virtuale (chiesa/ricevimento/paesaggio straniero, ecc.)",
+        "Supporto streaming (Zoom, ecc.)",
+        "Funzione di ricezione messaggi e regali online",
+        "Supporto operativo da 1-2 membri dello staff"
+      ],
+      "notIncludedFeatures": [
+        "Acconciatura, trucco e abbigliamento",
+        "MC, ministro, partner",
+        "Coordinatore/pianificatore",
+        "Bouquet e decorazioni",
+        "Cibo e bevande"
+      ],
+      "videoTitle": "Video di Composizione Sfondo",
+      "videoSubtitle": "Produzione Speciale con Bellissimi Sfondi",
+      "videoDescription": "Con la tecnologia di composizione dello sfondo AI, puoi creare qualsiasi scena che sogni. Chiese, resort all'estero, campi di fiori, vedute notturne - qualsiasi atmosfera può essere ricreata liberamente. L'ultima tecnologia di Studio Q realizza la tua scena di matrimonio ideale.",
+      "studioQTitle": "Studio Q",
+      "studioQSubtitle": "Studio Virtuale",
+      "studioQDescription": "Uno studio virtuale con le migliori strutture del Giappone occidentale. Con tecnologia all'avanguardia altamente apprezzata dai professionisti del settore, realizziamo la tua scena di matrimonio ideale.",
+      "studioQLocation": "Naniwa-ku, Osaka",
+      "faqTitle": "Domande Frequenti",
+      "closeVideo": "Chiudi Video",
+      "faqs": [
+        {
+          "question": "Quale attrezzatura è necessaria?",
+          "answer": "Forniamo tutta l'attrezzatura di base. Lo streaming è possibile se il luogo ha una connessione internet."
+        },
+        {
+          "question": "Qual è la qualità dello streaming?",
+          "answer": "A seconda del piano, lo streaming in qualità HD a 4K è possibile. Otteniamo streaming di alta qualità con una connessione internet stabile."
+        },
+        {
+          "question": "Qual è il sistema di supporto il giorno dell'evento?",
+          "answer": "Il personale dedicato supporterà le procedure del giorno. Rispondiamo rapidamente ai problemi tecnici."
+        },
+        {
+          "question": "Quando posso ricevere i dati registrati?",
+          "answer": "Dopo la fine dello streaming, consegneremo i dati entro circa una settimana dopo l'editing."
+        }
+      ]
+    }
   }
 }

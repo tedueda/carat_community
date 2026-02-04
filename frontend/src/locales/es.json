@@ -759,5 +759,120 @@
       "note2": "El intercambio de información personal está prohibido",
       "note3": "Las transacciones son bajo tu propia responsabilidad"
     }
+  },
+  "jewelry": {
+    "title": "Solo Miembros - Venta Especial de Joyería",
+    "bannerAlt": "Colección de Joyería",
+    "searchPlaceholder": "Buscar productos...",
+    "allCategories": "Todos",
+    "noProducts": "No hay productos disponibles",
+    "banner": {
+      "title": "Venta de Joyería",
+      "subtitle": "Precios especiales solo para miembros",
+      "viewDetails": "Ver Detalles"
+    },
+    "detail": {
+      "backToList": "Volver a la Lista de Productos",
+      "soldOut": "Agotado",
+      "stock": "Stock",
+      "pieces": "pzs",
+      "hasCertificate": "Con Certificado",
+      "hasGemId": "Con ID de Gema",
+      "addToCart": "Añadir al Carrito",
+      "adding": "Añadiendo...",
+      "viewCart": "Ver Carrito",
+      "productDetails": "Detalles del Producto",
+      "material": "Material",
+      "size": "Tamaño",
+      "additionalInfo": "Información Adicional",
+      "productNotFound": "Producto no encontrado",
+      "cartAddSuccess": "Añadido al carrito",
+      "cartAddError": "Error al añadir al carrito"
+    },
+    "categories": {
+      "earring": "Pendientes y Piercings",
+      "necklace": "Collares",
+      "bracelet": "Pulseras",
+      "brooch": "Broches",
+      "ring": "Anillos",
+      "other": "Otros"
+    }
+  },
+  "liveWedding": {
+    "banner": {
+      "title": "Boda en Vivo",
+      "subtitle": "Tu ceremonia de boda especial en línea",
+      "viewDetails": "Ver Detalles",
+      "bannerAlt": "Boda en Vivo"
+    },
+    "page": {
+      "backToHome": "Volver al Inicio",
+      "title": "Boda en Vivo",
+      "subtitle": "Comparte tus votos en línea y celebra con seres queridos de todo el mundo.",
+      "consultationButton": "Reservar Consulta",
+      "conceptTitle": "Concepto",
+      "conceptDescription": "Un nuevo estilo de boda donde compartes tus votos con amigos cercanos y familiares en línea y recibes sus bendiciones",
+      "recommendTitle": "Por Qué Recomendamos la Boda en Vivo",
+      "recommendReasons": [
+        "Proporciona un lugar para declarar tu amor con orgullo para aquellos que tienen dificultades para tener una ceremonia pública",
+        "Crea tu escena de boda ideal con fondos virtuales",
+        "Comparte bendiciones en línea con amigos y familiares de lejos",
+        "Una experiencia única utilizando las instalaciones de Studio Q"
+      ],
+      "featuresTitle": "Características",
+      "featuresDescription": "Proporcionamos una boda en línea única utilizando Studio Q, un estudio virtual con las mejores instalaciones del oeste de Japón y altamente valorado por profesionales de la industria. Con tecnología de composición de fondos de IA, puedes crear cualquier escena que sueñes. Iglesias, resorts en el extranjero, campos de flores, vistas nocturnas: cualquier atmósfera puede recrearse libremente. Invita a padres, parientes, amigos y conocidos de lejos en línea para compartir votos y bendiciones en tiempo real. Además, se incluyen funciones para recibir regalos de felicitación y mensajes en línea. Realizamos una boda verdaderamente única que da forma a tu amor y lo preserva para siempre.",
+      "pricingTitle": "Plan de Precios",
+      "planTitle": "Plan de Boda en Vivo",
+      "regularPrice": "Precio Regular",
+      "memberPrice": "Precio de Miembro Carat",
+      "taxExcluded": "(Impuestos Excluidos)",
+      "includedTitle": "Qué Está Incluido",
+      "notIncludedTitle": "No Incluido",
+      "notIncludedNote": "Por favor, organiza estos elementos tú mismo si es necesario",
+      "applyButton": "Aplicar con Este Plan",
+      "includedFeatures": [
+        "Grabación multiángulo con 4 cámaras",
+        "Equipo de audio para transmisión (micrófonos, mezclador)",
+        "Grabación de video de alta calidad",
+        "Creación de fondo virtual (iglesia/recepción/paisaje extranjero, etc.)",
+        "Soporte de transmisión (Zoom, etc.)",
+        "Función de recepción de mensajes y regalos en línea",
+        "Soporte operativo por 1-2 miembros del personal"
+      ],
+      "notIncludedFeatures": [
+        "Peinado, maquillaje y vestimenta",
+        "MC, ministro, pareja",
+        "Coordinador/planificador",
+        "Ramos y decoraciones",
+        "Comida y bebidas"
+      ],
+      "videoTitle": "Video de Composición de Fondo",
+      "videoSubtitle": "Producción Especial con Fondos Hermosos",
+      "videoDescription": "Con tecnología de composición de fondos de IA, puedes crear cualquier escena que sueñes. Iglesias, resorts en el extranjero, campos de flores, vistas nocturnas: cualquier atmósfera puede recrearse libremente. La última tecnología de Studio Q realiza tu escena de boda ideal.",
+      "studioQTitle": "Studio Q",
+      "studioQSubtitle": "Estudio Virtual",
+      "studioQDescription": "Un estudio virtual con las mejores instalaciones del oeste de Japón. Con tecnología de vanguardia altamente valorada por profesionales de la industria, realizamos tu escena de boda ideal.",
+      "studioQLocation": "Naniwa-ku, Osaka",
+      "faqTitle": "Preguntas Frecuentes",
+      "closeVideo": "Cerrar Video",
+      "faqs": [
+        {
+          "question": "¿Qué equipo se necesita?",
+          "answer": "Proporcionamos todo el equipo básico. La transmisión es posible si el lugar tiene conexión a internet."
+        },
+        {
+          "question": "¿Cuál es la calidad de la transmisión?",
+          "answer": "Dependiendo del plan, la transmisión en calidad HD a 4K es posible. Logramos transmisión de alta calidad con una conexión a internet estable."
+        },
+        {
+          "question": "¿Cuál es el sistema de soporte el día del evento?",
+          "answer": "El personal dedicado apoyará los procedimientos del día. Respondemos rápidamente a problemas técnicos."
+        },
+        {
+          "question": "¿Cuándo puedo recibir los datos grabados?",
+          "answer": "Después de que termine la transmisión, entregaremos los datos dentro de aproximadamente una semana después de la edición."
+        }
+      ]
+    }
   }
 }

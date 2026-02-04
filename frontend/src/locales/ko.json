@@ -829,5 +829,120 @@
       "note2": "개인정보 교환은 금지되어 있습니다",
       "note3": "거래는 자기 책임으로 진행해 주세요"
     }
+  },
+  "jewelry": {
+    "title": "회원 전용 - 특별 주얼리 세일",
+    "bannerAlt": "주얼리 컬렉션",
+    "searchPlaceholder": "상품 검색...",
+    "allCategories": "전체",
+    "noProducts": "상품이 없습니다",
+    "banner": {
+      "title": "주얼리 세일",
+      "subtitle": "회원 전용 특별 가격",
+      "viewDetails": "자세히 보기"
+    },
+    "detail": {
+      "backToList": "상품 목록으로 돌아가기",
+      "soldOut": "품절",
+      "stock": "재고",
+      "pieces": "개",
+      "hasCertificate": "감정서 포함",
+      "hasGemId": "보석 감정서 포함",
+      "addToCart": "장바구니에 담기",
+      "adding": "추가 중...",
+      "viewCart": "장바구니 보기",
+      "productDetails": "상품 상세",
+      "material": "소재",
+      "size": "사이즈",
+      "additionalInfo": "추가 정보",
+      "productNotFound": "상품을 찾을 수 없습니다",
+      "cartAddSuccess": "장바구니에 추가되었습니다",
+      "cartAddError": "장바구니 추가에 실패했습니다"
+    },
+    "categories": {
+      "earring": "귀걸이 & 피어싱",
+      "necklace": "목걸이",
+      "bracelet": "팔찌",
+      "brooch": "브로치",
+      "ring": "반지",
+      "other": "기타"
+    }
+  },
+  "liveWedding": {
+    "banner": {
+      "title": "라이브 웨딩",
+      "subtitle": "특별한 온라인 결혼식",
+      "viewDetails": "자세히 보기",
+      "bannerAlt": "라이브 웨딩"
+    },
+    "page": {
+      "backToHome": "홈으로 돌아가기",
+      "title": "라이브 웨딩",
+      "subtitle": "온라인으로 서약을 공유하고 전 세계의 사랑하는 사람들과 축하하세요.",
+      "consultationButton": "상담 예약",
+      "conceptTitle": "컨셉",
+      "conceptDescription": "가까운 친구와 가족과 온라인으로 서약을 공유하고 축복을 받는 새로운 스타일의 결혼식",
+      "recommendTitle": "라이브 웨딩을 추천하는 이유",
+      "recommendReasons": [
+        "공개 결혼식이 어려운 분들을 위해 당당히 사랑을 맹세할 수 있는 장소 제공",
+        "가상 배경으로 이상적인 웨딩 장면 연출",
+        "멀리 있는 친구와 가족과 온라인으로 축복 공유",
+        "Studio Q의 시설을 활용한 독특한 경험"
+      ],
+      "featuresTitle": "특징",
+      "featuresDescription": "서일본 최고의 시설을 자랑하며 업계 전문가들로부터 높은 평가를 받고 있는 가상 스튜디오 Studio Q를 이용하여 세상에 하나뿐인 온라인 웨딩을 제공합니다. AI 배경 합성 기술로 꿈꾸던 모든 장면을 연출할 수 있습니다. 교회, 해외 리조트, 꽃밭, 야경 등 어떤 분위기도 자유롭게 재현할 수 있습니다. 멀리 있는 부모님, 친척, 친구들을 온라인으로 초대하여 실시간으로 서약과 축복을 공유하세요. 또한 온라인으로 축의금과 메시지를 받을 수 있는 기능도 포함되어 있습니다. 사랑을 형태로 만들고 영원히 보존하는 진정으로 독특한 웨딩을 실현합니다.",
+      "pricingTitle": "가격 플랜",
+      "planTitle": "라이브 웨딩 플랜",
+      "regularPrice": "정상 가격",
+      "memberPrice": "Carat 회원 가격",
+      "taxExcluded": "(세금 별도)",
+      "includedTitle": "포함 내용",
+      "notIncludedTitle": "미포함 내용",
+      "notIncludedNote": "필요한 경우 직접 준비해 주세요",
+      "applyButton": "이 플랜으로 신청하기",
+      "includedFeatures": [
+        "4대의 카메라로 멀티 앵글 촬영",
+        "스트리밍용 음향 장비 (마이크, 믹서)",
+        "고화질 영상 녹화",
+        "가상 배경 제작 (교회/리셉션/해외 풍경 등)",
+        "스트리밍 지원 (Zoom 등)",
+        "온라인 메시지 및 축의금 수령 기능",
+        "1~2명의 스태프 운영 지원"
+      ],
+      "notIncludedFeatures": [
+        "헤어, 메이크업, 의상",
+        "사회자, 목사, 파트너",
+        "코디네이터/플래너",
+        "꽃다발 및 장식",
+        "음식 및 음료"
+      ],
+      "videoTitle": "배경 합성 영상",
+      "videoSubtitle": "아름다운 배경으로 특별한 연출",
+      "videoDescription": "AI 배경 합성 기술로 꿈꾸던 모든 장면을 연출할 수 있습니다. 교회, 해외 리조트, 꽃밭, 야경 등 어떤 분위기도 자유롭게 재현할 수 있습니다. Studio Q의 최신 기술로 이상적인 웨딩 장면을 실현합니다.",
+      "studioQTitle": "Studio Q",
+      "studioQSubtitle": "가상 스튜디오",
+      "studioQDescription": "서일본 최고의 시설을 자랑하는 가상 스튜디오. 업계 전문가들로부터 높은 평가를 받고 있는 최신 기술로 이상적인 웨딩 장면을 실현합니다.",
+      "studioQLocation": "오사카시 나니와구",
+      "faqTitle": "자주 묻는 질문",
+      "closeVideo": "영상 닫기",
+      "faqs": [
+        {
+          "question": "어떤 장비가 필요한가요?",
+          "answer": "기본 장비는 모두 저희가 제공합니다. 장소에 인터넷 환경이 있으면 스트리밍이 가능합니다."
+        },
+        {
+          "question": "스트리밍 품질은 어느 정도인가요?",
+          "answer": "플랜에 따라 HD~4K 화질의 스트리밍이 가능합니다. 안정적인 인터넷 환경으로 고품질 스트리밍을 실현합니다."
+        },
+        {
+          "question": "당일 지원 체계는 어떻게 되나요?",
+          "answer": "전담 스태프가 당일 진행을 지원합니다. 기술적인 문제에도 신속하게 대응합니다."
+        },
+        {
+          "question": "녹화 데이터는 언제 받을 수 있나요?",
+          "answer": "스트리밍 종료 후 편집 작업을 거쳐 약 1주일 이내에 데이터를 전달합니다."
+        }
+      ]
+    }
   }
 }

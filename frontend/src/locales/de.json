@@ -759,5 +759,120 @@
       "note2": "Der Austausch persönlicher Informationen ist verboten",
       "note3": "Transaktionen erfolgen auf eigene Gefahr"
     }
+  },
+  "jewelry": {
+    "title": "Nur für Mitglieder - Schmuck-Sonderverkauf",
+    "bannerAlt": "Schmuckkollektion",
+    "searchPlaceholder": "Produkte suchen...",
+    "allCategories": "Alle",
+    "noProducts": "Keine Produkte verfügbar",
+    "banner": {
+      "title": "Schmuckverkauf",
+      "subtitle": "Sonderpreise nur für Mitglieder",
+      "viewDetails": "Details Anzeigen"
+    },
+    "detail": {
+      "backToList": "Zurück zur Produktliste",
+      "soldOut": "Ausverkauft",
+      "stock": "Lagerbestand",
+      "pieces": "Stk",
+      "hasCertificate": "Mit Zertifikat",
+      "hasGemId": "Mit Edelstein-ID",
+      "addToCart": "In den Warenkorb",
+      "adding": "Wird hinzugefügt...",
+      "viewCart": "Warenkorb Anzeigen",
+      "productDetails": "Produktdetails",
+      "material": "Material",
+      "size": "Größe",
+      "additionalInfo": "Zusätzliche Informationen",
+      "productNotFound": "Produkt nicht gefunden",
+      "cartAddSuccess": "Zum Warenkorb hinzugefügt",
+      "cartAddError": "Fehler beim Hinzufügen zum Warenkorb"
+    },
+    "categories": {
+      "earring": "Ohrringe & Piercings",
+      "necklace": "Halsketten",
+      "bracelet": "Armbänder",
+      "brooch": "Broschen",
+      "ring": "Ringe",
+      "other": "Andere"
+    }
+  },
+  "liveWedding": {
+    "banner": {
+      "title": "Live-Hochzeit",
+      "subtitle": "Ihre besondere Online-Hochzeitszeremonie",
+      "viewDetails": "Details Anzeigen",
+      "bannerAlt": "Live-Hochzeit"
+    },
+    "page": {
+      "backToHome": "Zurück zur Startseite",
+      "title": "Live-Hochzeit",
+      "subtitle": "Teilen Sie Ihre Gelübde online und feiern Sie mit Ihren Lieben aus der ganzen Welt.",
+      "consultationButton": "Beratung Buchen",
+      "conceptTitle": "Konzept",
+      "conceptDescription": "Ein neuer Hochzeitsstil, bei dem Sie Ihre Gelübde mit engen Freunden und Familie online teilen und deren Segen erhalten",
+      "recommendTitle": "Warum Wir Live-Hochzeit Empfehlen",
+      "recommendReasons": [
+        "Bietet einen Ort, um Ihre Liebe stolz zu erklären für diejenigen, die Schwierigkeiten haben, eine öffentliche Zeremonie zu haben",
+        "Erstellen Sie Ihre ideale Hochzeitsszene mit virtuellen Hintergründen",
+        "Teilen Sie Segnungen online mit Freunden und Familie aus der Ferne",
+        "Ein einzigartiges Erlebnis unter Nutzung der Einrichtungen von Studio Q"
+      ],
+      "featuresTitle": "Merkmale",
+      "featuresDescription": "Wir bieten eine einzigartige Online-Hochzeit mit Studio Q, einem virtuellen Studio mit den besten Einrichtungen in Westjapan und hoch geschätzt von Branchenprofis. Mit KI-Hintergrund-Compositing-Technologie können Sie jede Szene erstellen, von der Sie träumen. Kirchen, Resorts im Ausland, Blumenfelder, Nachtansichten - jede Atmosphäre kann frei nachgebildet werden. Laden Sie Eltern, Verwandte, Freunde und Bekannte aus der Ferne online ein, um Gelübde und Segnungen in Echtzeit zu teilen. Darüber hinaus sind Funktionen zum Empfangen von Glückwunschgeschenken und Nachrichten online enthalten. Wir realisieren eine wirklich einzigartige Hochzeit, die Ihre Liebe formt und für immer bewahrt.",
+      "pricingTitle": "Preisplan",
+      "planTitle": "Live-Hochzeitsplan",
+      "regularPrice": "Regulärer Preis",
+      "memberPrice": "Carat Mitgliedspreis",
+      "taxExcluded": "(Steuern Ausgeschlossen)",
+      "includedTitle": "Was Enthalten Ist",
+      "notIncludedTitle": "Nicht Enthalten",
+      "notIncludedNote": "Bitte organisieren Sie diese Elemente selbst, falls erforderlich",
+      "applyButton": "Mit Diesem Plan Bewerben",
+      "includedFeatures": [
+        "Multi-Winkel-Aufnahme mit 4 Kameras",
+        "Audioausrüstung für Streaming (Mikrofone, Mixer)",
+        "Hochwertige Videoaufnahme",
+        "Virtuelle Hintergrunderstellung (Kirche/Empfang/Auslandslandschaft usw.)",
+        "Streaming-Unterstützung (Zoom usw.)",
+        "Online-Nachrichten- und Geschenkempfangsfunktion",
+        "Betriebsunterstützung durch 1-2 Mitarbeiter"
+      ],
+      "notIncludedFeatures": [
+        "Frisur, Make-up und Kleidung",
+        "MC, Minister, Partner",
+        "Koordinator/Planer",
+        "Sträuße und Dekorationen",
+        "Essen und Getränke"
+      ],
+      "videoTitle": "Hintergrund-Compositing-Video",
+      "videoSubtitle": "Spezielle Produktion mit Schönen Hintergründen",
+      "videoDescription": "Mit KI-Hintergrund-Compositing-Technologie können Sie jede Szene erstellen, von der Sie träumen. Kirchen, Resorts im Ausland, Blumenfelder, Nachtansichten - jede Atmosphäre kann frei nachgebildet werden. Die neueste Technologie von Studio Q realisiert Ihre ideale Hochzeitsszene.",
+      "studioQTitle": "Studio Q",
+      "studioQSubtitle": "Virtuelles Studio",
+      "studioQDescription": "Ein virtuelles Studio mit den besten Einrichtungen in Westjapan. Mit modernster Technologie, die von Branchenprofis hoch geschätzt wird, realisieren wir Ihre ideale Hochzeitsszene.",
+      "studioQLocation": "Naniwa-ku, Osaka",
+      "faqTitle": "Häufig Gestellte Fragen",
+      "closeVideo": "Video Schließen",
+      "faqs": [
+        {
+          "question": "Welche Ausrüstung wird benötigt?",
+          "answer": "Wir stellen die gesamte Grundausstattung zur Verfügung. Streaming ist möglich, wenn der Veranstaltungsort über eine Internetverbindung verfügt."
+        },
+        {
+          "question": "Wie ist die Streaming-Qualität?",
+          "answer": "Je nach Plan ist Streaming in HD- bis 4K-Qualität möglich. Wir erreichen hochwertiges Streaming mit einer stabilen Internetverbindung."
+        },
+        {
+          "question": "Wie ist das Support-System am Tag der Veranstaltung?",
+          "answer": "Dediziertes Personal unterstützt die Abläufe des Tages. Wir reagieren schnell auf technische Probleme."
+        },
+        {
+          "question": "Wann kann ich die aufgezeichneten Daten erhalten?",
+          "answer": "Nach Ende des Streamings liefern wir die Daten innerhalb von etwa einer Woche nach der Bearbeitung."
+        }
+      ]
+    }
   }
 }

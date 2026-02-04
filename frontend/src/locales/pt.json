@@ -759,5 +759,120 @@
       "note2": "A troca de informações pessoais é proibida",
       "note3": "As transações são por sua conta e risco"
     }
+  },
+  "jewelry": {
+    "title": "Apenas Membros - Venda Especial de Joias",
+    "bannerAlt": "Coleção de Joias",
+    "searchPlaceholder": "Pesquisar produtos...",
+    "allCategories": "Todos",
+    "noProducts": "Nenhum produto disponível",
+    "banner": {
+      "title": "Venda de Joias",
+      "subtitle": "Preços especiais apenas para membros",
+      "viewDetails": "Ver Detalhes"
+    },
+    "detail": {
+      "backToList": "Voltar à Lista de Produtos",
+      "soldOut": "Esgotado",
+      "stock": "Estoque",
+      "pieces": "pçs",
+      "hasCertificate": "Com Certificado",
+      "hasGemId": "Com ID de Gema",
+      "addToCart": "Adicionar ao Carrinho",
+      "adding": "Adicionando...",
+      "viewCart": "Ver Carrinho",
+      "productDetails": "Detalhes do Produto",
+      "material": "Material",
+      "size": "Tamanho",
+      "additionalInfo": "Informações Adicionais",
+      "productNotFound": "Produto não encontrado",
+      "cartAddSuccess": "Adicionado ao carrinho",
+      "cartAddError": "Falha ao adicionar ao carrinho"
+    },
+    "categories": {
+      "earring": "Brincos e Piercings",
+      "necklace": "Colares",
+      "bracelet": "Pulseiras",
+      "brooch": "Broches",
+      "ring": "Anéis",
+      "other": "Outros"
+    }
+  },
+  "liveWedding": {
+    "banner": {
+      "title": "Casamento ao Vivo",
+      "subtitle": "Sua cerimônia de casamento especial online",
+      "viewDetails": "Ver Detalhes",
+      "bannerAlt": "Casamento ao Vivo"
+    },
+    "page": {
+      "backToHome": "Voltar ao Início",
+      "title": "Casamento ao Vivo",
+      "subtitle": "Compartilhe seus votos online e celebre com entes queridos de todo o mundo.",
+      "consultationButton": "Reservar Consulta",
+      "conceptTitle": "Conceito",
+      "conceptDescription": "Um novo estilo de casamento onde você compartilha seus votos com amigos próximos e familiares online e recebe suas bênçãos",
+      "recommendTitle": "Por Que Recomendamos o Casamento ao Vivo",
+      "recommendReasons": [
+        "Fornece um lugar para declarar seu amor com orgulho para aqueles que têm dificuldade em ter uma cerimônia pública",
+        "Crie sua cena de casamento ideal com fundos virtuais",
+        "Compartilhe bênçãos online com amigos e familiares de longe",
+        "Uma experiência única utilizando as instalações do Studio Q"
+      ],
+      "featuresTitle": "Características",
+      "featuresDescription": "Fornecemos um casamento online único usando o Studio Q, um estúdio virtual com as melhores instalações do oeste do Japão e altamente valorizado por profissionais da indústria. Com tecnologia de composição de fundo de IA, você pode criar qualquer cena que sonhar. Igrejas, resorts no exterior, campos de flores, vistas noturnas - qualquer atmosfera pode ser recriada livremente. Convide pais, parentes, amigos e conhecidos de longe online para compartilhar votos e bênçãos em tempo real. Além disso, recursos para receber presentes de felicitações e mensagens online estão incluídos. Realizamos um casamento verdadeiramente único que molda seu amor e o preserva para sempre.",
+      "pricingTitle": "Plano de Preços",
+      "planTitle": "Plano de Casamento ao Vivo",
+      "regularPrice": "Preço Regular",
+      "memberPrice": "Preço de Membro Carat",
+      "taxExcluded": "(Impostos Excluídos)",
+      "includedTitle": "O Que Está Incluído",
+      "notIncludedTitle": "Não Incluído",
+      "notIncludedNote": "Por favor, organize esses itens você mesmo se necessário",
+      "applyButton": "Aplicar com Este Plano",
+      "includedFeatures": [
+        "Gravação multiângulo com 4 câmeras",
+        "Equipamento de áudio para transmissão (microfones, mixer)",
+        "Gravação de vídeo de alta qualidade",
+        "Criação de fundo virtual (igreja/recepção/paisagem estrangeira, etc.)",
+        "Suporte de transmissão (Zoom, etc.)",
+        "Função de recepção de mensagens e presentes online",
+        "Suporte operacional por 1-2 membros da equipe"
+      ],
+      "notIncludedFeatures": [
+        "Penteado, maquiagem e vestuário",
+        "MC, ministro, parceiro",
+        "Coordenador/planejador",
+        "Buquês e decorações",
+        "Comida e bebidas"
+      ],
+      "videoTitle": "Vídeo de Composição de Fundo",
+      "videoSubtitle": "Produção Especial com Fundos Bonitos",
+      "videoDescription": "Com tecnologia de composição de fundo de IA, você pode criar qualquer cena que sonhar. Igrejas, resorts no exterior, campos de flores, vistas noturnas - qualquer atmosfera pode ser recriada livremente. A mais recente tecnologia do Studio Q realiza sua cena de casamento ideal.",
+      "studioQTitle": "Studio Q",
+      "studioQSubtitle": "Estúdio Virtual",
+      "studioQDescription": "Um estúdio virtual com as melhores instalações do oeste do Japão. Com tecnologia de ponta altamente valorizada por profissionais da indústria, realizamos sua cena de casamento ideal.",
+      "studioQLocation": "Naniwa-ku, Osaka",
+      "faqTitle": "Perguntas Frequentes",
+      "closeVideo": "Fechar Vídeo",
+      "faqs": [
+        {
+          "question": "Que equipamento é necessário?",
+          "answer": "Fornecemos todo o equipamento básico. A transmissão é possível se o local tiver conexão com a internet."
+        },
+        {
+          "question": "Qual é a qualidade da transmissão?",
+          "answer": "Dependendo do plano, a transmissão em qualidade HD a 4K é possível. Alcançamos transmissão de alta qualidade com uma conexão de internet estável."
+        },
+        {
+          "question": "Qual é o sistema de suporte no dia do evento?",
+          "answer": "A equipe dedicada apoiará os procedimentos do dia. Respondemos rapidamente a problemas técnicos."
+        },
+        {
+          "question": "Quando posso receber os dados gravados?",
+          "answer": "Após o término da transmissão, entregaremos os dados dentro de aproximadamente uma semana após a edição."
+        }
+      ]
+    }
   }
 }
