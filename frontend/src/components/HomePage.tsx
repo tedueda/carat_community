@@ -345,7 +345,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-1500 ${currentSlide === 1 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/hero5.png" 
+                src="/images/lerama__LGBT_History_Month_concept_--ar_169_--quality_2_--profi_e829093b-227b-423b-bc03-cdbfaa6939ce.png" 
                 alt="LGBTQ+ Community 2"
                 className="w-full h-full object-cover"
               />
