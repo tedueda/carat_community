@@ -414,11 +414,11 @@ const HomePage: React.FC = () => {
           <div className="max-w-3xl mx-auto px-4">
             <div className="bg-white/95 border border-gray-200 shadow-xl rounded-2xl px-6 py-6 md:px-10 md:py-8 flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="text-left">
-                <p className="text-sm md:text-base text-slate-500 mb-1">会員制LGBTQ+コミュニティ "Carat"</p>
-                <p className="text-lg md:text-xl font-serif text-slate-900">投稿とマッチングで、あなたの物語をはじめましょう。</p>
+                <p className="text-sm md:text-base text-slate-500 mb-1">{t('cta.communityTitle')}</p>
+                <p className="text-lg md:text-xl font-serif text-slate-900">{t('cta.communitySubtitle')}</p>
                 {(!user || isAnonymous) && (
                   <p className="mt-2 text-sm md:text-base text-slate-500">
-                    * 無料会員はサイト全体の内容を見ていただけます。投稿や有料会員限定サイトを閲覧するには会員登録が必要です。
+                    {t('cta.freeUserNote')}
                   </p>
                 )}
               </div>
@@ -428,14 +428,14 @@ const HomePage: React.FC = () => {
                     onClick={() => navigate('/create/board')}
                     className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
                   >
-                    投稿を作成
+                    {t('cta.createPost')}
                   </Button>
                 ) : (
                   <Button 
                     onClick={() => window.location.href = '/login'}
                     className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
                   >
-                    会員登録（月1,000円）
+                    {t('cta.registerButton')}
                   </Button>
                 )}
               </div>

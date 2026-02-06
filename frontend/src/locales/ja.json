@@ -379,7 +379,9 @@
   "cta": {
     "communityTitle": "会員制LGBTQ+コミュニティ \"Carat\"",
     "communitySubtitle": "投稿とマッチングで、あなたの物語をはじめましょう。",
-    "freeUserNote": "* 無料会員はサイト全体の内容を見ていただけます。投稿や有料会員限定サイトを閲覧するには会員登録が必要です。"
+    "freeUserNote": "* 無料会員はサイト全体の内容を見ていただけます。投稿や有料会員限定サイトを閲覧するには会員登録が必要です。",
+    "createPost": "投稿を作成",
+    "registerButton": "会員登録（月1,000円）"
   },
   "membership": {
     "registrationRequired": "会員登録が必要です",
