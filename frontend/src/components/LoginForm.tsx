@@ -122,7 +122,7 @@ const LoginForm: React.FC = () => {
               </p>
               <Link 
                 to="/subscribe" 
-                className="inline-flex items-center justify-center gap-2 w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white h-12 text-base font-medium rounded-md transition-all"
+                className="inline-flex items-center justify-center gap-2 w-full bg-gray-800 hover:bg-gray-700 text-white h-12 text-base font-medium rounded-md transition-all"
               >
                 <Crown className="h-5 w-5" />
                 {t('auth.login.becomePremium')}

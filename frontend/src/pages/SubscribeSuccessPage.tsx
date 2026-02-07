@@ -63,10 +63,10 @@ const SubscribeSuccessPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-pink-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-400 mx-auto mb-4"></div>
-          <p className="text-purple-200">{t('subscribe.success.verifying')}</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gray-800 mx-auto mb-4"></div>
+          <p className="text-gray-600">{t('subscribe.success.verifying')}</p>
         </div>
       </div>
     );
@@ -74,17 +74,17 @@ const SubscribeSuccessPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-pink-900 py-12 px-4">
+      <div className="min-h-screen bg-gray-100 py-12 px-4">
         <div className="max-w-md mx-auto">
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20 text-center">
+          <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-200 text-center">
             <div className="text-6xl mb-4">⚠️</div>
-            <h1 className="text-2xl font-bold text-white mb-4">
+            <h1 className="text-2xl font-bold text-black mb-4">
               {t('subscribe.success.error_title')}
             </h1>
-            <p className="text-purple-200 mb-6">{error}</p>
+            <p className="text-gray-600 mb-6">{error}</p>
             <button
               onClick={handleLogin}
-              className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors"
+              className="px-6 py-3 bg-black hover:bg-gray-800 text-white font-semibold rounded-lg transition-colors"
             >
               {t('subscribe.success.go_to_login')}
             </button>
@@ -95,29 +95,32 @@ const SubscribeSuccessPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-pink-900 py-12 px-4">
+    <div className="min-h-screen bg-gray-100 py-12 px-4">
       <div className="max-w-md mx-auto">
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20 text-center">
+        <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-200 text-center">
+          <div className="flex justify-center mb-4">
+            <img src="/images/logo02.png" alt="Carat Logo" className="h-16 w-auto" />
+          </div>
           <div className="text-6xl mb-4">🎉</div>
-          <h1 className="text-2xl font-bold text-white mb-4">
+          <h1 className="text-2xl font-bold text-black mb-4">
             {t('subscribe.success.title')}
           </h1>
-          <p className="text-purple-200 mb-6">
+          <p className="text-gray-600 mb-6">
             {t('subscribe.success.message')}
           </p>
           
-          <div className="bg-white/10 rounded-lg p-4 mb-6">
-            <h3 className="text-white font-semibold mb-2">
+          <div className="bg-gray-100 rounded-lg p-4 mb-6 border border-gray-200">
+            <h3 className="text-black font-semibold mb-2">
               {t('subscribe.success.next_step_title')}
             </h3>
-            <p className="text-purple-200 text-sm">
+            <p className="text-gray-600 text-sm">
               {t('subscribe.success.next_step_message')}
             </p>
           </div>
           
           <button
             onClick={handleContinue}
-            className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-lg transition-all duration-200"
+            className="w-full py-4 bg-black hover:bg-gray-800 text-white font-bold rounded-lg transition-all duration-200"
           >
             {t('subscribe.success.continue_button')}
           </button>
