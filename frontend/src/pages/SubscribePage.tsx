@@ -159,40 +159,43 @@ const SubscribePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-pink-900 py-12 px-4">
+    <div className="min-h-screen bg-gray-100 py-12 px-4">
       <div className="max-w-md mx-auto">
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20">
+        <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-200">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">
+            <div className="flex justify-center mb-4">
+              <img src="/images/logo02.png" alt="Carat Logo" className="h-16 w-auto" />
+            </div>
+            <h1 className="text-3xl font-bold text-black mb-2">
               {t('subscribe.title')}
             </h1>
-            <p className="text-purple-200">
+            <p className="text-gray-500">
               {t('subscribe.subtitle')}
             </p>
-            <div className="mt-4 p-4 bg-white/10 rounded-lg">
-              <p className="text-2xl font-bold text-white">
-                ¥1,000<span className="text-sm font-normal text-purple-200">/{t('subscribe.per_month')}</span>
+            <div className="mt-4 p-4 bg-gray-100 rounded-lg border border-gray-200">
+              <p className="text-2xl font-bold text-black">
+                ¥1,000<span className="text-sm font-normal text-gray-500">/{t('subscribe.per_month')}</span>
               </p>
             </div>
           </div>
           
           {canceled && (
-            <div className="mb-6 p-4 bg-yellow-500/20 border border-yellow-500/50 rounded-lg">
-              <p className="text-yellow-200 text-sm">
+            <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-yellow-700 text-sm">
                 {t('subscribe.canceled_message')}
               </p>
             </div>
           )}
           
           {error && (
-            <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
-              <p className="text-red-200 text-sm">{error}</p>
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm">{error}</p>
             </div>
           )}
           
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-purple-200 text-sm font-medium mb-2">
+              <label className="block text-black text-sm font-medium mb-2">
                 {t('subscribe.email')}
               </label>
               <input
@@ -200,14 +203,14 @@ const SubscribePage: React.FC = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
                 placeholder="your@email.com"
                 required
               />
             </div>
             
             <div>
-              <label className="block text-purple-200 text-sm font-medium mb-2">
+              <label className="block text-black text-sm font-medium mb-2">
                 {t('subscribe.display_name')}
               </label>
               <input
@@ -215,14 +218,14 @@ const SubscribePage: React.FC = () => {
                 name="display_name"
                 value={formData.display_name}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
                 placeholder={t('subscribe.display_name_placeholder')}
                 required
               />
             </div>
             
             <div>
-              <label className="block text-purple-200 text-sm font-medium mb-2">
+              <label className="block text-black text-sm font-medium mb-2">
                 {t('subscribe.password')}
               </label>
               <input
@@ -230,7 +233,7 @@ const SubscribePage: React.FC = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
                 placeholder="********"
                 minLength={8}
                 required
@@ -238,7 +241,7 @@ const SubscribePage: React.FC = () => {
             </div>
             
             <div>
-              <label className="block text-purple-200 text-sm font-medium mb-2">
+              <label className="block text-black text-sm font-medium mb-2">
                 {t('subscribe.password_confirm')}
               </label>
               <input
@@ -246,7 +249,7 @@ const SubscribePage: React.FC = () => {
                 name="password_confirm"
                 value={formData.password_confirm}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
                 placeholder="********"
                 minLength={8}
                 required
@@ -254,17 +257,17 @@ const SubscribePage: React.FC = () => {
             </div>
             
             <div>
-              <label className="block text-purple-200 text-sm font-medium mb-2">
+              <label className="block text-black text-sm font-medium mb-2">
                 {t('subscribe.preferred_language')}
               </label>
               <select
                 name="preferred_lang"
                 value={formData.preferred_lang}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
               >
                 {LANGUAGES.map(lang => (
-                  <option key={lang.code} value={lang.code} className="bg-purple-900">
+                  <option key={lang.code} value={lang.code} className="bg-white">
                     {lang.name}
                   </option>
                 ))}
@@ -272,17 +275,17 @@ const SubscribePage: React.FC = () => {
             </div>
             
             <div>
-              <label className="block text-purple-200 text-sm font-medium mb-2">
+              <label className="block text-black text-sm font-medium mb-2">
                 {t('subscribe.residence_country')}
               </label>
               <select
                 name="residence_country"
                 value={formData.residence_country}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
               >
                 {COUNTRIES.map(country => (
-                  <option key={country.code} value={country.code} className="bg-purple-900">
+                  <option key={country.code} value={country.code} className="bg-white">
                     {country.name}
                   </option>
                 ))}
@@ -295,12 +298,12 @@ const SubscribePage: React.FC = () => {
                 name="terms_accepted"
                 checked={formData.terms_accepted}
                 onChange={handleChange}
-                className="mt-1 h-4 w-4 text-purple-600 focus:ring-purple-500 border-white/20 rounded bg-white/10"
+                className="mt-1 h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
                 required
               />
-              <label className="ml-3 text-sm text-purple-200">
+              <label className="ml-3 text-sm text-gray-600">
                 {t('subscribe.terms_agreement')}
-                <a href="/terms" target="_blank" className="text-purple-400 hover:text-purple-300 underline ml-1">
+                <a href="/terms" target="_blank" className="text-black hover:text-gray-700 underline ml-1">
                   {t('subscribe.terms_link')}
                 </a>
               </label>
@@ -309,27 +312,27 @@ const SubscribePage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-4 bg-black hover:bg-gray-800 text-white font-bold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? t('subscribe.processing') : t('subscribe.submit_button')}
             </button>
           </form>
           
           <div className="mt-6 text-center">
-            <p className="text-purple-300 text-sm">
+            <p className="text-gray-500 text-sm">
               {t('subscribe.already_member')}{' '}
               <button
                 onClick={() => navigate('/login')}
-                className="text-purple-400 hover:text-purple-300 underline"
+                className="text-black hover:text-gray-700 underline"
               >
                 {t('subscribe.login_link')}
               </button>
             </p>
           </div>
           
-          <div className="mt-8 pt-6 border-t border-white/20">
-            <h3 className="text-white font-semibold mb-3">{t('subscribe.benefits_title')}</h3>
-            <ul className="space-y-2 text-purple-200 text-sm">
+          <div className="mt-8 pt-6 border-t border-gray-200">
+            <h3 className="text-black font-semibold mb-3">{t('subscribe.benefits_title')}</h3>
+            <ul className="space-y-2 text-gray-600 text-sm">
               <li className="flex items-center">
                 <span className="mr-2">💎</span>
                 {t('subscribe.benefit_1')}
