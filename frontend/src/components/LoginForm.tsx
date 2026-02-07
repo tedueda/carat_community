@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Eye, EyeOff, Crown } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 const LoginForm: React.FC = () => {
   const { t } = useTranslation();
@@ -113,22 +113,6 @@ const LoginForm: React.FC = () => {
               {isLoading ? t('auth.login.submitting') : t('auth.login.submit')}
             </Button>
           </form>
-          
-          {/* 有料会員になるCTA */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <div className="text-center">
-              <p className="text-sm text-gray-600 mb-4">
-                {t('auth.login.premiumDescription')}
-              </p>
-              <Link 
-                to="/subscribe" 
-                className="inline-flex items-center justify-center gap-2 w-full bg-gray-800 hover:bg-gray-700 text-white h-12 text-base font-medium rounded-md transition-all"
-              >
-                <Crown className="h-5 w-5" />
-                {t('auth.login.becomePremium')}
-              </Link>
-            </div>
-          </div>
         </CardContent>
       </Card>
     </div>

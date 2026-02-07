@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+import { API_URL } from '../config';
 
 const SubscribeSuccessPage: React.FC = () => {
   const { t } = useTranslation();
@@ -24,7 +23,7 @@ const SubscribeSuccessPage: React.FC = () => {
 
     const verifySession = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/stripe/checkout-session/${sessionId}`);
+        const response = await fetch(`${API_URL}/api/stripe/checkout-session/${sessionId}`);
         
         if (!response.ok) {
           throw new Error(t('subscribe.success.verification_failed'));
