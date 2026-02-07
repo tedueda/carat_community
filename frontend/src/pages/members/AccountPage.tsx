@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, Phone, Lock, AlertCircle, CheckCircle, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { LANGUAGE_NAMES, LANGUAGE_FLAGS, SupportedLanguage } from '../../i18n';
+import { 
+  User, Mail, Lock, AlertCircle, CheckCircle, Trash2, 
+  Crown, Shield, Gem, MessageCircle, TrendingUp, Globe, ExternalLink
+} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -14,26 +21,39 @@ interface AccountData {
   two_factor_enabled: boolean;
   is_active: boolean;
   created_at: string;
+  avatar_url?: string;
+  bio?: string;
+  location?: string;
+  website?: string;
+  twitter?: string;
+  instagram?: string;
+  interests?: string[];
+  country?: string;
+  // Stripe subscription fields
+  subscription_status?: string;
+  kyc_status?: string;
+  is_legacy_paid?: boolean;
+  stripe_customer_id?: string;
 }
 
 interface UserStats {
   posts_count: number;
   likes_received: number;
+  comments_count: number;
   total_points: number;
+  monthly_points?: number;
 }
 
 export default function AccountPage() {
+  const { t } = useTranslation();
+  const { currentLanguage, setLanguage, supportedLanguages } = useLanguage();
+  const navigate = useNavigate();
+  
   const [account, setAccount] = useState<AccountData | null>(null);
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  
-  // 編集フォーム
-  const [email, setEmail] = useState('');
-  const [displayName, setDisplayName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [realName, setRealName] = useState('');
   
   // パスワード変更
   const [showPasswordForm, setShowPasswordForm] = useState(false);
@@ -61,20 +81,16 @@ export default function AccountPage() {
       });
       
       if (!res.ok) {
-        console.error('アカウント情報の取得に失敗しました');
-        setError('アカウント情報の取得に失敗しました');
+        console.error(t('account.messages.fetchError'));
+        setError(t('account.messages.fetchError'));
         setLoading(false);
         return;
       }
       
       const data = await res.json();
       setAccount(data);
-      setEmail(data.email);
-      setDisplayName(data.display_name);
-      setPhoneNumber(data.phone_number || '');
-      setRealName(data.real_name || '');
       
-      const statsRes = await fetch(`${API_URL}/api/users/me/stats`, {
+      const statsRes= await fetch(`${API_URL}/api/users/me/stats`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -82,53 +98,21 @@ export default function AccountPage() {
         const statsData = await statsRes.json();
         setStats(statsData);
       }
-    } catch (e: any) {
-      setError('アカウント情報の取得に失敗しました');
+    } catch (e: unknown) {
+      setError(t('account.messages.fetchError'));
       console.error('Account fetch error:', e);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleUpdateAccount = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-    
-    try {
-      const res = await fetch(`${API_URL}/api/account/me`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email,
-          display_name: displayName,
-          phone_number: phoneNumber || null,
-          real_name: realName || null
-        })
-      });
-      
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.detail || 'アカウント情報の更新に失敗しました');
-      }
-      
-      setSuccess('アカウント情報を更新しました');
-      fetchAccount();
-    } catch (e: any) {
-      setError(e.message);
-    }
-  };
-
-  const handleChangePassword = async (e: React.FormEvent) => {
+  const handleChangePassword= async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess('');
     
     if (newPassword !== confirmPassword) {
-      setError('新しいパスワードが一致しません');
+      setError(t('account.security.passwordMismatch'));
       return;
     }
     
@@ -147,16 +131,18 @@ export default function AccountPage() {
       
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.detail || 'パスワードの変更に失敗しました');
+        throw new Error(data.detail || t('account.messages.updateError'));
       }
       
-      setSuccess('パスワードを変更しました');
+      setSuccess(t('account.security.passwordChanged'));
       setShowPasswordForm(false);
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message);
+      }
     }
   };
 
@@ -165,11 +151,11 @@ export default function AccountPage() {
     setError('');
     
     if (deleteConfirmation !== 'DELETE') {
-      setError('確認のため「DELETE」と入力してください');
+      setError(t('account.danger.deleteConfirmation'));
       return;
     }
     
-    if (!confirm('本当にアカウントを削除しますか？この操作は取り消せません。')) {
+    if (!confirm(t('account.danger.deleteWarning'))) {
       return;
     }
     
@@ -188,23 +174,44 @@ export default function AccountPage() {
       
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.detail || 'アカウントの削除に失敗しました');
+        throw new Error(data.detail || t('account.messages.updateError'));
       }
       
-      alert('アカウントを削除しました');
+      alert(t('account.danger.deleteSuccess'));
       localStorage.removeItem('token');
       window.location.href = '/';
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message);
+      }
     }
   };
+
+  // 未ログイン時は有料会員限定モーダルを表示（loadingチェックより先に判定）
+  if (!token) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
+        <Lock className="h-16 w-16 text-yellow-500 mb-4" />
+        <h2 className="text-xl font-semibold mb-2">{t('matching.profile.premiumOnly')}</h2>
+        <p className="text-gray-600 mb-6 text-center">
+          {t('matching.profile.premiumOnlyDesc')}
+        </p>
+        <button
+          onClick={() => navigate('/login')}
+          className="px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-medium"
+        >
+          {t('matching.profile.becomePremium')}
+        </button>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">読み込み中...</p>
+          <p className="mt-4 text-gray-600">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -213,7 +220,7 @@ export default function AccountPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">アカウント管理</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">{t('account.title')}</h1>
         
         {error && (
           <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start">
@@ -229,109 +236,347 @@ export default function AccountPage() {
           </div>
         )}
         
-        {/* カラットポイント */}
-        {stats && (
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg shadow-md p-6 mb-6 border-2 border-blue-200">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">💎 カラットポイント</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-white rounded-lg p-4 text-center">
-                <p className="text-3xl font-bold text-blue-600">{stats.total_points}</p>
-                <p className="text-sm text-gray-600 mt-1">合計カラット</p>
-              </div>
-              <div className="bg-white rounded-lg p-4 text-center">
-                <p className="text-2xl font-semibold text-gray-700">{stats.likes_received}</p>
-                <p className="text-sm text-gray-600 mt-1">いいね数（1pt/いいね）</p>
-              </div>
-              <div className="bg-white rounded-lg p-4 text-center">
-                <p className="text-2xl font-semibold text-gray-700">{stats.posts_count}</p>
-                <p className="text-sm text-gray-600 mt-1">投稿数（5pt/投稿）</p>
-              </div>
-            </div>
-            <p className="text-sm text-gray-600 mt-4 text-center">
-              💎いいね {stats.likes_received}pt + 投稿 {stats.posts_count} × 5pt = 合計 {stats.total_points}カラット
-            </p>
-          </div>
-        )}
-        
-        {/* アカウント情報 */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">基本情報</h2>
+        {/* セクション1: 会員ステータスサマリー */}
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg shadow-md p-6 mb-6 border-2 border-purple-200">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+            <Crown className="w-5 h-5 mr-2 text-purple-600" />
+            {t('account.status.title')}
+          </h2>
           
-          <form onSubmit={handleUpdateAccount} className="space-y-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {/* 有料会員ステータス */}
+            <div className="bg-white rounded-lg p-4 text-center">
+              <Crown className="w-6 h-6 mx-auto mb-2 text-purple-600" />
+              <p className="text-sm text-gray-600">{t('account.status.premiumMember')}</p>
+              <p className="text-lg font-bold text-purple-600">
+                {account?.membership_type === 'premium' ? t('account.status.premiumMember') : t('account.status.freeMember')}
+              </p>
+            </div>
+            
+            {/* 本人確認ステータス */}
+            <div className="bg-white rounded-lg p-4 text-center">
+              <Shield className="w-6 h-6 mx-auto mb-2 text-gray-400" />
+              <p className="text-sm text-gray-600">{t('account.status.identityVerification')}</p>
+              <p className="text-lg font-bold text-gray-500">
+                {account?.is_verified ? t('account.status.verified') : t('account.status.unverified')}
+              </p>
+            </div>
+            
+            {/* カラットポイント */}
+            <div className="bg-white rounded-lg p-4 text-center">
+              <Gem className="w-6 h-6 mx-auto mb-2 text-blue-600" />
+              <p className="text-sm text-gray-600">{t('account.status.caratPoints')}</p>
+              <p className="text-2xl font-bold text-blue-600">{stats?.total_points || 0}</p>
+            </div>
+            
+            {/* 総コメント数 */}
+            <div className="bg-white rounded-lg p-4 text-center">
+              <MessageCircle className="w-6 h-6 mx-auto mb-2 text-pink-600" />
+              <p className="text-sm text-gray-600">{t('account.status.totalComments')}</p>
+              <p className="text-2xl font-bold text-pink-600">{stats?.comments_count || 0}</p>
+            </div>
+            
+            {/* 今月の獲得ポイント */}
+            <div className="bg-white rounded-lg p-4 text-center">
+              <TrendingUp className="w-6 h-6 mx-auto mb-2 text-green-600" />
+              <p className="text-sm text-gray-600">{t('account.status.monthlyPoints')}</p>
+              <p className="text-2xl font-bold text-green-600">{stats?.monthly_points || 0}</p>
+            </div>
+          </div>
+          
+          {stats && (
+            <p className="text-sm text-gray-600 mt-4 text-center bg-white rounded-lg p-2">
+              {t('account.status.pointsBreakdown', {
+                likes: stats.likes_received,
+                posts: stats.posts_count,
+                total: stats.total_points
+              })}
+            </p>
+          )}
+        </div>
+        
+        {/* セクション2: アカウント情報 */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-2 flex items-center">
+            <Mail className="w-5 h-5 mr-2 text-gray-600" />
+            {t('account.info.title')}
+          </h2>
+          <p className="text-sm text-gray-500 mb-6">{t('account.info.description')}</p>
+          
+          <div className="space-y-4">
+            {/* メールアドレス（読み取り専用） */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Mail className="w-4 h-4 inline mr-2" />
-                メールアドレス
+                {t('account.info.email')}
+                <span className="ml-2 text-xs text-gray-400">({t('account.info.emailNote')})</span>
               </label>
               <input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                required
+                value={account?.email || ''}
+                disabled
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500"
               />
             </div>
             
+            {/* 表示言語 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                <User className="w-4 h-4 inline mr-2" />
-                表示名
+                <Globe className="w-4 h-4 inline mr-2" />
+                {t('account.info.displayLanguage')}
               </label>
-              <input
-                type="text"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
+              <select
+                value={currentLanguage}
+                onChange={(e) => setLanguage(e.target.value as SupportedLanguage)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                required
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Phone className="w-4 h-4 inline mr-2" />
-                携帯番号（任意）
-              </label>
-              <input
-                type="tel"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="09012345678"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-              <p className="mt-1 text-sm text-gray-500">本人認証に使用します</p>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                本名（任意）
-              </label>
-              <input
-                type="text"
-                value={realName}
-                onChange={(e) => setRealName(e.target.value)}
-                placeholder="山田太郎"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-              <p className="mt-1 text-sm text-gray-500">本人認証に使用します（非公開）</p>
-            </div>
-            
-            <div className="flex items-center justify-between pt-4">
-              <div className="text-sm text-gray-600">
-                会員タイプ: <span className="font-semibold">{account?.membership_type}</span>
-              </div>
-              <button
-                type="submit"
-                className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
               >
-                更新する
-              </button>
+                {supportedLanguages.map((lang) => (
+                  <option key={lang} value={lang}>
+                    {LANGUAGE_FLAGS[lang]} {LANGUAGE_NAMES[lang]}
+                  </option>
+                ))}
+              </select>
             </div>
-          </form>
+            
+            {/* 居住国（読み取り専用） */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('account.info.country')}
+                <span className="ml-2 text-xs text-gray-400">({t('account.info.countryNote')})</span>
+              </label>
+              <input
+                type="text"
+                value={account?.country || '-'}
+                disabled
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500"
+              />
+            </div>
+            
+            {/* 会員種別 */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('account.info.membershipType')}
+              </label>
+              <input
+                type="text"
+                value={account?.membership_type === 'premium' ? t('account.status.premiumMember') : t('account.status.freeMember')}
+                disabled
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500"
+              />
+            </div>
+            
+            {/* 本人確認ステータス */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('account.info.identityStatus')}
+              </label>
+              <input
+                type="text"
+                value={account?.is_verified ? t('account.status.verified') : t('account.status.unverified')}
+                disabled
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500"
+              />
+            </div>
+            
+            {/* サブスクリプションステータス */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('subscription.status.active') ? t('account.info.paymentInfo') : t('account.info.paymentInfo')}
+              </label>
+              <div className="space-y-3">
+                {account?.is_legacy_paid ? (
+                  <div className="w-full px-4 py-3 bg-purple-50 border border-purple-200 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <span className="text-purple-700 font-medium">{t('subscription.legacy_member')}</span>
+                      <span className="px-3 py-1 bg-purple-600 text-white text-sm rounded-full">{t('subscription.status.active')}</span>
+                    </div>
+                  </div>
+                ) : account?.subscription_status ? (
+                  <div className={`w-full px-4 py-3 rounded-lg border ${
+                    account.subscription_status === 'active' 
+                      ? 'bg-green-50 border-green-200' 
+                      : account.subscription_status === 'past_due'
+                      ? 'bg-yellow-50 border-yellow-200'
+                      : 'bg-gray-50 border-gray-200'
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-700">{t('account.info.paymentInfo')}</span>
+                      <span className={`px-3 py-1 text-sm rounded-full ${
+                        account.subscription_status === 'active'
+                          ? 'bg-green-600 text-white'
+                          : account.subscription_status === 'past_due'
+                          ? 'bg-yellow-600 text-white'
+                          : 'bg-gray-600 text-white'
+                      }`}>
+                        {t(`subscription.status.${account.subscription_status}`)}
+                      </span>
+                    </div>
+                    {account.subscription_status === 'active' && (
+                      <button
+                        onClick={async () => {
+                          try {
+                            const res = await fetch(`${API_URL}/api/stripe/create-portal-session`, {
+                              method: 'POST',
+                              headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                              },
+                              body: JSON.stringify({ return_url: window.location.href })
+                            });
+                            if (res.ok) {
+                              const data = await res.json();
+                              window.location.href = data.portal_url;
+                            }
+                          } catch (e) {
+                            console.error('Portal session error:', e);
+                          }
+                        }}
+                        className="mt-3 px-4 py-2 bg-gray-600 text-white text-sm rounded-lg hover:bg-gray-700 transition-colors"
+                      >
+                        {t('subscription.manage_button')}
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <div className="w-full px-4 py-3 border border-dashed border-gray-300 rounded-lg bg-gray-50">
+                    <p className="text-gray-500 text-center mb-3">{t('permission.subscription_required_message')}</p>
+                    <button
+                      onClick={() => navigate('/subscribe')}
+                      className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                    >
+                      {t('permission.subscribe_button')}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* KYCステータス */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('kyc.title')}
+              </label>
+              <div className={`w-full px-4 py-3 rounded-lg border ${
+                account?.is_legacy_paid || account?.kyc_status === 'VERIFIED'
+                  ? 'bg-green-50 border-green-200'
+                  : account?.kyc_status === 'PENDING'
+                  ? 'bg-yellow-50 border-yellow-200'
+                  : account?.kyc_status === 'REJECTED'
+                  ? 'bg-red-50 border-red-200'
+                  : 'bg-gray-50 border-gray-200'
+              }`}>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700">{t('kyc.title')}</span>
+                  <span className={`px-3 py-1 text-sm rounded-full ${
+                    account?.is_legacy_paid || account?.kyc_status === 'VERIFIED'
+                      ? 'bg-green-600 text-white'
+                      : account?.kyc_status === 'PENDING'
+                      ? 'bg-yellow-600 text-white'
+                      : account?.kyc_status === 'REJECTED'
+                      ? 'bg-red-600 text-white'
+                      : 'bg-gray-600 text-white'
+                  }`}>
+                    {account?.is_legacy_paid 
+                      ? t('kyc.status.VERIFIED')
+                      : t(`kyc.status.${account?.kyc_status || 'UNVERIFIED'}`)}
+                  </span>
+                </div>
+                
+                {/* KYC説明とアクションボタン */}
+                {account?.is_legacy_paid ? (
+                  <p className="mt-2 text-sm text-green-700">{t('kyc.verified_message')}</p>
+                ) : account?.kyc_status === 'VERIFIED' ? (
+                  <p className="mt-2 text-sm text-green-700">{t('kyc.verified_message')}</p>
+                ) : account?.kyc_status === 'PENDING' ? (
+                  <p className="mt-2 text-sm text-yellow-700">{t('kyc.pending_message')}</p>
+                ) : account?.kyc_status === 'REJECTED' ? (
+                  <>
+                    <p className="mt-2 text-sm text-red-700">{t('kyc.rejected_message')}</p>
+                    {(account?.subscription_status === 'active' || account?.is_legacy_paid) && (
+                      <button
+                        onClick={async () => {
+                          try {
+                            const res = await fetch(`${API_URL}/api/stripe/create-identity-session`, {
+                              method: 'POST',
+                              headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                              }
+                            });
+                            if (res.ok) {
+                              const data = await res.json();
+                              // Stripe Identity UIを開く（実際の実装ではStripe.jsを使用）
+                              console.log('Identity session created:', data);
+                              alert('KYC verification session created. Please complete verification.');
+                            }
+                          } catch (e) {
+                            console.error('Identity session error:', e);
+                          }
+                        }}
+                        className="mt-3 px-4 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors"
+                      >
+                        {t('kyc.start_button')}
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <p className="mt-2 text-sm text-gray-600">{t('kyc.description')}</p>
+                    {(account?.subscription_status === 'active' || account?.is_legacy_paid) && (
+                      <button
+                        onClick={async () => {
+                          try {
+                            const res = await fetch(`${API_URL}/api/stripe/create-identity-session`, {
+                              method: 'POST',
+                              headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                              }
+                            });
+                            if (res.ok) {
+                              const data = await res.json();
+                              console.log('Identity session created:', data);
+                              alert('KYC verification session created. Please complete verification.');
+                            }
+                          } catch (e) {
+                            console.error('Identity session error:', e);
+                          }
+                        }}
+                        className="mt-3 px-4 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors"
+                      >
+                        {t('kyc.start_button')}
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
         
-        {/* パスワード変更 */}
+        {/* セクション3: プロフィール */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">パスワード変更</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-2 flex items-center">
+            <User className="w-5 h-5 mr-2 text-gray-600" />
+            {t('account.profile.title')}
+          </h2>
+          <p className="text-sm text-gray-500 mb-6">{t('account.profile.description')}</p>
+          
+          <button
+            type="button"
+            onClick={() => navigate('/matching/profile')}
+            className="w-full px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all flex items-center justify-center text-lg font-medium"
+          >
+            <ExternalLink className="w-5 h-5 mr-3" />
+            {t('account.profile.editMatchingProfile')}
+          </button>
+        </div>
+        
+        {/* セキュリティセクション */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+            <Lock className="w-5 h-5 mr-2 text-gray-600" />
+            {t('account.security.title')}
+          </h2>
           
           {!showPasswordForm ? (
             <button
@@ -339,13 +584,13 @@ export default function AccountPage() {
               className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center"
             >
               <Lock className="w-4 h-4 mr-2" />
-              パスワードを変更する
+              {t('account.security.changePassword')}
             </button>
           ) : (
             <form onSubmit={handleChangePassword} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  現在のパスワード
+                  {t('account.security.currentPassword')}
                 </label>
                 <input
                   type="password"
@@ -358,7 +603,7 @@ export default function AccountPage() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  新しいパスワード
+                  {t('account.security.newPassword')}
                 </label>
                 <input
                   type="password"
@@ -368,12 +613,12 @@ export default function AccountPage() {
                   required
                   minLength={8}
                 />
-                <p className="mt-1 text-sm text-gray-500">8文字以上</p>
+                <p className="mt-1 text-sm text-gray-500">{t('account.security.passwordMinLength')}</p>
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  新しいパスワード（確認）
+                  {t('account.security.confirmPassword')}
                 </label>
                 <input
                   type="password"
@@ -389,7 +634,7 @@ export default function AccountPage() {
                   type="submit"
                   className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
                 >
-                  変更する
+                  {t('common.update')}
                 </button>
                 <button
                   type="button"
@@ -401,42 +646,45 @@ export default function AccountPage() {
                   }}
                   className="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
                 >
-                  キャンセル
+                  {t('common.cancel')}
                 </button>
               </div>
             </form>
           )}
         </div>
         
-        {/* アカウント削除 */}
+        {/* 危険な操作セクション */}
         <div className="bg-white rounded-lg shadow-md p-6 border-2 border-red-200">
-          <h2 className="text-xl font-semibold text-red-600 mb-4">危険な操作</h2>
+          <h2 className="text-xl font-bold text-red-600 mb-4 flex items-center">
+            <Trash2 className="w-5 h-5 mr-2" />
+            {t('account.danger.title')}
+          </h2>
           
           {!showDeleteForm ? (
             <div>
               <p className="text-gray-600 mb-4">
-                アカウントを削除すると、すべてのデータが失われます。この操作は取り消せません。
+                {t('account.danger.deleteWarning')}
               </p>
               <button
                 onClick={() => setShowDeleteForm(true)}
                 className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center"
               >
                 <Trash2 className="w-4 h-4 mr-2" />
-                アカウントを削除する
+                {t('account.danger.deleteAccount')}
               </button>
             </div>
           ) : (
             <form onSubmit={handleDeleteAccount} className="space-y-4">
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-                <p className="text-red-800 font-semibold">警告</p>
+                <p className="text-red-800 font-semibold">{t('account.danger.title')}</p>
                 <p className="text-red-700 text-sm mt-2">
-                  この操作は取り消せません。アカウントを削除すると、すべての投稿、コメント、プロフィール情報が永久に失われます。
+                  {t('account.danger.deleteWarning')}
                 </p>
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  パスワード
+                  {t('auth.login.password')}
                 </label>
                 <input
                   type="password"
@@ -449,7 +697,7 @@ export default function AccountPage() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  確認のため「DELETE」と入力してください
+                  {t('account.danger.deleteConfirmation')}
                 </label>
                 <input
                   type="text"
@@ -466,7 +714,7 @@ export default function AccountPage() {
                   type="submit"
                   className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                 >
-                  削除する
+                  {t('account.danger.deleteButton')}
                 </button>
                 <button
                   type="button"
@@ -477,7 +725,7 @@ export default function AccountPage() {
                   }}
                   className="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
                 >
-                  キャンセル
+                  {t('common.cancel')}
                 </button>
               </div>
             </form>

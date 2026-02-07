@@ -19,9 +19,26 @@ class User(Base):
     two_factor_enabled = Column(Boolean, default=False)
     two_factor_secret = Column(String(255), nullable=True)
     carats = Column(Integer, default=0, nullable=False)
-    preferred_lang = Column(String(10), nullable=True, default="ja")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    # Stripe subscription fields
+    stripe_customer_id = Column(String(255), nullable=True, index=True)
+    stripe_subscription_id = Column(String(255), nullable=True)
+    subscription_status = Column(String(50), nullable=True)  # active, past_due, canceled, incomplete, trialing
+    
+    # Stripe Identity (KYC) fields
+    kyc_status = Column(String(50), default="UNVERIFIED")  # UNVERIFIED, PENDING, VERIFIED, REJECTED
+    stripe_identity_verification_session_id = Column(String(255), nullable=True)
+    
+    # Legacy paid user flag (for existing test users)
+    is_legacy_paid = Column(Boolean, default=False)
+    
+    # Additional fields for subscription flow
+    preferred_lang = Column(String(10), default="ja")
+    residence_country = Column(String(10), nullable=True)  # ISO country code
+    terms_accepted_at = Column(DateTime(timezone=True), nullable=True)
+    terms_version = Column(String(50), nullable=True)
     
     __table_args__ = (
         CheckConstraint("membership_type IN ('free', 'premium', 'admin')", name="check_membership_type"),

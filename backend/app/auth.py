@@ -95,3 +95,40 @@ async def get_current_admin_user(current_user: User = Depends(get_current_active
     if current_user.membership_type != "admin":
         raise HTTPException(status_code=403, detail="Admin privileges required")
     return current_user
+
+
+def is_user_paid_member(user: User) -> bool:
+    """Check if user has paid member access (subscription active OR legacy paid)."""
+    return user.is_legacy_paid or user.subscription_status == "active"
+
+
+def is_user_kyc_verified(user: User) -> bool:
+    """Check if user has completed KYC (verified OR legacy paid)."""
+    return user.is_legacy_paid or user.kyc_status == "VERIFIED"
+
+
+def can_user_perform_action(user: User) -> bool:
+    """Check if user can perform restricted actions (post, comment, chat, etc.)."""
+    return is_user_paid_member(user) and is_user_kyc_verified(user)
+
+
+async def get_current_verified_user(current_user: User = Depends(get_current_active_user)):
+    """
+    Get current user who can perform restricted actions.
+    Requires: active subscription (or legacy paid) AND KYC verified (or legacy paid).
+    """
+    if not is_user_paid_member(current_user):
+        raise HTTPException(
+            status_code=403, 
+            detail="SUBSCRIPTION_REQUIRED",
+            headers={"X-Error-Code": "SUBSCRIPTION_REQUIRED"}
+        )
+    
+    if not is_user_kyc_verified(current_user):
+        raise HTTPException(
+            status_code=403, 
+            detail="KYC_REQUIRED",
+            headers={"X-Error-Code": "KYC_REQUIRED"}
+        )
+    
+    return current_user
