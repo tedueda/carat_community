@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+import { API_URL } from '../config';
 
 const COUNTRIES = [
   { code: 'JP', name: 'Japan' },
@@ -125,7 +124,7 @@ const SubscribePage: React.FC = () => {
     setLoading(true);
     
     try {
-      const response = await fetch(`${API_BASE_URL}/api/stripe/create-checkout-session`, {
+      const response = await fetch(`${API_URL}/api/stripe/create-checkout-session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
