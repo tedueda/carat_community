@@ -991,5 +991,84 @@
       "note2": "個人情報の交換は禁止されています",
       "note3": "取引は自己責任で行ってください"
     }
+  },
+  "subscribe": {
+    "title": "有料会員になる",
+    "subtitle": "Carat Communityの全機能をお楽しみください",
+    "per_month": "月",
+    "email": "メールアドレス",
+    "display_name": "表示名",
+    "display_name_placeholder": "コミュニティでの表示名",
+    "password": "パスワード",
+    "password_confirm": "パスワード（確認）",
+    "preferred_language": "言語設定",
+    "residence_country": "居住国",
+    "terms_agreement": "利用規約に同意します",
+    "terms_link": "利用規約を読む",
+    "submit_button": "決済に進む",
+    "processing": "処理中...",
+    "already_member": "すでに会員の方は",
+    "login_link": "ログイン",
+    "benefits_title": "会員特典",
+    "benefit_1": "全カテゴリへの投稿・コメント",
+    "benefit_2": "会員限定マッチング・チャット",
+    "benefit_3": "フリマ・作品販売への出品",
+    "benefit_4": "ジュエリー購入",
+    "canceled_message": "決済がキャンセルされました。もう一度お試しください。",
+    "error": {
+      "required_fields": "必須項目を入力してください",
+      "password_mismatch": "パスワードが一致しません",
+      "password_too_short": "パスワードは8文字以上で入力してください",
+      "terms_required": "利用規約に同意してください",
+      "checkout_failed": "決済セッションの作成に失敗しました",
+      "unknown": "エラーが発生しました"
+    },
+    "success": {
+      "title": "会員登録完了！",
+      "message": "Carat Communityへようこそ！有料会員として全機能をご利用いただけます。",
+      "next_step_title": "次のステップ",
+      "next_step_message": "本人確認（KYC）を完了すると、投稿・コメント・チャットなどの機能が利用可能になります。",
+      "continue_button": "マイアカウントへ",
+      "verifying": "決済を確認中...",
+      "no_session": "セッション情報がありません",
+      "verification_failed": "決済の確認に失敗しました",
+      "payment_pending": "決済処理中です。しばらくお待ちください。",
+      "unknown_error": "エラーが発生しました",
+      "error_title": "エラー",
+      "go_to_login": "ログインページへ"
+    }
+  },
+  "kyc": {
+    "title": "本人確認",
+    "status": {
+      "UNVERIFIED": "未確認",
+      "PENDING": "確認中",
+      "VERIFIED": "確認済み",
+      "REJECTED": "再提出が必要"
+    },
+    "start_button": "本人確認を開始",
+    "description": "投稿・コメント・チャットなどの機能を利用するには本人確認が必要です。",
+    "verified_message": "本人確認が完了しています。",
+    "pending_message": "本人確認を審査中です。しばらくお待ちください。",
+    "rejected_message": "本人確認が承認されませんでした。再度お試しください。"
+  },
+  "subscription": {
+    "status": {
+      "active": "有効",
+      "past_due": "支払い遅延",
+      "canceled": "解約済み",
+      "incomplete": "未完了",
+      "trialing": "トライアル中"
+    },
+    "manage_button": "サブスクリプション管理",
+    "legacy_member": "レガシー会員"
+  },
+  "permission": {
+    "subscription_required_title": "有料会員限定機能",
+    "subscription_required_message": "この機能を利用するには有料会員登録が必要です。",
+    "subscribe_button": "有料会員になる",
+    "kyc_required_title": "本人確認が必要",
+    "kyc_required_message": "この機能を利用するには本人確認を完了してください。",
+    "start_kyc_button": "本人確認を開始"
   }
 }
