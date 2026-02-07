@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { API_URL } from '@/config';
 import { useNavigate } from 'react-router-dom';
@@ -12,25 +11,17 @@ type LikeItem = {
   user_id: number;
   display_name: string;
   identity?: string | null;
-  nationality?: string | null;
   prefecture?: string | null;
   age_band?: string | null;
   avatar_url?: string | null;
 };
 
-const getFlagImageUrl = (code: string | null | undefined): string => {
-  if (!code || code === 'OTHER') return '';
-  return `https://flagcdn.com/w40/${code.toLowerCase()}.png`;
-};
-
 type ViewMode = 'list' | 'grid';
 
 const MatchingLikesPage: React.FC = () => {
-  const { t } = useTranslation();
   const { token, user } = useAuth();
   const navigate = useNavigate();
-  // 有料会員かどうか
-  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<LikeItem[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -61,26 +52,26 @@ const MatchingLikesPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isPaidUser) {
+    if (isPremium) {
       fetchLikes();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, isPaidUser]);
+  }, [token, isPremium]);
 
   // 有料会員でない場合はアップグレード画面を表示
-  if (!isPaidUser) {
+  if (!isPremium) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
         <Lock className="h-16 w-16 text-yellow-500 mb-4" />
-        <h2 className="text-xl font-semibold mb-2">{t('matching.paidMemberOnly')}</h2>
+        <h2 className="text-xl font-semibold mb-2">有料会員限定機能</h2>
         <p className="text-gray-600 mb-6 text-center">
-          {t('matching.favoritesOnlyForPaidMembers')}
+          お気に入り機能は有料会員のみご利用いただけます。
         </p>
         <button
           onClick={() => navigate('/account')}
           className="px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-medium"
         >
-          {t('matching.becomePaidMember')}
+          有料会員になる
         </button>
       </div>
     );
@@ -104,26 +95,26 @@ const MatchingLikesPage: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">{t('matching.favoriteList')}</h2>
+      <h2 className="text-lg font-semibold mb-3">お気に入り一覧</h2>
       <div className="p-4 border rounded-lg bg-white">
         <div className="mb-3 flex gap-2 items-center justify-between">
-          <button onClick={fetchLikes} className="px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200">{t('matching.refresh')}</button>
+          <button onClick={fetchLikes} className="px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200">再取得</button>
           <div className="flex gap-1 border border-gray-300 rounded">
             <button
               onClick={() => handleViewModeChange('list')}
               className={`px-3 py-1 text-sm transition-colors ${viewMode === 'list' ? 'bg-black text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
             >
-              {t('matching.list')}
+              リスト
             </button>
             <button
               onClick={() => handleViewModeChange('grid')}
               className={`px-3 py-1 text-sm transition-colors ${viewMode === 'grid' ? 'bg-black text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
             >
-              {t('matching.tile')}
+              タイル
             </button>
           </div>
         </div>
-        {loading && <div>{t('matching.loading')}</div>}
+        {loading && <div>読み込み中...</div>}
         {error && <div className="text-red-600 text-sm">{error}</div>}
         
         {viewMode === 'list' ? (
@@ -165,12 +156,12 @@ const MatchingLikesPage: React.FC = () => {
                   }}
                   className="px-3 py-1 text-sm bg-black text-white rounded hover:bg-gray-800 transition-colors"
                 >
-                  {t('matching.chat')}
+                  チャットをする
                 </button>
               </li>
             ))}
             {!loading && !error && items.length === 0 && (
-              <li className="text-sm text-gray-500">{t('matching.noFavoritesYet')}</li>
+              <li className="text-sm text-gray-500">お気に入りはまだありません。</li>
             )}
           </ul>
         ) : (
@@ -178,22 +169,9 @@ const MatchingLikesPage: React.FC = () => {
             {items.map((like) => (
               <div 
                 key={like.like_id} 
-                className="border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer relative"
+                className="border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer"
                 onClick={() => navigate(`/matching/users/${like.user_id}`)}
               >
-                {/* 国旗バッジ（左上） */}
-                {like.nationality && (
-                  <div className="absolute left-2 top-2 bg-white/90 rounded-full px-1.5 py-1 shadow-sm z-10 flex items-center gap-1">
-                    {getFlagImageUrl(like.nationality) && (
-                      <img 
-                        src={getFlagImageUrl(like.nationality)} 
-                        alt={like.nationality}
-                        className="w-6 h-4 object-cover rounded-sm"
-                      />
-                    )}
-                    <span className="text-xs font-medium text-gray-700">{like.nationality}</span>
-                  </div>
-                )}
                 {like.avatar_url && like.avatar_url !== '' ? (
                   <img 
                     src={like.avatar_url.startsWith('http') ? like.avatar_url : `${API_URL}${like.avatar_url}`}
@@ -222,13 +200,13 @@ const MatchingLikesPage: React.FC = () => {
                     }}
                     className="w-full px-3 py-2 text-sm bg-black text-white rounded hover:bg-gray-800 transition-colors"
                   >
-                    {t('matching.chat')}
+                    チャットをする
                   </button>
                 </div>
               </div>
             ))}
             {!loading && !error && items.length === 0 && (
-              <div className="col-span-full text-sm text-gray-500 text-center py-8">{t('matching.noFavoritesYet')}</div>
+              <div className="col-span-full text-sm text-gray-500 text-center py-8">お気に入りはまだありません。</div>
             )}
           </div>
         )}

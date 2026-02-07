@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ArrowLeft, Clock, MessageCircle, ChevronLeft, ChevronRight, User, Edit, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import { useLanguage } from '../../contexts/LanguageContext';
 import PremiumUpgradeModal from '../PremiumUpgradeModal';
-import { translateText } from '../../services/translationService';
 
 interface ArtSaleItem {
   id: number;
@@ -55,39 +52,14 @@ const TRANSACTION_METHOD_LABELS: Record<string, string> = {
 
 const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const { currentLanguage } = useLanguage();
   const { user } = useAuth();
   const token = localStorage.getItem('token');
-  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const isOwner = user?.id === item.user_id;
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [translatedTitle, setTranslatedTitle] = useState(item.title);
-  const [translatedDescription, setTranslatedDescription] = useState(item.description);
-
-  useEffect(() => {
-    const translateContent = async () => {
-      if (currentLanguage === 'ja') {
-        setTranslatedTitle(item.title);
-        setTranslatedDescription(item.description);
-        return;
-      }
-      try {
-        const [titleResult, descResult] = await Promise.all([
-          translateText(item.title, currentLanguage),
-          translateText(item.description, currentLanguage)
-        ]);
-        setTranslatedTitle(titleResult.translated_text);
-        setTranslatedDescription(descResult.translated_text);
-      } catch (error) {
-        console.error('Translation error:', error);
-      }
-    };
-    translateContent();
-  }, [item.title, item.description, currentLanguage]);
 
   const formatPrice = (price: number) => {
     if (price === 0) return '応相談';
@@ -120,7 +92,7 @@ const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) =
       navigate('/login');
       return;
     }
-    if (!isPaidUser) {
+    if (!isPremium) {
       setShowUpgradeModal(true);
       return;
     }
@@ -220,7 +192,7 @@ const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) =
         <div className="p-6">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">{translatedTitle}</h1>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">{item.title}</h1>
               <p className="text-3xl font-bold text-pink-600">{formatPrice(item.price)}</p>
             </div>
             <div className="flex flex-col gap-2">
@@ -229,7 +201,7 @@ const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) =
               </span>
               {item.is_original && (
                 <span className="px-3 py-1 bg-pink-100 text-pink-600 rounded-full text-sm text-center">
-                  {t('artSales.detail.original')}
+                  オリジナル
                 </span>
               )}
             </div>
@@ -242,35 +214,35 @@ const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) =
             </div>
             {item.technique && (
               <div className="flex items-center gap-1">
-                {t('artSales.detail.technique')}: {item.technique}
+                技法: {item.technique}
               </div>
             )}
             {item.size && (
               <div className="flex items-center gap-1">
-                {t('artSales.detail.size')}: {item.size}
+                サイズ: {item.size}
               </div>
             )}
             {item.year_created && (
               <div className="flex items-center gap-1">
-                {t('artSales.detail.yearCreated')}: {item.year_created}{t('artSales.detail.year')}
+                制作年: {item.year_created}年
               </div>
             )}
           </div>
 
           <div className="border-t border-gray-200 pt-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">{t('artSales.detail.description')}</h2>
-            <p className="text-gray-700 whitespace-pre-wrap">{translatedDescription}</p>
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">作品説明</h2>
+            <p className="text-gray-700 whitespace-pre-wrap">{item.description}</p>
           </div>
 
           <div className="border-t border-gray-200 pt-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">{t('artSales.detail.transactionMethod')}</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">取引方法</h2>
             <p className="text-gray-700">
-              {t(`artSales.transactionMethods.${item.transaction_method}`, { defaultValue: TRANSACTION_METHOD_LABELS[item.transaction_method] || item.transaction_method })}
+              {TRANSACTION_METHOD_LABELS[item.transaction_method] || item.transaction_method}
             </p>
           </div>
 
           <div className="border-t border-gray-200 pt-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">{t('artSales.detail.seller')}</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">出品者</h2>
             <div className="flex items-center gap-3">
               {item.user_avatar_url ? (
                 <img
@@ -284,8 +256,8 @@ const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) =
                 </div>
               )}
               <div>
-                <p className="font-medium text-gray-900">{item.user_display_name || t('common.anonymousUser')}</p>
-                <p className="text-sm text-gray-500">{t('artSales.detail.member')}</p>
+                <p className="font-medium text-gray-900">{item.user_display_name || '匿名ユーザー'}</p>
+                <p className="text-sm text-gray-500">会員</p>
               </div>
             </div>
           </div>
@@ -296,14 +268,14 @@ const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) =
               className="w-full py-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
             >
               <MessageCircle className="w-5 h-5" />
-              {t('artSales.detail.contact')}
+              連絡する
             </button>
           )}
 
           {isOwner && (
             <div className="space-y-3">
               <div className="bg-gray-50 p-4 rounded-lg text-center text-gray-600 mb-3">
-                {t('artSales.detail.yourListing')}
+                これはあなたの出品です
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <button
@@ -311,7 +283,7 @@ const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) =
                   className="py-3 px-4 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center gap-2"
                 >
                   <Edit className="w-5 h-5" />
-                  {t('common.edit')}
+                  編集
                 </button>
                 <button
                   onClick={handleDelete}
@@ -319,18 +291,18 @@ const ArtSaleDetail: React.FC<ArtSaleDetailProps> = ({ item, onBack, onEdit }) =
                   className="py-3 px-4 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Trash2 className="w-5 h-5" />
-                  {deleteLoading ? t('common.deleting') : t('common.delete')}
+                  {deleteLoading ? '削除中...' : '削除'}
                 </button>
               </div>
             </div>
           )}
 
           <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
-            <h3 className="font-semibold text-yellow-800 mb-2">{t('artSales.detail.transactionNotes')}</h3>
+            <h3 className="font-semibold text-yellow-800 mb-2">取引時の注意</h3>
             <ul className="text-sm text-yellow-700 space-y-1">
-              <li>・{t('artSales.detail.note1')}</li>
-              <li>・{t('artSales.detail.note2')}</li>
-              <li>・{t('artSales.detail.note3')}</li>
+              <li>・連絡は専用チャットで行ってください</li>
+              <li>・個人情報の交換は禁止されています</li>
+              <li>・取引は自己責任で行ってください</li>
             </ul>
           </div>
         </div>

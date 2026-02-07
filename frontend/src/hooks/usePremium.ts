@@ -1,14 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 
-/**
- * 有料会員ステータスを取得するフック
- * @returns { loading, isPaidUser, isPremium (deprecated), refresh }
- */
-export function usePaidMember() {
+export function usePremium() {
   const { token, user } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [isPaidUser, setIsPaidUser] = useState<boolean>(false);
+  const [isPremium, setIsPremium] = useState<boolean>(false);
   const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
 
   const evaluateFallback = useCallback(() => {
@@ -19,7 +15,7 @@ export function usePaidMember() {
     setLoading(true);
     try {
       if (!token) {
-        setIsPaidUser(false);
+        setIsPremium(false);
         return false;
       }
       const res = await fetch(`${API_URL}/api/billing/status`, {
@@ -29,16 +25,16 @@ export function usePaidMember() {
       });
       if (res.ok) {
         const data = await res.json();
-        setIsPaidUser(!!data?.premium);
+        setIsPremium(!!data?.premium);
         return !!data?.premium;
       } else {
         const fb = evaluateFallback();
-        setIsPaidUser(fb);
+        setIsPremium(fb);
         return fb;
       }
     } catch (_) {
       const fb = evaluateFallback();
-      setIsPaidUser(fb);
+      setIsPremium(fb);
       return fb;
     } finally {
       setLoading(false);
@@ -66,17 +62,10 @@ export function usePaidMember() {
 
   const refresh = useMemo(() => fetchStatus, [fetchStatus]);
 
-  return { 
-    loading, 
-    /** 有料会員かどうか */
-    isPaidUser, 
-    /** @deprecated isPaidUser を使用してください */
-    isPremium: isPaidUser,
-    refresh 
-  };
+  return { loading, isPremium, refresh };
 }
 
-/** @deprecated usePaidMember を使用してください */
-export function usePremium() {
-  return usePaidMember();
+export function usePaidMember() {
+  const { loading, isPremium, refresh } = usePremium();
+  return { loading, isPaidUser: isPremium, refresh };
 }

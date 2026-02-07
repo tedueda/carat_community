@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Crown } from 'lucide-react';
 
 const LoginForm: React.FC = () => {
   const { t } = useTranslation();
@@ -39,7 +39,7 @@ const LoginForm: React.FC = () => {
     if (success) {
       navigate('/feed');
     } else {
-      setError(t('auth.loginFailed'));
+      setError('メールアドレスまたはパスワードが正しくありません');
     }
     
     setIsLoading(false);
@@ -52,15 +52,15 @@ const LoginForm: React.FC = () => {
           <div className="flex justify-center">
             <img src="/images/logo02.png" alt="Carat Logo" className="h-16 w-auto" />
           </div>
-          <CardTitle className="text-3xl font-bold text-black">{t('common.login')}</CardTitle>
+          <CardTitle className="text-3xl font-bold text-black">{t('auth.login.title')}</CardTitle>
           <CardDescription className="text-gray-500">
-            {t('auth.loginDescription')}
+            {t('auth.login.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-black font-medium">{t('auth.email')}</Label>
+              <Label htmlFor="email" className="text-black font-medium">{t('auth.login.email')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -71,7 +71,7 @@ const LoginForm: React.FC = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-black font-medium">{t('auth.password')}</Label>
+              <Label htmlFor="password" className="text-black font-medium">{t('auth.login.password')}</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -91,7 +91,7 @@ const LoginForm: React.FC = () => {
               </div>
             </div>
             {error && (
-              <div className="text-red-600 text-sm bg-red-50 p-3 rounded">{error}</div>
+              <div className="text-red-600 text-sm bg-red-50 p-3 rounded">{t('auth.login.error')}</div>
             )}
             <div className="flex items-center space-x-2">
               <input
@@ -102,7 +102,7 @@ const LoginForm: React.FC = () => {
                 className="rounded border-gray-300 text-black focus:ring-black"
               />
               <Label htmlFor="rememberMe" className="text-sm text-gray-700 cursor-pointer">
-                {t('auth.rememberMe')}
+                {t('auth.login.rememberMe')}
               </Label>
             </div>
             <Button 
@@ -110,16 +110,24 @@ const LoginForm: React.FC = () => {
               className="w-full bg-black hover:bg-gray-800 text-white h-12 text-base font-medium"
               disabled={isLoading}
             >
-              {isLoading ? t('common.loading') : t('common.login')}
+              {isLoading ? t('auth.login.submitting') : t('auth.login.submit')}
             </Button>
           </form>
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              {t('auth.dontHaveAccount')}{' '}
-              <Link to="/register" className="text-purple-600 hover:text-purple-500 font-medium underline">
-                {t('common.register')}
+          
+          {/* 有料会員になるCTA */}
+          <div className="mt-8 pt-6 border-t border-gray-200">
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-4">
+                {t('auth.login.premiumDescription')}
+              </p>
+              <Link 
+                to="/subscribe" 
+                className="inline-flex items-center justify-center gap-2 w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white h-12 text-base font-medium rounded-md transition-all"
+              >
+                <Crown className="h-5 w-5" />
+                {t('auth.login.becomePremium')}
               </Link>
-            </p>
+            </div>
           </div>
         </CardContent>
       </Card>

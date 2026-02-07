@@ -4,7 +4,6 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import Header from './components/Header';
 import LoginForm from './components/LoginForm';
-import RegisterForm from './components/RegisterForm';
 import HomePage from './components/HomePage';
 import PostFeed from './components/PostFeed';
 import ProfilePage from './components/ProfilePage';
@@ -33,8 +32,6 @@ import DonationPage from './components/DonationPage';
 import MarketplacePage from './pages/members/MarketplacePage';
 import FavoritesPage from './pages/members/FavoritesPage';
 import AccountPage from './pages/members/AccountPage';
-import SubscribePage from './pages/SubscribePage';
-import SubscribeSuccessPage from './pages/SubscribeSuccessPage';
 import { SalonPage, SalonRoomDetailPage } from './components/salon';
 import BusinessPage from './pages/members/BusinessPage';
 import JewelryProductList from './components/jewelry/JewelryProductList';
@@ -43,6 +40,8 @@ import JewelryCart from './components/jewelry/JewelryCart';
 import JewelryCheckout from './components/jewelry/JewelryCheckout';
 import JewelryOrderComplete from './components/jewelry/JewelryOrderComplete';
 import JewelryAdmin from './components/jewelry/JewelryAdmin';
+import SubscribePage from './pages/SubscribePage';
+import SubscribeSuccessPage from './pages/SubscribeSuccessPage';
 
 
 const FeedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -81,11 +80,7 @@ function AppContent() {
               <LoginForm />
             </PublicRoute>
           } />
-                    <Route path="/register" element={
-                      <PublicRoute>
-                        <RegisterForm />
-                      </PublicRoute>
-                    } />
+                    {/* Subscription routes */}
                     <Route path="/subscribe" element={<SubscribePage />} />
                     <Route path="/subscribe/success" element={<SubscribeSuccessPage />} />
           <Route path="/feed" element={

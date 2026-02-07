@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Search, Heart, MessageCircle, ShoppingBag, Plus, Grid, List, MapPin, Clock, Star, Shield, Upload, Minus, Trash2, Home, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { API_URL } from '../../config';
 
 interface Listing {
   id: number;
@@ -19,6 +18,8 @@ interface Listing {
   status: 'active' | 'sold' | 'completed';
   is_favorited: boolean;
 }
+
+const API_URL = import.meta.env.VITE_API_URL || 'https://ddxdewgmen.ap-northeast-1.awsapprunner.com';
 
 const MarketplacePage: React.FC = () => {
   console.log('=== MarketplacePage component loaded successfully v2 ===');

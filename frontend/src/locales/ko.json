@@ -288,7 +288,18 @@
     "typing": "입력 중..."
   },
   "auth": {
-    "login": "로그인",
+    "login": {
+      "title": "회원 로그인",
+      "description": "회원 계정으로 로그인하여 모든 기능을 이용하세요",
+      "email": "이메일",
+      "password": "비밀번호",
+      "rememberMe": "로그인 상태 유지 (7일)",
+      "submit": "로그인",
+      "submitting": "로그인 중...",
+      "error": "이메일 또는 비밀번호가 올바르지 않습니다",
+      "premiumDescription": "아직 회원이 아니신가요? 프리미엄 회원이 되어 모든 기능을 이용하세요",
+      "becomePremium": "프리미엄 회원 되기"
+    },
     "loginRequired": "로그인이 필요합니다",
     "loginRequiredMessage": "이 기능을 사용하려면 회원으로 로그인해야 합니다.",
     "email": "이메일",
@@ -391,7 +402,9 @@
   "cta": {
     "communityTitle": "회원제 LGBTQ+ 커뮤니티 \"Carat\"",
     "communitySubtitle": "게시물과 매칭으로 당신의 이야기를 시작하세요.",
-    "freeUserNote": "* 무료 회원은 사이트 전체 내용을 볼 수 있습니다. 게시물 작성이나 프리미엄 콘텐츠 열람에는 회원 등록이 필요합니다."
+    "freeUserNote": "* 무료 회원은 사이트 전체 내용을 볼 수 있습니다. 게시물 작성이나 프리미엄 콘텐츠 열람에는 회원 등록이 필요합니다.",
+    "createPost": "게시물 작성",
+    "registerButton": "회원 등록 (월 1,000엔)"
   },
   "membership": {
     "registrationRequired": "회원 가입이 필요합니다",
@@ -827,169 +840,191 @@
       "transactionNotes": "거래 시 주의사항",
       "note1": "전용 채팅으로 연락해 주세요",
       "note2": "개인정보 교환은 금지되어 있습니다",
-      "note3": "거래는 본인 책임하에 진행해 주세요"
+      "note3": "거래는 자기 책임으로 진행해 주세요"
     }
   },
-  "courses": {
-    "title": "강좌 목록",
-    "subtitle": "스킬 향상을 위한 강좌를 찾아보세요",
-    "listCourse": "강좌 등록하기",
-    "filter": "필터",
-    "category": "카테고리",
-    "selectCategory": "카테고리 선택",
-    "allCategories": "모든 카테고리",
-    "noCourses": "아직 강좌가 없습니다",
-    "listFirstCourse": "첫 강좌를 등록하세요",
-    "categories": {
-      "business": "비즈니스",
-      "creative": "크리에이티브",
-      "language": "언어",
-      "health": "건강",
-      "relationship": "연애·관계",
-      "life": "라이프",
-      "other": "기타"
+  "jewelry": {
+    "title": "회원 전용 - 특별 주얼리 세일",
+    "bannerAlt": "주얼리 컬렉션",
+    "searchPlaceholder": "상품 검색...",
+    "allCategories": "전체",
+    "noProducts": "상품이 없습니다",
+    "banner": {
+      "title": "주얼리 세일",
+      "subtitle": "회원 전용 특별 가격",
+      "viewDetails": "자세히 보기"
     },
     "detail": {
-      "backToList": "목록으로 돌아가기",
-      "previousImage": "이전 이미지",
-      "nextImage": "다음 이미지",
-      "image": "이미지",
-      "demoVideos": "데모 영상",
-      "videoThumbnail": "영상 썸네일",
-      "description": "강좌 설명",
-      "price": "강좌 요금",
-      "instructorProfile": "강사 프로필",
-      "instructor": "게시자",
-      "viewProfile": "프로필 보기",
-      "profileMembersOnly": "프로필은 회원 전용",
-      "contactInstructor": "게시자에게 문의하기",
-      "connecting": "연결 중...",
-      "applyOnSite": "사이트에서 신청하기",
-      "applyOnSitePremium": "사이트에서 신청하기 (유료 회원 전용)",
-      "deleteConfirmTitle": "강좌를 삭제하시겠습니까?",
-      "deleteConfirmMessage": "이 작업은 취소할 수 없습니다. 강좌와 관련된 모든 데이터가 삭제됩니다.",
-      "deleteFailed": "삭제에 실패했습니다",
-      "inquirySent": "문의를 보냈습니다. 답변을 기다려주세요.",
-      "chatStartFailed": "채팅 시작에 실패했습니다"
+      "backToList": "상품 목록으로 돌아가기",
+      "soldOut": "품절",
+      "stock": "재고",
+      "pieces": "개",
+      "hasCertificate": "감정서 포함",
+      "hasGemId": "보석 감정서 포함",
+      "addToCart": "장바구니에 담기",
+      "adding": "추가 중...",
+      "viewCart": "장바구니 보기",
+      "productDetails": "상품 상세",
+      "material": "소재",
+      "size": "사이즈",
+      "additionalInfo": "추가 정보",
+      "productNotFound": "상품을 찾을 수 없습니다",
+      "cartAddSuccess": "장바구니에 추가되었습니다",
+      "cartAddError": "장바구니 추가에 실패했습니다"
     },
-    "form": {
-      "createTitle": "강좌 등록",
-      "editTitle": "강좌 수정",
-      "category": "카테고리",
-      "selectCategory": "카테고리 선택",
-      "selectCategoryPlaceholder": "카테고리를 선택해주세요",
-      "images": "이미지 (최대 {{max}}장)",
-      "removeImage": "이미지 삭제",
-      "uploading": "업로드 중...",
-      "uploadImage": "이미지 업로드",
-      "imageFormatInfo": "JPEG, PNG, WebP 형식 (최대 10MB)",
-      "videos": "YouTube 영상 (최대 {{max}}개)",
-      "thumbnail": "썸네일",
-      "removeVideo": "영상 삭제",
-      "youtubeUrlPlaceholder": "YouTube URL 입력",
-      "addVideo": "영상 추가",
-      "title": "제목",
-      "titlePlaceholder": "강좌 제목 입력 (최대 80자)",
-      "characters": "자",
-      "description": "강좌 설명",
-      "descriptionPlaceholder": "강좌 내용, 대상자, 배울 내용 등을 자세히 설명해주세요 (최대 3000자)",
-      "price": "강좌 요금",
-      "pricePlaceholder": "예: ¥5,000, 무료, 월 ¥2,000",
-      "priceInfo": "자유롭게 입력 가능 (예: ¥5,000, 무료, 월 ¥2,000~)",
-      "externalUrl": "강좌 사이트 URL",
-      "urlPlaceholder": "https://example.com/course",
-      "urlInfo": "신청 페이지나 상세 페이지의 URL을 입력해주세요",
-      "instructorProfile": "강사 프로필 (최대 1000자)",
-      "instructorProfilePlaceholder": "강사의 경력, 실적, 전문 분야 등을 기입해주세요",
-      "submit": "등록하기",
-      "maxImagesError": "이미지는 최대 {{max}}장까지입니다",
-      "invalidImageFormat": "JPEG, PNG, WebP 형식의 이미지만 업로드할 수 있습니다",
-      "fileSizeError": "파일 크기는 10MB 이하여야 합니다",
-      "uploadFailed": "업로드에 실패했습니다",
-      "maxVideosError": "영상은 최대 {{max}}개까지입니다",
-      "invalidYoutubeUrl": "유효한 YouTube URL을 입력해주세요",
-      "titleRequired": "제목을 입력해주세요",
-      "titleMaxLength": "제목은 80자 이내로 입력해주세요",
-      "descriptionRequired": "설명을 입력해주세요",
-      "descriptionMaxLength": "설명은 3000자 이내로 입력해주세요",
-      "categoryRequired": "카테고리를 선택해주세요",
-      "priceRequired": "요금을 입력해주세요",
-      "urlRequired": "외부 URL을 입력해주세요",
-      "invalidUrl": "외부 URL은 http:// 또는 https://로 시작해야 합니다",
-      "saveFailed": "저장에 실패했습니다"
+    "categories": {
+      "earring": "귀걸이 & 피어싱",
+      "necklace": "목걸이",
+      "bracelet": "팔찌",
+      "brooch": "브로치",
+      "ring": "반지",
+      "other": "기타"
     }
   },
-  "artSales": {
-    "title": "작품 판매",
-    "listArtwork": "작품 출품",
-    "searchPlaceholder": "작품 검색...",
-    "selectCategory": "카테고리 선택",
-    "allCategories": "모든 카테고리",
-    "gridView": "그리드 보기",
-    "listView": "리스트 보기",
-    "noItemsFound": "작품을 찾을 수 없습니다",
-    "negotiable": "협의 가능",
-    "categories": {
-      "painting": "회화",
-      "sculpture": "조각",
-      "digital": "디지털 아트",
-      "photography": "사진",
-      "calligraphy": "서예",
-      "crafts": "공예",
-      "illustration": "일러스트",
-      "other": "기타"
+  "liveWedding": {
+    "banner": {
+      "title": "라이브 웨딩",
+      "subtitle": "특별한 온라인 결혼식",
+      "viewDetails": "자세히 보기",
+      "bannerAlt": "라이브 웨딩"
     },
-    "transactionMethods": {
-      "negotiable": "협의 가능",
-      "hand_off": "직거래",
-      "shipping": "배송"
+    "page": {
+      "backToHome": "홈으로 돌아가기",
+      "title": "라이브 웨딩",
+      "subtitle": "온라인으로 서약을 공유하고 전 세계의 사랑하는 사람들과 축하하세요.",
+      "consultationButton": "상담 예약",
+      "conceptTitle": "컨셉",
+      "conceptDescription": "가까운 친구와 가족과 온라인으로 서약을 공유하고 축복을 받는 새로운 스타일의 결혼식",
+      "recommendTitle": "라이브 웨딩을 추천하는 이유",
+      "recommendReasons": [
+        "공개 결혼식이 어려운 분들을 위해 당당히 사랑을 맹세할 수 있는 장소 제공",
+        "가상 배경으로 이상적인 웨딩 장면 연출",
+        "멀리 있는 친구와 가족과 온라인으로 축복 공유",
+        "Studio Q의 시설을 활용한 독특한 경험"
+      ],
+      "featuresTitle": "특징",
+      "featuresDescription": "서일본 최고의 시설을 자랑하며 업계 전문가들로부터 높은 평가를 받고 있는 가상 스튜디오 Studio Q를 이용하여 세상에 하나뿐인 온라인 웨딩을 제공합니다. AI 배경 합성 기술로 꿈꾸던 모든 장면을 연출할 수 있습니다. 교회, 해외 리조트, 꽃밭, 야경 등 어떤 분위기도 자유롭게 재현할 수 있습니다. 멀리 있는 부모님, 친척, 친구들을 온라인으로 초대하여 실시간으로 서약과 축복을 공유하세요. 또한 온라인으로 축의금과 메시지를 받을 수 있는 기능도 포함되어 있습니다. 사랑을 형태로 만들고 영원히 보존하는 진정으로 독특한 웨딩을 실현합니다.",
+      "pricingTitle": "가격 플랜",
+      "planTitle": "라이브 웨딩 플랜",
+      "regularPrice": "정상 가격",
+      "memberPrice": "Carat 회원 가격",
+      "taxExcluded": "(세금 별도)",
+      "includedTitle": "포함 내용",
+      "notIncludedTitle": "미포함 내용",
+      "notIncludedNote": "필요한 경우 직접 준비해 주세요",
+      "applyButton": "이 플랜으로 신청하기",
+      "includedFeatures": [
+        "4대의 카메라로 멀티 앵글 촬영",
+        "스트리밍용 음향 장비 (마이크, 믹서)",
+        "고화질 영상 녹화",
+        "가상 배경 제작 (교회/리셉션/해외 풍경 등)",
+        "스트리밍 지원 (Zoom 등)",
+        "온라인 메시지 및 축의금 수령 기능",
+        "1~2명의 스태프 운영 지원"
+      ],
+      "notIncludedFeatures": [
+        "헤어, 메이크업, 의상",
+        "사회자, 목사, 파트너",
+        "코디네이터/플래너",
+        "꽃다발 및 장식",
+        "음식 및 음료"
+      ],
+      "videoTitle": "배경 합성 영상",
+      "videoSubtitle": "아름다운 배경으로 특별한 연출",
+      "videoDescription": "AI 배경 합성 기술로 꿈꾸던 모든 장면을 연출할 수 있습니다. 교회, 해외 리조트, 꽃밭, 야경 등 어떤 분위기도 자유롭게 재현할 수 있습니다. Studio Q의 최신 기술로 이상적인 웨딩 장면을 실현합니다.",
+      "studioQTitle": "Studio Q",
+      "studioQSubtitle": "가상 스튜디오",
+      "studioQDescription": "서일본 최고의 시설을 자랑하는 가상 스튜디오. 업계 전문가들로부터 높은 평가를 받고 있는 최신 기술로 이상적인 웨딩 장면을 실현합니다.",
+      "studioQLocation": "오사카시 나니와구",
+      "faqTitle": "자주 묻는 질문",
+      "closeVideo": "영상 닫기",
+      "faqs": [
+        {
+          "question": "어떤 장비가 필요한가요?",
+          "answer": "기본 장비는 모두 저희가 제공합니다. 장소에 인터넷 환경이 있으면 스트리밍이 가능합니다."
+        },
+        {
+          "question": "스트리밍 품질은 어느 정도인가요?",
+          "answer": "플랜에 따라 HD~4K 화질의 스트리밍이 가능합니다. 안정적인 인터넷 환경으로 고품질 스트리밍을 실현합니다."
+        },
+        {
+          "question": "당일 지원 체계는 어떻게 되나요?",
+          "answer": "전담 스태프가 당일 진행을 지원합니다. 기술적인 문제에도 신속하게 대응합니다."
+        },
+        {
+          "question": "녹화 데이터는 언제 받을 수 있나요?",
+          "answer": "스트리밍 종료 후 편집 작업을 거쳐 약 1주일 이내에 데이터를 전달합니다."
+        }
+      ]
+    }
+  },
+  "account": {
+    "title": "계정 설정",
+    "status": {
+      "title": "회원 상태",
+      "premiumMember": "프리미엄 회원",
+      "freeMember": "무료 회원",
+      "identityVerification": "본인 인증",
+      "verified": "인증됨",
+      "unverified": "미인증",
+      "caratPoints": "캐럿 포인트",
+      "totalComments": "총 댓글 수",
+      "monthlyPoints": "이번 달 획득 포인트",
+      "pointsBreakdown": "좋아요 {{likes}}개 × 게시물 {{posts}}개 = {{total}}포인트"
     },
-    "form": {
-      "createTitle": "작품 출품",
-      "editTitle": "작품 수정",
-      "images": "이미지 (최대 5장)",
-      "clickToAddImage": "클릭하여 이미지 추가",
-      "title": "제목",
-      "titlePlaceholder": "작품 제목",
-      "description": "설명",
-      "descriptionPlaceholder": "작품 설명, 제작 배경 등",
-      "price": "가격 (¥)",
-      "pricePlaceholder": "0은 협의 가능",
-      "category": "카테고리",
-      "categoryLabel": "카테고리 선택",
-      "technique": "기법",
-      "techniquePlaceholder": "유화, 수채화 등",
-      "size": "크기",
-      "sizePlaceholder": "30cm x 40cm",
-      "yearCreated": "제작년도",
-      "transactionMethod": "거래 방법",
-      "transactionMethodLabel": "거래 방법 선택",
-      "isOriginal": "오리지널 작품",
-      "submit": "출품하기",
-      "errors": {
-        "titleRequired": "제목을 입력해주세요",
-        "descriptionRequired": "설명을 입력해주세요",
-        "categoryRequired": "카테고리를 선택해주세요",
-        "submitFailed": "출품에 실패했습니다",
-        "errorOccurred": "오류가 발생했습니다"
-      }
+    "info": {
+      "title": "계정 정보",
+      "description": "기본 계정 정보를 관리합니다",
+      "email": "이메일 주소",
+      "emailNote": "변경 불가",
+      "displayLanguage": "표시 언어",
+      "country": "거주 국가",
+      "countryNote": "변경 불가",
+      "membershipType": "회원 유형",
+      "identityStatus": "본인 인증 상태",
+      "paymentInfo": "결제 정보",
+      "paymentPlaceholder": "Stripe 연동 예정"
     },
-    "detail": {
-      "original": "오리지널",
-      "technique": "기법",
-      "size": "크기",
-      "yearCreated": "제작년도",
-      "year": "년",
-      "description": "작품 설명",
-      "transactionMethod": "거래 방법",
-      "seller": "판매자",
-      "member": "회원",
-      "contact": "연락하기",
-      "yourListing": "내 상품입니다",
-      "transactionNotes": "거래 시 주의사항",
-      "note1": "전용 채팅으로 연락해 주세요",
-      "note2": "개인정보 교환은 금지되어 있습니다",
-      "note3": "거래는 본인 책임하에 진행해 주세요"
+        "profile": {
+          "title": "프로필",
+          "description": "공개 프로필 정보를 편집합니다",
+          "editMatchingProfile": "매칭 프로필 편집",
+          "avatar": "프로필 사진",
+          "avatarChange": "사진 변경",
+          "displayName": "표시 이름",
+          "bio": "자기소개",
+          "bioPlaceholder": "자기소개를 입력하세요...",
+          "location": "거주지",
+          "locationPlaceholder": "예: 서울",
+          "interests": "관심사",
+          "interestsPlaceholder": "태그 추가...",
+          "socialLinks": "SNS 링크",
+          "website": "웹사이트",
+          "twitter": "Twitter",
+          "instagram": "Instagram"
+        },
+    "security": {
+      "title": "보안",
+      "changePassword": "비밀번호 변경",
+      "currentPassword": "현재 비밀번호",
+      "newPassword": "새 비밀번호",
+      "confirmPassword": "새 비밀번호 확인",
+      "passwordMinLength": "비밀번호는 8자 이상이어야 합니다",
+      "passwordMismatch": "비밀번호가 일치하지 않습니다",
+      "passwordChanged": "비밀번호가 변경되었습니다"
+    },
+    "danger": {
+      "title": "위험 영역",
+      "deleteAccount": "계정 삭제",
+      "deleteButton": "계정 삭제",
+      "deleteConfirmation": "확인하려면 'DELETE'를 입력하세요",
+      "deleteWarning": "정말로 계정을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+      "deleteSuccess": "계정이 삭제되었습니다"
+    },
+    "messages": {
+      "fetchError": "계정 정보를 가져오는 데 실패했습니다",
+      "updateSuccess": "프로필이 업데이트되었습니다",
+      "updateError": "업데이트에 실패했습니다"
     }
   },
   "subscribe": {

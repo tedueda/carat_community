@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Lock } from 'lucide-react';
@@ -24,12 +23,9 @@ type ChatRequest = {
 };
 
 const MatchingChatsPage: React.FC = () => {
-  const { t } = useTranslation();
   const { token, user } = useAuth();
   const navigate = useNavigate();
-  // ログイン状態と有料会員かどうか
-  const isLoggedIn = !!user;
-  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<ChatItem[]>([]);
@@ -82,14 +78,14 @@ const MatchingChatsPage: React.FC = () => {
       });
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
-      alert(t('matching.chatRequestAccepted'));
+      alert('✅ チャットリクエストを承諾しました！');
       await fetchRequests();
       await fetchChats();
       if (data.chat_id) {
         window.location.href = `/matching/chats/${data.chat_id}`;
       }
     } catch (e: any) {
-      alert(t('matching.acceptFailed') + ': ' + e.message);
+      alert('承諾に失敗しました: ' + e.message);
     } finally {
       setActionLoading(null);
     }
@@ -104,74 +100,38 @@ const MatchingChatsPage: React.FC = () => {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       if (!res.ok) throw new Error(await res.text());
-      alert(t('matching.chatRequestDeclined'));
+      alert('❌ チャットリクエストを辞退しました');
       await fetchRequests();
     } catch (e: any) {
-      alert(t('matching.declineFailed') + ': ' + e.message);
+      alert('辞退に失敗しました: ' + e.message);
     } finally {
       setActionLoading(null);
     }
   };
 
   useEffect(() => {
-    if (isPaidUser) {
+    if (isPremium) {
       fetchChats();
       fetchRequests();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, isPaidUser]);
-
-  // 未ログインの場合は会員登録を促す
-  if (!isLoggedIn) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
-        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
-          <Lock className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-3">{t('matching.registerPrompt')}</h2>
-          <p className="text-gray-600 mb-6">
-            {t('matching.matchingMemberOnly')}<br />
-            {t('matching.findGreatEncounters')}
-          </p>
-          <div className="space-y-3">
-            <button
-              onClick={() => navigate('/register')}
-              className="w-full px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 font-medium"
-            >
-              {t('matching.newMemberRegistration')}
-            </button>
-            <button
-              onClick={() => navigate('/login')}
-              className="w-full px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
-            >
-              {t('auth.login')}
-            </button>
-          </div>
-          <p className="text-sm text-gray-500 mt-4">
-            {t('matching.paidMemberChatAccess')}
-          </p>
-        </div>
-      </div>
-    );
-  }
+  }, [token, isPremium]);
 
   // 有料会員でない場合はアップグレード画面を表示
-  if (!isPaidUser) {
+  if (!isPremium) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
-        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
-          <Lock className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-3">{t('matching.paidMemberOnly')}</h2>
-          <p className="text-gray-600 mb-6">
-            {t('matching.chatOnlyForPaidMembers')}<br />
-            {t('matching.chatWithMatches')}
-          </p>
-          <button
-            onClick={() => navigate('/account')}
-            className="w-full px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-medium"
-          >
-            {t('matching.becomePaidMember')}
-          </button>
-        </div>
+        <Lock className="h-16 w-16 text-yellow-500 mb-4" />
+        <h2 className="text-xl font-semibold mb-2">有料会員限定機能</h2>
+        <p className="text-gray-600 mb-6 text-center">
+          チャット機能は有料会員のみご利用いただけます。
+        </p>
+        <button
+          onClick={() => navigate('/account')}
+          className="px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-medium"
+        >
+          有料会員になる
+        </button>
       </div>
     );
   }
@@ -180,7 +140,7 @@ const MatchingChatsPage: React.FC = () => {
     <div className="space-y-4">
       {requests.length > 0 && (
         <div>
-          <h2 className="text-lg font-semibold mb-3">{t('matching.receivedMailRequests')}</h2>
+          <h2 className="text-lg font-semibold mb-3">受信したメールリクエスト</h2>
           <div className="p-4 border rounded-lg bg-yellow-50 border-yellow-200">
             <ul className="space-y-3">
               {requests.map((req) => (
@@ -213,14 +173,14 @@ const MatchingChatsPage: React.FC = () => {
                           disabled={actionLoading === req.request_id}
                           className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
                         >
-                          {t('matching.accept')}
+                          承諾
                         </button>
                         <button
                           onClick={() => handleDecline(req.request_id)}
                           disabled={actionLoading === req.request_id}
                           className="px-3 py-1 text-sm bg-gray-600 text-white rounded hover:bg-gray-700 disabled:opacity-50"
                         >
-                          {t('matching.decline')}
+                          辞退
                         </button>
                       </div>
                     </div>
@@ -233,25 +193,25 @@ const MatchingChatsPage: React.FC = () => {
       )}
 
       <div>
-        <h2 className="text-lg font-semibold mb-3">{t('matching.chatList')}</h2>
+        <h2 className="text-lg font-semibold mb-3">チャット</h2>
         <div className="p-4 border rounded-lg bg-white">
           <div className="mb-3 flex gap-2">
-            <button onClick={() => { fetchChats(); fetchRequests(); }} className="px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200">{t('matching.refresh')}</button>
+            <button onClick={() => { fetchChats(); fetchRequests(); }} className="px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200">再取得</button>
           </div>
-          {loading && <div>{t('matching.loading')}</div>}
+          {loading && <div>読み込み中...</div>}
           {error && <div className="text-red-600 text-sm">{error}</div>}
           <ul className="space-y-2">
             {items.map((c) => (
               <li key={c.chat_id} className="border rounded p-3 flex items-center justify-between">
                 <div>
                   <div className="font-medium">{c.with_display_name}</div>
-                  <div className="text-xs text-gray-600">{c.last_message || t('matching.noMessagesYet')}</div>
+                  <div className="text-xs text-gray-600">{c.last_message || 'メッセージはまだありません'}</div>
                 </div>
-                <a href={`/matching/chats/${c.chat_id}`} className="px-3 py-1 text-sm bg-pink-600 text-white rounded hover:bg-pink-700">{t('matching.open')}</a>
+                <a href={`/matching/chats/${c.chat_id}`} className="px-3 py-1 text-sm bg-pink-600 text-white rounded hover:bg-pink-700">開く</a>
               </li>
             ))}
             {!loading && !error && items.length === 0 && (
-              <li className="text-sm text-gray-500">{t('matching.noChatsYet')}</li>
+              <li className="text-sm text-gray-500">チャットはまだありません。</li>
             )}
           </ul>
         </div>

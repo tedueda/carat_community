@@ -1,32 +1,20 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ShoppingBag, Palette, GraduationCap, Radio } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import FleaMarketList from '../../components/flea-market/FleaMarketList';
 import ArtSaleList from '../../components/art-sales/ArtSaleList';
-import CourseList from '../../components/courses/CourseList';
 
 type TabType = 'flea-market' | 'art-sales' | 'courses' | 'live-streaming';
 
-const tabIcons: Record<TabType, React.ReactNode> = {
-  'flea-market': <ShoppingBag className="w-5 h-5" />,
-  'art-sales': <Palette className="w-5 h-5" />,
-  'courses': <GraduationCap className="w-5 h-5" />,
-  'live-streaming': <Radio className="w-5 h-5" />,
-};
-
-const tabKeys: TabType[] = ['flea-market', 'art-sales', 'courses', 'live-streaming'];
-
-const tabTranslationKeys: Record<TabType, string> = {
-  'flea-market': 'fleaMarket',
-  'art-sales': 'artSales',
-  'courses': 'courses',
-  'live-streaming': 'liveStreaming',
-};
+const tabs: { id: TabType; label: string; icon: React.ReactNode; description: string }[] = [
+  { id: 'flea-market', label: 'フリマ', icon: <ShoppingBag className="w-5 h-5" />, description: 'ジモティー風の個人間売買' },
+  { id: 'art-sales', label: '作品販売', icon: <Palette className="w-5 h-5" />, description: 'アート作品の販売' },
+  { id: 'courses', label: '講座', icon: <GraduationCap className="w-5 h-5" />, description: 'オンライン講座' },
+  { id: 'live-streaming', label: 'Live配信', icon: <Radio className="w-5 h-5" />, description: 'ライブ配信サービス' },
+];
 
 const BusinessPage: React.FC = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const initialTab = (searchParams.get('tab') as TabType) || 'flea-market';
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
@@ -43,13 +31,19 @@ const BusinessPage: React.FC = () => {
       case 'art-sales':
         return <ArtSaleList />;
       case 'courses':
-        return <CourseList />;
+        return (
+          <div className="text-center py-16">
+            <GraduationCap className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">講座</h3>
+            <p className="text-gray-500">近日公開予定</p>
+          </div>
+        );
       case 'live-streaming':
         return (
           <div className="text-center py-16">
             <Radio className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">{t('business.tabs.liveStreaming')}</h3>
-            <p className="text-gray-500">{t('business.comingSoon')}</p>
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">Live配信</h3>
+            <p className="text-gray-500">近日公開予定</p>
           </div>
         );
       default:
@@ -67,12 +61,12 @@ const BusinessPage: React.FC = () => {
               className="flex items-center text-gray-700 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              {t('business.backToHome')}
+              ホームに戻る
             </button>
           </div>
           <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">{t('business.title')}</h1>
-            <p className="text-xl text-gray-600">{t('business.subtitle')}</p>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">ビジネス</h1>
+            <p className="text-xl text-gray-600">フリマ・作品販売・講座・Live配信</p>
           </div>
         </div>
       </section>
@@ -80,18 +74,18 @@ const BusinessPage: React.FC = () => {
       <section className="border-b border-gray-200 bg-white sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex overflow-x-auto scrollbar-hide">
-            {tabKeys.map((tabId) => (
+            {tabs.map((tab) => (
               <button
-                key={tabId}
-                onClick={() => handleTabChange(tabId)}
+                key={tab.id}
+                onClick={() => handleTabChange(tab.id)}
                 className={`flex items-center gap-2 px-6 py-4 font-medium whitespace-nowrap border-b-2 transition-colors ${
-                  activeTab === tabId
+                  activeTab === tab.id
                     ? 'border-gray-900 text-gray-900'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                {tabIcons[tabId]}
-                <span>{t(`business.tabs.${tabTranslationKeys[tabId]}`)}</span>
+                {tab.icon}
+                <span>{tab.label}</span>
               </button>
             ))}
           </div>

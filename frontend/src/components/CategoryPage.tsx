@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import { useLanguage } from '../contexts/LanguageContext';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { ArrowLeft, Plus, MessageCircle, Filter, SortAsc, Globe } from 'lucide-react';
+import { ArrowLeft, Plus, MessageCircle, Filter, SortAsc } from 'lucide-react';
 import PostDetailModal from './PostDetailModal';
 import NewPostForm from './NewPostForm';
 import LikeButton from './common/LikeButton';
@@ -15,24 +13,92 @@ import { getYouTubeThumbnail, extractYouTubeUrlFromText } from '../utils/youtube
 import { getPostImageUrl } from '../utils/imageUtils';
 
 
-const categoryKeys = ['board', 'art', 'music', 'shops', 'tourism', 'comics', 'news', 'food', 'beauty', 'funding'] as const;
-type CategoryKey = typeof categoryKeys[number];
-
-const categoryEmojis: Record<CategoryKey, string> = {
-  board: "💬",
-  art: "🎨",
-  music: "🎵",
-  shops: "🏬",
-  tourism: "📍",
-  comics: "🎬",
-  news: "📰",
-  food: "🍽️",
-  beauty: "💄",
-  funding: "🤝",
+const categories = {
+  board: { 
+    title: "掲示板", 
+    emoji: "💬", 
+    desc: "悩み相談や雑談、生活の話題。本当の自分を発信し、共感できる仲間とつながる居場所", 
+    slug: "board",
+    seoKeywords: "LGBTQ 相談,カミングアウト 相談,悩み相談,共感,居場所,仲間とつながる"
+  },
+  art: { 
+    title: "アート・動画", 
+    emoji: "🎨", 
+    desc: "イラスト・写真・映像作品の発表。自己表現を通じて本当の自分を表現", 
+    slug: "art",
+    seoKeywords: "LGBTQ アート,自己表現,作品発表,クリエイティブ"
+  },
+  music: { 
+    title: "音楽", 
+    emoji: "🎵", 
+    desc: "お気に入りや自作・AI曲の共有。音楽で自分らしさを表現", 
+    slug: "music",
+    seoKeywords: "LGBTQ 音楽,音楽共有,自分らしく"
+  },
+  shops: { 
+    title: "お店", 
+    emoji: "🏬", 
+    desc: "LGBTQフレンドリーなお店紹介。安心して過ごせる居場所を見つける", 
+    slug: "shops",
+    seoKeywords: "LGBTQ フレンドリー,お店,安心,居場所"
+  },
+  tourism: { 
+    title: "ツーリズム", 
+    emoji: "📍", 
+    desc: "会員ガイドの交流型ツアー。仲間と一緒に新しい体験", 
+    slug: "tourism",
+    seoKeywords: "LGBTQ ツアー,交流,仲間,体験"
+  },
+  comics: { 
+    title: "サブカルチャー", 
+    emoji: "🎬", 
+    desc: "共感できるコミック、映画、ドラマ、同人誌などを投稿して共有しましょう", 
+    slug: "comics",
+    seoKeywords: "LGBTQ 映画,コミック,レビュー,共感"
+  },
+  news: { 
+    title: "ニュース", 
+    emoji: "📰", 
+    desc: "最新の制度・条例情報と解説記事。性の多様性を尊重する社会へ", 
+    slug: "news",
+    seoKeywords: "LGBTQ ニュース,制度,条例,性の多様性"
+  },
+  food: { 
+    title: "食レポ・お店・ライブハウス", 
+    emoji: "🍽️", 
+    desc: "おすすめの食べ物、飲食店、バー、ライブハウス、ブティック、ヘアサロンなどコミュニティで共有しましょう", 
+    slug: "food",
+    seoKeywords: "食レポ,レビュー,発信"
+  },
+  beauty: { 
+    title: "美容", 
+    emoji: "💄", 
+    desc: "コスメ・スキンケアのレビュー。自分らしい美しさを追求", 
+    slug: "beauty",
+    seoKeywords: "美容,コスメ,自分らしく"
+  },
+  funding: { 
+    title: "寄付金を募る", 
+    emoji: "🤝", 
+    desc: "LGBTQ+コミュニティの仲間を支援するページ。プロジェクトを立ち上げ、お互いに支援し合いましょう", 
+    slug: "funding",
+    seoKeywords: "LGBTQ 寄付,支援,クラウドファンディング,コミュニティ"
+  },
 };
 
-const sortOptionKeys = ['newest', 'popular', 'comments', 'points'] as const;
-const timeRangeOptionKeys = ['all', '24h', '7d', '30d'] as const;
+const sortOptions = [
+  { value: "newest", label: "新着順" },
+  { value: "popular", label: "人気順" },
+  { value: "comments", label: "コメント多い順" },
+  { value: "points", label: "ポイント高い順" },
+];
+
+const timeRangeOptions = [
+  { value: "all", label: "全期間" },
+  { value: "24h", label: "直近24時間" },
+  { value: "7d", label: "直近7日" },
+  { value: "30d", label: "直近30日" },
+];
 
 const formatNumber = (num: number): string => {
   if (num >= 1000) {
@@ -66,12 +132,10 @@ const getRelativeTime = (dateString: string): string => {
 };
 
 const CategoryPage: React.FC = () => {
-  const { t } = useTranslation();
-  const { currentLanguage } = useLanguage();
   const { categoryKey } = useParams<{ categoryKey: string }>();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { token, user, isFreeUser } = useAuth();
+  const { token, user, isAnonymous } = useAuth();
   
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -87,10 +151,7 @@ const CategoryPage: React.FC = () => {
   const editPostId = searchParams.get('edit');
 
   const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
-  const isValidCategory = categoryKey && categoryKeys.includes(categoryKey as CategoryKey);
-  const categoryEmoji = isValidCategory ? categoryEmojis[categoryKey as CategoryKey] : null;
-  const categoryTitle = isValidCategory ? t(`categoryPage.categories.${categoryKey}.title`) : '';
-  const categoryDesc = isValidCategory ? t(`categoryPage.categories.${categoryKey}.desc`) : '';
+  const category = categoryKey ? categories[categoryKey as keyof typeof categories] : null;
 
   const subcategories: Record<string, string[]> = {
     board: ['悩み相談（カミングアウト／学校生活／職場環境）', '求人募集', '法律・手続き関係', '講座・勉強会', 'その他'],
@@ -102,16 +163,14 @@ const CategoryPage: React.FC = () => {
     art: []
   };
 
-  const fetchPosts = async (lang?: string) => {
+  const fetchPosts = async () => {
     try {
       setLoading(true);
-      const targetLang = lang || currentLanguage;
-      
-      // Use translation endpoint to get posts with translations
       const params = new URLSearchParams({
         category: categoryKey || '',
-        limit: '20',
-        lang: targetLang
+        sort: sortBy,
+        range: timeRange,
+        limit: '20'
       });
       
       if (selectedTag) {
@@ -122,7 +181,7 @@ const CategoryPage: React.FC = () => {
         params.set('subcategory', selectedSubcategory);
       }
       
-      const response = await fetch(`${API_URL}/api/translations/posts?${params}`, {
+      const response = await fetch(`${API_URL}/api/posts/?${params}`, {
         headers: token ? {
           'Authorization': `Bearer ${token}`,
         } : {},
@@ -188,15 +247,8 @@ const CategoryPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchPosts(currentLanguage);
+    fetchPosts();
   }, [categoryKey, token, sortBy, timeRange, selectedTag, selectedSubcategory]);
-
-  // Re-fetch when language changes
-  useEffect(() => {
-    if (!loading) {
-      fetchPosts(currentLanguage);
-    }
-  }, [currentLanguage]);
 
   // URLパラメータに編集対象の投稿IDがある場合、該当する投稿を編集モードで開く
   useEffect(() => {
@@ -214,13 +266,13 @@ const CategoryPage: React.FC = () => {
   }, [editPostId, posts]);
 
 
-  if (!isValidCategory) {
+  if (!category) {
     return (
       <div className="max-w-4xl mx-auto p-4 sm:p-6">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600">{t('categoryPage.categoryNotFound')}</h1>
+          <h1 className="text-2xl font-bold text-red-600">カテゴリーが見つかりません</h1>
           <Button onClick={() => navigate('/feed')} className="mt-4">
-            {t('common.backToHome')}
+            ホームに戻る
           </Button>
         </div>
       </div>
@@ -230,7 +282,7 @@ const CategoryPage: React.FC = () => {
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto p-4 sm:p-6">
-        <div className="text-center text-gray-600">{t('post.loadingPosts')}</div>
+        <div className="text-center text-gray-600">投稿を読み込み中...</div>
       </div>
     );
   }
@@ -246,34 +298,34 @@ const CategoryPage: React.FC = () => {
             className="text-pink-700 hover:text-pink-900 hover:bg-pink-50"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            {t('common.backToHome')}
+            ホームに戻る
           </Button>
           <div className="flex items-center gap-3">
-            <div className="text-3xl">{categoryEmoji}</div>
+            <div className="text-3xl">{category.emoji}</div>
             <div>
-              <h1 className="text-2xl font-bold text-pink-800">{categoryTitle}</h1>
-              <p className="text-slate-600">{categoryDesc}</p>
-              <p className="text-sm text-slate-500">{t('categoryPage.postsCount', { count: posts.length })}</p>
+              <h1 className="text-2xl font-bold text-pink-800">{category.title}</h1>
+              <p className="text-slate-600">{category.desc}</p>
+              <p className="text-sm text-slate-500">{posts.length}件の投稿</p>
             </div>
           </div>
         </div>
 
         {/* 新規投稿ボタン */}
         <div className="flex gap-2">
-          {user && !isFreeUser ? (
+          {user && !isAnonymous ? (
             <Button 
               onClick={() => setShowNewPostForm(!showNewPostForm)}
               className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white rounded-full"
             >
               <Plus className="h-4 w-4 mr-2" />
-              {t('categoryPage.newPost')}
+              新規投稿
             </Button>
           ) : (
             <Button 
               onClick={() => navigate('/login')}
               className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
             >
-              {t('common.registerToPaidMember')}
+              投稿するには有料会員登録
             </Button>
           )}
         </div>
@@ -289,9 +341,9 @@ const CategoryPage: React.FC = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {sortOptionKeys.map(key => (
-                  <SelectItem key={key} value={key}>
-                    {t(`categoryPage.sort.${key}`)}
+                {sortOptions.map(option => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -305,9 +357,9 @@ const CategoryPage: React.FC = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {timeRangeOptionKeys.map(key => (
-                  <SelectItem key={key} value={key}>
-                    {t(`categoryPage.timeRange.${key}`)}
+                {timeRangeOptions.map(option => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -326,7 +378,7 @@ const CategoryPage: React.FC = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{t('categoryPage.all')}</SelectItem>
+                  <SelectItem value="all">すべて</SelectItem>
                   {subcategories[categoryKey as keyof typeof subcategories].map((sub) => (
                     <SelectItem key={sub} value={sub}>
                       {sub}
@@ -372,20 +424,20 @@ const CategoryPage: React.FC = () => {
       ) : posts.length === 0 ? (
         <Card className="text-center p-12 border-pink-200">
           <CardContent>
-            <div className="text-6xl mb-6">{categoryEmoji}</div>
+            <div className="text-6xl mb-6">{category.emoji}</div>
             <h3 className="text-xl font-semibold text-gray-700 mb-3">
-              {t('post.noPostsYet')}
+              まだ投稿がありません
             </h3>
             <p className="text-gray-500 mb-6">
-              {t('categoryPage.noPostsMessage')}
+              最初の投稿をして、コミュニティを盛り上げましょう！
             </p>
-            {user && !isFreeUser && (
+            {user && !isAnonymous && (
               <Button 
                 onClick={() => setShowNewPostForm(true)}
                 className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                {t('common.createFirstPost')}
+                最初の投稿を作成
               </Button>
             )}
           </CardContent>
@@ -448,16 +500,10 @@ const CategoryPage: React.FC = () => {
               
               {/* コンテンツ */}
               <CardContent className="p-4">
-                {(post.display_title || post.title) && (
-                  <h3 className="font-bold text-gray-900 line-clamp-2 mb-2 text-lg">{post.display_title || post.title}</h3>
+                {post.title && (
+                  <h3 className="font-bold text-gray-900 line-clamp-2 mb-2 text-lg">{post.title}</h3>
                 )}
-                <p className="text-gray-700 text-sm line-clamp-3 mb-3">{post.display_text || post.body}</p>
-                {post.is_translated && (
-                  <div className="flex items-center gap-1 text-xs text-blue-500 mb-2">
-                    <Globe className="h-3 w-3" />
-                    <span>{t('translation.autoTranslated')}</span>
-                  </div>
-                )}
+                <p className="text-gray-700 text-sm line-clamp-3 mb-3">{post.body}</p>
                 
                 {/* メタ情報 */}
                 <div className="flex items-center justify-between text-xs text-gray-500 mb-3">

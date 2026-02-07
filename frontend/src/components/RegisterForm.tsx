@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,7 +8,6 @@ import { Heart } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const RegisterForm: React.FC = () => {
-  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
@@ -28,19 +26,19 @@ const RegisterForm: React.FC = () => {
     setError('');
 
     if (password !== confirmPassword) {
-      setError(t('auth.passwordMismatch'));
+      setError('パスワードが一致しません');
       setIsLoading(false);
       return;
     }
 
     if (password.length < 8) {
-      setError(t('auth.passwordTooShort'));
+      setError('パスワードは8文字以上である必要があります');
       setIsLoading(false);
       return;
     }
 
     if (!phoneNumber.trim()) {
-      setError(t('auth.phoneRequired'));
+      setError('携帯番号は必須です');
       setIsLoading(false);
       return;
     }
@@ -67,10 +65,10 @@ const RegisterForm: React.FC = () => {
           navigate('/login');
         }
       } else {
-        setError(t('auth.emailAlreadyUsed'));
+        setError('このメールアドレスは既に使用されている可能性があります');
       }
     } catch (err) {
-      setError(t('auth.registrationFailed'));
+      setError('登録に失敗しました');
     }
     
     setIsLoading(false);
@@ -83,15 +81,15 @@ const RegisterForm: React.FC = () => {
           <div className="flex justify-center mb-4">
             <Heart className="h-12 w-12 text-carat-gray4" />
           </div>
-          <CardTitle className="text-2xl sm:text-3xl md:text-4xl text-carat-black">{t('common.register')}</CardTitle>
+          <CardTitle className="text-2xl sm:text-3xl md:text-4xl text-carat-black">会員登録</CardTitle>
           <CardDescription className="text-lg md:text-xl text-carat-gray5">
-            {t('auth.registerDescription')}
+            アカウントを作成して全機能をご利用ください
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="displayName" className="text-lg md:text-xl text-carat-black">{t('auth.displayName')}</Label>
+              <Label htmlFor="displayName" className="text-lg md:text-xl text-carat-black">表示名</Label>
               <Input
                 id="displayName"
                 type="text"
@@ -99,14 +97,14 @@ const RegisterForm: React.FC = () => {
                 onChange={(e) => setDisplayName(e.target.value)}
                 required
                 className="border-carat-gray3 focus:border-carat-black focus:ring-carat-black/20"
-                placeholder={t('auth.displayNamePlaceholder')}
+                placeholder="太郎ちゃん"
               />
               <p className="text-sm text-carat-gray5">
-                {t('auth.displayNameHint')}
+                ニックネームを入力してください。本名は後で設定できます。
               </p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-lg md:text-xl text-carat-black">{t('auth.email')}</Label>
+              <Label htmlFor="email" className="text-lg md:text-xl text-carat-black">メールアドレス</Label>
               <Input
                 id="email"
                 type="email"
@@ -119,7 +117,7 @@ const RegisterForm: React.FC = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="phoneNumber" className="text-lg md:text-xl text-carat-black">
-                {t('auth.phoneNumber')} <span className="text-red-500">*</span>
+                携帯番号 <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="phoneNumber"
@@ -131,11 +129,11 @@ const RegisterForm: React.FC = () => {
                 placeholder="090-1234-5678"
               />
               <p className="text-sm text-carat-gray5">
-                {t('auth.phoneHint')}
+                固有のIDとして使用されます。変更できません。
               </p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-lg md:text-xl text-carat-black">{t('auth.password')}</Label>
+              <Label htmlFor="password" className="text-lg md:text-xl text-carat-black">パスワード</Label>
               <Input
                 id="password"
                 type="password"
@@ -143,11 +141,11 @@ const RegisterForm: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="border-carat-gray3 focus:border-carat-black focus:ring-carat-black/20"
-                placeholder={t('auth.passwordPlaceholder')}
+                placeholder="8文字以上"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-lg md:text-xl text-carat-black">{t('auth.confirmPassword')}</Label>
+              <Label htmlFor="confirmPassword" className="text-lg md:text-xl text-carat-black">パスワード（確認）</Label>
               <Input
                 id="confirmPassword"
                 type="password"
@@ -155,7 +153,7 @@ const RegisterForm: React.FC = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 className="border-carat-gray3 focus:border-carat-black focus:ring-carat-black/20"
-                placeholder={t('auth.confirmPasswordPlaceholder')}
+                placeholder="パスワードを再入力"
               />
             </div>
             {error && (
@@ -166,18 +164,18 @@ const RegisterForm: React.FC = () => {
               className="w-full bg-black text-white hover:bg-gray-800 transition-colors text-lg font-bold py-6 shadow-lg hover:shadow-xl"
               disabled={isLoading}
             >
-              {isLoading ? t('common.loading') : t('auth.createAccount')}
+              {isLoading ? '登録中...' : 'アカウントを作成'}
             </Button>
           </form>
           <div className="mt-6 text-center space-y-2">
             <p className="text-base text-black">
-              {t('auth.alreadyHaveAccount')}{' '}
+              既にアカウントをお持ちの方は{' '}
               <Link to="/login" className="text-purple-700 hover:text-purple-900 font-semibold underline">
-                {t('common.login')}
+                こちらからログイン
               </Link>
             </p>
             <p className="text-xs text-carat-gray4">
-              {t('auth.termsAgreement')}
+              登録することで利用規約に同意したことになります
             </p>
           </div>
         </CardContent>

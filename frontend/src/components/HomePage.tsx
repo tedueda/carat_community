@@ -304,7 +304,7 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const slideInterval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 8);
+      setCurrentSlide((prev) => (prev + 1) % 5);
     }, 8000);
 
     return () => clearInterval(slideInterval);
@@ -333,25 +333,25 @@ const HomePage: React.FC = () => {
         <section ref={heroSectionRef} className="relative w-full overflow-hidden" style={{height: '860px'}}>
           <div className="absolute inset-0">
             <div 
-              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 0 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 0 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/img10.jpg" 
+                src="/images/hero5.png" 
                 alt="LGBTQ+ Community 1"
                 className="w-full h-full object-cover"
               />
             </div>
             <div 
-              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 1 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 1 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/img12.jpg" 
+                src="/images/hero1.png" 
                 alt="LGBTQ+ Community 2"
                 className="w-full h-full object-cover"
               />
             </div>
             <div 
-              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 2 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 2 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
                 src="/images/img14.jpg" 
@@ -360,47 +360,20 @@ const HomePage: React.FC = () => {
               />
             </div>
             <div 
-              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 3 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 3 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/hero1.png" 
+                src="/images/hero2.png" 
                 alt="LGBTQ+ Community 4"
                 className="w-full h-full object-cover"
               />
             </div>
             <div 
-              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 4 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
-                src="/images/hero2.png" 
-                alt="LGBTQ+ Community 5"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div 
-              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 5 ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 4 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
                 src="/images/hero3.png" 
-                alt="LGBTQ+ Community 6"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div 
-              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 6 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
-                src="/images/hero4.png" 
-                alt="LGBTQ+ Community 7"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div 
-              className={`absolute inset-0 transition-opacity duration-3000 ${currentSlide === 7 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
-                src="/images/hero5.png" 
-                alt="LGBTQ+ Community 8"
+                alt="LGBTQ+ Community 5"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -416,7 +389,7 @@ const HomePage: React.FC = () => {
           </div>
           <div className="relative z-10 flex items-center justify-center h-full">
             <div className="text-center text-white px-4 max-w-6xl">
-              <h2 className="text-3xl md:text-7xl font-serif font-bold leading-tight mb-6 transition-opacity duration-1000">
+              <h2 key={`main-${currentSlide}`} className="text-3xl md:text-7xl font-serif font-bold leading-tight mb-6 transition-opacity duration-[3000ms] ease-in-out">
                 {t(`hero.messages.${currentSlide}.main`).split('\n').map((line: string, i: number) => (
                   <React.Fragment key={i}>
                     {line}
@@ -424,7 +397,7 @@ const HomePage: React.FC = () => {
                   </React.Fragment>
                 ))}
               </h2>
-              <p className="text-lg md:text-2xl mb-8 opacity-90 transition-opacity duration-1000">
+              <p key={`sub-${currentSlide}`} className="text-lg md:text-2xl mb-8 opacity-90 transition-opacity duration-[3000ms] ease-in-out">
                 {t(`hero.messages.${currentSlide}.sub`).split('\n').map((line: string, i: number) => (
                   <React.Fragment key={i}>
                     {line}
@@ -441,11 +414,11 @@ const HomePage: React.FC = () => {
           <div className="max-w-3xl mx-auto px-4">
             <div className="bg-white/95 border border-gray-200 shadow-xl rounded-2xl px-6 py-6 md:px-10 md:py-8 flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="text-left">
-                <p className="text-sm md:text-base text-slate-500 mb-1">会員制LGBTQ+コミュニティ "Carat"</p>
-                <p className="text-lg md:text-xl font-serif text-slate-900">投稿とマッチングで、あなたの物語をはじめましょう。</p>
+                <p className="text-sm md:text-base text-slate-500 mb-1">{t('cta.communityTitle')}</p>
+                <p className="text-lg md:text-xl font-serif text-slate-900">{t('cta.communitySubtitle')}</p>
                 {(!user || isAnonymous) && (
                   <p className="mt-2 text-sm md:text-base text-slate-500">
-                    * 無料会員はサイト全体の内容を見ていただけます。投稿や有料会員限定サイトを閲覧するには会員登録が必要です。
+                    {t('cta.freeUserNote')}
                   </p>
                 )}
               </div>
@@ -455,14 +428,14 @@ const HomePage: React.FC = () => {
                     onClick={() => navigate('/create/board')}
                     className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
                   >
-                    投稿を作成
+                    {t('cta.createPost')}
                   </Button>
                 ) : (
                   <Button 
                     onClick={() => window.location.href = '/login'}
                     className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
                   >
-                    会員登録（月1,000円）
+                    {t('cta.registerButton')}
                   </Button>
                 )}
               </div>
@@ -680,16 +653,16 @@ const HomePage: React.FC = () => {
           <div className="relative rounded-xl shadow-2xl overflow-hidden" style={{ maxHeight: '400px' }}>
             <img 
               src={liveWeddingBanner} 
-              alt="Live Wedding"
+              alt={t('liveWedding.banner.bannerAlt')}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black/40"></div>
             <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-8 md:px-16">
               <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
-                Live Wedding
+                {t('liveWedding.banner.title')}
               </h2>
               <p className="text-xl md:text-2xl text-white/90 mb-6 max-w-2xl">
-                オンラインで叶える、あなただけの特別な結婚式
+                {t('liveWedding.banner.subtitle')}
               </p>
               <button
                 onClick={() => {
@@ -698,7 +671,7 @@ const HomePage: React.FC = () => {
                 }}
                 className="inline-flex items-center gap-2 px-8 py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl"
               >
-                詳細はこちら
+                {t('liveWedding.banner.viewDetails')}
                 <ArrowRight className="h-5 w-5" />
               </button>
             </div>
@@ -710,22 +683,22 @@ const HomePage: React.FC = () => {
           <div className="relative rounded-xl shadow-2xl overflow-hidden" style={{ maxHeight: '400px' }}>
             <img 
               src={jewelryBanner} 
-              alt="Jewelry Collection"
+              alt={t('jewelry.bannerAlt')}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black/40"></div>
             <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-8 md:px-16">
               <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
-                ジュエリー販売
+                {t('jewelry.banner.title')}
               </h2>
               <p className="text-xl md:text-2xl text-white/90 mb-6 max-w-2xl">
-                会員限定で特別な価格にてご提供
+                {t('jewelry.banner.subtitle')}
               </p>
               <button
                 onClick={() => navigate('/jewelry')}
                 className="inline-flex items-center gap-2 px-8 py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl"
               >
-                詳細はこちら
+                {t('jewelry.banner.viewDetails')}
                 <ArrowRight className="h-5 w-5" />
               </button>
             </div>

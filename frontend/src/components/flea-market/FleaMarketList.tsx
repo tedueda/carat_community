@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, MapPin, Clock, Filter, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import FleaMarketPostForm from './FleaMarketPostForm';
 import FleaMarketDetail from './FleaMarketDetail';
 import PremiumUpgradeModal from '../PremiumUpgradeModal';
-import { API_URL } from '../../config';
 
 interface FleaMarketItem {
   id: number;
@@ -35,12 +33,31 @@ interface Prefecture {
   name: string;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'https://ddxdewgmen.ap-northeast-1.awsapprunner.com';
+
+const CATEGORY_LABELS: Record<string, string> = {
+  electronics: '家電・スマホ・カメラ',
+  fashion: 'ファッション',
+  furniture: '家具・インテリア',
+  hobby: 'ホビー・楽器・アート',
+  books: '本・音楽・ゲーム',
+  sports: 'スポーツ・レジャー',
+  beauty: 'コスメ・美容',
+  handmade: 'ハンドメイド',
+  other: 'その他',
+};
+
+const TRANSACTION_METHOD_LABELS: Record<string, string> = {
+  hand_off: '手渡し',
+  shipping: '発送',
+  negotiable: '応相談',
+};
+
 const FleaMarketList: React.FC = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const { user } = useAuth();
   // token removed - not currently used
-  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
 
   const [items, setItems] = useState<FleaMarketItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -103,8 +120,7 @@ const FleaMarketList: React.FC = () => {
       const response = await fetch(`${API_URL}/api/flea-market/items?${params.toString()}`);
       if (response.ok) {
         const data = await response.json();
-        // APIは配列を直接返す
-        setItems(Array.isArray(data) ? data : (data.items || []));
+        setItems(data.items || []);
       }
     } catch (error) {
       console.error('商品取得エラー:', error);
@@ -123,7 +139,7 @@ const FleaMarketList: React.FC = () => {
       navigate('/login');
       return;
     }
-    if (!isPaidUser) {
+    if (!isPremium) {
       setShowUpgradeModal(true);
       return;
     }
@@ -140,7 +156,7 @@ const FleaMarketList: React.FC = () => {
   };
 
   const formatPrice = (price: number) => {
-    if (price === 0) return t('fleaMarket.negotiable');
+    if (price === 0) return '応相談';
     return `¥${price.toLocaleString()}`;
   };
 
@@ -150,9 +166,9 @@ const FleaMarketList: React.FC = () => {
     const diffTime = Math.abs(now.getTime() - date.getTime());
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     
-    if (diffDays === 0) return t('fleaMarket.today');
-    if (diffDays === 1) return t('fleaMarket.yesterday');
-    if (diffDays < 7) return t('fleaMarket.daysAgo', { count: diffDays });
+    if (diffDays === 0) return '今日';
+    if (diffDays === 1) return '昨日';
+    if (diffDays < 7) return `${diffDays}日前`;
     return date.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' });
   };
 
@@ -185,7 +201,7 @@ const FleaMarketList: React.FC = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder={t('fleaMarket.searchPlaceholder')}
+              placeholder="キーワードで検索..."
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900/20 focus:border-transparent"
@@ -195,7 +211,7 @@ const FleaMarketList: React.FC = () => {
             type="submit"
             className="px-6 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
           >
-            {t('fleaMarket.search')}
+            検索
           </button>
           <button
             type="button"
@@ -203,7 +219,7 @@ const FleaMarketList: React.FC = () => {
             className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
           >
             <Plus className="w-5 h-5" />
-            {t('fleaMarket.listItem')}
+            出品する
           </button>
         </div>
       </form>
@@ -214,35 +230,35 @@ const FleaMarketList: React.FC = () => {
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
         >
           <Filter className="w-5 h-5" />
-          <span>{t('fleaMarket.filter')}</span>
+          <span>フィルター</span>
           <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
         </button>
 
         {showFilters && (
           <div className="mt-4 p-4 bg-gray-50 rounded-lg grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fleaMarket.category')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">カテゴリ</label>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900/20"
               >
-                <option value="">{t('fleaMarket.all')}</option>
+                <option value="">すべて</option>
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
-                    {t(`fleaMarket.categories.${cat.id}`, { defaultValue: cat.name })}
+                    {CATEGORY_LABELS[cat.id] || cat.name}
                   </option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fleaMarket.region')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">地域</label>
               <select
                 value={selectedRegion}
                 onChange={(e) => setSelectedRegion(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900/20"
               >
-                <option value="">{t('fleaMarket.all')}</option>
+                <option value="">すべて</option>
                 {prefectures.map((pref) => (
                   <option key={pref.id} value={pref.id}>
                     {pref.name}
@@ -251,16 +267,16 @@ const FleaMarketList: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fleaMarket.sortBy')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">並び替え</label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900/20"
               >
-                <option value="newest">{t('fleaMarket.sort.newest')}</option>
-                <option value="price_asc">{t('fleaMarket.sort.priceAsc')}</option>
-                <option value="price_desc">{t('fleaMarket.sort.priceDesc')}</option>
-                <option value="negotiable">{t('fleaMarket.sort.negotiable')}</option>
+                <option value="newest">新着順</option>
+                <option value="price_asc">価格が安い順</option>
+                <option value="price_desc">価格が高い順</option>
+                <option value="negotiable">応相談優先</option>
               </select>
             </div>
           </div>
@@ -270,16 +286,16 @@ const FleaMarketList: React.FC = () => {
       {loading ? (
         <div className="text-center py-16">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-4 text-gray-600">{t('fleaMarket.loading')}</p>
+          <p className="mt-4 text-gray-600">読み込み中...</p>
         </div>
       ) : items.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-gray-500 mb-4">{t('fleaMarket.noItems')}</p>
+          <p className="text-gray-500 mb-4">出品がありません</p>
           <button
             onClick={handlePostClick}
             className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
           >
-            {t('fleaMarket.createFirstListing')}
+            最初の出品をする
           </button>
         </div>
       ) : (
@@ -304,7 +320,7 @@ const FleaMarketList: React.FC = () => {
                 )}
                 {item.images && item.images.length > 1 && (
                   <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                    {t('fleaMarket.moreImages', { count: item.images.length - 1 })}
+                    +{item.images.length - 1}枚
                   </div>
                 )}
               </div>
@@ -325,15 +341,15 @@ const FleaMarketList: React.FC = () => {
                 </div>
                 <div className="mt-2 flex items-center gap-2">
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                    {t(`fleaMarket.categories.${item.category}`, { defaultValue: item.category })}
+                    {CATEGORY_LABELS[item.category] || item.category}
                   </span>
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                    {t(`fleaMarket.transactionMethods.${item.transaction_method}`, { defaultValue: item.transaction_method })}
+                    {TRANSACTION_METHOD_LABELS[item.transaction_method] || item.transaction_method}
                   </span>
                 </div>
                 <div className="mt-3 pt-3 border-t border-gray-100">
                   <p className="text-sm text-gray-600">
-                    {item.user_display_name || t('fleaMarket.anonymousUser')}
+                    {item.user_display_name || '匿名ユーザー'}
                   </p>
                 </div>
               </div>
@@ -345,7 +361,7 @@ const FleaMarketList: React.FC = () => {
       <PremiumUpgradeModal
         open={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
-        featureName={t('fleaMarket.listItem')}
+        featureName="フリマ出品"
       />
     </div>
   );
