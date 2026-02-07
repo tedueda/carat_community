@@ -991,5 +991,84 @@
       "note2": "Exchange of personal information is prohibited",
       "note3": "Transactions are at your own risk"
     }
+  },
+  "subscribe": {
+    "title": "Become a Member",
+    "subtitle": "Enjoy all features of Carat Community",
+    "per_month": "month",
+    "email": "Email Address",
+    "display_name": "Display Name",
+    "display_name_placeholder": "Your name in the community",
+    "password": "Password",
+    "password_confirm": "Confirm Password",
+    "preferred_language": "Language",
+    "residence_country": "Country of Residence",
+    "terms_agreement": "I agree to the Terms of Service",
+    "terms_link": "Read Terms",
+    "submit_button": "Proceed to Payment",
+    "processing": "Processing...",
+    "already_member": "Already a member?",
+    "login_link": "Login",
+    "benefits_title": "Member Benefits",
+    "benefit_1": "Post and comment in all categories",
+    "benefit_2": "Member-only matching and chat",
+    "benefit_3": "List items on flea market and sell artwork",
+    "benefit_4": "Purchase jewelry",
+    "canceled_message": "Payment was canceled. Please try again.",
+    "error": {
+      "required_fields": "Please fill in all required fields",
+      "password_mismatch": "Passwords do not match",
+      "password_too_short": "Password must be at least 8 characters",
+      "terms_required": "Please agree to the Terms of Service",
+      "checkout_failed": "Failed to create checkout session",
+      "unknown": "An error occurred"
+    },
+    "success": {
+      "title": "Registration Complete!",
+      "message": "Welcome to Carat Community! You now have access to all premium features.",
+      "next_step_title": "Next Step",
+      "next_step_message": "Complete identity verification (KYC) to unlock posting, commenting, and chat features.",
+      "continue_button": "Go to My Account",
+      "verifying": "Verifying payment...",
+      "no_session": "No session information",
+      "verification_failed": "Payment verification failed",
+      "payment_pending": "Payment is being processed. Please wait.",
+      "unknown_error": "An error occurred",
+      "error_title": "Error",
+      "go_to_login": "Go to Login"
+    }
+  },
+  "kyc": {
+    "title": "Identity Verification",
+    "status": {
+      "UNVERIFIED": "Unverified",
+      "PENDING": "Pending",
+      "VERIFIED": "Verified",
+      "REJECTED": "Resubmission Required"
+    },
+    "start_button": "Start Verification",
+    "description": "Identity verification is required to use posting, commenting, and chat features.",
+    "verified_message": "Your identity has been verified.",
+    "pending_message": "Your verification is being reviewed. Please wait.",
+    "rejected_message": "Your verification was not approved. Please try again."
+  },
+  "subscription": {
+    "status": {
+      "active": "Active",
+      "past_due": "Past Due",
+      "canceled": "Canceled",
+      "incomplete": "Incomplete",
+      "trialing": "Trial"
+    },
+    "manage_button": "Manage Subscription",
+    "legacy_member": "Legacy Member"
+  },
+  "permission": {
+    "subscription_required_title": "Premium Feature",
+    "subscription_required_message": "This feature requires a premium membership.",
+    "subscribe_button": "Become a Member",
+    "kyc_required_title": "Verification Required",
+    "kyc_required_message": "Please complete identity verification to use this feature.",
+    "start_kyc_button": "Start Verification"
   }
 }

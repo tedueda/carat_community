@@ -991,5 +991,84 @@
       "note2": "Exchange of personal information is prohibited",
       "note3": "Transactions are at your own risk"
     }
+  },
+  "subscribe": {
+    "title": "Hazte Miembro",
+    "subtitle": "Disfruta de todas las funciones de Carat Community",
+    "per_month": "mes",
+    "email": "Correo electrónico",
+    "display_name": "Nombre de usuario",
+    "display_name_placeholder": "Tu nombre en la comunidad",
+    "password": "Contraseña",
+    "password_confirm": "Confirmar contraseña",
+    "preferred_language": "Idioma",
+    "residence_country": "País de residencia",
+    "terms_agreement": "Acepto los Términos de Servicio",
+    "terms_link": "Leer Términos",
+    "submit_button": "Proceder al pago",
+    "processing": "Procesando...",
+    "already_member": "¿Ya eres miembro?",
+    "login_link": "Iniciar sesión",
+    "benefits_title": "Beneficios de membresía",
+    "benefit_1": "Publicar y comentar en todas las categorías",
+    "benefit_2": "Matching y chat exclusivo para miembros",
+    "benefit_3": "Vender en el mercadillo y obras de arte",
+    "benefit_4": "Comprar joyería",
+    "canceled_message": "El pago fue cancelado. Por favor, inténtalo de nuevo.",
+    "error": {
+      "required_fields": "Por favor, completa todos los campos requeridos",
+      "password_mismatch": "Las contraseñas no coinciden",
+      "password_too_short": "La contraseña debe tener al menos 8 caracteres",
+      "terms_required": "Por favor, acepta los Términos de Servicio",
+      "checkout_failed": "Error al crear la sesión de pago",
+      "unknown": "Ha ocurrido un error"
+    },
+    "success": {
+      "title": "¡Registro completado!",
+      "message": "¡Bienvenido a Carat Community! Ahora tienes acceso a todas las funciones premium.",
+      "next_step_title": "Siguiente paso",
+      "next_step_message": "Completa la verificación de identidad (KYC) para desbloquear las funciones de publicación, comentarios y chat.",
+      "continue_button": "Ir a Mi Cuenta",
+      "verifying": "Verificando pago...",
+      "no_session": "No hay información de sesión",
+      "verification_failed": "Error en la verificación del pago",
+      "payment_pending": "El pago está siendo procesado. Por favor, espera.",
+      "unknown_error": "Ha ocurrido un error",
+      "error_title": "Error",
+      "go_to_login": "Ir a Iniciar sesión"
+    }
+  },
+  "kyc": {
+    "title": "Verificación de identidad",
+    "status": {
+      "UNVERIFIED": "No verificado",
+      "PENDING": "Pendiente",
+      "VERIFIED": "Verificado",
+      "REJECTED": "Reenvío requerido"
+    },
+    "start_button": "Iniciar verificación",
+    "description": "Se requiere verificación de identidad para usar las funciones de publicación, comentarios y chat.",
+    "verified_message": "Tu identidad ha sido verificada.",
+    "pending_message": "Tu verificación está siendo revisada. Por favor, espera.",
+    "rejected_message": "Tu verificación no fue aprobada. Por favor, inténtalo de nuevo."
+  },
+  "subscription": {
+    "status": {
+      "active": "Activa",
+      "past_due": "Vencida",
+      "canceled": "Cancelada",
+      "incomplete": "Incompleta",
+      "trialing": "Prueba"
+    },
+    "manage_button": "Gestionar suscripción",
+    "legacy_member": "Miembro Legacy"
+  },
+  "permission": {
+    "subscription_required_title": "Función Premium",
+    "subscription_required_message": "Esta función requiere una membresía premium.",
+    "subscribe_button": "Hazte Miembro",
+    "kyc_required_title": "Verificación requerida",
+    "kyc_required_message": "Por favor, completa la verificación de identidad para usar esta función.",
+    "start_kyc_button": "Iniciar verificación"
   }
 }

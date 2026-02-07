@@ -33,6 +33,8 @@ import DonationPage from './components/DonationPage';
 import MarketplacePage from './pages/members/MarketplacePage';
 import FavoritesPage from './pages/members/FavoritesPage';
 import AccountPage from './pages/members/AccountPage';
+import SubscribePage from './pages/SubscribePage';
+import SubscribeSuccessPage from './pages/SubscribeSuccessPage';
 import { SalonPage, SalonRoomDetailPage } from './components/salon';
 import BusinessPage from './pages/members/BusinessPage';
 import JewelryProductList from './components/jewelry/JewelryProductList';
@@ -79,11 +81,13 @@ function AppContent() {
               <LoginForm />
             </PublicRoute>
           } />
-          <Route path="/register" element={
-            <PublicRoute>
-              <RegisterForm />
-            </PublicRoute>
-          } />
+                    <Route path="/register" element={
+                      <PublicRoute>
+                        <RegisterForm />
+                      </PublicRoute>
+                    } />
+                    <Route path="/subscribe" element={<SubscribePage />} />
+                    <Route path="/subscribe/success" element={<SubscribeSuccessPage />} />
           <Route path="/feed" element={
             <FeedRoute>
               <HomePage />
