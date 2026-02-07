@@ -1,16 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import { X, MessageCircle, Send, Camera, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { useAuth } from '../contexts/AuthContext';
-import { useLanguage } from '../contexts/LanguageContext';
-import { Post, User, Comment, PostWithTranslation } from '../types/Post';
+import { Post, User, Comment } from '../types/Post';
 import LikeButton from './common/LikeButton';
 import { compressImage } from '../utils/imageCompression';
-import TranslationToggle from './common/TranslationToggle';
-import { fetchPostWithTranslation } from '../services/translationService';
-import { getPreferredLanguage } from '../utils/languageUtils';
 
 interface PostDetailModalProps {
   post: Post;
@@ -32,8 +27,6 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
   onDeleted,
   onEditInForm
 }) => {
-  const { t } = useTranslation();
-  const { currentLanguage } = useLanguage();
   const { token, user: currentUser, isAnonymous, isLoading } = useAuth();
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
@@ -52,16 +45,9 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
   const [removeCurrentImage, setRemoveCurrentImage] = useState<boolean>(false);
   const [isUploadingImage, setIsUploadingImage] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
-    const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
-  
-    // Translation state
-    const [translatedPost, setTranslatedPost] = useState<PostWithTranslation | null>(null);
-    const [isTranslating, setIsTranslating] = useState<boolean>(false);
-    const [translationError, setTranslationError] = useState<string | null>(null);
-    const [showTranslated, setShowTranslated] = useState<boolean>(true);
-    const [viewLang, setViewLang] = useState<string>(getPreferredLanguage());
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
-    const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
+  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
 
   const formatNumber = (num: number): string => {
     if (num >= 1000) {
@@ -75,11 +61,11 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
     
-    if (diffInSeconds < 60) return t('time.now');
-    if (diffInSeconds < 3600) return t('time.minutesAgo', { count: Math.floor(diffInSeconds / 60) });
-    if (diffInSeconds < 86400) return t('time.hoursAgo', { count: Math.floor(diffInSeconds / 3600) });
-    if (diffInSeconds < 2592000) return t('time.daysAgo', { count: Math.floor(diffInSeconds / 86400) });
-    return date.toLocaleDateString();
+    if (diffInSeconds < 60) return '今';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}分前`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}時間前`;
+    if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)}日前`;
+    return date.toLocaleDateString('ja-JP');
   };
 
   const getCategoryPlaceholder = (category: string | undefined): string => {
@@ -134,59 +120,11 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
     return null;
   };
 
-    // Fetch translation for the post
-    const fetchTranslation = async (targetLang?: string) => {
-      if (!post) return;
+  const fetchComments = async () => {
+    if (!post) return;
     
-      const userLang = targetLang || currentLanguage;
-      setViewLang(userLang);
-    
-      // Skip translation if original language matches user's preferred language
-      if (post.original_lang === userLang) {
-        setTranslatedPost(null);
-        setShowTranslated(false);
-        return;
-      }
-    
-      try {
-        setIsTranslating(true);
-        setTranslationError(null);
-        const translated = await fetchPostWithTranslation(post.id, userLang as any, 'translated');
-        setTranslatedPost(translated);
-        setShowTranslated(translated.is_translated);
-        console.log('[PostDetailModal] Translation fetched:', {
-          original_lang: translated.original_lang,
-          view_lang: translated.view_lang,
-          is_translated: translated.is_translated,
-          has_translation: translated.has_translation
-        });
-      } catch (error) {
-        console.error('[PostDetailModal] Translation fetch error:', error);
-        setTranslationError(t('translation.translationFailed'));
-        setShowTranslated(false);
-      } finally {
-        setIsTranslating(false);
-      }
-    };
-
-    const handleTranslationToggle = () => {
-      setShowTranslated(!showTranslated);
-    };
-
-    // Get display content (translated or original)
-    const displayTitle = showTranslated && translatedPost?.is_translated 
-      ? translatedPost.display_title 
-      : post.title;
-  
-    const displayBody = showTranslated && translatedPost?.is_translated 
-      ? translatedPost.display_text 
-      : post.body;
-
-    const fetchComments = async () => {
-      if (!post) return;
-    
-      try {
-        const response = await fetch(`${API_URL}/api/posts/${post.id}/comments`, {
+    try {
+      const response = await fetch(`${API_URL}/api/posts/${post.id}/comments`, {
         headers: token ? {
           'Authorization': `Bearer ${token}`,
         } : {},
@@ -297,30 +235,26 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
   // const nextImage = () => {};
   // const prevImage = () => {};
 
-    useEffect(() => {
-      if (isOpen) {
-        document.body.style.overflow = 'hidden';
-        fetchComments();
-        fetchTranslation(currentLanguage);
-        setIsLiked(post.is_liked || false);
-        setLikeCount(post.like_count || 0);
-        setShowFullText(false);
-        setIsEditing(false);
-        setIsDeleting(false);
-        setEditTitle(post.title || '');
-        setEditBody(post.body || '');
-        setNewImageFile(null);
-        setNewImagePreview(null);
-        setRemoveCurrentImage(false);
-        setUploadError(null);
-        // Reset translation state
-        setTranslatedPost(null);
-        setTranslationError(null);
-        console.debug('[PostDetailModal] open', {
-          currentUserId: currentUser?.id,
-          postUserId: post.user_id,
-          isAnonymous
-        });
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      fetchComments();
+      setIsLiked(post.is_liked || false);
+      setLikeCount(post.like_count || 0);
+      setShowFullText(false);
+      setIsEditing(false);
+      setIsDeleting(false);
+      setEditTitle(post.title || '');
+      setEditBody(post.body || '');
+      setNewImageFile(null);
+      setNewImagePreview(null);
+      setRemoveCurrentImage(false);
+      setUploadError(null);
+      console.debug('[PostDetailModal] open', {
+        currentUserId: currentUser?.id,
+        postUserId: post.user_id,
+        isAnonymous
+      });
       
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
@@ -359,13 +293,6 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
     }
   }, [isOpen, post.id, onClose]);
 
-  // Re-fetch translation when language changes
-  useEffect(() => {
-    if (isOpen && !isTranslating) {
-      fetchTranslation(currentLanguage);
-    }
-  }, [currentLanguage]);
-
   // Normalize IDs to numbers to avoid strict equality issues (API may return strings)
   const currentUserId = currentUser?.id != null ? Number(currentUser.id) : null;
   const postAuthorId = post?.user_id != null ? Number(post.user_id) : null;
@@ -377,11 +304,11 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
     setUploadError(null);
     if (file) {
       if (!file.type.startsWith('image/')) {
-        setUploadError(t('post.selectImageFile'));
+        setUploadError('画像ファイルを選択してください');
         return;
       }
       if (file.size > 10 * 1024 * 1024) {
-        setUploadError(t('post.imageSizeLimit'));
+        setUploadError('画像は10MB以下にしてください');
         return;
       }
       
@@ -405,7 +332,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
         console.log(`📸 画像を圧縮しました: ${originalSizeKB}KB → ${compressedSizeKB}KB`);
       } catch (error) {
         console.error('画像圧縮エラー:', error);
-        setUploadError(t('post.imageProcessingFailed'));
+        setUploadError('画像の処理に失敗しました');
       } finally {
         setIsUploadingImage(false);
       }
@@ -449,7 +376,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
         
         if (!res.ok) {
           const txt = await res.text().catch(() => '');
-          setUploadError(t('post.imageUploadFailed'));
+          setUploadError(`画像アップロードに失敗しました (status ${res.status})`);
           console.error('[PostDetailModal] upload image failed', res.status, txt);
           return { mediaId: null };
         }
@@ -458,7 +385,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
       } catch (fetchError: any) {
         clearTimeout(timeoutId);
         if (fetchError.name === 'AbortError') {
-          setUploadError(t('post.uploadTimeout'));
+          setUploadError('アップロードがタイムアウトしました。画像サイズを小さくしてください。');
           console.error('[PostDetailModal] upload timeout');
         } else {
           throw fetchError;
@@ -466,7 +393,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
         return { mediaId: null };
       }
     } catch (e: any) {
-      setUploadError(e?.message || t('post.imageUploadFailed'));
+      setUploadError(e?.message || '画像アップロードに失敗しました');
       console.error('[PostDetailModal] upload image error', e);
       return { mediaId: null };
     } finally {
@@ -550,11 +477,11 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
           text = await response.text();
         } catch (_) {}
         console.error('[PostDetailModal] Delete failed', { status: response.status, text });
-        setDeleteError(text || t('post.deleteFailed'));
+        setDeleteError(text || `削除に失敗しました (status ${response.status})`);
       }
     } catch (e: any) {
       console.error('[PostDetailModal] Delete error', e?.message || String(e));
-      setDeleteError(e?.message || t('common.networkError'));
+      setDeleteError(e?.message || 'ネットワークエラーにより削除に失敗しました');
     } finally {
       setIsDeleting(false);
     }
@@ -606,9 +533,9 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                       size="sm" 
                       className="text-pink-700 border-pink-300 hover:bg-pink-50"
                       onClick={handleUpdatePost}
-                      aria-label={t('common.save')}
+                      aria-label="保存"
                     >
-                      {t('common.save')}
+                      保存
                     </Button>
                     <Button 
                       variant="ghost" 
@@ -619,9 +546,9 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                         setEditTitle(post.title || '');
                         setEditBody(post.body || '');
                       }}
-                      aria-label={t('common.cancel')}
+                      aria-label="編集をやめる"
                     >
-                      {t('common.cancel')}
+                      キャンセル
                     </Button>
                   </>
                 ) : (
@@ -638,9 +565,9 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                           setIsEditing(true);
                         }
                       }}
-                      aria-label={t('common.edit')}
+                      aria-label="編集"
                     >
-                      {t('common.edit')}
+                      編集
                     </Button>
                     <Button 
                       variant="ghost" 
@@ -648,9 +575,9 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                       className="text-red-600 hover:text-red-700"
                       onClick={handleDeletePost}
                       disabled={isDeleting}
-                      aria-label={t('common.delete')}
+                      aria-label="削除"
                     >
-                      {isDeleting ? t('post.deleting') : t('common.delete')}
+                      {isDeleting ? '削除中...' : '削除'}
                     </Button>
                   </>
                 )}
@@ -706,7 +633,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                     {newImagePreview ? (
                       <img
                         src={newImagePreview}
-                        alt={t('post.newImagePreview')}
+                        alt="新しい画像プレビュー"
                         className="max-w-full max-h-full object-contain"
                       />
                     ) : !removeCurrentImage ? (
@@ -718,12 +645,12 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                                  (imageUrl.startsWith('/assets/') || imageUrl.startsWith('/images/')) ? imageUrl : 
                                  `${API_URL}${imageUrl}`;
                         })()}`}
-                        alt={t('post.postImage')}
+                        alt="投稿画像"
                         className="max-w-full max-h-full object-contain"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-400">
-                        {t('post.imageWillBeDeleted')}
+                        画像は削除されます
                       </div>
                     )}
                   </>
@@ -736,13 +663,13 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                              (imageUrl.startsWith('/assets/') || imageUrl.startsWith('/images/')) ? imageUrl : 
                              `${API_URL}${imageUrl}`;
                     })()}`}
-                    alt={t('post.postImage')}
+                    alt="投稿画像"
                     className="max-w-full max-h-full object-contain"
                   />
                 )}
               </div>
               
-              {/* Multiple image navigation buttons */}
+              {/* 複数画像のナビゲーションボタン */}
               {!isEditing && post.media_urls && post.media_urls.length > 1 && (
                 <>
                   <Button
@@ -750,7 +677,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                     size="sm"
                     className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2"
                     onClick={() => setCurrentImageIndex((prev) => (prev === 0 ? post.media_urls!.length - 1 : prev - 1))}
-                    aria-label={t('post.previousImage')}
+                    aria-label="前の画像"
                   >
                     <ChevronLeft className="h-6 w-6" />
                   </Button>
@@ -759,7 +686,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                     size="sm"
                     className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2"
                     onClick={() => setCurrentImageIndex((prev) => (prev === post.media_urls!.length - 1 ? 0 : prev + 1))}
-                    aria-label={t('post.nextImage')}
+                    aria-label="次の画像"
                   >
                     <ChevronRight className="h-6 w-6" />
                   </Button>
@@ -771,7 +698,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                           index === currentImageIndex ? 'bg-white w-4' : 'bg-white/50'
                         }`}
                         onClick={() => setCurrentImageIndex(index)}
-                        aria-label={`${index + 1}`}
+                        aria-label={`画像${index + 1}を表示`}
                       />
                     ))}
                   </div>
@@ -796,7 +723,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
             <div className="aspect-[3/2] bg-gray-100 flex items-center justify-center">
               <img
                 src={getCategoryPlaceholder(post.category)}
-                alt={t('post.category')}
+                alt="カテゴリプレースホルダー"
                 className="max-w-full max-h-full object-contain"
               />
             </div>
@@ -809,41 +736,27 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
                 className="w-full border border-pink-200 rounded-md px-3 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-pink-300"
-                placeholder={t('post.title')}
-                aria-label={t('post.title')}
+                placeholder="タイトル"
+                aria-label="タイトル編集"
               />
-                        ) : (
-                          displayTitle && (
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">{displayTitle}</h2>
-                          )
-                        )}
+            ) : (
+              post.title && (
+                <h2 className="text-xl font-bold text-gray-900 mb-3">{post.title}</h2>
+              )
+            )}
 
-                        {/* Translation toggle */}
-                        {!isEditing && (
-                          <div className="mb-3">
-                            <TranslationToggle
-                              isTranslated={showTranslated && (translatedPost?.is_translated || false)}
-                              isLoading={isTranslating}
-                              hasTranslation={translatedPost?.has_translation || false}
-                              originalLang={translatedPost?.original_lang || post.original_lang}
-                              viewLang={viewLang}
-                              onToggle={handleTranslationToggle}
-                              error={translationError}
-                            />
-                          </div>
-                        )}
-
-                        {isEditing && (
+            {isEditing && (
               <div className="mb-4 space-y-2">
-                <div className="text-sm font-medium text-gray-700">{t('post.postImage')}</div>
+                <div className="text-sm font-medium text-gray-700">画像</div>
                 <div className="flex flex-wrap items-center gap-3">
                   <label htmlFor="edit-image" className="inline-flex items-center gap-2 px-3 py-2 border border-pink-300 rounded-md text-sm text-pink-700 hover:bg-pink-50 cursor-pointer">
-                    {t('post.selectImageFile')}
+                    📁 画像を選択
                   </label>
                   <input id="edit-image" type="file" accept="image/*" className="hidden" onChange={handleImageFileChange} />
                   
                   <label htmlFor="edit-camera" className="inline-flex items-center gap-2 px-3 py-2 border border-blue-300 rounded-md text-sm text-blue-700 hover:bg-blue-50 cursor-pointer">
                     <Camera className="h-4 w-4" />
+                    カメラで撮影
                   </label>
                   <input id="edit-camera" type="file" accept="image/*" capture="environment" className="hidden" onChange={handleImageFileChange} />
                   
@@ -854,17 +767,17 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                     className={`border-red-300 text-red-600 hover:bg-red-50 ${removeCurrentImage ? 'bg-red-50' : ''}`}
                     onClick={handleRemoveImageToggle}
                   >
-                    {t('common.delete')}
+                    {removeCurrentImage ? '画像削除を取り消す' : '画像を削除する'}
                   </Button>
                   {isUploadingImage && (
-                    <span className="text-xs text-gray-500">{t('common.loading')}</span>
+                    <span className="text-xs text-gray-500">画像処理中...</span>
                   )}
                   {uploadError && (
                     <span className="text-xs text-red-600">{uploadError}</span>
                   )}
                   {newImageFile && (
                     <span className="text-xs text-gray-500">
-                      {newImageFile.name} ({(newImageFile.size / 1024).toFixed(0)}KB)
+                      選択中: {newImageFile.name} ({(newImageFile.size / 1024).toFixed(0)}KB)
                     </span>
                   )}
                 </div>
@@ -873,27 +786,27 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
             
             {!isEditing && post.category === 'tourism' && (
               <div className="mb-4 space-y-3 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 className="font-semibold text-gray-800 mb-2">{t('post.eventInfo')}</h4>
+                <h4 className="font-semibold text-gray-800 mb-2">イベント情報</h4>
                 {post.prefecture && (
                   <div className="flex items-start gap-2">
-                    <span className="font-medium text-gray-700 min-w-[80px]">{t('post.eventLocation')}:</span>
+                    <span className="font-medium text-gray-700 min-w-[80px]">開催地域:</span>
                     <span className="text-gray-800">{post.prefecture}</span>
                   </div>
                 )}
                 {post.event_date && (
                   <div className="flex items-start gap-2">
-                    <span className="font-medium text-gray-700 min-w-[80px]">{t('post.eventDate')}:</span>
+                    <span className="font-medium text-gray-700 min-w-[80px]">開催日:</span>
                     <span className="text-gray-800">{new Date(post.event_date).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                   </div>
                 )}
                 {post.fee && (
                   <div className="flex items-start gap-2">
-                    <span className="font-medium text-gray-700 min-w-[80px]">{t('post.fee')}:</span>
+                    <span className="font-medium text-gray-700 min-w-[80px]">会費:</span>
                     <span className="text-gray-800">{post.fee}</span>
                   </div>
                 )}
                 <div className="flex items-start gap-2">
-                  <span className="font-medium text-gray-700 min-w-[80px]">{t('post.contact')}:</span>
+                  <span className="font-medium text-gray-700 min-w-[80px]">連絡先:</span>
                   <a 
                     href={`/profile/${post.user_id}`}
                     className="text-blue-600 hover:text-blue-800 underline"
@@ -901,7 +814,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                       e.stopPropagation();
                     }}
                   >
-                    {t('post.viewProfile')}
+                    投稿者のプロフィールを見る
                   </a>
                 </div>
               </div>
@@ -910,37 +823,37 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
             <div className="text-gray-700 leading-7 mb-4">
               {isEditing ? (
                 <Textarea
-                  placeholder={t('post.bodyPlaceholder')}
+                  placeholder="本文を入力..."
                   value={editBody}
                   onChange={(e) => setEditBody(e.target.value)}
                   className="border-pink-200 focus:border-pink-400 min-h-[140px]"
                   rows={6}
-                  aria-label={t('post.body')}
+                  aria-label="本文編集"
                 />
-                            ) : (
-                              <>
-                                {showFullText || displayBody.length <= 500 
-                                  ? displayBody 
-                                  : `${displayBody.substring(0, 500)}...`
-                                }
-                                {displayBody.length > 500 && (
-                                  <Button
-                                    variant="link"
-                                    className="p-0 h-auto text-pink-600 hover:text-pink-700 ml-2"
-                                    onClick={() => setShowFullText(!showFullText)}
-                                  >
-                                    {showFullText ? t('post.showLess') : t('post.readMore')}
-                                  </Button>
-                                )}
-                              </>
-                            )}
+              ) : (
+                <>
+                  {showFullText || post.body.length <= 500 
+                    ? post.body 
+                    : `${post.body.substring(0, 500)}...`
+                  }
+                  {post.body.length > 500 && (
+                    <Button
+                      variant="link"
+                      className="p-0 h-auto text-pink-600 hover:text-pink-700 ml-2"
+                      onClick={() => setShowFullText(!showFullText)}
+                    >
+                      {showFullText ? '折りたたむ' : 'もっと見る'}
+                    </Button>
+                  )}
+                </>
+              )}
             </div>
 
             {!isEditing && linkUrlFromBody && getLinkHostname(linkUrlFromBody) && (
               <div className="mb-4 flex items-center gap-3 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-md px-3 py-2">
                 <img
                   src={`https://www.google.com/s2/favicons?domain=${getLinkHostname(linkUrlFromBody)}`}
-                  alt="icon"
+                  alt="サイトアイコン"
                   className="w-5 h-5 rounded"
                 />
                 <a
@@ -949,7 +862,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                   rel="noopener noreferrer"
                   className="underline underline-offset-2 text-gray-800 truncate"
                 >
-                  {getLinkHostname(linkUrlFromBody)}
+                  {getLinkHostname(linkUrlFromBody)} を開く
                 </a>
               </div>
             )}
@@ -976,7 +889,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
               />
               <div className="flex items-center gap-2 text-gray-600">
                 <MessageCircle className="h-5 w-5" />
-                <span className="font-medium">{t('post.comments')} {formatNumber(comments.length)}</span>
+                <span className="font-medium">コメント数 {formatNumber(comments.length)}</span>
               </div>
               {post.points && (
                 <div className="text-sm font-medium text-orange-600">
@@ -987,7 +900,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
 
             <div className="border-t border-gray-100 pt-4">
               <h4 className="font-semibold text-gray-900 mb-4">
-                {t('post.comments')} ({formatNumber(comments.length)})
+                コメント ({formatNumber(comments.length)})
               </h4>
 
               {currentUser && !isAnonymous ? (
@@ -1000,16 +913,16 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                     </div>
                     <div className="flex-1 space-y-2">
                       <Textarea
-                        placeholder={t('post.writeComment')}
+                        placeholder="コメントを入力..."
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
                         className="border-pink-200 focus:border-pink-400 min-h-[80px] resize-none"
                         rows={3}
-                        aria-label={t('post.writeComment')}
+                        aria-label="コメント入力"
                       />
                       <div className="flex justify-between items-center">
                         <p className="text-xs text-gray-500">
-                          {newComment.length}/1000
+                          {newComment.length}/1000文字
                         </p>
                         <Button 
                           onClick={handleAddComment}
@@ -1018,7 +931,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                           disabled={!newComment.trim() || newComment.length > 1000}
                         >
                           <Send className="h-4 w-4 mr-1" />
-                          {t('common.send')}
+                          送信
                         </Button>
                       </div>
                     </div>
@@ -1027,14 +940,14 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
               ) : (
                 <div className="text-center py-6 bg-gray-50 rounded-lg mb-6">
                   <p className="text-sm text-gray-500 mb-3">
-                    {t('post.loginToComment')}
+                    コメントするにはログインが必要です
                   </p>
                   <Button 
                     size="sm"
                     className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
                     onClick={() => window.location.href = '/login'}
                   >
-                    {t('common.login')}
+                    ログイン
                   </Button>
                 </div>
               )}
@@ -1043,7 +956,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                 {comments.length === 0 ? (
                   <div className="text-center py-8">
                     <MessageCircle className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                    <p className="text-gray-500">{t('post.beFirstToComment')}</p>
+                    <p className="text-gray-500">最初のコメントを書きましょう</p>
                   </div>
                 ) : (
                   comments.map((comment) => (
@@ -1056,7 +969,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-semibold text-sm">
-                            {comment.user?.display_name || t('common.unknownUser')}
+                            {comment.user?.display_name || '不明なユーザー'}
                           </span>
                           <span className="text-xs text-gray-500">
                             {getRelativeTime(comment.created_at)}
@@ -1071,7 +984,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                             size="sm"
                             className="text-xs text-gray-500 hover:text-pink-600 p-0 h-auto"
                           >
-                            {t('post.reply')}
+                            返信
                           </Button>
                         </div>
                       </div>
@@ -1086,7 +999,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                       size="sm"
                       className="border-pink-200 text-pink-600 hover:bg-pink-50"
                     >
-                      {t('common.showMore')}
+                      さらに表示
                     </Button>
                   </div>
                 )}

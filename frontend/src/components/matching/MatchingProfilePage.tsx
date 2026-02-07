@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { resolveImageUrl } from '@/utils/imageUtils';
 import { API_URL } from '@/config';
 import { Lock } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 
 type Profile = {
   user_id: number;
@@ -14,7 +13,6 @@ type Profile = {
   display_name?: string;
   real_name?: string;
   display_flag: boolean;
-  nationality?: string;
   prefecture: string;
   residence_detail?: string;
   hometown?: string;
@@ -41,9 +39,7 @@ type MediaImage = {
 const MatchingProfilePage: React.FC = () => {
   const { token, user } = useAuth();
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  // 有料会員かどうか
-  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,102 +55,9 @@ const MatchingProfilePage: React.FC = () => {
   const [tempHobbies, setTempHobbies] = useState<string[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
 
-  // i18n key mappings for select options
-  const AGE_BAND_KEYS: Record<string, string> = {
-    '10代': '10s', '20代前半': '20sEarly', '20代後半': '20sLate',
-    '30代前半': '30sEarly', '30代後半': '30sLate', '40代前半': '40sEarly',
-    '40代後半': '40sLate', '50代前半': '50sEarly', '50代後半': '50sLate', '60代以上': '60sPlus'
-  };
-  const OCCUPATION_KEYS: Record<string, string> = {
-    '会社員': 'employee', '自営業': 'selfEmployed', 'フリーランス': 'freelance',
-    '学生': 'student', '専門職': 'professional', '公務員': 'publicServant',
-    'パート・アルバイト': 'partTime', 'その他': 'other'
-  };
-  const BLOOD_TYPE_KEYS: Record<string, string> = {
-    'A型': 'A', 'B型': 'B', 'O型': 'O', 'AB型': 'AB', '不明': 'unknown'
-  };
-  const ZODIAC_KEYS: Record<string, string> = {
-    '牡羊座': 'aries', '牡牛座': 'taurus', '双子座': 'gemini', '蟹座': 'cancer',
-    '獅子座': 'leo', '乙女座': 'virgo', '天秤座': 'libra', '蠍座': 'scorpio',
-    '射手座': 'sagittarius', '山羊座': 'capricorn', '水瓶座': 'aquarius', '魚座': 'pisces'
-  };
-  const MEET_PREF_KEYS: Record<string, string> = {
-    'パートナー探し': 'partner', '友人探し': 'friend', '相談相手探し': 'counselor',
-    'メンバー募集': 'member', 'その他': 'other'
-  };
-  const IDENTITY_KEYS: Record<string, string> = {
-    'ゲイ': 'gay', 'レズ': 'lesbian', 'トランスジェンダー': 'transgender',
-    'バイセクシャル': 'bisexual', 'クィア': 'queer', '男性': 'male', '女性': 'female', '非表示': 'hidden'
-  };
-  const ROMANCE_TARGET_KEYS: Record<string, string> = {
-    '男性': 'male', '女性': 'female', 'その他': 'other'
-  };
-  const HOBBY_KEYS: Record<string, string> = {
-    '音楽': 'music', '映画': 'movies', 'ドラマ': 'drama', 'アニメ': 'anime', '漫画': 'manga',
-    '読書': 'reading', 'カフェ': 'cafe', '料理': 'cooking', 'グルメ': 'gourmet', 'お酒': 'alcohol',
-    '旅行': 'travel', '国内旅行': 'domesticTravel', '海外旅行': 'internationalTravel',
-    '写真': 'photography', 'カメラ': 'camera', 'カラオケ': 'karaoke', 'ゲーム': 'gaming',
-    'ボードゲーム': 'boardGames', 'スポーツ観戦': 'sportsWatching', '筋トレ': 'gym',
-    'ランニング': 'running', 'ハイキング': 'hiking', 'キャンプ': 'camping', '釣り': 'fishing',
-    'ヨガ': 'yoga', 'ダンス': 'dance', '美術館': 'artMuseum', '博物館': 'museum',
-    'ボランティア': 'volunteer', 'ペット': 'pets'
-  };
-
   const PREFECTURES = [
     '北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'
   ];
-  
-  // 国籍リスト（ISO 3166-1 alpha-2コードと国旗絵文字）
-  const NATIONALITIES: { code: string; name: string; flag: string }[] = [
-    { code: 'JP', name: '日本', flag: '🇯🇵' },
-    { code: 'US', name: 'アメリカ', flag: '🇺🇸' },
-    { code: 'GB', name: 'イギリス', flag: '🇬🇧' },
-    { code: 'CA', name: 'カナダ', flag: '🇨🇦' },
-    { code: 'AU', name: 'オーストラリア', flag: '🇦🇺' },
-    { code: 'NZ', name: 'ニュージーランド', flag: '🇳🇿' },
-    { code: 'DE', name: 'ドイツ', flag: '🇩🇪' },
-    { code: 'FR', name: 'フランス', flag: '🇫🇷' },
-    { code: 'IT', name: 'イタリア', flag: '🇮🇹' },
-    { code: 'ES', name: 'スペイン', flag: '🇪🇸' },
-    { code: 'PT', name: 'ポルトガル', flag: '🇵🇹' },
-    { code: 'NL', name: 'オランダ', flag: '🇳🇱' },
-    { code: 'BE', name: 'ベルギー', flag: '🇧🇪' },
-    { code: 'CH', name: 'スイス', flag: '🇨🇭' },
-    { code: 'AT', name: 'オーストリア', flag: '🇦🇹' },
-    { code: 'SE', name: 'スウェーデン', flag: '🇸🇪' },
-    { code: 'NO', name: 'ノルウェー', flag: '🇳🇴' },
-    { code: 'DK', name: 'デンマーク', flag: '🇩🇰' },
-    { code: 'FI', name: 'フィンランド', flag: '🇫🇮' },
-    { code: 'IE', name: 'アイルランド', flag: '🇮🇪' },
-    { code: 'KR', name: '韓国', flag: '🇰🇷' },
-    { code: 'CN', name: '中国', flag: '🇨🇳' },
-    { code: 'TW', name: '台湾', flag: '🇹🇼' },
-    { code: 'HK', name: '香港', flag: '🇭🇰' },
-    { code: 'SG', name: 'シンガポール', flag: '🇸🇬' },
-    { code: 'TH', name: 'タイ', flag: '🇹🇭' },
-    { code: 'VN', name: 'ベトナム', flag: '🇻🇳' },
-    { code: 'PH', name: 'フィリピン', flag: '🇵🇭' },
-    { code: 'ID', name: 'インドネシア', flag: '🇮🇩' },
-    { code: 'MY', name: 'マレーシア', flag: '🇲🇾' },
-    { code: 'IN', name: 'インド', flag: '🇮🇳' },
-    { code: 'BR', name: 'ブラジル', flag: '🇧🇷' },
-    { code: 'MX', name: 'メキシコ', flag: '🇲🇽' },
-    { code: 'AR', name: 'アルゼンチン', flag: '🇦🇷' },
-    { code: 'CL', name: 'チリ', flag: '🇨🇱' },
-    { code: 'CO', name: 'コロンビア', flag: '🇨🇴' },
-    { code: 'PE', name: 'ペルー', flag: '🇵🇪' },
-    { code: 'ZA', name: '南アフリカ', flag: '🇿🇦' },
-    { code: 'EG', name: 'エジプト', flag: '🇪🇬' },
-    { code: 'IL', name: 'イスラエル', flag: '🇮🇱' },
-    { code: 'AE', name: 'UAE', flag: '🇦🇪' },
-    { code: 'RU', name: 'ロシア', flag: '🇷🇺' },
-    { code: 'PL', name: 'ポーランド', flag: '🇵🇱' },
-    { code: 'CZ', name: 'チェコ', flag: '🇨🇿' },
-    { code: 'GR', name: 'ギリシャ', flag: '🇬🇷' },
-    { code: 'TR', name: 'トルコ', flag: '🇹🇷' },
-    { code: 'OTHER', name: 'その他', flag: '🌍' },
-  ];
-
   // 主要都市の区データ
   const CITY_WARDS: Record<string, string[]> = {
     '東京都': ['千代田区','中央区','港区','新宿区','文京区','台東区','墨田区','江東区','品川区','目黒区','大田区','世田谷区','渋谷区','中野区','杉並区','豊島区','北区','荒川区','板橋区','練馬区','足立区','葛飾区','江戸川区'],
@@ -330,7 +233,6 @@ const MatchingProfilePage: React.FC = () => {
         display_name: profile.display_name,
         real_name: profile.real_name,
         display_flag: profile.display_flag,
-        nationality: profile.nationality || '',
         prefecture: profile.prefecture,
         residence_detail: profile.residence_detail || '',
         hometown: profile.hometown || '',
@@ -541,7 +443,7 @@ const MatchingProfilePage: React.FC = () => {
   };
 
   // 有料会員でない場合はアップグレード画面を表示
-  if (!isPaidUser) {
+  if (!isPremium) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
         <Lock className="h-16 w-16 text-yellow-500 mb-4" />
@@ -897,19 +799,18 @@ const MatchingProfilePage: React.FC = () => {
 
           {/* 興味・趣味モーダル */}
           {hobbyPickerOpen && profile && (
-            <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label={t('matching.profile.hobbies.title')}>
+            <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="興味・趣味の選択">
               <div className="bg-white rounded-lg shadow-xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
                 <div className="px-4 py-3 border-b flex items-center justify-between">
-                  <h3 className="font-semibold">{t('matching.profile.hobbies.modalTitle')}</h3>
-                  <button className="text-gray-500 hover:text-gray-700" aria-label="×" onClick={() => setHobbyPickerOpen(false)}>×</button>
+                  <h3 className="font-semibold">興味・趣味を選択（最大5個）</h3>
+                  <button className="text-gray-500 hover:text-gray-700" aria-label="閉じる" onClick={() => setHobbyPickerOpen(false)}>×</button>
                 </div>
-                <div className="px-4 py-3 text-sm text-gray-600">{t('matching.profile.hobbies.selected')}: {tempHobbies.length} / 5</div>
+                <div className="px-4 py-3 text-sm text-gray-600">選択中: {tempHobbies.length} / 5</div>
                 <div className="max-h-80 overflow-y-auto px-4 pb-2">
                   <div className="space-y-2">
                     {HOBBY_CATALOG.map((h) => {
                       const checked = tempHobbies.includes(h);
                       const disableNew = !checked && tempHobbies.length >= 5;
-                      const hobbyKey = HOBBY_KEYS[h];
                       return (
                         <label key={h} className={`flex items-center gap-2 p-2 rounded border ${checked ? 'bg-blue-50 border-blue-300' : 'border-gray-200'}`}>
                           <input
@@ -917,7 +818,7 @@ const MatchingProfilePage: React.FC = () => {
                             className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
                             checked={checked}
                             disabled={disableNew}
-                            aria-label={t(`matching.hobbyCatalog.${hobbyKey}`) || h}
+                            aria-label={h}
                             onChange={(e) => {
                               if (e.target.checked) {
                                 if (tempHobbies.length >= 5) return;
@@ -927,14 +828,14 @@ const MatchingProfilePage: React.FC = () => {
                               }
                             }}
                           />
-                          <span className="text-sm">{t(`matching.hobbyCatalog.${hobbyKey}`) || h}</span>
+                          <span className="text-sm">{h}</span>
                         </label>
                       );
                     })}
                   </div>
                 </div>
                 <div className="px-4 py-3 border-t flex items-center justify-end gap-2">
-                  <button className="px-3 py-2 text-sm border rounded hover:bg-gray-50" onClick={() => setHobbyPickerOpen(false)}>{t('matching.profile.hobbies.cancel')}</button>
+                  <button className="px-3 py-2 text-sm border rounded hover:bg-gray-50" onClick={() => setHobbyPickerOpen(false)}>キャンセル</button>
                   <button
                     className="px-3 py-2 text-sm bg-pink-600 text-white rounded hover:bg-pink-700"
                     onClick={() => {
@@ -942,7 +843,7 @@ const MatchingProfilePage: React.FC = () => {
                       setHobbyPickerOpen(false);
                     }}
                   >
-                    {t('matching.profile.hobbies.confirm')}
+                    決定
                   </button>
                 </div>
               </div>
@@ -950,15 +851,15 @@ const MatchingProfilePage: React.FC = () => {
           )}
 
           <div className="p-5">
-            {loading && <div>{t('matching.profile.loading')}</div>}
+            {loading && <div>読み込み中...</div>}
             {error && <div className="text-red-600 text-sm mb-2">{error}</div>}
             {profile && (
               <div className="space-y-6">
                 <section>
-                  <div className="font-medium mb-3">{t('matching.profile.account.title')}</div>
+                  <div className="font-medium mb-3">アカウント情報</div>
                   <div className="grid grid-cols-1 gap-4">
                     <div>
-                      <label htmlFor="user_id" className="block text-sm mb-1">{t('matching.profile.account.userId')}</label>
+                      <label htmlFor="user_id" className="block text-sm mb-1">ユーザーID（携帯番号）</label>
                       <input
                         id="user_id"
                         type="text"
@@ -969,7 +870,7 @@ const MatchingProfilePage: React.FC = () => {
                     </div>
                     <div>
                       <label htmlFor="nickname" className="block text-sm mb-1">
-                        {t('matching.profile.account.displayName')}<span className="text-red-500 ml-1">*</span>
+                        表示名（常に表示される）<span className="text-red-500 ml-1">*</span>
                       </label>
                       <input
                         id="nickname"
@@ -977,22 +878,24 @@ const MatchingProfilePage: React.FC = () => {
                         value={profile.nickname || ''}
                         onChange={(e) => setProfile({ ...profile, nickname: e.target.value })}
                         className="w-full border rounded px-3 py-2 text-sm"
+                        placeholder="表示名を入力"
                         required
                       />
                     </div>
                     <div>
-                      <label htmlFor="real_name" className="block text-sm mb-1">{t('matching.profile.account.realName')}</label>
+                      <label htmlFor="real_name" className="block text-sm mb-1">本名</label>
                       <input
                         id="real_name"
                         type="text"
                         value={profile.real_name || ''}
                         onChange={(e) => setProfile({ ...profile, real_name: e.target.value })}
                         className="w-full border rounded px-3 py-2 text-sm"
+                        placeholder="本名を入力"
                       />
-                      <div className="text-xs text-gray-500 mt-1">{t('matching.profile.account.realNameTip')}</div>
+                      <div className="text-xs text-gray-500 mt-1">身分確認のために必要です。プロフィールには表示されません。</div>
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-sm mb-1">{t('matching.profile.account.email')}</label>
+                      <label htmlFor="email" className="block text-sm mb-1">メールアドレス</label>
                       <input
                         id="email"
                         type="email"
@@ -1003,50 +906,32 @@ const MatchingProfilePage: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label htmlFor="password" className="block text-sm mb-1">{t('matching.profile.account.password')}</label>
+                      <label htmlFor="password" className="block text-sm mb-1">パスワード（変更する場合のみ入力）</label>
                       <input
                         id="password"
                         type="password"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         className="w-full border rounded px-3 py-2 text-sm"
-                        placeholder={t('matching.profile.account.newPassword')}
+                        placeholder="新しいパスワード"
                       />
                     </div>
                   </div>
                 </section>
 
                 <section>
-                  <div className="font-medium mb-2">{t('matching.profile.basic.title')}</div>
+                  <div className="font-medium mb-2">基本情報</div>
                   <div className="grid grid-cols-1 gap-4">
                     <div>
-                      <label htmlFor="nationality" className="block text-sm mb-1">
-                        {t('matching.profile.basic.nationality')} <span className="text-red-500">*</span>
-                      </label>
-                      <select
-                        id="nationality"
-                        aria-label={t('matching.profile.basic.nationality')}
-                        value={profile.nationality || ''}
-                        onChange={(e) => setProfile({ ...profile, nationality: e.target.value })}
-                        className="w-full border rounded px-3 py-2 text-sm"
-                        required
-                      >
-                        <option value="">{t('matching.profile.selectPlaceholder')}</option>
-                        {NATIONALITIES.map((n) => (
-                          <option key={n.code} value={n.code}>{n.flag} {t(`matching.nationalities.${n.code}`)}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label htmlFor="prefecture" className="block text-sm mb-1">{t('matching.profile.basic.residence')}</label>
+                      <label htmlFor="prefecture" className="block text-sm mb-1">居住地</label>
                       <select
                         id="prefecture"
-                        aria-label={t('matching.profile.basic.residence')}
+                        aria-label="居住地"
                         value={profile.prefecture}
                         onChange={(e) => setProfile({ ...profile, prefecture: e.target.value })}
                         className="w-full border rounded px-3 py-2 text-sm"
                       >
-                        <option value="">{t('matching.profile.hidden')}</option>
+                        <option value="">非表示</option>
                         {PREFECTURES.map((p) => (
                           <option key={p} value={p}>{p}</option>
                         ))}
@@ -1057,15 +942,15 @@ const MatchingProfilePage: React.FC = () => {
                         if (!cityKey) return null;
                         return (
                           <div className="mt-2">
-                            <label htmlFor="residence_detail" className="block text-sm mb-1">{t('matching.profile.basic.residenceDetail')}</label>
+                            <label htmlFor="residence_detail" className="block text-sm mb-1">居住地の詳細（{cityKey}の区）</label>
                             <select
                               id="residence_detail"
-                              aria-label={t('matching.profile.basic.residenceDetail')}
+                              aria-label="居住地の詳細"
                               value={profile.residence_detail || ''}
                               onChange={(e) => setProfile({ ...profile, residence_detail: e.target.value })}
                               className="w-full border rounded px-3 py-2 text-sm"
                             >
-                              <option value="">{t('matching.profile.notSelected')}</option>
+                              <option value="">未選択</option>
                               {CITY_WARDS[cityKey].map((w) => (
                                 <option key={w} value={`${cityKey}${w}`}>{`${cityKey}${w}`}</option>
                               ))}
@@ -1075,99 +960,99 @@ const MatchingProfilePage: React.FC = () => {
                       })()}
                     </div>
                     <div>
-                      <label htmlFor="age_band" className="block text-sm mb-1">{t('matching.profile.basic.ageBand')}</label>
+                      <label htmlFor="age_band" className="block text-sm mb-1">年代</label>
                       <select
                         id="age_band"
-                        aria-label={t('matching.profile.basic.ageBand')}
+                        aria-label="年代"
                         value={profile.age_band}
                         onChange={(e) => setProfile({ ...profile, age_band: e.target.value })}
                         className="w-full border rounded px-3 py-2 text-sm"
                       >
-                        <option value="">{t('matching.profile.hidden')}</option>
+                        <option value="">非表示</option>
                         {AGE_BANDS.map((a) => (
-                          <option key={a} value={a}>{t(`matching.ageBands.${AGE_BAND_KEYS[a]}`)}</option>
+                          <option key={a} value={a}>{a}</option>
                         ))}
                       </select>
                     </div>
                     <div>
-                      <label htmlFor="occupation" className="block text-sm mb-1">{t('matching.profile.basic.occupation')}</label>
+                      <label htmlFor="occupation" className="block text-sm mb-1">職種</label>
                       <select
                         id="occupation"
-                        aria-label={t('matching.profile.basic.occupation')}
+                        aria-label="職種"
                         value={profile.occupation}
                         onChange={(e) => setProfile({ ...profile, occupation: e.target.value })}
                         className="w-full border rounded px-3 py-2 text-sm"
                       >
-                        <option value="">{t('matching.profile.hidden')}</option>
+                        <option value="">非表示</option>
                         {OCCUPATIONS.map((o) => (
-                          <option key={o} value={o}>{t(`matching.occupations.${OCCUPATION_KEYS[o]}`)}</option>
+                          <option key={o} value={o}>{o}</option>
                         ))}
                       </select>
                     </div>
                     <div>
-                      <label htmlFor="blood_type" className="block text-sm mb-1">{t('matching.profile.basic.bloodType')}</label>
+                      <label htmlFor="blood_type" className="block text-sm mb-1">血液型</label>
                       <select
                         id="blood_type"
-                        aria-label={t('matching.profile.basic.bloodType')}
+                        aria-label="血液型"
                         value={profile.blood_type || ''}
                         onChange={(e) => setProfile({ ...profile, blood_type: e.target.value })}
                         className="w-full border rounded px-3 py-2 text-sm"
                       >
-                        <option value="">{t('matching.profile.hidden')}</option>
+                        <option value="">非表示</option>
                         {BLOOD_TYPES.map((b) => (
-                          <option key={b} value={b}>{t(`matching.bloodTypes.${BLOOD_TYPE_KEYS[b]}`)}</option>
+                          <option key={b} value={b}>{b}</option>
                         ))}
                       </select>
                     </div>
                     <div>
-                      <label htmlFor="zodiac" className="block text-sm mb-1">{t('matching.profile.basic.zodiac')}</label>
+                      <label htmlFor="zodiac" className="block text-sm mb-1">星座</label>
                       <select
                         id="zodiac"
-                        aria-label={t('matching.profile.basic.zodiac')}
+                        aria-label="星座"
                         value={profile.zodiac || ''}
                         onChange={(e) => setProfile({ ...profile, zodiac: e.target.value })}
                         className="w-full border rounded px-3 py-2 text-sm"
                       >
-                        <option value="">{t('matching.profile.hidden')}</option>
+                        <option value="">非表示</option>
                         {ZODIACS.map((z) => (
-                          <option key={z} value={z}>{t(`matching.zodiacs.${ZODIAC_KEYS[z]}`)}</option>
+                          <option key={z} value={z}>{z}</option>
                         ))}
                       </select>
                     </div>
                     <div>
-                      <label htmlFor="meet_pref" className="block text-sm mb-1">{t('matching.profile.basic.meetPref')}</label>
+                      <label htmlFor="meet_pref" className="block text-sm mb-1">マッチングの目的</label>
                       <select
                         id="meet_pref"
-                        aria-label={t('matching.profile.basic.meetPref')}
+                        aria-label="マッチングの目的"
                         value={profile.meet_pref}
                         onChange={(e) => setProfile({ ...profile, meet_pref: e.target.value })}
                         className="w-full border rounded px-3 py-2 text-sm"
                       >
-                        <option value="">{t('matching.profile.hidden')}</option>
+                        <option value="">非表示</option>
                         {MEET_PREFS.map((m) => (
-                          <option key={m} value={m}>{t(`matching.meetPrefs.${MEET_PREF_KEYS[m]}`)}</option>
+                          <option key={m} value={m}>{m}</option>
                         ))}
                       </select>
                     </div>
                     <div>
-                      <label htmlFor="identity" className="block text-sm mb-1">{t('matching.profile.basic.identity')}</label>
+                      <label htmlFor="identity" className="block text-sm mb-1">性自認</label>
                       <select
                         id="identity"
-                        aria-label={t('matching.profile.basic.identity')}
+                        aria-label="性自認"
                         value={profile.identity}
                         onChange={(e) => setProfile({ ...profile, identity: e.target.value })}
                         className="w-full border rounded px-3 py-2 text-sm"
                       >
-                        <option value="">{t('matching.profile.selectPlaceholder')}</option>
+                        <option value="">選択してください</option>
                         {IDENTITIES.map((idv) => (
-                          <option key={idv} value={idv}>{t(`matching.identities.${IDENTITY_KEYS[idv]}`)}</option>
+                          <option key={idv} value={idv}>{idv}</option>
                         ))}
                       </select>
-                      <div className="text-xs text-gray-500 mt-1">{t('matching.profile.basic.identityTip')}</div>
+                      <div className="text-xs text-gray-500 mt-1">プロフィール画像にバッジとして表示されます。</div>
                     </div>
                     <div>
-                      <div className="block text-sm mb-1">{t('matching.profile.basic.romanceTarget')}</div>
-                      <div className="space-y-2" role="group" aria-label={t('matching.profile.basic.romanceTarget')}>
+                      <div className="block text-sm mb-1">恋愛対象（検索分類）</div>
+                      <div className="space-y-2" role="group" aria-label="恋愛対象">
                         {ROMANCE_TARGETS.map((target) => {
                           const checked = (profile.romance_targets || []).includes(target);
                           return (
@@ -1182,18 +1067,18 @@ const MatchingProfilePage: React.FC = () => {
                                 }}
                                 className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black"
                               />
-                              <span className="text-sm">{t(`matching.romanceTargets.${ROMANCE_TARGET_KEYS[target]}`)}</span>
+                              <span className="text-sm">{target}</span>
                             </label>
                           );
                         })}
                       </div>
-                      <div className="text-xs text-gray-500 mt-1">{t('matching.profile.basic.romanceTargetTip')}</div>
+                      <div className="text-xs text-gray-500 mt-1">複数選択可能。マッチング検索で使用されます。</div>
                     </div>
                   </div>
                 </section>
 
                 <section>
-                  <div className="font-medium mb-2">{t('matching.profile.hobbies.title')}</div>
+                  <div className="font-medium mb-2">興味・趣味</div>
                   <div className="space-y-2">
                     <button
                       type="button"
@@ -1202,18 +1087,18 @@ const MatchingProfilePage: React.FC = () => {
                         setHobbyPickerOpen(true);
                       }}
                       className="px-3 py-2 bg-white border rounded text-sm hover:bg-gray-50"
-                      aria-label={t('matching.profile.hobbies.title')}
+                      aria-label="興味・趣味を選ぶ"
                     >
-                      {t('matching.profile.hobbies.select')}
+                      選ぶ（最大5個）
                     </button>
                     {/* 選択済みのタグ表示 */}
-                    <div className="flex flex-wrap gap-2" aria-label={t('matching.profile.hobbies.title')}>
+                    <div className="flex flex-wrap gap-2" aria-label="選択済みの興味・趣味">
                       {(profile.hobbies || []).length === 0 && (
-                        <span className="text-xs text-gray-500">{t('matching.profile.hobbies.notSelected')}</span>
+                        <span className="text-xs text-gray-500">未選択</span>
                       )}
                       {(profile.hobbies || []).map((h) => (
                         <span key={h} className="px-2 py-1 bg-gray-100 text-gray-800 border border-gray-300 rounded-full text-xs">
-                          {t(`matching.hobbyCatalog.${HOBBY_KEYS[h]}`) || h}
+                          {h}
                         </span>
                       ))}
                     </div>
@@ -1221,16 +1106,16 @@ const MatchingProfilePage: React.FC = () => {
                 </section>
 
                 <section>
-                  <label htmlFor="bio" className="block font-medium mb-2">{t('matching.profile.bio.title')}</label>
+                  <label htmlFor="bio" className="block font-medium mb-2">自己紹介</label>
                   <textarea
                     id="bio"
                     value={profile.bio}
                     onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
                     className="w-full border rounded px-3 py-2 text-sm h-32"
-                    placeholder={t('matching.profile.bio.placeholder')}
+                    placeholder="あなたのことを自由に書いてください。連絡先の記載は禁止です。"
                   />
                   <div className="text-xs text-gray-500 mt-1">
-                    {t('matching.profile.bio.tip')}
+                    電話番号、メールアドレス、LINEなどの連絡先は記載しないでください。
                   </div>
                 </section>
 
@@ -1240,14 +1125,14 @@ const MatchingProfilePage: React.FC = () => {
                     type="button"
                     className="px-4 py-2 bg-gray-800 text-white rounded text-sm hover:bg-gray-700 transition-colors"
                   >
-                    👁️ {t('matching.profile.preview')}
+                    👁️ プレビュー
                   </button>
                   <button
                     onClick={saveProfile}
                     disabled={saving}
                     className="px-4 py-2 bg-black text-white rounded text-sm hover:bg-gray-800 disabled:opacity-60 transition-colors"
                   >
-                    {saving ? t('matching.profile.saving') : t('matching.profile.save')}
+                    {saving ? '保存中...' : '保存'}
                   </button>
                 </div>
               </div>
@@ -1261,7 +1146,7 @@ const MatchingProfilePage: React.FC = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setPreviewOpen(false)}>
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
-              <h2 className="text-xl font-bold">{t('matching.profile.previewTitle')}</h2>
+              <h2 className="text-xl font-bold">プロフィールプレビュー</h2>
               <button
                 onClick={() => setPreviewOpen(false)}
                 className="text-gray-500 hover:text-gray-700 text-2xl"
@@ -1277,13 +1162,13 @@ const MatchingProfilePage: React.FC = () => {
                   <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
                     <img
                       src={resolveImageUrl(images[currentSlide]?.url)}
-                      alt={t('matching.profile.preview')}
+                      alt="プロフィール画像"
                       className="w-full h-full object-cover"
                     />
                   </div>
                   {profile.identity && profile.identity !== '非表示' && (
                     <div className="absolute top-4 left-4 bg-black text-white px-3 py-1 rounded-full text-sm font-bold">
-                      {t(`matching.identities.${IDENTITY_KEYS[profile.identity]}`) || profile.identity}
+                      {profile.identity}
                     </div>
                   )}
                   {profile.display_name && (
@@ -1309,37 +1194,37 @@ const MatchingProfilePage: React.FC = () => {
                 <div className="grid grid-cols-2 gap-4">
                   {profile.prefecture && (
                     <div>
-                      <div className="text-xs text-gray-500">{t('matching.profile.basic.residence')}</div>
+                      <div className="text-xs text-gray-500">居住地</div>
                       <div className="font-medium">{profile.prefecture}{profile.residence_detail && ` ${profile.residence_detail}`}</div>
                     </div>
                   )}
                   {profile.age_band && (
                     <div>
-                      <div className="text-xs text-gray-500">{t('matching.profile.basic.ageBand')}</div>
-                      <div className="font-medium">{t(`matching.ageBands.${AGE_BAND_KEYS[profile.age_band]}`) || profile.age_band}</div>
+                      <div className="text-xs text-gray-500">年代</div>
+                      <div className="font-medium">{profile.age_band}</div>
                     </div>
                   )}
                   {profile.occupation && (
                     <div>
-                      <div className="text-xs text-gray-500">{t('matching.profile.basic.occupation')}</div>
-                      <div className="font-medium">{t(`matching.occupations.${OCCUPATION_KEYS[profile.occupation]}`) || profile.occupation}</div>
+                      <div className="text-xs text-gray-500">職業</div>
+                      <div className="font-medium">{profile.occupation}</div>
                     </div>
                   )}
                   {profile.blood_type && (
                     <div>
-                      <div className="text-xs text-gray-500">{t('matching.profile.basic.bloodType')}</div>
-                      <div className="font-medium">{t(`matching.bloodTypes.${BLOOD_TYPE_KEYS[profile.blood_type]}`) || profile.blood_type}</div>
+                      <div className="text-xs text-gray-500">血液型</div>
+                      <div className="font-medium">{profile.blood_type}</div>
                     </div>
                   )}
                   {profile.zodiac && (
                     <div>
-                      <div className="text-xs text-gray-500">{t('matching.profile.basic.zodiac')}</div>
-                      <div className="font-medium">{t(`matching.zodiacs.${ZODIAC_KEYS[profile.zodiac]}`) || profile.zodiac}</div>
+                      <div className="text-xs text-gray-500">星座</div>
+                      <div className="font-medium">{profile.zodiac}</div>
                     </div>
                   )}
                   {profile.hometown && (
                     <div>
-                      <div className="text-xs text-gray-500">{t('matching.profile.basic.residence')}</div>
+                      <div className="text-xs text-gray-500">出身地</div>
                       <div className="font-medium">{profile.hometown}</div>
                     </div>
                   )}
@@ -1347,11 +1232,11 @@ const MatchingProfilePage: React.FC = () => {
 
                 {profile.romance_targets && profile.romance_targets.length > 0 && (
                   <div>
-                    <div className="text-xs text-gray-500 mb-1">{t('matching.profile.basic.romanceTarget')}</div>
+                    <div className="text-xs text-gray-500 mb-1">恋愛対象</div>
                     <div className="flex flex-wrap gap-2">
                       {profile.romance_targets.map((target, idx) => (
                         <span key={idx} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm border border-gray-200">
-                          {t(`matching.romanceTargets.${ROMANCE_TARGET_KEYS[target]}`) || target}
+                          {target}
                         </span>
                       ))}
                     </div>
@@ -1360,11 +1245,11 @@ const MatchingProfilePage: React.FC = () => {
 
                 {profile.hobbies && profile.hobbies.length > 0 && (
                   <div>
-                    <div className="text-xs text-gray-500 mb-1">{t('matching.profile.hobbies.title')}</div>
+                    <div className="text-xs text-gray-500 mb-1">趣味</div>
                     <div className="flex flex-wrap gap-2">
                       {profile.hobbies.map((hobby, idx) => (
                         <span key={idx} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm border border-gray-200">
-                          {t(`matching.hobbyCatalog.${HOBBY_KEYS[hobby]}`) || hobby}
+                          {hobby}
                         </span>
                       ))}
                     </div>
@@ -1373,14 +1258,14 @@ const MatchingProfilePage: React.FC = () => {
 
                 {profile.meet_pref && (
                   <div>
-                    <div className="text-xs text-gray-500 mb-1">{t('matching.profile.basic.meetPref')}</div>
-                    <div className="font-medium">{t(`matching.meetPrefs.${MEET_PREF_KEYS[profile.meet_pref]}`) || profile.meet_pref}</div>
+                    <div className="text-xs text-gray-500 mb-1">出会いの目的</div>
+                    <div className="font-medium">{profile.meet_pref}</div>
                   </div>
                 )}
 
                 {profile.bio && (
                   <div>
-                    <div className="text-xs text-gray-500 mb-1">{t('matching.profile.bio.title')}</div>
+                    <div className="text-xs text-gray-500 mb-1">自己紹介</div>
                     <div className="whitespace-pre-wrap text-sm leading-relaxed">{profile.bio}</div>
                   </div>
                 )}
@@ -1391,7 +1276,7 @@ const MatchingProfilePage: React.FC = () => {
                   onClick={() => setPreviewOpen(false)}
                   className="px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors"
                 >
-                  {t('matching.profile.hobbies.cancel')}
+                  閉じる
                 </button>
               </div>
             </div>

@@ -2,19 +2,15 @@
   "hero": {
     "messages": [
       {
-        "main": "自分を表現して、\n新しい仲間と出会おう",
-        "sub": "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
+        "main": "国境なき世界をつくる",
+        "sub": "言葉もジェンダーも違いも越えて！"
       },
       {
-        "main": "安心して自分を表現できる\n安全性の高いコミュニティ",
+        "main": "ジェンダーフリーの生き方を\n応援する唯一のサイト",
         "sub": "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
       },
       {
         "main": "心許せる仲間との\n繋がりがつくれる空間",
-        "sub": "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
-      },
-      {
-        "main": "ジェンダーフリーの生き方を\n応援する唯一のサイト",
         "sub": "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
       },
       {
@@ -23,14 +19,6 @@
       },
       {
         "main": "あなたの才能を認めてくれる\n仲間が集うコミュニティ",
-        "sub": "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
-      },
-      {
-        "main": "価値観が響き合う仲間と作る\n上質なコミュニティ空間",
-        "sub": "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
-      },
-      {
-        "main": "真っ白なキャンバスをあなたの\n「カラット」で輝かせましょう",
         "sub": "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
       }
     ]
@@ -288,7 +276,18 @@
     "typing": "入力中..."
   },
   "auth": {
-    "login": "ログイン",
+    "login": {
+      "title": "会員ログイン",
+      "description": "会員アカウントでログインして全機能をご利用ください",
+      "email": "メールアドレス",
+      "password": "パスワード",
+      "rememberMe": "ログイン状態を保持する（7日間）",
+      "submit": "ログイン",
+      "submitting": "ログイン中...",
+      "error": "メールアドレスまたはパスワードが正しくありません",
+      "premiumDescription": "まだ会員でない方は、有料会員になって全機能をご利用ください",
+      "becomePremium": "有料会員になる"
+    },
     "loginRequired": "ログインが必要です",
     "loginRequiredMessage": "この機能を利用するには、会員としてログインする必要があります。",
     "email": "メールアドレス",
@@ -391,7 +390,9 @@
   "cta": {
     "communityTitle": "会員制LGBTQ+コミュニティ \"Carat\"",
     "communitySubtitle": "投稿とマッチングで、あなたの物語をはじめましょう。",
-    "freeUserNote": "* 無料会員はサイト全体の内容を見ていただけます。投稿や有料会員限定サイトを閲覧するには会員登録が必要です。"
+    "freeUserNote": "* 無料会員はサイト全体の内容を見ていただけます。投稿や有料会員限定サイトを閲覧するには会員登録が必要です。",
+    "createPost": "投稿を作成",
+    "registerButton": "会員登録（月1,000円）"
   },
   "membership": {
     "registrationRequired": "会員登録が必要です",
@@ -830,166 +831,188 @@
       "note3": "取引は自己責任で行ってください"
     }
   },
-  "courses": {
-    "title": "講座一覧",
-    "subtitle": "スキルアップのための講座を探そう",
-    "listCourse": "講座を出品する",
-    "filter": "フィルター",
-    "category": "カテゴリー",
-    "selectCategory": "カテゴリーを選択",
-    "allCategories": "すべてのカテゴリー",
-    "noCourses": "講座がまだありません",
-    "listFirstCourse": "最初の講座を出品する",
-    "categories": {
-      "business": "ビジネス",
-      "creative": "クリエイティブ",
-      "language": "語学",
-      "health": "健康",
-      "relationship": "恋愛・関係",
-      "life": "ライフ",
-      "other": "その他"
+  "jewelry": {
+    "title": "会員限定 ジュエリー特別販売",
+    "bannerAlt": "ジュエリーコレクション",
+    "searchPlaceholder": "商品を検索...",
+    "allCategories": "すべて",
+    "noProducts": "商品がありません",
+    "banner": {
+      "title": "ジュエリー販売",
+      "subtitle": "会員限定で特別な価格にてご提供",
+      "viewDetails": "詳細はこちら"
     },
     "detail": {
-      "backToList": "一覧に戻る",
-      "previousImage": "前の画像",
-      "nextImage": "次の画像",
-      "image": "画像",
-      "demoVideos": "デモ動画",
-      "videoThumbnail": "動画サムネイル",
-      "description": "講座の説明",
-      "price": "講座料金",
-      "instructorProfile": "講師プロフィール",
-      "instructor": "投稿者",
-      "viewProfile": "プロフィールを見る",
-      "profileMembersOnly": "プロフィールは会員限定",
-      "contactInstructor": "投稿者に問い合わせる",
-      "connecting": "接続中...",
-      "applyOnSite": "サイトから申し込む",
-      "applyOnSitePremium": "サイトから申し込む（有料会員限定）",
-      "deleteConfirmTitle": "講座を削除しますか？",
-      "deleteConfirmMessage": "この操作は取り消せません。講座に関連するすべてのデータが削除されます。",
-      "deleteFailed": "削除に失敗しました",
-      "inquirySent": "問い合わせを送信しました。相手からの返信をお待ちください。",
-      "chatStartFailed": "チャットの開始に失敗しました"
+      "backToList": "商品一覧に戻る",
+      "soldOut": "売り切れ",
+      "stock": "在庫",
+      "pieces": "点",
+      "hasCertificate": "鑑定証あり",
+      "hasGemId": "宝石識別証あり",
+      "addToCart": "カートに入れる",
+      "adding": "追加中...",
+      "viewCart": "カートを見る",
+      "productDetails": "商品詳細",
+      "material": "素材",
+      "size": "サイズ",
+      "additionalInfo": "追加情報",
+      "productNotFound": "商品が見つかりません",
+      "cartAddSuccess": "カートに追加しました",
+      "cartAddError": "カートへの追加に失敗しました"
     },
-    "form": {
-      "createTitle": "講座を出品",
-      "editTitle": "講座を編集",
-      "category": "カテゴリー",
-      "selectCategory": "カテゴリーを選択",
-      "selectCategoryPlaceholder": "カテゴリーを選択してください",
-      "images": "画像（最大{{max}}枚）",
-      "removeImage": "画像を削除",
-      "uploading": "アップロード中...",
-      "uploadImage": "画像をアップロード",
-      "imageFormatInfo": "JPEG、PNG、WebP形式（最大10MB）",
-      "videos": "YouTube動画（最大{{max}}件）",
-      "thumbnail": "サムネイル",
-      "removeVideo": "動画を削除",
-      "youtubeUrlPlaceholder": "YouTube URLを入力",
-      "addVideo": "動画を追加",
-      "title": "タイトル",
-      "titlePlaceholder": "講座のタイトルを入力（最大80文字）",
-      "characters": "文字",
-      "description": "講座の説明",
-      "descriptionPlaceholder": "講座の内容、対象者、学べることなどを詳しく説明してください（最大3000文字）",
-      "price": "講座料金",
-      "pricePlaceholder": "例: ¥5,000、無料、月額¥2,000",
-      "priceInfo": "自由に入力できます（例: ¥5,000、無料、月額¥2,000〜）",
-      "externalUrl": "講座サイトURL",
-      "urlPlaceholder": "https://example.com/course",
-      "urlInfo": "申し込みページや詳細ページのURLを入力してください",
-      "instructorProfile": "講師プロフィール（最大1000文字）",
-      "instructorProfilePlaceholder": "講師の経歴、実績、専門分野などを記入してください",
-      "submit": "出品する",
-      "maxImagesError": "画像は最大{{max}}枚までです",
-      "invalidImageFormat": "JPEG、PNG、WebP形式の画像のみアップロードできます",
-      "fileSizeError": "ファイルサイズは10MB以下にしてください",
-      "uploadFailed": "アップロードに失敗しました",
-      "maxVideosError": "動画は最大{{max}}件までです",
-      "invalidYoutubeUrl": "有効なYouTube URLを入力してください",
-      "titleRequired": "タイトルを入力してください",
-      "titleMaxLength": "タイトルは80文字以内で入力してください",
-      "descriptionRequired": "説明を入力してください",
-      "descriptionMaxLength": "説明は3000文字以内で入力してください",
-      "categoryRequired": "カテゴリーを選択してください",
-      "priceRequired": "料金を入力してください",
-      "urlRequired": "外部URLを入力してください",
-      "invalidUrl": "外部URLはhttp://またはhttps://で始まる必要があります",
-      "saveFailed": "保存に失敗しました"
+    "categories": {
+      "earring": "イヤリング・ピアス",
+      "necklace": "ネックレス",
+      "bracelet": "ブレスレット",
+      "brooch": "ブローチ",
+      "ring": "リング",
+      "other": "その他"
     }
   },
-  "artSales": {
-    "title": "作品販売",
-    "listArtwork": "作品を出品",
-    "searchPlaceholder": "作品を検索...",
-    "selectCategory": "カテゴリを選択",
-    "allCategories": "すべてのカテゴリ",
-    "gridView": "グリッド表示",
-    "listView": "リスト表示",
-    "noItemsFound": "作品が見つかりませんでした",
-    "negotiable": "応相談",
-    "categories": {
-      "painting": "絵画",
-      "sculpture": "彫刻",
-      "digital": "デジタルアート",
-      "photography": "写真",
-      "calligraphy": "書道",
-      "crafts": "工芸",
-      "illustration": "イラスト",
-      "other": "その他"
+  "liveWedding": {
+    "banner": {
+      "title": "Live Wedding",
+      "subtitle": "オンラインで叶える、あなただけの特別な結婚式",
+      "viewDetails": "詳細はこちら",
+      "bannerAlt": "Live Wedding"
     },
-    "transactionMethods": {
-      "negotiable": "応相談",
-      "hand_off": "手渡し",
-      "shipping": "発送"
+    "page": {
+      "backToHome": "ホームに戻る",
+      "title": "ライブ・ウェディング",
+      "subtitle": "オンライン上で\"二人の誓い\"を公開し、世界中の大切な人と感動を共有。",
+      "consultationButton": "相談予約",
+      "conceptTitle": "コンセプト",
+      "conceptDescription": "オンライン上で親しい人に『二人の誓い』を公開し、祝福を受ける新しいスタイルのウェディング",
+      "recommendTitle": "【ライブ・ウェディングをおすすめの理由】",
+      "recommendReasons": [
+        "公で挙式が難しい方に、堂々と愛を誓える場を提供",
+        "バーチャル背景で理想のウェディングシーンを演出",
+        "遠方の友人・家族とオンラインで祝福を共有",
+        "スタジオQの設備を活かした唯一無二の体験"
+      ],
+      "featuresTitle": "特徴",
+      "featuresDescription": "西日本随一の設備を誇り、業界のプロからも高い評価を得ているバーチャルスタジオ「Studio Q」を利用し、世界にたった一つのオンラインウェディングを提供します。AIによる背景合成技術により、夢に描いたあらゆるシーンを演出可能。教会や海外リゾート、花畑、夜景など、どんな世界観も自由に再現できます。遠方に住む両親、親戚、友人、知人をオンラインで招待し、リアルタイムで「誓い」と「祝福」を共有。さらに、お祝儀やメッセージをオンラインで受け取れる機能も搭載。二人の愛を形にし、永遠に残す\"唯一無二\"のウェディングを実現します。",
+      "pricingTitle": "料金プラン",
+      "planTitle": "ライブ・ウエディングプラン",
+      "regularPrice": "通常価格",
+      "memberPrice": "Carat 会員価格",
+      "taxExcluded": "（税別）",
+      "includedTitle": "含まれる内容",
+      "notIncludedTitle": "含まれない内容",
+      "notIncludedNote": "必要な場合はお客様でお手配ください",
+      "applyButton": "このプランでお申し込み",
+      "includedFeatures": [
+        "カメラ4台によるマルチアングル収録",
+        "配信用音響設備（マイク・ミキサー）",
+        "高画質映像収録",
+        "バーチャル背景作成（教会／披露宴／海外風景 等）",
+        "配信サポート（Zoom等）",
+        "オンラインメッセージ・お祝儀受け取り機能",
+        "スタッフ1〜2名による運営サポート"
+      ],
+      "notIncludedFeatures": [
+        "ヘアメイク・衣装",
+        "司会・牧師・パートナー",
+        "コーディネーター・プランナー",
+        "花束・装飾",
+        "飲食"
+      ],
+      "videoTitle": "背景合成イメージ動画",
+      "videoSubtitle": "美しい背景で特別な演出",
+      "videoDescription": "AIによる背景合成技術により、夢に描いたあらゆるシーンを演出可能。教会や海外リゾート、花畑、夜景など、どんな世界観も自由に再現できます。Studio Qの最新技術で、理想のウェディングシーンを実現いたします。",
+      "studioQTitle": "Studio Q",
+      "studioQSubtitle": "バーチャルスタジオ",
+      "studioQDescription": "西日本随一の設備を誇るバーチャルスタジオ。業界のプロからも高い評価を得ている最新技術で、あなたの理想のウェディングシーンを実現します。",
+      "studioQLocation": "大阪市浪速区",
+      "faqTitle": "よくある質問",
+      "closeVideo": "動画を閉じる",
+      "faqs": [
+        {
+          "question": "どのような機材が必要ですか？",
+          "answer": "基本的な機材は全て弊社でご用意いたします。会場にインターネット環境があれば配信可能です。"
+        },
+        {
+          "question": "配信の品質はどの程度ですか？",
+          "answer": "プランに応じてHD〜4K画質での配信が可能です。安定したインターネット環境で高品質な配信を実現します。"
+        },
+        {
+          "question": "当日のサポート体制は？",
+          "answer": "専任スタッフが当日の進行をサポートいたします。技術的なトラブルにも迅速に対応いたします。"
+        },
+        {
+          "question": "録画データはいつ受け取れますか？",
+          "answer": "配信終了後、編集作業を経て約1週間以内にデータをお渡しいたします。"
+        }
+      ]
+    }
+  },
+  "account": {
+    "title": "アカウント設定",
+    "status": {
+      "title": "会員ステータス",
+      "premiumMember": "有料会員",
+      "freeMember": "無料会員",
+      "identityVerification": "本人確認",
+      "verified": "確認済み",
+      "unverified": "未確認",
+      "caratPoints": "カラットポイント",
+      "totalComments": "総コメント数",
+      "monthlyPoints": "今月の獲得ポイント",
+      "pointsBreakdown": "いいね{{likes}}件 × 投稿{{posts}}件 = {{total}}ポイント"
     },
-    "form": {
-      "createTitle": "作品を出品",
-      "editTitle": "作品を編集",
-      "images": "画像（最大5枚）",
-      "clickToAddImage": "クリックして画像を追加",
-      "title": "タイトル",
-      "titlePlaceholder": "作品のタイトル",
-      "description": "説明",
-      "descriptionPlaceholder": "作品の説明、制作背景など",
-      "price": "価格（円）",
-      "pricePlaceholder": "0で応相談",
-      "category": "カテゴリ",
-      "categoryLabel": "カテゴリを選択",
-      "technique": "技法",
-      "techniquePlaceholder": "油彩、水彩など",
-      "size": "サイズ",
-      "sizePlaceholder": "30cm x 40cm",
-      "yearCreated": "制作年",
-      "transactionMethod": "取引方法",
-      "transactionMethodLabel": "取引方法を選択",
-      "isOriginal": "オリジナル作品",
-      "submit": "出品する",
-      "errors": {
-        "titleRequired": "タイトルを入力してください",
-        "descriptionRequired": "説明を入力してください",
-        "categoryRequired": "カテゴリを選択してください",
-        "submitFailed": "出品に失敗しました",
-        "errorOccurred": "エラーが発生しました"
-      }
+    "info": {
+      "title": "アカウント情報",
+      "description": "アカウントの基本情報を管理します",
+      "email": "メールアドレス",
+      "emailNote": "変更不可",
+      "displayLanguage": "表示言語",
+      "country": "居住国",
+      "countryNote": "変更不可",
+      "membershipType": "会員種別",
+      "identityStatus": "本人確認ステータス",
+      "paymentInfo": "決済情報",
+      "paymentPlaceholder": "Stripe連携予定"
     },
-    "detail": {
-      "original": "オリジナル",
-      "technique": "技法",
-      "size": "サイズ",
-      "yearCreated": "制作年",
-      "year": "年",
-      "description": "作品説明",
-      "transactionMethod": "取引方法",
-      "seller": "出品者",
-      "member": "会員",
-      "contact": "連絡する",
-      "yourListing": "これはあなたの出品です",
-      "transactionNotes": "取引時の注意",
-      "note1": "連絡は専用チャットで行ってください",
-      "note2": "個人情報の交換は禁止されています",
-      "note3": "取引は自己責任で行ってください"
+        "profile": {
+          "title": "プロフィール",
+          "description": "公開プロフィール情報を編集します",
+          "editMatchingProfile": "マッチングプロフィールを編集",
+          "avatar": "アイコン画像",
+          "avatarChange": "画像を変更",
+          "displayName": "表示名",
+          "bio": "自己紹介",
+          "bioPlaceholder": "自己紹介を入力してください...",
+          "location": "居住地",
+          "locationPlaceholder": "例: 東京都",
+          "interests": "興味・関心",
+          "interestsPlaceholder": "タグを追加...",
+          "socialLinks": "SNSリンク",
+          "website": "ウェブサイト",
+          "twitter": "Twitter",
+          "instagram": "Instagram"
+        },
+    "security": {
+      "title": "セキュリティ",
+      "changePassword": "パスワードを変更",
+      "currentPassword": "現在のパスワード",
+      "newPassword": "新しいパスワード",
+      "confirmPassword": "新しいパスワード（確認）",
+      "passwordMinLength": "パスワードは8文字以上で入力してください",
+      "passwordMismatch": "パスワードが一致しません",
+      "passwordChanged": "パスワードを変更しました"
+    },
+    "danger": {
+      "title": "危険な操作",
+      "deleteAccount": "アカウントを削除",
+      "deleteButton": "アカウントを削除する",
+      "deleteConfirmation": "削除を確認するには「DELETE」と入力してください",
+      "deleteWarning": "本当にアカウントを削除しますか？この操作は取り消せません。",
+      "deleteSuccess": "アカウントが削除されました"
+    },
+    "messages": {
+      "fetchError": "アカウント情報の取得に失敗しました",
+      "updateSuccess": "プロフィールを更新しました",
+      "updateError": "更新に失敗しました"
     }
   },
   "subscribe": {

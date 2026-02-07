@@ -2,19 +2,15 @@
   "hero": {
     "messages": [
       {
-        "main": "Express yourself and\nmeet new friends",
-        "sub": "Counseling, art, music, local tours.\nYour story begins here."
+        "main": "Creating a World\nWithout Borders",
+        "sub": "Beyond language, gender, and differences!"
       },
       {
-        "main": "A safe community where\nyou can express yourself",
+        "main": "The only site supporting\ngender-free lifestyles",
         "sub": "Counseling, art, music, local tours.\nYour story begins here."
       },
       {
         "main": "A space to connect with\ntrusted companions",
-        "sub": "Counseling, art, music, local tours.\nYour story begins here."
-      },
-      {
-        "main": "The only site supporting\ngender-free lifestyles",
         "sub": "Counseling, art, music, local tours.\nYour story begins here."
       },
       {
@@ -23,14 +19,6 @@
       },
       {
         "main": "A community where friends\nrecognize your talents",
-        "sub": "Counseling, art, music, local tours.\nYour story begins here."
-      },
-      {
-        "main": "A quality community space\nwith like-minded friends",
-        "sub": "Counseling, art, music, local tours.\nYour story begins here."
-      },
-      {
-        "main": "Let your \"Carat\" shine\non a blank canvas",
         "sub": "Counseling, art, music, local tours.\nYour story begins here."
       }
     ]
@@ -288,7 +276,18 @@
     "typing": "Typing..."
   },
   "auth": {
-    "login": "Login",
+    "login": {
+      "title": "Member Login",
+      "description": "Login with your member account to access all features",
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Stay logged in (7 days)",
+      "submit": "Login",
+      "submitting": "Logging in...",
+      "error": "Invalid email or password",
+      "premiumDescription": "Not a member yet? Become a premium member to access all features",
+      "becomePremium": "Become Premium Member"
+    },
     "loginRequired": "Login required",
     "loginRequiredMessage": "You need to login as a member to use this feature.",
     "email": "Email",
@@ -391,7 +390,9 @@
   "cta": {
     "communityTitle": "Members-only LGBTQ+ Community \"Carat\"",
     "communitySubtitle": "Start your story with posts and matching.",
-    "freeUserNote": "* Free members can view all site content. Registration is required to post or access premium content."
+    "freeUserNote": "* Free members can view all site content. Registration is required to post or access premium content.",
+    "createPost": "Create Post",
+    "registerButton": "Register (¥1,000/month)"
   },
   "membership": {
     "registrationRequired": "Registration required",
@@ -830,166 +831,188 @@
       "note3": "Transactions are at your own risk"
     }
   },
-  "courses": {
-    "title": "Courses",
-    "subtitle": "Find courses to level up your skills",
-    "listCourse": "List a Course",
-    "filter": "Filter",
-    "category": "Category",
-    "selectCategory": "Select category",
-    "allCategories": "All Categories",
-    "noCourses": "No courses yet",
-    "listFirstCourse": "List the first course",
-    "categories": {
-      "business": "Business",
-      "creative": "Creative",
-      "language": "Language",
-      "health": "Health",
-      "relationship": "Relationship",
-      "life": "Life",
-      "other": "Other"
+  "jewelry": {
+    "title": "Members Only - Special Jewelry Sale",
+    "bannerAlt": "Jewelry Collection",
+    "searchPlaceholder": "Search products...",
+    "allCategories": "All",
+    "noProducts": "No products available",
+    "banner": {
+      "title": "Jewelry Sale",
+      "subtitle": "Special prices for members only",
+      "viewDetails": "View Details"
     },
     "detail": {
-      "backToList": "Back to list",
-      "previousImage": "Previous image",
-      "nextImage": "Next image",
-      "image": "Image",
-      "demoVideos": "Demo Videos",
-      "videoThumbnail": "Video thumbnail",
-      "description": "Course Description",
-      "price": "Course Fee",
-      "instructorProfile": "Instructor Profile",
-      "instructor": "Instructor",
-      "viewProfile": "View profile",
-      "profileMembersOnly": "Profile is members only",
-      "contactInstructor": "Contact Instructor",
-      "connecting": "Connecting...",
-      "applyOnSite": "Apply on Site",
-      "applyOnSitePremium": "Apply on Site (Premium Members Only)",
-      "deleteConfirmTitle": "Delete this course?",
-      "deleteConfirmMessage": "This action cannot be undone. All data related to this course will be deleted.",
-      "deleteFailed": "Failed to delete",
-      "inquirySent": "Inquiry sent. Please wait for a response.",
-      "chatStartFailed": "Failed to start chat"
+      "backToList": "Back to Product List",
+      "soldOut": "Sold Out",
+      "stock": "Stock",
+      "pieces": "pcs",
+      "hasCertificate": "With Certificate",
+      "hasGemId": "With Gem ID",
+      "addToCart": "Add to Cart",
+      "adding": "Adding...",
+      "viewCart": "View Cart",
+      "productDetails": "Product Details",
+      "material": "Material",
+      "size": "Size",
+      "additionalInfo": "Additional Information",
+      "productNotFound": "Product not found",
+      "cartAddSuccess": "Added to cart",
+      "cartAddError": "Failed to add to cart"
     },
-    "form": {
-      "createTitle": "List a Course",
-      "editTitle": "Edit Course",
-      "category": "Category",
-      "selectCategory": "Select category",
-      "selectCategoryPlaceholder": "Please select a category",
-      "images": "Images (Max {{max}})",
-      "removeImage": "Remove image",
-      "uploading": "Uploading...",
-      "uploadImage": "Upload Image",
-      "imageFormatInfo": "JPEG, PNG, WebP format (Max 10MB)",
-      "videos": "YouTube Videos (Max {{max}})",
-      "thumbnail": "Thumbnail",
-      "removeVideo": "Remove video",
-      "youtubeUrlPlaceholder": "Enter YouTube URL",
-      "addVideo": "Add video",
-      "title": "Title",
-      "titlePlaceholder": "Enter course title (Max 80 characters)",
-      "characters": " characters",
-      "description": "Course Description",
-      "descriptionPlaceholder": "Describe the course content, target audience, what students will learn, etc. (Max 3000 characters)",
-      "price": "Course Fee",
-      "pricePlaceholder": "e.g., $50, Free, $20/month",
-      "priceInfo": "Enter freely (e.g., $50, Free, $20/month~)",
-      "externalUrl": "Course Site URL",
-      "urlPlaceholder": "https://example.com/course",
-      "urlInfo": "Enter the URL of the registration or details page",
-      "instructorProfile": "Instructor Profile (Max 1000 characters)",
-      "instructorProfilePlaceholder": "Describe instructor's background, achievements, expertise, etc.",
-      "submit": "List Course",
-      "maxImagesError": "Maximum {{max}} images allowed",
-      "invalidImageFormat": "Only JPEG, PNG, WebP images can be uploaded",
-      "fileSizeError": "File size must be 10MB or less",
-      "uploadFailed": "Upload failed",
-      "maxVideosError": "Maximum {{max}} videos allowed",
-      "invalidYoutubeUrl": "Please enter a valid YouTube URL",
-      "titleRequired": "Please enter a title",
-      "titleMaxLength": "Title must be 80 characters or less",
-      "descriptionRequired": "Please enter a description",
-      "descriptionMaxLength": "Description must be 3000 characters or less",
-      "categoryRequired": "Please select a category",
-      "priceRequired": "Please enter a price",
-      "urlRequired": "Please enter an external URL",
-      "invalidUrl": "External URL must start with http:// or https://",
-      "saveFailed": "Failed to save"
+    "categories": {
+      "earring": "Earrings & Piercings",
+      "necklace": "Necklaces",
+      "bracelet": "Bracelets",
+      "brooch": "Brooches",
+      "ring": "Rings",
+      "other": "Other"
     }
   },
-  "artSales": {
-    "title": "Artwork Sales",
-    "listArtwork": "List Artwork",
-    "searchPlaceholder": "Search artworks...",
-    "selectCategory": "Select category",
-    "allCategories": "All Categories",
-    "gridView": "Grid view",
-    "listView": "List view",
-    "noItemsFound": "No artworks found",
-    "negotiable": "Negotiable",
-    "categories": {
-      "painting": "Painting",
-      "sculpture": "Sculpture",
-      "digital": "Digital Art",
-      "photography": "Photography",
-      "calligraphy": "Calligraphy",
-      "crafts": "Crafts",
-      "illustration": "Illustration",
-      "other": "Other"
+  "liveWedding": {
+    "banner": {
+      "title": "Live Wedding",
+      "subtitle": "Your special online wedding ceremony",
+      "viewDetails": "View Details",
+      "bannerAlt": "Live Wedding"
     },
-    "transactionMethods": {
-      "negotiable": "Negotiable",
-      "hand_off": "Hand-off",
-      "shipping": "Shipping"
+    "page": {
+      "backToHome": "Back to Home",
+      "title": "Live Wedding",
+      "subtitle": "Share your vows online and celebrate with loved ones around the world.",
+      "consultationButton": "Book Consultation",
+      "conceptTitle": "Concept",
+      "conceptDescription": "A new style of wedding where you share your vows with close friends and family online and receive their blessings",
+      "recommendTitle": "Why We Recommend Live Wedding",
+      "recommendReasons": [
+        "Provides a place to proudly declare your love for those who find it difficult to have a public ceremony",
+        "Create your ideal wedding scene with virtual backgrounds",
+        "Share blessings online with friends and family from afar",
+        "A unique experience utilizing Studio Q's facilities"
+      ],
+      "featuresTitle": "Features",
+      "featuresDescription": "We provide a one-of-a-kind online wedding using Studio Q, a virtual studio with the best facilities in western Japan and highly regarded by industry professionals. With AI background compositing technology, you can create any scene you dream of. Churches, overseas resorts, flower fields, night views - any atmosphere can be freely recreated. Invite parents, relatives, friends, and acquaintances from afar online to share vows and blessings in real-time. Additionally, features for receiving congratulatory gifts and messages online are included. We realize a truly unique wedding that shapes your love and preserves it forever.",
+      "pricingTitle": "Pricing Plan",
+      "planTitle": "Live Wedding Plan",
+      "regularPrice": "Regular Price",
+      "memberPrice": "Carat Member Price",
+      "taxExcluded": "(Tax Excluded)",
+      "includedTitle": "What's Included",
+      "notIncludedTitle": "Not Included",
+      "notIncludedNote": "Please arrange these items yourself if needed",
+      "applyButton": "Apply with This Plan",
+      "includedFeatures": [
+        "Multi-angle recording with 4 cameras",
+        "Audio equipment for streaming (microphones, mixer)",
+        "High-quality video recording",
+        "Virtual background creation (church/reception/overseas scenery, etc.)",
+        "Streaming support (Zoom, etc.)",
+        "Online message and gift receiving function",
+        "Operational support by 1-2 staff members"
+      ],
+      "notIncludedFeatures": [
+        "Hair, makeup, and attire",
+        "MC, minister, partner",
+        "Coordinator/planner",
+        "Bouquets and decorations",
+        "Food and beverages"
+      ],
+      "videoTitle": "Background Composite Video",
+      "videoSubtitle": "Special Production with Beautiful Backgrounds",
+      "videoDescription": "With AI background compositing technology, you can create any scene you dream of. Churches, overseas resorts, flower fields, night views - any atmosphere can be freely recreated. Studio Q's latest technology realizes your ideal wedding scene.",
+      "studioQTitle": "Studio Q",
+      "studioQSubtitle": "Virtual Studio",
+      "studioQDescription": "A virtual studio with the best facilities in western Japan. With cutting-edge technology highly regarded by industry professionals, we realize your ideal wedding scene.",
+      "studioQLocation": "Naniwa-ku, Osaka",
+      "faqTitle": "Frequently Asked Questions",
+      "closeVideo": "Close Video",
+      "faqs": [
+        {
+          "question": "What equipment is needed?",
+          "answer": "We provide all basic equipment. Streaming is possible if the venue has an internet connection."
+        },
+        {
+          "question": "What is the streaming quality?",
+          "answer": "Depending on the plan, streaming in HD to 4K quality is possible. We achieve high-quality streaming with a stable internet connection."
+        },
+        {
+          "question": "What is the support system on the day?",
+          "answer": "Dedicated staff will support the day's proceedings. We respond quickly to technical troubles."
+        },
+        {
+          "question": "When can I receive the recorded data?",
+          "answer": "After the streaming ends, we will deliver the data within about one week after editing."
+        }
+      ]
+    }
+  },
+  "account": {
+    "title": "Account Settings",
+    "status": {
+      "title": "Member Status",
+      "premiumMember": "Premium Member",
+      "freeMember": "Free Member",
+      "identityVerification": "Identity Verification",
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "caratPoints": "Carat Points",
+      "totalComments": "Total Comments",
+      "monthlyPoints": "Monthly Points",
+      "pointsBreakdown": "{{likes}} likes × {{posts}} posts = {{total}} points"
     },
-    "form": {
-      "createTitle": "List Artwork",
-      "editTitle": "Edit Artwork",
-      "images": "Images (Max 5)",
-      "clickToAddImage": "Click to add images",
-      "title": "Title",
-      "titlePlaceholder": "Artwork title",
-      "description": "Description",
-      "descriptionPlaceholder": "Artwork description, background, etc.",
-      "price": "Price (¥)",
-      "pricePlaceholder": "0 for negotiable",
-      "category": "Category",
-      "categoryLabel": "Select category",
-      "technique": "Technique",
-      "techniquePlaceholder": "Oil, watercolor, etc.",
-      "size": "Size",
-      "sizePlaceholder": "30cm x 40cm",
-      "yearCreated": "Year Created",
-      "transactionMethod": "Transaction Method",
-      "transactionMethodLabel": "Select transaction method",
-      "isOriginal": "Original Artwork",
-      "submit": "List",
-      "errors": {
-        "titleRequired": "Please enter a title",
-        "descriptionRequired": "Please enter a description",
-        "categoryRequired": "Please select a category",
-        "submitFailed": "Failed to list artwork",
-        "errorOccurred": "An error occurred"
-      }
+    "info": {
+      "title": "Account Information",
+      "description": "Manage your basic account information",
+      "email": "Email Address",
+      "emailNote": "Cannot be changed",
+      "displayLanguage": "Display Language",
+      "country": "Country of Residence",
+      "countryNote": "Cannot be changed",
+      "membershipType": "Membership Type",
+      "identityStatus": "Identity Verification Status",
+      "paymentInfo": "Payment Information",
+      "paymentPlaceholder": "Stripe integration coming soon"
     },
-    "detail": {
-      "original": "Original",
-      "technique": "Technique",
-      "size": "Size",
-      "yearCreated": "Year Created",
-      "year": "",
-      "description": "Artwork Description",
-      "transactionMethod": "Transaction Method",
-      "seller": "Seller",
-      "member": "Member",
-      "contact": "Contact",
-      "yourListing": "This is your listing",
-      "transactionNotes": "Transaction Notes",
-      "note1": "Please use the dedicated chat for communication",
-      "note2": "Exchange of personal information is prohibited",
-      "note3": "Transactions are at your own risk"
+        "profile": {
+          "title": "Profile",
+          "description": "Edit your public profile information",
+          "editMatchingProfile": "Edit Matching Profile",
+          "avatar": "Profile Picture",
+          "avatarChange": "Change Picture",
+          "displayName": "Display Name",
+          "bio": "Bio",
+          "bioPlaceholder": "Tell us about yourself...",
+          "location": "Location",
+          "locationPlaceholder": "e.g., Tokyo",
+          "interests": "Interests",
+          "interestsPlaceholder": "Add tags...",
+          "socialLinks": "Social Links",
+          "website": "Website",
+          "twitter": "Twitter",
+          "instagram": "Instagram"
+        },
+    "security": {
+      "title": "Security",
+      "changePassword": "Change Password",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "passwordMismatch": "Passwords do not match",
+      "passwordChanged": "Password changed successfully"
+    },
+    "danger": {
+      "title": "Danger Zone",
+      "deleteAccount": "Delete Account",
+      "deleteButton": "Delete Account",
+      "deleteConfirmation": "Type 'DELETE' to confirm",
+      "deleteWarning": "Are you sure you want to delete your account? This action cannot be undone.",
+      "deleteSuccess": "Account deleted successfully"
+    },
+    "messages": {
+      "fetchError": "Failed to fetch account information",
+      "updateSuccess": "Profile updated successfully",
+      "updateError": "Failed to update"
     }
   },
   "subscribe": {

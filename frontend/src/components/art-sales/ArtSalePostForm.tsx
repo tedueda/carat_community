@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Upload, X } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 
 interface Category {
   id: string;
@@ -49,7 +48,6 @@ const ArtSalePostForm: React.FC<ArtSalePostFormProps> = ({
   onCancel,
   onSuccess,
 }) => {
-  const { t } = useTranslation();
   const token = localStorage.getItem('token');
 
   const [title, setTitle] = useState(editingItem?.title || '');
@@ -88,15 +86,15 @@ const ArtSalePostForm: React.FC<ArtSalePostFormProps> = ({
     setError('');
 
     if (!title.trim()) {
-      setError(t('artSales.form.errors.titleRequired'));
+      setError('タイトルを入力してください');
       return;
     }
     if (!description.trim()) {
-      setError(t('artSales.form.errors.descriptionRequired'));
+      setError('説明を入力してください');
       return;
     }
     if (!category) {
-      setError(t('artSales.form.errors.categoryRequired'));
+      setError('カテゴリを選択してください');
       return;
     }
 
@@ -157,11 +155,11 @@ const ArtSalePostForm: React.FC<ArtSalePostFormProps> = ({
         onSuccess();
       } else {
         const errorData = await response.json();
-        setError(errorData.detail || t('artSales.form.errors.submitFailed'));
+        setError(errorData.detail || '出品に失敗しました');
       }
     } catch (err) {
       console.error('出品エラー:', err);
-      setError(t('artSales.form.errors.errorOccurred'));
+      setError('エラーが発生しました');
     } finally {
       setLoading(false);
     }
@@ -175,13 +173,13 @@ const ArtSalePostForm: React.FC<ArtSalePostFormProps> = ({
           className="flex items-center text-gray-700 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          {t('common.back')}
+          戻る
         </button>
       </div>
 
       <div className="bg-white rounded-xl shadow-lg p-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-6">
-          {editingItem ? t('artSales.form.editTitle') : t('artSales.form.createTitle')}
+          {editingItem ? '作品を編集' : '作品を出品'}
         </h2>
 
         {error && (
@@ -193,7 +191,7 @@ const ArtSalePostForm: React.FC<ArtSalePostFormProps> = ({
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t('artSales.form.images')}
+              画像（最大5枚）
             </label>
             
             {existingImages.length > 0 && (
@@ -244,7 +242,7 @@ const ArtSalePostForm: React.FC<ArtSalePostFormProps> = ({
               <label className="flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
                 <div className="text-center">
                   <Upload className="w-8 h-8 mx-auto text-gray-400" />
-                  <p className="mt-2 text-sm text-gray-500">{t('artSales.form.clickToAddImage')}</p>
+                  <p className="mt-2 text-sm text-gray-500">クリックして画像を追加</p>
                 </div>
                 <input
                   type="file"
@@ -259,59 +257,59 @@ const ArtSalePostForm: React.FC<ArtSalePostFormProps> = ({
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              {t('artSales.form.title')} <span className="text-red-500">*</span>
+              タイトル <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-              placeholder={t('artSales.form.titlePlaceholder')}
+              placeholder="作品のタイトル"
               maxLength={200}
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              {t('artSales.form.description')} <span className="text-red-500">*</span>
+              説明 <span className="text-red-500">*</span>
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 h-32"
-              placeholder={t('artSales.form.descriptionPlaceholder')}
+              placeholder="作品の説明、制作背景など"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('artSales.form.price')}
+                価格（円）
               </label>
               <input
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-                placeholder={t('artSales.form.pricePlaceholder')}
+                placeholder="0で応相談"
                 min="0"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('artSales.form.category')} <span className="text-red-500">*</span>
+                カテゴリ <span className="text-red-500">*</span>
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-                aria-label={t('artSales.form.categoryLabel')}
+                aria-label="カテゴリを選択"
               >
-                <option value="">{t('common.pleaseSelect')}</option>
+                <option value="">選択してください</option>
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
-                    {t(`artSales.categories.${cat.id}`, { defaultValue: CATEGORY_LABELS[cat.id] || cat.name })}
+                    {CATEGORY_LABELS[cat.id] || cat.name}
                   </option>
                 ))}
               </select>
@@ -321,27 +319,27 @@ const ArtSalePostForm: React.FC<ArtSalePostFormProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('artSales.form.technique')}
+                技法
               </label>
               <input
                 type="text"
                 value={technique}
                 onChange={(e) => setTechnique(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-                placeholder={t('artSales.form.techniquePlaceholder')}
+                placeholder="油彩、水彩など"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('artSales.form.size')}
+                サイズ
               </label>
               <input
                 type="text"
                 value={size}
                 onChange={(e) => setSize(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-                placeholder={t('artSales.form.sizePlaceholder')}
+                placeholder="30cm x 40cm"
               />
             </div>
           </div>
@@ -349,7 +347,7 @@ const ArtSalePostForm: React.FC<ArtSalePostFormProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('artSales.form.yearCreated')}
+                制作年
               </label>
               <input
                 type="number"
@@ -364,17 +362,17 @@ const ArtSalePostForm: React.FC<ArtSalePostFormProps> = ({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('artSales.form.transactionMethod')}
+                取引方法
               </label>
               <select
                 value={transactionMethod}
                 onChange={(e) => setTransactionMethod(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-                aria-label={t('artSales.form.transactionMethodLabel')}
+                aria-label="取引方法を選択"
               >
-                <option value="negotiable">{t('artSales.transactionMethods.negotiable')}</option>
-                <option value="hand_off">{t('artSales.transactionMethods.hand_off')}</option>
-                <option value="shipping">{t('artSales.transactionMethods.shipping')}</option>
+                <option value="negotiable">応相談</option>
+                <option value="hand_off">手渡し</option>
+                <option value="shipping">発送</option>
               </select>
             </div>
           </div>
@@ -387,7 +385,7 @@ const ArtSalePostForm: React.FC<ArtSalePostFormProps> = ({
                 onChange={(e) => setIsOriginal(e.target.checked)}
                 className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
               />
-              <span className="text-sm font-medium text-gray-700">{t('artSales.form.isOriginal')}</span>
+              <span className="text-sm font-medium text-gray-700">オリジナル作品</span>
             </label>
           </div>
 
@@ -397,14 +395,14 @@ const ArtSalePostForm: React.FC<ArtSalePostFormProps> = ({
               onClick={onCancel}
               className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
             >
-              {t('common.cancel')}
+              キャンセル
             </button>
             <button
               type="submit"
               disabled={loading}
               className="flex-1 py-3 bg-pink-600 text-white rounded-lg font-medium hover:bg-pink-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? t('common.processing') : editingItem ? t('common.update') : t('artSales.form.submit')}
+              {loading ? '処理中...' : editingItem ? '更新する' : '出品する'}
             </button>
           </div>
         </form>

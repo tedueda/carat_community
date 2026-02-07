@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -30,7 +29,6 @@ const CreateSalonRoomModal: React.FC<CreateSalonRoomModalProps> = ({
   onCreated,
 }) => {
   const { token } = useAuth();
-  const { t } = useTranslation();
   const [theme, setTheme] = useState('');
   const [description, setDescription] = useState('');
   const [targetIdentities, setTargetIdentities] = useState<string[]>(['ALL']);
@@ -97,17 +95,17 @@ const CreateSalonRoomModal: React.FC<CreateSalonRoomModalProps> = ({
     e.preventDefault();
     
     if (!theme.trim()) {
-      setError(t('salon.createModal.themeRequired'));
+      setError('テーマを入力してください');
       return;
     }
     
     if (!description.trim()) {
-      setError(t('salon.createModal.descriptionRequired'));
+      setError('内容説明を入力してください');
       return;
     }
     
     if (targetIdentities.length === 0) {
-      setError(t('salon.createModal.identityRequired'));
+      setError('対象性自認を選択してください');
       return;
     }
 
@@ -139,10 +137,10 @@ const CreateSalonRoomModal: React.FC<CreateSalonRoomModalProps> = ({
         onCreated();
       } else {
         const data = await response.json();
-        setError(data.detail || t('salon.createModal.createFailed'));
+        setError(data.detail || 'ルームの作成に失敗しました');
       }
     } catch (err) {
-      setError(t('salon.networkError'));
+      setError('ネットワークエラーが発生しました');
     } finally {
       setLoading(false);
     }
@@ -152,34 +150,34 @@ const CreateSalonRoomModal: React.FC<CreateSalonRoomModalProps> = ({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">{t('salon.createModal.title')}</DialogTitle>
+          <DialogTitle className="text-xl font-semibold">新しいルームを作成</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="theme">{t('salon.createModal.theme')} {t('salon.createModal.required')}</Label>
+            <Label htmlFor="theme">テーマ *</Label>
             <Input
               id="theme"
               value={theme}
               onChange={(e) => setTheme(e.target.value)}
-              placeholder={t('salon.createModal.themePlaceholder')}
+              placeholder="例: ゲイの恋愛相談"
               maxLength={200}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">{t('salon.createModal.description')} {t('salon.createModal.required')}</Label>
+            <Label htmlFor="description">内容説明 *</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder={t('salon.createModal.descriptionPlaceholder')}
+              placeholder="ルームの目的や話し合いたい内容を説明してください"
               rows={4}
             />
           </div>
 
           <div className="space-y-2">
-            <Label>{t('salon.createModal.roomType')} {t('salon.createModal.required')}</Label>
+            <Label>種別 *</Label>
             <div className="flex flex-wrap gap-2">
               {roomTypes.map((type) => (
                 <Button
@@ -190,14 +188,14 @@ const CreateSalonRoomModal: React.FC<CreateSalonRoomModalProps> = ({
                   onClick={() => setRoomType(type.value)}
                   className={roomType === type.value ? 'bg-black' : ''}
                 >
-                  {t(`salon.roomTypes.${type.value}`)}
+                  {type.label}
                 </Button>
               ))}
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label>{t('salon.createModal.targetIdentity')} {t('salon.createModal.required')}</Label>
+            <Label>対象性自認 *</Label>
             <div className="grid grid-cols-2 gap-2">
               {identities.map((identity) => (
                 <div key={identity.value} className="flex items-center space-x-2">
@@ -212,7 +210,7 @@ const CreateSalonRoomModal: React.FC<CreateSalonRoomModalProps> = ({
                     htmlFor={`identity-${identity.value}`}
                     className="text-sm cursor-pointer"
                   >
-                    {t(`salon.identities.${identity.value}`, { defaultValue: identity.label })}
+                    {identity.label}
                   </label>
                 </div>
               ))}
@@ -226,7 +224,7 @@ const CreateSalonRoomModal: React.FC<CreateSalonRoomModalProps> = ({
               onCheckedChange={(checked) => setAllowAnonymous(checked as boolean)}
             />
             <label htmlFor="allow-anonymous" className="text-sm cursor-pointer">
-              {t('salon.createModal.allowAnonymous')}
+              匿名での参加を許可する
             </label>
           </div>
 
@@ -241,14 +239,14 @@ const CreateSalonRoomModal: React.FC<CreateSalonRoomModalProps> = ({
               onClick={onClose}
               className="flex-1"
             >
-              {t('salon.createModal.cancel')}
+              キャンセル
             </Button>
             <Button
               type="submit"
               disabled={loading}
               className="flex-1 bg-black hover:bg-gray-800"
             >
-              {loading ? t('salon.createModal.creating') : t('salon.createModal.create')}
+              {loading ? '作成中...' : '作成する'}
             </Button>
           </div>
         </form>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,7 +10,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlusCircle, Music, MessageSquare, Store, MapPin, Film, FileText, Palette, Upload, X, Lock } from 'lucide-react';
 
 const CreatePost: React.FC = () => {
-  const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [visibility, setVisibility] = useState('public');
@@ -130,31 +128,31 @@ const CreatePost: React.FC = () => {
     setError('');
 
     if (!body.trim()) {
-      setError(t('post.bodyRequired'));
+      setError('投稿内容は必須です');
       setIsLoading(false);
       return;
     }
 
     if (category === 'music' && youtubeUrl && !extractYouTubeVideoId(youtubeUrl)) {
-      setError(t('post.invalidYoutubeUrl'));
+      setError('有効なYouTube URLを入力してください');
       setIsLoading(false);
       return;
     }
 
     if (images.length > 5) {
-      setError(t('post.maxImagesError'));
+      setError('画像は5枚まで選択できます');
       setIsLoading(false);
       return;
     }
 
     for (const image of images) {
       if (image.size > 10 * 1024 * 1024) {
-        setError(t('post.imageTooLarge'));
+        setError('画像ファイルは10MB以下にしてください');
         setIsLoading(false);
         return;
       }
       if (!image.type.startsWith('image/')) {
-        setError(t('post.imageOnlyError'));
+        setError('画像ファイルのみアップロード可能です');
         setIsLoading(false);
         return;
       }
@@ -181,7 +179,7 @@ const CreatePost: React.FC = () => {
         } else {
           const errText = await uploadResponse.text().catch(() => '');
           console.error('Image upload failed', uploadResponse.status, errText);
-          setError(t('post.uploadFailed', { status: uploadResponse.status }));
+          setError(`画像アップロードに失敗しました (status ${uploadResponse.status})`);
           setIsLoading(false);
           return;
         }
@@ -235,11 +233,11 @@ const CreatePost: React.FC = () => {
         }
       } else {
         const errorData = await response.json();
-        setError(errorData.detail || t('post.createFailed'));
+        setError(errorData.detail || '投稿の作成に失敗しました');
       }
     } catch (error) {
       console.error('Error creating post:', error);
-      setError(t('post.createFailedRetry'));
+      setError('投稿の作成に失敗しました。もう一度お試しください。');
     } finally {
       setIsLoading(false);
     }
@@ -249,7 +247,7 @@ const CreatePost: React.FC = () => {
   const CategoryIcon = selectedCategory?.icon || PlusCircle;
 
   // Check if user is premium member
-  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  const isPremiumMember = user?.membership_type === 'premium' || user?.membership_type === 'admin';
 
   // Show login prompt if not logged in
   if (showLoginPrompt && (!user || isAnonymous)) {
@@ -258,29 +256,29 @@ const CreatePost: React.FC = () => {
         <Card className="max-w-md w-full">
           <CardContent className="p-6 text-center">
             <Lock className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-            <h2 className="text-xl font-semibold mb-2">{t('membership.registrationRequired')}</h2>
+            <h2 className="text-xl font-semibold mb-2">会員登録が必要です</h2>
             <p className="text-gray-600 mb-4">
-              {t('membership.postRequiresMembership')}<br />
-              {t('membership.paidMemberCanPost')}
+              投稿を作成するには会員登録が必要です。<br />
+              有料会員になると投稿できるようになります。
             </p>
             <div className="flex flex-col gap-3">
               <Button 
                 onClick={() => navigate('/register')}
                 className="bg-black hover:bg-gray-800"
               >
-                {t('membership.registerMonthly')}
+                会員登録（月額1,000円）
               </Button>
               <Button 
                 onClick={() => navigate('/login')}
                 variant="outline"
               >
-                {t('auth.alreadyHaveAccount')}
+                すでにアカウントをお持ちの方
               </Button>
               <Button 
                 onClick={() => navigate('/feed')}
                 variant="ghost"
               >
-                {t('common.backToHome')}
+                ホームに戻る
               </Button>
             </div>
           </CardContent>
@@ -290,7 +288,7 @@ const CreatePost: React.FC = () => {
   }
 
   // Show premium upgrade prompt for free members
-  if (user && !isPaidUser) {
+  if (user && !isPremiumMember) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
@@ -298,46 +296,46 @@ const CreatePost: React.FC = () => {
             <div className="bg-gradient-to-r from-amber-400 to-yellow-500 p-3 rounded-full w-fit mx-auto mb-4">
               <Lock className="h-8 w-8 text-white" />
             </div>
-            <h2 className="text-xl font-semibold mb-2">{t('membership.premiumOnly')}</h2>
+            <h2 className="text-xl font-semibold mb-2">有料会員限定機能です</h2>
             <p className="text-gray-600 mb-4">
-              {t('membership.postRequiresPremium')}
+              投稿を作成するには有料会員への登録が必要です。
             </p>
             <div className="bg-gray-50 rounded-lg p-4 mb-4 text-left">
-              <h3 className="font-semibold text-gray-900 mb-2">{t('membership.premiumBenefits')}</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">有料会員特典</h3>
               <ul className="text-sm text-gray-600 space-y-1">
                 <li className="flex items-center gap-2">
                   <span className="text-green-500">✓</span>
-                  {t('membership.benefitPostAll')}
+                  すべてのカテゴリへの投稿
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="text-green-500">✓</span>
-                  {t('membership.benefitMatching')}
+                  会員マッチング機能
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="text-green-500">✓</span>
-                  {t('membership.benefitSalon')}
+                  会員サロン（チャットルーム）
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="text-green-500">✓</span>
-                  {t('membership.benefitDonation')}
+                  寄付金募集・商品販売
                 </li>
               </ul>
             </div>
             <p className="text-xs text-gray-500 mb-4">
-              {t('membership.monthlyPrice')}
+              月額1,000円 ・ いつでも解約可能
             </p>
             <div className="flex flex-col gap-3">
               <Button 
                 onClick={() => navigate('/register')}
                 className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600"
               >
-                {t('membership.registerPremium')}
+                有料会員に登録
               </Button>
               <Button 
                 onClick={() => navigate('/feed')}
                 variant="ghost"
               >
-                {t('common.backToHome')}
+                ホームに戻る
               </Button>
             </div>
           </CardContent>

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { IdentityBadge } from "@/components/ui/IdentityBadge";
 import { API_URL } from "@/config";
 import { createApiClient } from "@/lib/apiClient";
@@ -12,28 +11,19 @@ type Item = {
   user_id: number;
   display_name?: string;
   identity?: string | null;
-  nationality?: string | null;
   prefecture?: string | null;
   age_band?: string | null;
   avatar_url?: string | null;
 };
 
-const getFlagImageUrl = (code: string | null | undefined): string => {
-  if (!code || code === 'OTHER') return '';
-  // Use flagcdn.com for reliable flag images
-  return `https://flagcdn.com/w40/${code.toLowerCase()}.png`;
-};
-
 export function MatchCard({ item }: { item: Item }) {
-  const { t } = useTranslation();
   const [liked, setLiked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
-  // 有料会員かどうか
-  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const isLoggedIn = !!user;
 
   async function handleLike(e: React.MouseEvent) {
@@ -43,7 +33,7 @@ export function MatchCard({ item }: { item: Item }) {
       setShowLoginModal(true);
       return;
     }
-    if (!isPaidUser) {
+    if (!isPremium) {
       setShowUpgradeModal(true);
       return;
     }
@@ -66,14 +56,14 @@ export function MatchCard({ item }: { item: Item }) {
       setLiked(true);
       
       if (data.matched) {
-        alert(`✨ ${t('matching.matched')}`);
+        alert('✨ マッチしました！');
         navigate('/matching/matches');
       } else {
         navigate('/matching/likes');
       }
     } catch (err) {
       console.error("Like failed:", err);
-      alert(t('matching.likeFailed'));
+      alert('いいねに失敗しました');
     } finally {
       setLoading(false);
     }
@@ -83,7 +73,7 @@ export function MatchCard({ item }: { item: Item }) {
       setShowLoginModal(true);
       return;
     }
-    if (!isPaidUser) {
+    if (!isPremium) {
       setShowUpgradeModal(true);
       return;
     }
@@ -98,7 +88,7 @@ export function MatchCard({ item }: { item: Item }) {
       setShowLoginModal(true);
       return;
     }
-    if (!isPaidUser) {
+    if (!isPremium) {
       setShowUpgradeModal(true);
       return;
     }
@@ -116,7 +106,7 @@ export function MatchCard({ item }: { item: Item }) {
       await navigateToComposeOrChat(apiClient, navigate, item.user_id, currentUserId);
     } catch (err) {
       console.error('Failed to navigate to chat:', err);
-      alert(t('matching.errorOccurred'));
+      alert('エラーが発生しました');
     }
   }
 
@@ -127,22 +117,22 @@ export function MatchCard({ item }: { item: Item }) {
         <div className="bg-white rounded-xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
           <div className="text-center">
             <Lock className="h-12 w-12 mx-auto text-gray-500 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">{t('matching.loginRequired')}</h3>
+            <h3 className="text-lg font-semibold mb-2">ログインが必要です</h3>
             <p className="text-gray-600 mb-4 text-sm">
-              {t('matching.loginRequiredMessage')}
+              この機能を利用するにはログインしてください。
             </p>
             <div className="flex gap-2">
               <button
                 onClick={() => setShowLoginModal(false)}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
               >
-                {t('common.close')}
+                閉じる
               </button>
               <button
                 onClick={() => navigate('/login')}
                 className="flex-1 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800"
               >
-                {t('auth.login')}
+                ログイン
               </button>
             </div>
           </div>
@@ -154,22 +144,22 @@ export function MatchCard({ item }: { item: Item }) {
         <div className="bg-white rounded-xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
           <div className="text-center">
             <Lock className="h-12 w-12 mx-auto text-yellow-500 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">{t('matching.paidMemberOnly')}</h3>
+            <h3 className="text-lg font-semibold mb-2">有料会員限定機能</h3>
             <p className="text-gray-600 mb-4 text-sm">
-              {t('matching.paidMemberOnlyMessage')}
+              プロフィール詳細の閲覧、いいね、チャットは有料会員のみご利用いただけます。
             </p>
             <div className="flex gap-2">
               <button
                 onClick={() => setShowUpgradeModal(false)}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
               >
-                {t('common.close')}
+                閉じる
               </button>
               <button
                 onClick={() => navigate('/account')}
                 className="flex-1 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
               >
-                {t('matching.becomePaidMember')}
+                有料会員になる
               </button>
             </div>
           </div>
@@ -200,26 +190,6 @@ export function MatchCard({ item }: { item: Item }) {
             <div className="w-16 h-16 bg-gray-400 rounded-full flex items-center justify-center">
               <span className="text-white text-xl">👤</span>
             </div>
-          </div>
-        )}
-        
-        {/* 国旗バッジ（左上） */}
-        {item.nationality && (
-          <div className="absolute left-2 top-2 bg-white/90 rounded-full px-1.5 py-1 shadow-sm z-10 flex items-center gap-1">
-            {getFlagImageUrl(item.nationality) ? (
-              <img 
-                src={getFlagImageUrl(item.nationality)} 
-                alt={item.nationality}
-                className="w-6 h-4 object-cover rounded-sm"
-                onError={(e) => {
-                  const target = e.currentTarget as HTMLImageElement;
-                  target.style.display = 'none';
-                  const span = target.nextElementSibling as HTMLSpanElement;
-                  if (span) span.style.display = 'inline';
-                }}
-              />
-            ) : null}
-            <span className="text-xs font-medium text-gray-700">{item.nationality}</span>
           </div>
         )}
         
@@ -258,14 +228,14 @@ export function MatchCard({ item }: { item: Item }) {
               ${loading ? "opacity-50 cursor-wait" : ""}
             `}
           >
-            💎 {t('matching.favorite')}
+            {liked ? "💎 お気に入り" : "💎 お気に入り"}
           </button>
           <button
             onClick={handleMessage}
             className="flex-1 rounded-md border border-gray-300 px-2 py-1.5 text-center text-xs font-medium text-gray-700 transition-all hover:bg-gray-100 active:scale-95"
-            aria-label={`${item.display_name || "User"}${t('matching.chat')}`}
+            aria-label={`${item.display_name || "このユーザー"}とチャットする`}
           >
-            {t('matching.chat')}
+            チャットをする
           </button>
         </div>
       </div>
