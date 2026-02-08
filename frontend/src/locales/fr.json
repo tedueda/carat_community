@@ -771,6 +771,64 @@
       "note3": "Les transactions sont à vos propres risques"
     }
   },
+  "artSales": {
+    "title": "Vente d'Art",
+    "searchPlaceholder": "Rechercher des œuvres...",
+    "search": "Rechercher",
+    "listItem": "Publier",
+    "filter": "Filtrer",
+    "category": "Catégorie",
+    "sortBy": "Trier par",
+    "all": "Tous",
+    "loading": "Chargement...",
+    "noItems": "Aucune œuvre disponible",
+    "createFirstListing": "Publiez votre première œuvre",
+    "anonymousUser": "Utilisateur anonyme",
+    "negotiable": "Négociable",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "daysAgo": "il y a {{count}} jours",
+    "moreImages": "+{{count}} de plus",
+    "categories": {
+      "painting": "Peinture",
+      "sculpture": "Sculpture",
+      "photography": "Photographie",
+      "digital": "Art Numérique",
+      "illustration": "Illustration",
+      "crafts": "Artisanat",
+      "other": "Autres"
+    },
+    "transactionMethods": {
+      "hand_off": "Remise en main propre",
+      "shipping": "Expédition",
+      "negotiable": "Négociable"
+    },
+    "sort": {
+      "newest": "Plus récent",
+      "priceAsc": "Prix: croissant",
+      "priceDesc": "Prix: décroissant"
+    },
+    "detail": {
+      "backToList": "Retour à la liste",
+      "description": "Description",
+      "technique": "Technique",
+      "size": "Taille",
+      "transactionMethod": "Méthode de transaction",
+      "seller": "Vendeur",
+      "artist": "Artiste",
+      "member": "Membre",
+      "yourListing": "C'est votre publication",
+      "contact": "Contacter",
+      "processing": "Traitement...",
+      "chatAlreadyExists": "Le chat a déjà commencé. Veuillez vérifier votre liste de chats.",
+      "chatStartFailed": "Échec du démarrage du chat",
+      "errorOccurred": "Une erreur s'est produite",
+      "transactionNotes": "Notes de Transaction",
+      "note1": "Veuillez utiliser le chat dédié pour communiquer",
+      "note2": "L'échange d'informations personnelles est interdit",
+      "note3": "Les transactions sont à vos propres risques"
+    }
+  },
   "cta": {
     "communityTitle": "Communauté LGBTQ+ Réservée aux Membres \"Carat\"",
     "communitySubtitle": "Commencez votre histoire avec des publications et du matching.",

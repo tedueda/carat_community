@@ -771,6 +771,64 @@
       "note3": "Le transazioni sono a proprio rischio"
     }
   },
+  "artSales": {
+    "title": "Vendita di Arte",
+    "searchPlaceholder": "Cerca opere...",
+    "search": "Cerca",
+    "listItem": "Pubblica",
+    "filter": "Filtra",
+    "category": "Categoria",
+    "sortBy": "Ordina per",
+    "all": "Tutti",
+    "loading": "Caricamento...",
+    "noItems": "Nessuna opera disponibile",
+    "createFirstListing": "Pubblica la tua prima opera",
+    "anonymousUser": "Utente anonimo",
+    "negotiable": "Negoziabile",
+    "today": "Oggi",
+    "yesterday": "Ieri",
+    "daysAgo": "{{count}} giorni fa",
+    "moreImages": "+{{count}} altre",
+    "categories": {
+      "painting": "Pittura",
+      "sculpture": "Scultura",
+      "photography": "Fotografia",
+      "digital": "Arte Digitale",
+      "illustration": "Illustrazione",
+      "crafts": "Artigianato",
+      "other": "Altri"
+    },
+    "transactionMethods": {
+      "hand_off": "Consegna a mano",
+      "shipping": "Spedizione",
+      "negotiable": "Negoziabile"
+    },
+    "sort": {
+      "newest": "Più recente",
+      "priceAsc": "Prezzo: crescente",
+      "priceDesc": "Prezzo: decrescente"
+    },
+    "detail": {
+      "backToList": "Torna all'elenco",
+      "description": "Descrizione",
+      "technique": "Tecnica",
+      "size": "Dimensione",
+      "transactionMethod": "Metodo di transazione",
+      "seller": "Venditore",
+      "artist": "Artista",
+      "member": "Membro",
+      "yourListing": "Questa è la tua pubblicazione",
+      "contact": "Contatta",
+      "processing": "Elaborazione...",
+      "chatAlreadyExists": "La chat è già iniziata. Controlla la tua lista di chat.",
+      "chatStartFailed": "Impossibile avviare la chat",
+      "errorOccurred": "Si è verificato un errore",
+      "transactionNotes": "Note sulla Transazione",
+      "note1": "Si prega di utilizzare la chat dedicata per comunicare",
+      "note2": "Lo scambio di informazioni personali è vietato",
+      "note3": "Le transazioni sono a proprio rischio"
+    }
+  },
   "cta": {
     "communityTitle": "Comunità LGBTQ+ Riservata ai Membri \"Carat\"",
     "communitySubtitle": "Inizia la tua storia con pubblicazioni e matching.",

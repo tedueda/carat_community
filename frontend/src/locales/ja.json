@@ -831,6 +831,64 @@
       "note3": "取引は自己責任で行ってください"
     }
   },
+  "artSales": {
+    "title": "作品販売",
+    "searchPlaceholder": "作品を検索...",
+    "search": "検索",
+    "listItem": "出品する",
+    "filter": "フィルター",
+    "category": "カテゴリ",
+    "sortBy": "並び替え",
+    "all": "すべて",
+    "loading": "読み込み中...",
+    "noItems": "作品がありません",
+    "createFirstListing": "最初の作品を出品する",
+    "anonymousUser": "匿名ユーザー",
+    "negotiable": "応相談",
+    "today": "今日",
+    "yesterday": "昨日",
+    "daysAgo": "{{count}}日前",
+    "moreImages": "+{{count}}枚",
+    "categories": {
+      "painting": "絵画",
+      "sculpture": "彫刻",
+      "photography": "写真",
+      "digital": "デジタルアート",
+      "illustration": "イラスト",
+      "crafts": "工芸品",
+      "other": "その他"
+    },
+    "transactionMethods": {
+      "hand_off": "手渡し",
+      "shipping": "発送",
+      "negotiable": "応相談"
+    },
+    "sort": {
+      "newest": "新着順",
+      "priceAsc": "価格が安い順",
+      "priceDesc": "価格が高い順"
+    },
+    "detail": {
+      "backToList": "一覧に戻る",
+      "description": "作品説明",
+      "technique": "技法",
+      "size": "サイズ",
+      "transactionMethod": "取引方法",
+      "seller": "出品者",
+      "artist": "アーティスト",
+      "member": "会員",
+      "yourListing": "これはあなたの出品です",
+      "contact": "連絡する",
+      "processing": "処理中...",
+      "chatAlreadyExists": "既にチャットが開始されています。チャット一覧から確認してください。",
+      "chatStartFailed": "チャットの開始に失敗しました",
+      "errorOccurred": "エラーが発生しました",
+      "transactionNotes": "取引時の注意",
+      "note1": "連絡は専用チャットで行ってください",
+      "note2": "個人情報の交換は禁止されています",
+      "note3": "取引は自己責任で行ってください"
+    }
+  },
   "jewelry": {
     "title": "会員限定 ジュエリー特別販売",
     "bannerAlt": "ジュエリーコレクション",
