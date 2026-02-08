@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 
 type MatchItem = {
@@ -8,6 +9,7 @@ type MatchItem = {
 };
 
 const MatchingMatchesPage: React.FC = () => {
+  const { t } = useTranslation();
   const { token } = useAuth();
   const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
   const [loading, setLoading] = useState(false);
@@ -42,25 +44,25 @@ const MatchingMatchesPage: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">タイプ一覧</h2>
+      <h2 className="text-lg font-semibold mb-3">{t('matching.matchList')}</h2>
       <div className="p-4 border rounded-lg bg-white">
         <div className="mb-3 flex gap-2">
-          <button onClick={fetchMatches} className="px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200">再取得</button>
+          <button onClick={fetchMatches} className="px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200">{t('matching.refresh')}</button>
         </div>
-        {loading && <div>読み込み中...</div>}
+        {loading && <div>{t('matching.loading')}</div>}
         {error && <div className="text-red-600 text-sm">{error}</div>}
         <ul className="space-y-2">
           {items.map((m) => (
             <li key={m.match_id} className="border rounded p-3 flex items-center justify-between">
               <div>
                 <div className="font-medium">{m.display_name}</div>
-                <div className="text-xs text-gray-600">ユーザーID: {m.user_id}</div>
+                <div className="text-xs text-gray-600">{t('matching.userId')}: {m.user_id}</div>
               </div>
-              <a href="/matching/chats" className="px-3 py-1 text-sm bg-pink-600 text-white rounded hover:bg-pink-700">チャットへ</a>
+              <a href="/matching/chats" className="px-3 py-1 text-sm bg-pink-600 text-white rounded hover:bg-pink-700">{t('matching.goToChat')}</a>
             </li>
           ))}
           {!loading && !error && items.length === 0 && (
-            <li className="text-sm text-gray-500">タイプはまだありません。</li>
+            <li className="text-sm text-gray-500">{t('matching.noMatchesYet')}</li>
           )}
         </ul>
       </div>
