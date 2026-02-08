@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, MapPin, Clock, MessageCircle, ChevronLeft, ChevronRight, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import PremiumUpgradeModal from '../PremiumUpgradeModal';
+import { API_URL } from '../../config';
+import { translateText } from '../../services/translationService';
 
 interface FleaMarketItem {
   id: number;
@@ -27,39 +31,44 @@ interface FleaMarketDetailProps {
   onRefresh: () => void;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://ddxdewgmen.ap-northeast-1.awsapprunner.com';
-
-const CATEGORY_LABELS: Record<string, string> = {
-  electronics: '家電・スマホ・カメラ',
-  fashion: 'ファッション',
-  furniture: '家具・インテリア',
-  hobby: 'ホビー・楽器・アート',
-  books: '本・音楽・ゲーム',
-  sports: 'スポーツ・レジャー',
-  beauty: 'コスメ・美容',
-  handmade: 'ハンドメイド',
-  other: 'その他',
-};
-
-const TRANSACTION_METHOD_LABELS: Record<string, string> = {
-  hand_off: '手渡し',
-  shipping: '発送',
-  negotiable: '応相談',
-};
-
 const FleaMarketDetail: React.FC<FleaMarketDetailProps> = ({ item, onBack, onRefresh: _onRefresh }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { currentLanguage } = useLanguage();
   const { user } = useAuth();
   const token = localStorage.getItem('token');
-  const isPremium = user?.membership_type === 'premium' || user?.membership_type === 'admin';
+  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const isOwner = user?.id === item.user_id;
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [contactLoading, setContactLoading] = useState(false);
+  const [translatedTitle, setTranslatedTitle] = useState(item.title);
+  const [translatedDescription, setTranslatedDescription] = useState(item.description);
+
+  useEffect(() => {
+    const translateContent = async () => {
+      if (currentLanguage === 'ja') {
+        setTranslatedTitle(item.title);
+        setTranslatedDescription(item.description);
+        return;
+      }
+      try {
+        const [titleResult, descResult] = await Promise.all([
+          translateText(item.title, currentLanguage),
+          translateText(item.description, currentLanguage)
+        ]);
+        setTranslatedTitle(titleResult.translated_text);
+        setTranslatedDescription(descResult.translated_text);
+      } catch (error) {
+        console.error('Translation error:', error);
+      }
+    };
+    translateContent();
+  }, [item.title, item.description, currentLanguage]);
 
   const formatPrice = (price: number) => {
-    if (price === 0) return '応相談';
+    if (price === 0) return t('fleaMarket.negotiable');
     return `¥${price.toLocaleString()}`;
   };
 
@@ -89,7 +98,7 @@ const FleaMarketDetail: React.FC<FleaMarketDetailProps> = ({ item, onBack, onRef
       navigate('/login');
       return;
     }
-    if (!isPremium) {
+    if (!isPaidUser) {
       setShowUpgradeModal(true);
       return;
     }
@@ -111,15 +120,15 @@ const FleaMarketDetail: React.FC<FleaMarketDetailProps> = ({ item, onBack, onRef
       } else {
         const errorData = await response.json();
         if (errorData.detail === 'Chat already exists') {
-          alert('既にチャットが開始されています。チャット一覧から確認してください。');
+          alert(t('fleaMarket.detail.chatAlreadyExists'));
           navigate('/matching/chats');
         } else {
-          alert(errorData.detail || 'チャットの開始に失敗しました');
+          alert(errorData.detail || t('fleaMarket.detail.chatStartFailed'));
         }
       }
     } catch (error) {
-      console.error('チャット開始エラー:', error);
-      alert('エラーが発生しました');
+      console.error('Chat start error:', error);
+      alert(t('fleaMarket.detail.errorOccurred'));
     } finally {
       setContactLoading(false);
     }
@@ -133,7 +142,7 @@ const FleaMarketDetail: React.FC<FleaMarketDetailProps> = ({ item, onBack, onRef
           className="flex items-center text-gray-700 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          一覧に戻る
+          {t('fleaMarket.detail.backToList')}
         </button>
       </div>
 
@@ -206,14 +215,14 @@ const FleaMarketDetail: React.FC<FleaMarketDetailProps> = ({ item, onBack, onRef
         <div className="p-6">
           <div className="flex flex-wrap gap-2 mb-4">
             <span className="text-sm bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
-              {CATEGORY_LABELS[item.category] || item.category}
+              {t(`fleaMarket.categories.${item.category}`, { defaultValue: item.category })}
             </span>
             <span className="text-sm bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
-              {TRANSACTION_METHOD_LABELS[item.transaction_method] || item.transaction_method}
+              {t(`fleaMarket.transactionMethods.${item.transaction_method}`, { defaultValue: item.transaction_method })}
             </span>
           </div>
 
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">{item.title}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">{translatedTitle}</h1>
 
           <p className="text-3xl font-bold text-gray-900 mb-6">{formatPrice(item.price)}</p>
 
@@ -231,18 +240,18 @@ const FleaMarketDetail: React.FC<FleaMarketDetailProps> = ({ item, onBack, onRef
           </div>
 
           <div className="border-t border-gray-200 pt-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">商品説明</h2>
-            <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{item.description}</p>
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">{t('fleaMarket.detail.productDescription')}</h2>
+            <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{translatedDescription}</p>
           </div>
 
           <div className="border-t border-gray-200 pt-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">出品者</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">{t('fleaMarket.detail.seller')}</h2>
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
                 {item.user_avatar_url ? (
                   <img
                     src={item.user_avatar_url}
-                    alt={item.user_display_name || '出品者'}
+                    alt={item.user_display_name || t('fleaMarket.detail.seller')}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -250,8 +259,8 @@ const FleaMarketDetail: React.FC<FleaMarketDetailProps> = ({ item, onBack, onRef
                 )}
               </div>
               <div>
-                <p className="font-medium text-gray-900">{item.user_display_name || '匿名ユーザー'}</p>
-                <p className="text-sm text-gray-500">会員</p>
+                <p className="font-medium text-gray-900">{item.user_display_name || t('fleaMarket.anonymousUser')}</p>
+                <p className="text-sm text-gray-500">{t('fleaMarket.detail.member')}</p>
               </div>
             </div>
           </div>
@@ -263,31 +272,31 @@ const FleaMarketDetail: React.FC<FleaMarketDetailProps> = ({ item, onBack, onRef
               className="w-full py-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <MessageCircle className="w-5 h-5" />
-              {contactLoading ? '処理中...' : '連絡する'}
+              {contactLoading ? t('fleaMarket.detail.processing') : t('fleaMarket.detail.contact')}
             </button>
           )}
 
           {isOwner && (
             <div className="bg-gray-50 p-4 rounded-lg text-center text-gray-600">
-              これはあなたの出品です
+              {t('fleaMarket.detail.yourListing')}
             </div>
           )}
         </div>
       </div>
 
       <div className="mt-6 bg-blue-50 p-4 rounded-lg">
-        <h3 className="font-medium text-blue-900 mb-2">取引時の注意</h3>
+        <h3 className="font-medium text-blue-900 mb-2">{t('fleaMarket.detail.transactionNotes')}</h3>
         <ul className="text-sm text-blue-800 space-y-1">
-          <li>・連絡は専用チャットで行ってください</li>
-          <li>・個人情報の交換は禁止されています</li>
-          <li>・取引は自己責任で行ってください</li>
+          <li>・{t('fleaMarket.detail.note1')}</li>
+          <li>・{t('fleaMarket.detail.note2')}</li>
+          <li>・{t('fleaMarket.detail.note3')}</li>
         </ul>
       </div>
 
       <PremiumUpgradeModal
         open={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
-        featureName="フリマ連絡"
+        featureName={t('fleaMarket.detail.contact')}
       />
     </div>
   );
