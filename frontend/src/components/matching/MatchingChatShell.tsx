@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { API_URL } from '@/config';
+import { Lock } from 'lucide-react';
 
 type ChatItem = {
   chat_id: number;
@@ -31,7 +32,11 @@ type ChatRequest = {
 const MatchingChatShell: React.FC = () => {
   const { id, requestId } = useParams<{ id?: string; requestId?: string }>();
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
+  
+  // ログイン状態と有料会員かどうか
+  const isLoggedIn = !!user;
+  const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const [loading, setLoading] = useState(false);
   const [chats, setChats] = useState<ChatItem[]>([]);
   const [incomingRequests, setIncomingRequests] = useState<ChatRequest[]>([]);
@@ -123,6 +128,44 @@ const MatchingChatShell: React.FC = () => {
     const timeB = b.last_message_at ? new Date(b.last_message_at).getTime() : 0;
     return timeB - timeA;
   });
+
+  // 未ログインの場合は会員登録を促す
+  if (!isLoggedIn) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
+        <Lock className="h-12 w-12 text-yellow-500 mb-4" />
+        <h2 className="text-xl font-semibold mb-2">有料会員限定機能</h2>
+        <p className="text-gray-600 mb-6 text-center">
+          チャット機能は有料会員のみご利用いただけます。
+        </p>
+        <button
+          onClick={() => navigate('/register')}
+          className="px-8 py-3 bg-yellow-500 text-white rounded-full hover:bg-yellow-600 font-medium"
+        >
+          有料会員になる
+        </button>
+      </div>
+    );
+  }
+
+  // 有料会員でない場合はアップグレード画面を表示
+  if (!isPaidUser) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
+        <Lock className="h-12 w-12 text-yellow-500 mb-4" />
+        <h2 className="text-xl font-semibold mb-2">有料会員限定機能</h2>
+        <p className="text-gray-600 mb-6 text-center">
+          チャット機能は有料会員のみご利用いただけます。
+        </p>
+        <button
+          onClick={() => navigate('/account')}
+          className="px-8 py-3 bg-yellow-500 text-white rounded-full hover:bg-yellow-600 font-medium"
+        >
+          有料会員になる
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col md:flex-row h-[calc(100vh-200px)] gap-4">

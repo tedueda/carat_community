@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { API_URL } from '@/config';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { fetchMessageWithTranslation } from '@/services/translationService';
 
 type MessageBubbleProps = {
   isMe: boolean;
@@ -8,6 +10,7 @@ type MessageBubbleProps = {
   body?: string | null;
   imageUrl?: string | null;
   createdAt: string;
+  messageId?: number;
 };
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
@@ -17,7 +20,38 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   body,
   imageUrl,
   createdAt,
+  messageId,
 }) => {
+    const { currentLanguage } = useLanguage();
+    const [displayText, setDisplayText] = useState<string>(body || '');
+    const [isTranslating, setIsTranslating] = useState(false);
+
+    useEffect(() => {
+      const fetchTranslation = async () => {
+        if (!messageId || !body || currentLanguage === 'ja') {
+          setDisplayText(body || '');
+          return;
+        }
+
+        setIsTranslating(true);
+        try {
+          const result = await fetchMessageWithTranslation(messageId, currentLanguage as any);
+          if (result.is_translated && result.translated_text) {
+            setDisplayText(result.translated_text);
+          } else {
+            setDisplayText(body);
+          }
+        } catch (error) {
+          console.error('Failed to fetch message translation:', error);
+          setDisplayText(body);
+        } finally {
+          setIsTranslating(false);
+        }
+      };
+
+      fetchTranslation();
+    }, [messageId, body, currentLanguage]);
+
   const formatTime = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
@@ -116,12 +150,16 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
             </div>
           )}
 
-          {/* Text */}
-          {body && (
-            <div className="text-[15px] leading-relaxed whitespace-pre-wrap break-words">
-              {body}
-            </div>
-          )}
+                    {/* Text */}
+                    {body && (
+                      <div className="text-[15px] leading-relaxed whitespace-pre-wrap break-words">
+                        {isTranslating ? (
+                          <span className="opacity-70">{body}</span>
+                        ) : (
+                          displayText
+                        )}
+                      </div>
+                    )}
         </div>
 
         {/* Timestamp */}
