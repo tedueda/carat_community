@@ -771,6 +771,64 @@
       "note3": "Las transacciones son bajo tu propia responsabilidad"
     }
   },
+  "artSales": {
+    "title": "Venta de Arte",
+    "searchPlaceholder": "Buscar obras...",
+    "search": "Buscar",
+    "listItem": "Publicar",
+    "filter": "Filtrar",
+    "category": "Categoría",
+    "sortBy": "Ordenar por",
+    "all": "Todo",
+    "loading": "Cargando...",
+    "noItems": "No hay obras disponibles",
+    "createFirstListing": "Publica tu primera obra",
+    "anonymousUser": "Usuario anónimo",
+    "negotiable": "Negociable",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "daysAgo": "hace {{count}} días",
+    "moreImages": "+{{count}} más",
+    "categories": {
+      "painting": "Pintura",
+      "sculpture": "Escultura",
+      "photography": "Fotografía",
+      "digital": "Arte Digital",
+      "illustration": "Ilustración",
+      "crafts": "Artesanía",
+      "other": "Otros"
+    },
+    "transactionMethods": {
+      "hand_off": "Entrega en mano",
+      "shipping": "Envío",
+      "negotiable": "Negociable"
+    },
+    "sort": {
+      "newest": "Más reciente",
+      "priceAsc": "Precio: menor a mayor",
+      "priceDesc": "Precio: mayor a menor"
+    },
+    "detail": {
+      "backToList": "Volver a la lista",
+      "description": "Descripción",
+      "technique": "Técnica",
+      "size": "Tamaño",
+      "transactionMethod": "Método de transacción",
+      "seller": "Vendedor",
+      "artist": "Artista",
+      "member": "Miembro",
+      "yourListing": "Esta es tu publicación",
+      "contact": "Contactar",
+      "processing": "Procesando...",
+      "chatAlreadyExists": "El chat ya ha comenzado. Por favor, revisa tu lista de chats.",
+      "chatStartFailed": "Error al iniciar el chat",
+      "errorOccurred": "Ha ocurrido un error",
+      "transactionNotes": "Notas de Transacción",
+      "note1": "Por favor, usa el chat dedicado para comunicarte",
+      "note2": "El intercambio de información personal está prohibido",
+      "note3": "Las transacciones son bajo tu propia responsabilidad"
+    }
+  },
   "cta": {
     "communityTitle": "Comunidad LGBTQ+ Exclusiva para Miembros \"Carat\"",
     "communitySubtitle": "Comienza tu historia con publicaciones y matching.",

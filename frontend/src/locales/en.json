@@ -831,6 +831,64 @@
       "note3": "Transactions are at your own risk"
     }
   },
+  "artSales": {
+    "title": "Art Sales",
+    "searchPlaceholder": "Search artworks...",
+    "search": "Search",
+    "listItem": "List Item",
+    "filter": "Filter",
+    "category": "Category",
+    "sortBy": "Sort By",
+    "all": "All",
+    "loading": "Loading...",
+    "noItems": "No artworks available",
+    "createFirstListing": "List your first artwork",
+    "anonymousUser": "Anonymous User",
+    "negotiable": "Negotiable",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "daysAgo": "{{count}} days ago",
+    "moreImages": "+{{count}} more",
+    "categories": {
+      "painting": "Painting",
+      "sculpture": "Sculpture",
+      "photography": "Photography",
+      "digital": "Digital Art",
+      "illustration": "Illustration",
+      "crafts": "Crafts",
+      "other": "Other"
+    },
+    "transactionMethods": {
+      "hand_off": "Hand-off",
+      "shipping": "Shipping",
+      "negotiable": "Negotiable"
+    },
+    "sort": {
+      "newest": "Newest",
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low"
+    },
+    "detail": {
+      "backToList": "Back to List",
+      "description": "Description",
+      "technique": "Technique",
+      "size": "Size",
+      "transactionMethod": "Transaction Method",
+      "seller": "Seller",
+      "artist": "Artist",
+      "member": "Member",
+      "yourListing": "This is your listing",
+      "contact": "Contact",
+      "processing": "Processing...",
+      "chatAlreadyExists": "Chat already started. Please check your chat list.",
+      "chatStartFailed": "Failed to start chat",
+      "errorOccurred": "An error occurred",
+      "transactionNotes": "Transaction Notes",
+      "note1": "Please use the dedicated chat for communication",
+      "note2": "Exchange of personal information is prohibited",
+      "note3": "Transactions are at your own risk"
+    }
+  },
   "jewelry": {
     "title": "Members Only - Special Jewelry Sale",
     "bannerAlt": "Jewelry Collection",
