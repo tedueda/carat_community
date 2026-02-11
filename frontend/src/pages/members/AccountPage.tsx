@@ -7,6 +7,7 @@ import {
   Crown, Shield, Gem, MessageCircle, TrendingUp, Globe, ExternalLink
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { loadStripe } from '@stripe/stripe-js';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -67,6 +68,55 @@ export default function AccountPage() {
   const [deleteConfirmation, setDeleteConfirmation] = useState('');
 
   const token = localStorage.getItem('token');
+  const [kycLoading, setKycLoading] = useState(false);
+
+  const startKycVerification = async () => {
+    if (!token) return;
+    setKycLoading(true);
+    setError('');
+    try {
+      // 1. Create identity session on backend
+      const res = await fetch(`${API_URL}/api/stripe/create-identity-session`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.detail || t('kyc.error'));
+      }
+      const data = await res.json();
+
+      // 2. Get Stripe publishable key
+      const configRes = await fetch(`${API_URL}/api/stripe/config`);
+      const configData = await configRes.json();
+
+      // 3. Load Stripe and open Identity verification modal
+      const stripe = await loadStripe(configData.publishable_key);
+      if (!stripe) {
+        throw new Error('Failed to load Stripe');
+      }
+
+      const { error: verifyError } = await stripe.verifyIdentity(data.client_secret);
+      if (verifyError) {
+        console.error('Stripe Identity error:', verifyError);
+        setError(verifyError.message || t('kyc.error'));
+      } else {
+        // Verification submitted successfully, refresh account data
+        setSuccess(t('kyc.submitted_message'));
+        await fetchAccount();
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        setError(e.message);
+      }
+      console.error('KYC verification error:', e);
+    } finally {
+      setKycLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchAccount();
@@ -493,28 +543,11 @@ export default function AccountPage() {
                     <p className="mt-2 text-sm text-red-700">{t('kyc.rejected_message')}</p>
                     {(account?.subscription_status === 'active' || account?.is_legacy_paid) && (
                       <button
-                        onClick={async () => {
-                          try {
-                            const res = await fetch(`${API_URL}/api/stripe/create-identity-session`, {
-                              method: 'POST',
-                              headers: {
-                                'Authorization': `Bearer ${token}`,
-                                'Content-Type': 'application/json'
-                              }
-                            });
-                            if (res.ok) {
-                              const data = await res.json();
-                              // Stripe Identity UIを開く（実際の実装ではStripe.jsを使用）
-                              console.log('Identity session created:', data);
-                              alert('KYC verification session created. Please complete verification.');
-                            }
-                          } catch (e) {
-                            console.error('Identity session error:', e);
-                          }
-                        }}
-                        className="mt-3 px-4 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors"
+                        onClick={startKycVerification}
+                        disabled={kycLoading}
+                        className="mt-3 px-4 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
                       >
-                        {t('kyc.start_button')}
+                        {kycLoading ? t('common.loading') : t('kyc.start_button')}
                       </button>
                     )}
                   </>
@@ -523,27 +556,11 @@ export default function AccountPage() {
                     <p className="mt-2 text-sm text-gray-600">{t('kyc.description')}</p>
                     {(account?.subscription_status === 'active' || account?.is_legacy_paid) && (
                       <button
-                        onClick={async () => {
-                          try {
-                            const res = await fetch(`${API_URL}/api/stripe/create-identity-session`, {
-                              method: 'POST',
-                              headers: {
-                                'Authorization': `Bearer ${token}`,
-                                'Content-Type': 'application/json'
-                              }
-                            });
-                            if (res.ok) {
-                              const data = await res.json();
-                              console.log('Identity session created:', data);
-                              alert('KYC verification session created. Please complete verification.');
-                            }
-                          } catch (e) {
-                            console.error('Identity session error:', e);
-                          }
-                        }}
-                        className="mt-3 px-4 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors"
+                        onClick={startKycVerification}
+                        disabled={kycLoading}
+                        className="mt-3 px-4 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
                       >
-                        {t('kyc.start_button')}
+                        {kycLoading ? t('common.loading') : t('kyc.start_button')}
                       </button>
                     )}
                   </>

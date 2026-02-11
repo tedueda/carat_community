@@ -2,36 +2,24 @@
   "hero": {
     "messages": [
       {
-        "main": "Drücke dich aus und\ntriff neue Freunde",
-        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
-      },
-      {
-        "main": "Eine sichere Community, in der\ndu dich ausdrücken kannst",
-        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
-      },
-      {
-        "main": "Ein Raum, um sich mit\nvertrauenswürdigen Begleitern zu verbinden",
-        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
+        "main": "Eine Welt ohne\nGrenzen schaffen",
+        "sub": ""
       },
       {
         "main": "Die einzige Seite, die\ngenderfreie Lebensstile unterstützt",
-        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
+        "sub": ""
+      },
+      {
+        "main": "Ein Raum, um sich mit\nvertrauenswürdigen Begleitern zu verbinden",
+        "sub": "Beratung, Kunst, Musik, lokale Touren\nDeine Geschichte beginnt hier"
       },
       {
         "main": "Du bist nicht allein.\nEin Ort, um du selbst zu sein",
-        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
+        "sub": ""
       },
       {
-        "main": "Eine Community, in der Freunde\ndeine Talente anerkennen",
-        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
-      },
-      {
-        "main": "Ein hochwertiger Community-Raum\nmit gleichgesinnten Freunden",
-        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
-      },
-      {
-        "main": "Lass dein \"Carat\" auf einer\nleeren Leinwand erstrahlen",
-        "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
+        "main": "Drücke dich aus und\ntriff neue Freunde",
+        "sub": ""
       }
     ]
   },
@@ -1078,7 +1066,10 @@
     "description": "Die Identitätsprüfung ist erforderlich, um die Funktionen zum Posten, Kommentieren und Chatten zu nutzen.",
     "verified_message": "Ihre Identität wurde verifiziert.",
     "pending_message": "Ihre Verifizierung wird überprüft. Bitte warten Sie.",
-    "rejected_message": "Ihre Verifizierung wurde nicht genehmigt. Bitte versuchen Sie es erneut."
+    "rejected_message": "Ihre Verifizierung wurde nicht genehmigt. Bitte versuchen Sie es erneut.",
+    "submitted_title": "Verifizierung eingereicht",
+    "submitted_message": "Ihre Identitätsdokumente wurden eingereicht. Bitte warten Sie auf den Abschluss der Überprüfung.",
+    "error": "Bei der Identitätsprüfung ist ein Fehler aufgetreten."
   },
   "subscription": {
     "status": {

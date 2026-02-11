@@ -2,36 +2,24 @@
   "hero": {
     "messages": [
       {
-        "main": "Esprimi te stesso e\nincontra nuovi amici",
-        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
-      },
-      {
-        "main": "Una comunità sicura dove\npuoi esprimerti",
-        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
-      },
-      {
-        "main": "Uno spazio per connettersi con\ncompagni fidati",
-        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
+        "main": "Creare un mondo\nsenza confini",
+        "sub": ""
       },
       {
         "main": "L'unico sito che supporta\nstili di vita gender-free",
-        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
+        "sub": ""
+      },
+      {
+        "main": "Uno spazio per connettersi con\ncompagni fidati",
+        "sub": "Consulenza, arte, musica, tour locali\nLa tua storia inizia qui"
       },
       {
         "main": "Non sei solo.\nUn posto per essere te stesso",
-        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
+        "sub": ""
       },
       {
-        "main": "Una comunità dove gli amici\nriconoscono i tuoi talenti",
-        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
-      },
-      {
-        "main": "Uno spazio comunitario di qualità\ncon amici che la pensano come te",
-        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
-      },
-      {
-        "main": "Lascia che il tuo \"Carat\" brilli\nsu una tela bianca",
-        "sub": "Consulenza, arte, musica, tour locali.\nLa tua storia inizia qui."
+        "main": "Esprimi te stesso e\nincontra nuovi amici",
+        "sub": ""
       }
     ]
   },
@@ -1078,7 +1066,10 @@
     "description": "La verifica dell'identità è richiesta per utilizzare le funzionalità di pubblicazione, commenti e chat.",
     "verified_message": "La tua identità è stata verificata.",
     "pending_message": "La tua verifica è in corso di revisione. Per favore, attendi.",
-    "rejected_message": "La tua verifica non è stata approvata. Per favore, riprova."
+    "rejected_message": "La tua verifica non è stata approvata. Per favore, riprova.",
+    "submitted_title": "Verifica inviata",
+    "submitted_message": "I tuoi documenti di identità sono stati inviati. Per favore, attendi il completamento della revisione.",
+    "error": "Si è verificato un errore durante la verifica dell'identità."
   },
   "subscription": {
     "status": {

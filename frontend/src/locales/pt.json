@@ -2,36 +2,24 @@
   "hero": {
     "messages": [
       {
-        "main": "Expresse-se e\nconheça novos amigos",
-        "sub": "Aconselhamento, arte, música, tours locais.\nSua história começa aqui."
-      },
-      {
-        "main": "Uma comunidade segura onde\nvocê pode se expressar",
-        "sub": "Aconselhamento, arte, música, tours locais.\nSua história começa aqui."
-      },
-      {
-        "main": "Um espaço para se conectar com\ncompanheiros de confiança",
-        "sub": "Aconselhamento, arte, música, tours locais.\nSua história começa aqui."
+        "main": "Criando um mundo\nsem fronteiras",
+        "sub": ""
       },
       {
         "main": "O único site que apoia\nestilos de vida sem gênero",
-        "sub": "Aconselhamento, arte, música, tours locais.\nSua história começa aqui."
+        "sub": ""
+      },
+      {
+        "main": "Um espaço para se conectar com\ncompanheiros de confiança",
+        "sub": "Aconselhamento, arte, música, tours locais\nSua história começa aqui"
       },
       {
         "main": "Você não está sozinho.\nUm lugar para ser você mesmo",
-        "sub": "Aconselhamento, arte, música, tours locais.\nSua história começa aqui."
+        "sub": ""
       },
       {
-        "main": "Uma comunidade onde amigos\nreconhecem seus talentos",
-        "sub": "Aconselhamento, arte, música, tours locais.\nSua história começa aqui."
-      },
-      {
-        "main": "Um espaço comunitário de qualidade\ncom amigos que pensam igual",
-        "sub": "Aconselhamento, arte, música, tours locais.\nSua história começa aqui."
-      },
-      {
-        "main": "Deixe seu \"Carat\" brilhar\nem uma tela em branco",
-        "sub": "Aconselhamento, arte, música, tours locais.\nSua história começa aqui."
+        "main": "Expresse-se e\nconheça novos amigos",
+        "sub": ""
       }
     ]
   },
@@ -1078,7 +1066,10 @@
     "description": "A verificação de identidade é necessária para usar os recursos de publicação, comentários e chat.",
     "verified_message": "Sua identidade foi verificada.",
     "pending_message": "Sua verificação está sendo analisada. Por favor, aguarde.",
-    "rejected_message": "Sua verificação não foi aprovada. Por favor, tente novamente."
+    "rejected_message": "Sua verificação não foi aprovada. Por favor, tente novamente.",
+    "submitted_title": "Verificação enviada",
+    "submitted_message": "Seus documentos de identidade foram enviados. Por favor, aguarde a conclusão da análise.",
+    "error": "Ocorreu um erro durante a verificação de identidade."
   },
   "subscription": {
     "status": {

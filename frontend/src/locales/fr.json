@@ -2,36 +2,24 @@
   "hero": {
     "messages": [
       {
-        "main": "Exprimez-vous et\nrencontrez de nouveaux amis",
-        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
-      },
-      {
-        "main": "Une communauté sûre où\nvous pouvez vous exprimer",
-        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
-      },
-      {
-        "main": "Un espace pour se connecter\navec des compagnons de confiance",
-        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
+        "main": "Créer un monde\nsans frontières",
+        "sub": ""
       },
       {
         "main": "Le seul site soutenant\nles modes de vie sans genre",
-        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
+        "sub": ""
+      },
+      {
+        "main": "Un espace pour se connecter\navec des compagnons de confiance",
+        "sub": "Conseils, art, musique, visites locales\nVotre histoire commence ici"
       },
       {
         "main": "Vous n'êtes pas seul.\nUn endroit pour être vous-même",
-        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
+        "sub": ""
       },
       {
-        "main": "Une communauté où les amis\nreconnaissent vos talents",
-        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
-      },
-      {
-        "main": "Un espace communautaire de qualité\navec des amis partageant les mêmes idées",
-        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
-      },
-      {
-        "main": "Laissez votre \"Carat\" briller\nsur une toile vierge",
-        "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
+        "main": "Exprimez-vous et\nrencontrez de nouveaux amis",
+        "sub": ""
       }
     ]
   },
@@ -1078,7 +1066,10 @@
     "description": "La vérification d'identité est requise pour utiliser les fonctionnalités de publication, commentaires et chat.",
     "verified_message": "Votre identité a été vérifiée.",
     "pending_message": "Votre vérification est en cours d'examen. Veuillez patienter.",
-    "rejected_message": "Votre vérification n'a pas été approuvée. Veuillez réessayer."
+    "rejected_message": "Votre vérification n'a pas été approuvée. Veuillez réessayer.",
+    "submitted_title": "Vérification soumise",
+    "submitted_message": "Vos documents d'identité ont été soumis. Veuillez attendre la fin de l'examen.",
+    "error": "Une erreur s'est produite lors de la vérification d'identité."
   },
   "subscription": {
     "status": {

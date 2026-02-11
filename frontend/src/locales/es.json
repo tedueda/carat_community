@@ -2,36 +2,24 @@
   "hero": {
     "messages": [
       {
-        "main": "Exprésate y\nconoce nuevos amigos",
-        "sub": "Consejos, arte, música, tours locales.\nTu historia comienza aquí."
-      },
-      {
-        "main": "Una comunidad segura donde\npuedes expresarte",
-        "sub": "Consejos, arte, música, tours locales.\nTu historia comienza aquí."
-      },
-      {
-        "main": "Un espacio para conectar con\ncompañeros de confianza",
-        "sub": "Consejos, arte, música, tours locales.\nTu historia comienza aquí."
+        "main": "Creando un mundo\nsin fronteras",
+        "sub": ""
       },
       {
         "main": "El único sitio que apoya\nestilos de vida sin género",
-        "sub": "Consejos, arte, música, tours locales.\nTu historia comienza aquí."
+        "sub": ""
+      },
+      {
+        "main": "Un espacio para conectar con\ncompañeros de confianza",
+        "sub": "Consejos, arte, música, tours locales\nTu historia comienza aquí"
       },
       {
         "main": "No estás solo.\nUn lugar para ser tú mismo",
-        "sub": "Consejos, arte, música, tours locales.\nTu historia comienza aquí."
+        "sub": ""
       },
       {
-        "main": "Una comunidad donde los amigos\nreconocen tus talentos",
-        "sub": "Consejos, arte, música, tours locales.\nTu historia comienza aquí."
-      },
-      {
-        "main": "Un espacio comunitario de calidad\ncon amigos afines",
-        "sub": "Consejos, arte, música, tours locales.\nTu historia comienza aquí."
-      },
-      {
-        "main": "Deja que tu \"Carat\" brille\nen un lienzo en blanco",
-        "sub": "Consejos, arte, música, tours locales.\nTu historia comienza aquí."
+        "main": "Exprésate y\nconoce nuevos amigos",
+        "sub": ""
       }
     ]
   },
@@ -1078,7 +1066,10 @@
     "description": "Se requiere verificación de identidad para usar las funciones de publicación, comentarios y chat.",
     "verified_message": "Tu identidad ha sido verificada.",
     "pending_message": "Tu verificación está siendo revisada. Por favor, espera.",
-    "rejected_message": "Tu verificación no fue aprobada. Por favor, inténtalo de nuevo."
+    "rejected_message": "Tu verificación no fue aprobada. Por favor, inténtalo de nuevo.",
+    "submitted_title": "Verificación enviada",
+    "submitted_message": "Tus documentos de identidad han sido enviados. Por favor, espera a que se complete la revisión.",
+    "error": "Se produjo un error durante la verificación de identidad."
   },
   "subscription": {
     "status": {
