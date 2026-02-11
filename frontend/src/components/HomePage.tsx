@@ -372,7 +372,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 4 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/img12.jpg" 
+                src="/images/hero3.png" 
                 alt="LGBTQ+ Community 5"
                 className="w-full h-full object-cover"
               />
