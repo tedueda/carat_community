@@ -124,7 +124,7 @@ const SubscribePage: React.FC = () => {
     setLoading(true);
     
     try {
-      const response = await fetch(`${API_URL}/api/stripe/create-checkout-session`, {
+      const response = await resilientFetch('/api/stripe/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
