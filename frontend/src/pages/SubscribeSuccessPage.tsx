@@ -23,7 +23,7 @@ const SubscribeSuccessPage: React.FC = () => {
 
     const verifySession = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/stripe/checkout-session/${sessionId}`);
+        const response = await resilientFetch(`/api/stripe/checkout-session/${sessionId}`);
         
         if (!response.ok) {
           throw new Error(t('subscribe.success.verification_failed'));
