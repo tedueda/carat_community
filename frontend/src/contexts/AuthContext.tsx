@@ -5,6 +5,8 @@ export const resilientFetch = async (path: string, init?: RequestInit): Promise<
   for (const base of [API_URL, DIRECT_API_URL]) {
     try {
       const res = await fetch(`${base}${path}`, init);
+      const ct = res.headers.get('content-type') || '';
+      if (ct.includes('text/html') && !path.endsWith('.html')) continue;
       if (res.status < 500) return res;
     } catch (e) {
       console.warn(`Fetch failed for ${base || '(proxy)'}${path}`, e);
