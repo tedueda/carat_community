@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-import { API_URL } from '../config';
+import { resilientFetch } from '../contexts/AuthContext';
 
 const COUNTRIES = [
   { code: 'JP', name: 'Japan' },
