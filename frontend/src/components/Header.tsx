@@ -5,6 +5,7 @@ import { Home, ChevronDown, Menu, X, MessageCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import LanguageSelector from './common/LanguageSelector';
 import { useTranslation } from 'react-i18next';
+import { API_URL } from '../config';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -25,8 +26,7 @@ const Header: React.FC = () => {
       if (!token) return;
       
       try {
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-        const res = await fetch(`${API_URL}/api/matching/chats`, {
+                const res = await fetch(`${API_URL}/api/matching/chats`, {
           headers: { 'Authorization': `Bearer ${token}` },
         });
         if (res.ok) {

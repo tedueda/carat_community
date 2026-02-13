@@ -7,6 +7,7 @@ import { Card, CardContent } from '../ui/card';
 import { Plus, MessageCircle, Grid3x3, List, ArrowLeft } from 'lucide-react';
 import SalonRoomCard from './SalonRoomCard';
 import CreateSalonRoomModal from './CreateSalonRoomModal';
+import { API_URL } from '../../config';
 
 interface SalonRoom {
   id: number;
@@ -34,8 +35,7 @@ const SalonPage: React.FC = () => {
   const [selectedRoomType, setSelectedRoomType] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
+  
   // 有料会員かどうか
   const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
   const isLoggedIn = !!user;

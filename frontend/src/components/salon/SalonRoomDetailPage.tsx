@@ -8,6 +8,7 @@ import { Card, CardContent } from '../ui/card';
 import { Input } from '../ui/input';
 import { ArrowLeft, Send, Users, Lock, Unlock, UserCircle } from 'lucide-react';
 import { Checkbox } from '../ui/checkbox';
+import { API_URL } from '../../config';
 
 interface SalonRoom {
   id: number;
@@ -78,8 +79,7 @@ const SalonRoomDetailPage: React.FC = () => {
   const [anonymousName, setAnonymousName] = useState('');
   const [showParticipants, setShowParticipants] = useState(false);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
+  
   const fetchRoom = async () => {
     if (!token || !roomId) return;
 

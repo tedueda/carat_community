@@ -7,6 +7,7 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Label } from '../ui/label';
 import { Checkbox } from '../ui/checkbox';
+import { API_URL } from '../../config';
 
 interface CreateSalonRoomModalProps {
   isOpen: boolean;
@@ -41,8 +42,7 @@ const CreateSalonRoomModal: React.FC<CreateSalonRoomModalProps> = ({
   const [identities, setIdentities] = useState<Identity[]>([]);
   const [roomTypes, setRoomTypes] = useState<RoomType[]>([]);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
+  
   useEffect(() => {
     if (isOpen && token) {
       fetchOptions();

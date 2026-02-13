@@ -331,7 +331,7 @@ async def stripe_webhook(
     stripe_signature: str = Header(None, alias="Stripe-Signature"),
     db: Session = Depends(get_db)
 ):
-    """Handle Stripe webhooks for subscription and identity events."""
+    """Handle Stripe webhooks for subscription and identity events with idempotency."""
     if not STRIPE_WEBHOOK_SECRET:
         logger.warning("Stripe webhook secret not configured")
         raise HTTPException(status_code=500, detail="Webhook not configured")
@@ -349,8 +349,25 @@ async def stripe_webhook(
         logger.error(f"Invalid signature: {e}")
         raise HTTPException(status_code=400, detail="Invalid signature")
     
+    event_id = event["id"]
     event_type = event["type"]
     data = event["data"]["object"]
+    
+    # Check idempotency - if event already processed, return success
+    from app.models import StripeEvent
+    existing_event = db.query(StripeEvent).filter(StripeEvent.event_id == event_id).first()
+    if existing_event:
+        logger.info(f"Event {event_id} already processed, skipping")
+        return {"status": "success", "message": "Event already processed"}
+    
+    # Store event for idempotency
+    stripe_event = StripeEvent(
+        event_id=event_id,
+        type=event_type,
+        payload_json=event
+    )
+    db.add(stripe_event)
+    db.commit()
     
     logger.info(f"Received Stripe webhook: {event_type}")
     
@@ -397,6 +414,7 @@ async def handle_checkout_completed(data: dict, db: Session):
     if user:
         user.stripe_subscription_id = subscription_id
         user.subscription_status = "active"
+        user.membership_status = "paid"
         user.is_active = True
         user.membership_type = "premium"
         db.commit()
@@ -443,6 +461,8 @@ async def handle_subscription_deleted(data: dict, db: Session):
     user = db.query(User).filter(User.stripe_customer_id == customer_id).first()
     if user:
         user.subscription_status = "canceled"
+        user.membership_status = "free"
+        user.stripe_subscription_id = None
         # Don't deactivate legacy paid users
         if not user.is_legacy_paid:
             user.is_active = False
@@ -476,13 +496,20 @@ async def handle_invoice_payment_failed(data: dict, db: Session):
 async def handle_identity_verified(data: dict, db: Session):
     """Handle identity.verification_session.verified event."""
     session_id = data.get("id")
+    metadata = data.get("metadata", {})
+    user_id = metadata.get("user_id")
     
+    # Try to find user by session_id first, then by metadata user_id
     user = db.query(User).filter(
         User.stripe_identity_verification_session_id == session_id
     ).first()
     
+    if not user and user_id:
+        user = db.query(User).filter(User.id == int(user_id)).first()
+    
     if user:
-        user.kyc_status = "VERIFIED"
+        user.kyc_status = "verified"
+        user.kyc_verified_at = datetime.utcnow()
         user.is_verified = True
         db.commit()
         logger.info(f"Identity verified for user {user.id}")
@@ -491,13 +518,18 @@ async def handle_identity_verified(data: dict, db: Session):
 async def handle_identity_requires_input(data: dict, db: Session):
     """Handle identity.verification_session.requires_input event."""
     session_id = data.get("id")
+    metadata = data.get("metadata", {})
+    user_id = metadata.get("user_id")
     
     user = db.query(User).filter(
         User.stripe_identity_verification_session_id == session_id
     ).first()
     
+    if not user and user_id:
+        user = db.query(User).filter(User.id == int(user_id)).first()
+    
     if user:
-        user.kyc_status = "REJECTED"
+        user.kyc_status = "failed"
         db.commit()
         logger.info(f"Identity requires input for user {user.id}")
 
@@ -505,13 +537,17 @@ async def handle_identity_requires_input(data: dict, db: Session):
 async def handle_identity_canceled(data: dict, db: Session):
     """Handle identity.verification_session.canceled event."""
     session_id = data.get("id")
+    metadata = data.get("metadata", {})
+    user_id = metadata.get("user_id")
     
     user = db.query(User).filter(
         User.stripe_identity_verification_session_id == session_id
     ).first()
     
+    if not user and user_id:
+        user = db.query(User).filter(User.id == int(user_id)).first()
+    
     if user:
-        user.kyc_status = "UNVERIFIED"
-        user.stripe_identity_verification_session_id = None
+        user.kyc_status = "failed"
         db.commit()
         logger.info(f"Identity canceled for user {user.id}")

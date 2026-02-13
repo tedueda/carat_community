@@ -6,6 +6,7 @@ import { Button } from '../../components/ui/button';
 import { Heart, MessageCircle, Play, Search, Home } from 'lucide-react';
 import { Post, User } from '../../types/Post';
 import PostDetailModal from '../../components/PostDetailModal';
+import { API_URL } from '../../config';
 
 const FoodPage: React.FC = () => {
   const { user, isAnonymous, token, isLoading } = useAuth();
@@ -20,8 +21,7 @@ const FoodPage: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
-
+  
   // 画像URL解決: /images/ はフロント配信なのでそのまま。/media,/uploads はAPIにぶら下げる。
   const resolveImageUrl = (url?: string): string => {
     if (!url) return '';

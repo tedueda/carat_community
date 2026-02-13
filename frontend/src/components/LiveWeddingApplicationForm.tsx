@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Send, Calendar, Users, Mail, User, MessageSquare } from 'lucide-react';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Button } from './ui/button';
+import { API_URL } from '../config';
 
 interface ApplicationForm {
   applicant1Name: string;
@@ -50,7 +51,7 @@ const LiveWeddingApplicationForm: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/live-wedding/application`, {
+      const response = await fetch(`${API_URL}/api/live-wedding/application`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

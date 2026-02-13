@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { X, Upload, Youtube, Tag, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { Post } from '../types/Post';
+import { API_URL } from '../config';
 
 interface NewPostFormProps {
   categoryKey: string;
@@ -73,8 +74,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStartTime, setSubmitStartTime] = useState<number | null>(null);
 
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
-  const category = categories[categoryKey as keyof typeof categories];
+    const category = categories[categoryKey as keyof typeof categories];
 
   const getLinkHostname = (url: string): string | null => {
     try {

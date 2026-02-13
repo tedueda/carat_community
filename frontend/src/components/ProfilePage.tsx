@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, Settings, Shield } from 'lucide-react';
+import { API_URL } from '../config';
 
 interface Profile {
   user_id: number;
@@ -40,8 +41,7 @@ const ProfilePage: React.FC = () => {
   
   const { token } = useAuth();
 
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
-
+  
   useEffect(() => {
     fetchProfile();
   }, []);

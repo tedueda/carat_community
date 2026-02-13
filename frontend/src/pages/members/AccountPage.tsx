@@ -8,8 +8,8 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
+import { API_URL } from '../../config';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 interface AccountData {
   id: number;

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Send } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { API_URL } from '../../config';
 
 interface Message {
   id: number;
@@ -22,7 +23,6 @@ interface ChatInfo {
   seller_display_name: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const FleaMarketChatPage: React.FC = () => {
   const { chatId } = useParams<{ chatId: string }>();

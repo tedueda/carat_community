@@ -3,7 +3,7 @@
  * バックエンドから返されるURLを適切な形式に変換します
  */
 
-const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
+import { API_URL } from '../config';
 
 /**
  * 画像URLを解決する

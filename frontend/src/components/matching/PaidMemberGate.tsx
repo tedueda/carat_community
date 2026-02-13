@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { usePaidMember } from '@/hooks/usePremium';
 import { useAuth } from '@/contexts/AuthContext';
 import MatchingGateModal from './MatchingGateModal';
+import { API_URL } from '../../config';
 
 interface PaidMemberGateProps {
   children: React.ReactNode;
@@ -24,8 +25,7 @@ const PaidMemberGate: React.FC<PaidMemberGateProps> = ({ children }) => {
   const handleUpgrade = async () => {
     try {
       // 有料会員登録へのリダイレクト
-      const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
-      const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token');
       const res = await fetch(`${API_URL}/api/billing/checkout`, {
         method: 'POST',
         headers: {

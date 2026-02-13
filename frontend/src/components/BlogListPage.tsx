@@ -5,6 +5,7 @@ import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Heart, MessageCircle, ArrowLeft, Plus, Calendar, User } from 'lucide-react';
 import { Post } from '../types/Post';
+import { API_URL } from '../config';
 
 const BlogListPage: React.FC = () => {
   const { token, user } = useAuth();
@@ -12,8 +13,7 @@ const BlogListPage: React.FC = () => {
   const [blogs, setBlogs] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
-
+  
   const fetchBlogs = async () => {
     setLoading(true);
     try {

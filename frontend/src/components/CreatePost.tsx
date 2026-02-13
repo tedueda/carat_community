@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlusCircle, Music, MessageSquare, Store, MapPin, Film, FileText, Palette, Upload, X, Lock } from 'lucide-react';
+import { API_URL } from '../config';
 
 const CreatePost: React.FC = () => {
   const [title, setTitle] = useState('');
@@ -39,8 +40,7 @@ const CreatePost: React.FC = () => {
   const { categoryKey } = useParams();
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
-
+  
   const categories = [
     // サブカルチャー（= comics カテゴリ）
     { key: 'comics', name: 'サブカルチャー', icon: Film, description: '映画・アニメ・ゲーム・小説などの作品レビューと感想' },

@@ -42,6 +42,7 @@ import JewelryOrderComplete from './components/jewelry/JewelryOrderComplete';
 import JewelryAdmin from './components/jewelry/JewelryAdmin';
 import SubscribePage from './pages/SubscribePage';
 import SubscribeSuccessPage from './pages/SubscribeSuccessPage';
+import KycReturnPage from './pages/KycReturnPage';
 
 
 const FeedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -83,6 +84,9 @@ function AppContent() {
                     {/* Subscription routes */}
                     <Route path="/subscribe" element={<SubscribePage />} />
                     <Route path="/subscribe/success" element={<SubscribeSuccessPage />} />
+                    <Route path="/kyc/return" element={<KycReturnPage />} />
+                    <Route path="/billing/success" element={<SubscribeSuccessPage />} />
+                    <Route path="/billing/cancel" element={<SubscribePage />} />
           <Route path="/feed" element={
             <FeedRoute>
               <HomePage />

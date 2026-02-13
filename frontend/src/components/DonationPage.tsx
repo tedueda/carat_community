@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Target, Users, Search, Filter, Clock, Star, Plus, Minus, Upload, Home, ChevronLeft, ChevronRight, X, Edit, Trash2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { API_URL } from '../config';
 
 interface Project {
   id: number;
@@ -54,8 +55,7 @@ const DonationPage: React.FC = () => {
   ]);
   const [supportAmount, setSupportAmount] = useState('');
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
+  
   // プロジェクト一覧を取得（PostsのAPIを使用）
   const fetchProjects = async () => {
     try {
@@ -414,8 +414,7 @@ const DonationPage: React.FC = () => {
                           const imageUrl = project.image_urls[0];
                           if (!imageUrl) return '';
                           if (imageUrl.startsWith('http')) return imageUrl;
-                          const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-                          return `${API_URL}${imageUrl}`;
+                                                    return `${API_URL}${imageUrl}`;
                         })()}
                         alt={project.title}
                         className="w-full h-full object-cover"
@@ -552,8 +551,7 @@ const DonationPage: React.FC = () => {
             <div className="flex gap-3">
               <button
                 onClick={async () => {
-                  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-                  const token = localStorage.getItem('token');
+                                    const token = localStorage.getItem('token');
                   
                   const amount = supportAmount ? `${Number(supportAmount).toLocaleString()}円` : '応援';
                   const message = `「${selectedProject.title}」に対し${amount}を支援します`;
@@ -631,8 +629,7 @@ const DonationPage: React.FC = () => {
                         const imageUrl = selectedProject.image_urls[detailImageIndex];
                         if (!imageUrl) return '';
                         if (imageUrl.startsWith('http')) return imageUrl;
-                        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-                        return `${API_URL}${imageUrl}`;
+                                                return `${API_URL}${imageUrl}`;
                       })()}
                       alt={`${selectedProject.title} - 画像${detailImageIndex + 1}`}
                       className="max-w-full max-h-full object-contain"

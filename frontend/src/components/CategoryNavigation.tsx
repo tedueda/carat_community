@@ -11,8 +11,8 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { Category } from '../types/category';
+import { API_URL } from '../config';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 // アイコンマッピング
 const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
@@ -46,7 +46,7 @@ export default function CategoryNavigation() {
           setCategories(data);
         }
       } else {
-        const response = await fetch(`${API_BASE_URL}/api/categories`);
+        const response = await fetch(`${API_URL}/api/categories`);
         if (response.ok) {
           const data = await response.json();
           setCategories(data);

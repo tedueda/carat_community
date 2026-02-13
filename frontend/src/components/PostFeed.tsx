@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Heart, MessageCircle, Share2, MoreHorizontal, Smile, Award } from 'lucide-react';
+import { API_URL } from '../config';
 
 interface User {
   id: number;
@@ -28,8 +29,7 @@ const PostFeed: React.FC = () => {
   const [error, setError] = useState('');
   const { token, user, isAnonymous } = useAuth();
 
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
-
+  
   const fetchPosts = async () => {
     try {
       const headers: any = {};
@@ -120,7 +120,7 @@ const PostFeed: React.FC = () => {
               </Button>
             ) : (
               <Button 
-                onClick={() => window.location.href = '/login'}
+                onClick={() => window.location.href = '/register'}
                 className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
               >
                 投稿するには有料会員登録
@@ -219,7 +219,7 @@ const PostFeed: React.FC = () => {
                   <div className="w-full text-center py-2">
                     <p className="text-sm text-gray-500 mb-2">リアクションや投稿をするには有料会員登録が必要です</p>
                     <Button 
-                      onClick={() => window.location.href = '/login'}
+                      onClick={() => window.location.href = '/register'}
                       size="sm"
                       className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
                     >

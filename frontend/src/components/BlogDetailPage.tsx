@@ -6,6 +6,7 @@ import { Button } from './ui/button';
 import { MessageCircle, ArrowLeft, Calendar, User } from 'lucide-react';
 import { Post } from '../types/Post';
 import LikeButton from './common/LikeButton';
+import { API_URL } from '../config';
 
 const BlogDetailPage: React.FC = () => {
   const { slug } = useParams();
@@ -14,8 +15,7 @@ const BlogDetailPage: React.FC = () => {
   const [blog, setBlog] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
-
+  
   const fetchBlog = async () => {
     setLoading(true);
     try {

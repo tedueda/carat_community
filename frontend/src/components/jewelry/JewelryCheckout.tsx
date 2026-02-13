@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { CreditCard, ChevronLeft, Loader2 } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { API_URL } from '../../config';
 
 interface CartItem {
   id: number;
@@ -34,7 +35,6 @@ interface ShippingInfo {
   email: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY || 'pk_test_placeholder';
 
 const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);

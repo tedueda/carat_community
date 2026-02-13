@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import ArtSaleDetail from './ArtSaleDetail';
 import ArtSalePostForm from './ArtSalePostForm';
+import { API_URL } from '../../config';
 
 interface ArtSaleItem {
   id: number;
@@ -31,7 +32,6 @@ interface Category {
   name: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const CATEGORY_LABELS: Record<string, string> = {
   painting: '絵画',

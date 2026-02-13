@@ -10,8 +10,8 @@ import NewPostForm from './NewPostForm';
 import { Post } from '../types/Post';
 import { Category, Subcategory } from '../types/category';
 import { extractYouTubeId } from '../utils/youtube';
+import { API_URL } from '../config';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 const sortOptions = [
   { value: "newest", label: "新着順" },
@@ -88,7 +88,7 @@ const CategoryPageNew: React.FC = () => {
             }
           }
         } else {
-          const response = await fetch(`${API_BASE_URL}/api/categories/${categorySlug}`);
+          const response = await fetch(`${API_URL}/api/categories/${categorySlug}`);
           
           if (response.ok) {
             const data = await response.json();
@@ -164,7 +164,7 @@ const CategoryPageNew: React.FC = () => {
           params.set('tag', selectedTag);
         }
         
-        const response = await fetch(`${API_BASE_URL}/api/posts/?${params}`, {
+        const response = await fetch(`${API_URL}/api/posts/?${params}`, {
           headers: token ? {
             'Authorization': `Bearer ${token}`,
           } : {},

@@ -28,8 +28,12 @@ class User(Base):
     subscription_status = Column(String(50), nullable=True)  # active, past_due, canceled, incomplete, trialing
     
     # Stripe Identity (KYC) fields
-    kyc_status = Column(String(50), default="UNVERIFIED")  # UNVERIFIED, PENDING, VERIFIED, REJECTED
+    kyc_status = Column(String(50), default="unverified")  # unverified, pending, verified, failed
     stripe_identity_verification_session_id = Column(String(255), nullable=True)
+    kyc_verified_at = Column(DateTime(timezone=True), nullable=True)
+    
+    # Membership status (for subscription)
+    membership_status = Column(String(50), default="free")  # free, paid
     
     # Legacy paid user flag (for existing test users)
     is_legacy_paid = Column(Boolean, default=False)
@@ -982,3 +986,15 @@ class SalonMessageTranslation(Base):
     )
 
     salon_message = relationship("SalonMessage", back_populates="translations")
+
+
+# ===== Stripe Events (Webhook Idempotency) =====
+
+class StripeEvent(Base):
+    __tablename__ = "stripe_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(String(255), unique=True, nullable=False, index=True)
+    type = Column(String(100), nullable=False, index=True)
+    payload_json = Column(JSON, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Crown } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 interface PremiumUpgradeModalProps {
   open: boolean;
@@ -17,11 +18,18 @@ const PremiumUpgradeModal: React.FC<PremiumUpgradeModalProps> = ({
   description,
   featureName
 }) => {
+  const { user } = useAuth();
+  
   if (!open) return null;
 
   const handleUpgrade = () => {
-    // Navigate to registration/upgrade page
-    window.location.href = '/register';
+    // ログイン済みの場合は /subscribe (KYC→決済フロー) へ
+    // 未ログインの場合は /register (新規登録) へ
+    if (user) {
+      window.location.href = '/subscribe';
+    } else {
+      window.location.href = '/register';
+    }
   };
 
   const defaultDescription = featureName 
@@ -71,7 +79,7 @@ const PremiumUpgradeModal: React.FC<PremiumUpgradeModalProps> = ({
             className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold"
           >
             <Crown className="h-4 w-4 mr-2" />
-            有料会員に登録
+            {user ? 'サブスクリプション登録' : '新規会員登録'}
           </Button>
           <Button 
             variant="outline" 

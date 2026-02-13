@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
+import { API_URL } from '../../config';
 
 type MatchItem = {
   match_id: number;
@@ -11,8 +12,7 @@ type MatchItem = {
 const MatchingMatchesPage: React.FC = () => {
   const { t } = useTranslation();
   const { token } = useAuth();
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
-  const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<MatchItem[]>([]);
   const [error, setError] = useState<string | null>(null);
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../config';
 
 interface JewelryProduct {
   id: number;
@@ -54,7 +55,6 @@ interface ProductFormData {
   image_urls: string[];
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const JewelryAdmin: React.FC = () => {
   const navigate = useNavigate();
@@ -92,7 +92,7 @@ const JewelryAdmin: React.FC = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/jewelry/products?limit=100`);
+      const response = await fetch(`${API_URL}/jewelry/products?limit=100`);
       if (!response.ok) throw new Error('商品の取得に失敗しました');
       const data = await response.json();
       setProducts(data);
@@ -167,7 +167,7 @@ const JewelryAdmin: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/jewelry/products/${productId}`, {
+      const response = await fetch(`${API_URL}/jewelry/products/${productId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -221,8 +221,8 @@ const JewelryAdmin: React.FC = () => {
       };
 
       const url = editingProduct 
-        ? `${API_BASE_URL}/jewelry/products/${editingProduct.id}`
-        : `${API_BASE_URL}/jewelry/products`;
+        ? `${API_URL}/jewelry/products/${editingProduct.id}`
+        : `${API_URL}/jewelry/products`;
       
       const method = editingProduct ? 'PUT' : 'POST';
 
@@ -301,7 +301,7 @@ const JewelryAdmin: React.FC = () => {
       formDataObj.append('file', file);
       
       try {
-        const response = await fetch(`${API_BASE_URL}/api/media/upload`, {
+        const response = await fetch(`${API_URL}/api/media/upload`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,

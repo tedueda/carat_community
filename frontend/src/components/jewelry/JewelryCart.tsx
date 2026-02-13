@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingCart, Trash2, Minus, Plus, ChevronLeft } from 'lucide-react';
+import { API_URL } from '../../config';
 
 interface CartItem {
   id: number;
@@ -23,7 +24,6 @@ interface Cart {
   total_amount: number;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const JewelryCart: React.FC = () => {
   const navigate = useNavigate();

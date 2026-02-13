@@ -14,6 +14,7 @@ import { extractYouTubeId } from '../utils/youtube';
 import HeroAudioPlayer from './HeroAudioPlayer';
 import liveWeddingBanner from '../assets/images/live-wedding-banner.jpg';
 import jewelryBanner from '../assets/images/jewelry-banner.jpg';
+import { API_URL } from '../config';
 
 
 const specialMenuItems = [
@@ -147,8 +148,7 @@ const HomePage: React.FC = () => {
   const { token, user, isAnonymous } = useAuth();
   const navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
+  
 
   const fetchNews = async (lang?: string) => {
     try {
@@ -784,7 +784,13 @@ const HomePage: React.FC = () => {
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-end">
                 <Button 
-                  onClick={() => window.location.href = '/login'}
+                  onClick={() => {
+                    if (user) {
+                      navigate('/subscribe');
+                    } else {
+                      navigate('/register');
+                    }
+                  }}
                   className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
                 >
                   {t('membership.registerMonthly')}

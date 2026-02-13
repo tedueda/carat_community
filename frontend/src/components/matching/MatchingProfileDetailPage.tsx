@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { IdentityBadge } from '@/components/ui/IdentityBadge';
+import { API_URL } from '../../config';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 // アイコンコンポーネント
 const ArrowLeft = ({ className }: { className?: string }) => (
