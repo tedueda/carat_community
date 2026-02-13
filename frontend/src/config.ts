@@ -11,3 +11,4 @@ const getCleanOrigin = (): string => {
 export const API_URL = import.meta.env.VITE_API_URL || 
   (import.meta.env.DEV ? getCleanOrigin() : '');
 export const DIRECT_API_URL = 'https://ddxdewgmen.ap-northeast-1.awsapprunner.com';
+export const BACKEND_URL = import.meta.env.VITE_API_URL || DIRECT_API_URL;
