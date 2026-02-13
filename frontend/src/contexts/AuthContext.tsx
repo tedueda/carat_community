@@ -1,5 +1,17 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { API_URL } from '@/config';
+import { API_URL, DIRECT_API_URL } from '@/config';
+
+export const resilientFetch = async (path: string, init?: RequestInit): Promise<Response> => {
+  for (const base of [API_URL, DIRECT_API_URL]) {
+    try {
+      const res = await fetch(\`\${base}\${path}\`, init);
+      if (res.status < 500) return res;
+    } catch (e) {
+      console.warn(\`Fetch failed for \${base || '(proxy)'}\${path}\`, e);
+    }
+  }
+  throw new Error('All API endpoints failed');
+};
 
 interface User {
   id: number;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { API_URL } from '../config';
+import { resilientFetch } from '../contexts/AuthContext';
 
 const SubscribeSuccessPage: React.FC = () => {
   const { t } = useTranslation();

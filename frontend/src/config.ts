@@ -9,8 +9,5 @@ const getCleanOrigin = (): string => {
 // For dev mode, use clean origin to avoid userinfo in fetch URLs
 // For production, use the configured API URL
 export const API_URL = import.meta.env.VITE_API_URL || 
-  (import.meta.env.DEV ? getCleanOrigin() : 'https://ddxdewgmen.ap-northeast-1.awsapprunner.com');
-
-if (!import.meta.env.VITE_API_URL && !import.meta.env.DEV) {
-  console.warn('VITE_API_URL is not set, using fallback backend URL');
-}
+  (import.meta.env.DEV ? getCleanOrigin() : '');
+export const DIRECT_API_URL = 'https://ddxdewgmen.ap-northeast-1.awsapprunner.com';

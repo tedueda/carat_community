@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Heart } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth, resilientFetch } from '@/contexts/AuthContext';
 
 const RegisterForm: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -18,7 +18,6 @@ const RegisterForm: React.FC = () => {
   
   const navigate = useNavigate();
   const { login } = useAuth();
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
