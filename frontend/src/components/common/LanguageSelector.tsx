@@ -6,11 +6,13 @@ import { LANGUAGE_NAMES, LANGUAGE_FLAGS, SupportedLanguage } from '../../i18n';
 interface LanguageSelectorProps {
   variant?: 'header' | 'dropdown' | 'compact';
   className?: string;
+  isHomePage?: boolean;
 }
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({ 
   variant = 'header',
-  className = '' 
+  className = '',
+  isHomePage = false
 }) => {
   const { currentLanguage, setLanguage, supportedLanguages, isChangingLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
@@ -38,7 +40,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       <div className={`relative ${className}`} ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-1 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+          className={`flex items-center gap-1 px-2 py-1 text-sm rounded-md transition-colors ${isHomePage ? 'bg-transparent text-white hover:bg-white/20 border border-white/30' : 'bg-gray-100 text-gray-900 hover:bg-gray-200'}`}
           disabled={isChangingLanguage}
         >
           <span>{LANGUAGE_FLAGS[currentLanguage]}</span>
@@ -70,7 +72,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     <div className={`relative ${className}`} ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${isHomePage ? 'bg-transparent text-white hover:bg-white/20 border border-white/30' : 'bg-gray-100 text-gray-900 hover:bg-gray-200'}`}
         disabled={isChangingLanguage}
         aria-label="言語を選択"
       >

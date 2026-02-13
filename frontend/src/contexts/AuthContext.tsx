@@ -1,5 +1,18 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { API_URL } from '@/config';
+import { API_URL, DIRECT_API_URL } from '@/config';
+
+// Helper: try fetch with proxy first, fallback to direct backend URL
+const resilientFetch = async (path: string, init?: RequestInit): Promise<Response> => {
+  for (const base of [API_URL, DIRECT_API_URL]) {
+    try {
+      const res = await fetch(`${base}${path}`, init);
+      if (res.status < 500) return res; // success or client error, don't retry
+    } catch (e) {
+      console.warn(`Fetch failed for ${base || '(proxy)'}${path}`, e);
+    }
+  }
+  throw new Error('All API endpoints failed');
+};
 
 interface User {
   id: number;
@@ -62,7 +75,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setToken(storedToken);
         
         try {
-          const response = await fetch(`${API_URL}/api/auth/me`, {
+          const response = await resilientFetch('/api/auth/me', {
             headers: {
               'Authorization': `Bearer ${storedToken}`,
             },
@@ -112,7 +125,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       console.log('🔑 Request body:', formData.toString());
       
-      const response = await fetch(`${API_URL}/api/auth/token`, {
+      const response = await resilientFetch('/api/auth/token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -128,7 +141,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const newToken = data.access_token;
         
         // ユーザー情報を取得
-        const userResponse = await fetch(`${API_URL}/api/auth/me`, {
+        const userResponse = await resilientFetch('/api/auth/me', {
           headers: {
             'Authorization': `Bearer ${newToken}`,
           },

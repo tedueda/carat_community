@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Heart } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { API_URL } from '../config';
+import { API_URL, DIRECT_API_URL } from '../config';
 
 const RegisterForm: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -16,62 +16,112 @@ const RegisterForm: React.FC = () => {
   const [displayName, setDisplayName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const isRegistering = useRef(false);
+  const isSubmitting = useRef(false);
   
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
+
+  // 既にログイン済みのユーザーが直接 /register にアクセスした場合はリダイレクト
+  // ただし登録処理中（login→navigate('/subscribe')の間）はリダイレクトしない
+  useEffect(() => {
+    if (user && !isRegistering.current) {
+      navigate('/feed');
+    }
+  }, [user, navigate]);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // 二重送信防止
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
     setIsLoading(true);
     setError('');
 
     if (password !== confirmPassword) {
       setError('パスワードが一致しません');
       setIsLoading(false);
+      isSubmitting.current = false;
       return;
     }
 
     if (password.length < 8) {
       setError('パスワードは8文字以上である必要があります');
       setIsLoading(false);
+      isSubmitting.current = false;
       return;
     }
 
     if (!phoneNumber.trim()) {
       setError('携帯番号は必須です');
       setIsLoading(false);
+      isSubmitting.current = false;
       return;
     }
 
     try {
-      const response = await fetch(`${API_URL}/api/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          password,
-          display_name: displayName,
-          phone_number: phoneNumber.trim()
-        })
+      const registerBody = JSON.stringify({
+        email,
+        password,
+        display_name: displayName,
+        phone_number: phoneNumber.trim()
       });
+      const registerHeaders = { 'Content-Type': 'application/json' };
+
+      // Try proxy first, then fallback to direct backend URL
+      let response: Response | null = null;
+      for (const baseUrl of [API_URL, DIRECT_API_URL]) {
+        try {
+          console.log('Registration attempt:', { baseUrl: baseUrl || '(proxy)', email });
+          response = await fetch(`${baseUrl}/api/auth/register`, {
+            method: 'POST',
+            headers: registerHeaders,
+            body: registerBody,
+          });
+          console.log('Registration response:', response.status, response.statusText);
+          if (response.ok || response.status === 400) break; // success or known error, stop retrying
+        } catch (fetchErr) {
+          console.warn('Fetch failed for', baseUrl || '(proxy)', fetchErr);
+          response = null; // try next URL
+        }
+      }
+
+      if (!response) {
+        setError('サーバーに接続できません。しばらくしてからもう一度お試しください。');
+        setIsLoading(false);
+        isSubmitting.current = false;
+        return;
+      }
 
       if (response.ok) {
-        // 登録成功後、自動的にログイン
+        // 登録処理中フラグを立てて、useEffectによる/feedリダイレクトを防止
+        isRegistering.current = true;
         const loginSuccess = await login(email, password);
         if (loginSuccess) {
-          navigate('/feed');
+          // login成功後、サブスク登録ページへ遷移
+          navigate('/subscribe', { replace: true });
+          return;
         } else {
-          // ログインに失敗した場合はログインページへ
+          isRegistering.current = false;
           navigate('/login');
         }
       } else {
-        setError('このメールアドレスは既に使用されている可能性があります');
+        const errorData = await response.json().catch(() => null);
+        const detail = errorData?.detail || '';
+        if (detail.includes('already registered')) {
+          setError('このメールアドレスは既に登録されています。ログインしてください。');
+        } else {
+          setError(`登録に失敗しました: ${detail || response.statusText}`);
+        }
       }
     } catch (err) {
-      setError('登録に失敗しました');
+      console.error('Registration error:', err);
+      setError(`登録エラー: ${err instanceof Error ? err.message : String(err)}`);
     }
     
     setIsLoading(false);
+    isSubmitting.current = false;
   };
 
   return (

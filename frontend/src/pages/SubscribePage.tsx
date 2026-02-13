@@ -38,6 +38,10 @@ const SubscribePageNew: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
+        // Normalize kyc_status to lowercase for consistent comparison
+        if (data.kyc_status) {
+          data.kyc_status = data.kyc_status.toLowerCase();
+        }
         setBillingStatus(data);
       }
     } catch (error) {
@@ -189,7 +193,7 @@ const SubscribePageNew: React.FC = () => {
                       Stripe Identityを使用した本人確認が必要です。パスポート、運転免許証、またはIDカードをご用意ください。
                     </p>
                     
-                    {billingStatus?.kyc_status === 'unverified' && (
+                    {(!billingStatus || billingStatus?.kyc_status === 'unverified') && (
                       <button
                         onClick={handleStartKyc}
                         disabled={processing}

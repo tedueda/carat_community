@@ -12,8 +12,8 @@ import PremiumUpgradeModal from './PremiumUpgradeModal';
 import { Post, User } from '../types/Post';
 import { extractYouTubeId } from '../utils/youtube';
 import HeroAudioPlayer from './HeroAudioPlayer';
+import ScrollNavigation from './ScrollNavigation';
 import liveWeddingBanner from '../assets/images/live-wedding-banner.jpg';
-import jewelryBanner from '../assets/images/jewelry-banner.jpg';
 import { API_URL } from '../config';
 
 
@@ -372,7 +372,7 @@ const HomePage: React.FC = () => {
               className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 4 ? 'opacity-100' : 'opacity-0'}`}
             >
               <img 
-                src="/images/hero3.png" 
+                src="/images/img10.jpg" 
                 alt="LGBTQ+ Community 5"
                 className="w-full h-full object-cover"
               />
@@ -432,7 +432,7 @@ const HomePage: React.FC = () => {
                   </Button>
                 ) : (
                   <Button 
-                    onClick={() => navigate('/subscribe')}
+                    onClick={() => navigate('/register')}
                     className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
                   >
                     {t('cta.registerButton')}
@@ -678,33 +678,6 @@ const HomePage: React.FC = () => {
           </div>
         </section>
 
-        {/* ジュエリー販売バナー */}
-        <section className="py-6">
-          <div className="relative rounded-xl shadow-2xl overflow-hidden" style={{ maxHeight: '400px' }}>
-            <img 
-              src={jewelryBanner} 
-              alt={t('jewelry.bannerAlt')}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black/40"></div>
-            <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-8 md:px-16">
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
-                {t('jewelry.banner.title')}
-              </h2>
-              <p className="text-xl md:text-2xl text-white/90 mb-6 max-w-2xl">
-                {t('jewelry.banner.subtitle')}
-              </p>
-              <button
-                onClick={() => navigate('/jewelry')}
-                className="inline-flex items-center gap-2 px-8 py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
-                {t('jewelry.banner.viewDetails')}
-                <ArrowRight className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-        </section>
-
         {/* ニュースセクション */}
         <section className="py-12">
           <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-6 gap-1 md:gap-0">
@@ -924,6 +897,9 @@ const HomePage: React.FC = () => {
           }}
         />
       )}
+
+      {/* Scroll Navigation Buttons */}
+      <ScrollNavigation />
     </div>
   );
 };
