@@ -13,6 +13,7 @@ import LikeButton from './common/LikeButton';
 import { Post } from '../types/Post';
 import { getYouTubeThumbnail, extractYouTubeUrlFromText } from '../utils/youtube';
 import { getPostImageUrl } from '../utils/imageUtils';
+import { API_URL } from '../config';
 
 
 const categoryKeys = ['board', 'art', 'music', 'shops', 'tourism', 'comics', 'news', 'food', 'beauty', 'funding'] as const;
@@ -86,7 +87,6 @@ const CategoryPage: React.FC = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
   const editPostId = searchParams.get('edit');
 
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
   const isValidCategory = categoryKey && categoryKeys.includes(categoryKey as CategoryKey);
   const categoryEmoji = isValidCategory ? categoryEmojis[categoryKey as CategoryKey] : null;
   const categoryTitle = isValidCategory ? t(`categoryPage.categories.${categoryKey}.title`) : '';

@@ -1,4 +1,28 @@
 {
+  "nav": {
+    "home": "Home",
+    "board": "Board",
+    "specialMenu": "Special Menu",
+    "account": "Account",
+    "blog": "Blog",
+    "accountInfo": "Account Info",
+    "profileEdit": "Edit Profile",
+    "boardCategories": {
+      "music": "Music",
+      "art": "Art & Video",
+      "comics": "Subculture",
+      "food": "Food & Shops",
+      "tourism": "Tourism",
+      "boardGeneral": "Board",
+      "news": "LGBTQ+ News"
+    },
+    "specialMenuItems": {
+      "matching": "Member Matching",
+      "salon": "Member Salon",
+      "business": "Business",
+      "liveWedding": "Live Wedding"
+    }
+  },
   "hero": {
     "messages": [
       {

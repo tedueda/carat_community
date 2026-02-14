@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'rea
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import Header from './components/Header';
+import Footer from './components/Footer';
 import LoginForm from './components/LoginForm';
 import HomePage from './components/HomePage';
 import PostFeed from './components/PostFeed';
@@ -242,6 +243,7 @@ function AppContent() {
           <Route path="/" element={<Navigate to="/feed" />} />
         </Routes>
       </main>
+      <Footer />
     </div>
   );
 }

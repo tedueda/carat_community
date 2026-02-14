@@ -1,4 +1,28 @@
 {
+  "nav": {
+    "home": "ホーム",
+    "board": "掲示板",
+    "specialMenu": "特別メニュー",
+    "account": "アカウント",
+    "blog": "ブログ",
+    "accountInfo": "アカウント情報",
+    "profileEdit": "プロフィール編集",
+    "boardCategories": {
+      "music": "ミュージック",
+      "art": "アート・動画",
+      "comics": "サブカルチャー",
+      "food": "食レポ・お店",
+      "tourism": "ツーリズム",
+      "boardGeneral": "掲示板",
+      "news": "LGBTQ＋ニュース"
+    },
+    "specialMenuItems": {
+      "matching": "会員マッチング",
+      "salon": "会員サロン",
+      "business": "ビジネス",
+      "liveWedding": "Live Wedding"
+    }
+  },
   "hero": {
     "messages": [
       {
@@ -6,7 +30,7 @@
         "sub": ""
       },
       {
-        "main": "ジェンダーフリーの生き方を\n応援する唯一のサイト",
+        "main": "ジェンダーフリーの\n生き方を応援する\n唯一のサイト",
         "sub": ""
       },
       {
@@ -14,7 +38,7 @@
         "sub": "悩み相談、アート、音楽、地元ツアー。\nここから、あなたの物語が始まります。"
       },
       {
-        "main": "ひとりじゃない。\n\"自分らしさ\"を出せる居場所",
+        "main": "ひとりじゃない。\n\"自分らしさ\"\nを出せる居場所",
         "sub": ""
       },
       {

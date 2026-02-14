@@ -1,4 +1,28 @@
 {
+  "nav": {
+    "home": "홈",
+    "board": "게시판",
+    "specialMenu": "특별 메뉴",
+    "account": "계정",
+    "blog": "블로그",
+    "accountInfo": "계정 정보",
+    "profileEdit": "프로필 편집",
+    "boardCategories": {
+      "music": "음악",
+      "art": "아트 & 동영상",
+      "comics": "서브컬처",
+      "food": "음식 & 가게",
+      "tourism": "관광",
+      "boardGeneral": "게시판",
+      "news": "LGBTQ+ 뉴스"
+    },
+    "specialMenuItems": {
+      "matching": "회원 매칭",
+      "salon": "회원 살롱",
+      "business": "비즈니스",
+      "liveWedding": "라이브 웨딩"
+    }
+  },
   "hero": {
     "messages": [
       {

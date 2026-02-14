@@ -54,23 +54,21 @@ const Header: React.FC = () => {
     navigate('/login');
   };
 
-  const memberBenefits = [
-    { title: t('header.matching'), link: "/matching", icon: "💕" },
-    { title: t('header.liveWedding'), link: "/live-wedding", icon: "💒" },
-    { title: t('header.funding'), link: "/funding", icon: "🤝" },
-    { title: t('header.marketplace'), link: "/marketplace", icon: "🛍️" },
-    { title: t('header.favorites'), link: "/members/favorites", icon: "❤️" },
-    { title: t('header.foodReport'), link: "/members/food", icon: "🍽" },
-    { title: t('header.beauty'), link: "/members/beauty", icon: "💄" },
+  const boardCategories = [
+    { titleKey: "nav.boardCategories.music", link: "/category/music", icon: "🎵" },
+    { titleKey: "nav.boardCategories.art", link: "/category/art", icon: "🎨" },
+    { titleKey: "nav.boardCategories.comics", link: "/category/comics", icon: "🎭" },
+    { titleKey: "nav.boardCategories.food", link: "/category/food", icon: "🍽️" },
+    { titleKey: "nav.boardCategories.tourism", link: "/category/tourism", icon: "📍" },
+    { titleKey: "nav.boardCategories.boardGeneral", link: "/category/board", icon: "💬" },
+    { titleKey: "nav.boardCategories.news", link: "/news", icon: "📰" },
   ];
 
-  const boardCategories = [
-    { title: t('header.subculture'), link: "/board/subculture", icon: "🎮" },
-    { title: t('header.art'), link: "/board/art", icon: "🎨" },
-    { title: t('header.music'), link: "/board/music", icon: "🎵" },
-    { title: t('header.general'), link: "/board/general", icon: "💬" },
-    { title: t('header.shops'), link: "/board/shops", icon: "🏪" },
-    { title: t('header.tourism'), link: "/board/tourism", icon: "✈️" },
+  const specialMenuItems = [
+    { titleKey: "nav.specialMenuItems.matching", link: "/matching", icon: "💕" },
+    { titleKey: "nav.specialMenuItems.salon", link: "/salon", icon: "💬" },
+    { titleKey: "nav.specialMenuItems.business", link: "/business", icon: "💼" },
+    { titleKey: "nav.specialMenuItems.liveWedding", link: "/live-wedding", icon: "💒" },
   ];
 
   return (
@@ -128,77 +126,81 @@ const Header: React.FC = () => {
 
         {/* Mobile Menu */}
         {showMobileMenu && (
-          <div className="md:hidden mt-4 pb-4 border-t border-white/20 pt-4">
-            <nav className="flex flex-col space-y-3">
+          <div className="md:hidden mt-4 pb-4 pt-4 bg-white rounded-xl shadow-lg mx-2">
+            <nav className="flex flex-col space-y-1">
               <Link to="/feed" onClick={() => setShowMobileMenu(false)}>
-                <Button variant="ghost" className={`w-full justify-start ${isHomePage ? 'text-white hover:text-gray-900 hover:bg-white' : 'text-gray-900 hover:text-gray-900 hover:bg-gray-100'}`}>
+                <Button variant="ghost" className="w-full justify-start text-gray-900 hover:bg-gray-100">
                   <Home className="h-5 w-5 mr-2" />
-                  {t('common.home')}
+                  {t('nav.home')}
                 </Button>
               </Link>
               
-              <div className="border-t border-white/20 pt-2 pb-2">
-                <div className="text-xs text-white/70 font-medium px-4 mb-2">{t('header.memberBenefits')}</div>
-                {memberBenefits.map((benefit) => (
-                  <Link
-                    key={benefit.link}
-                    to={benefit.link}
-                    onClick={() => setShowMobileMenu(false)}
-                    className={`flex items-center gap-3 px-4 py-2 rounded-md transition-colors ${isHomePage ? 'hover:bg-white hover:text-gray-900' : 'hover:bg-gray-100'}`}
-                  >
-                    <span className="text-xl">{benefit.icon}</span>
-                    <span className="text-sm text-white">{benefit.title}</span>
-                  </Link>
-                ))}
-              </div>
-
-              <div className="border-t border-white/20 pt-2 pb-2">
-                <div className="text-xs text-white/70 font-medium px-4 mb-2">{t('header.board')}</div>
+              <div className="border-t border-gray-200 pt-2 pb-2 mx-2">
+                <div className="text-xs font-medium px-4 mb-2 text-gray-500">{t('nav.board')}</div>
                 {boardCategories.map((category) => (
                   <Link
                     key={category.link}
                     to={category.link}
                     onClick={() => setShowMobileMenu(false)}
-                    className={`flex items-center gap-3 px-4 py-2 rounded-md transition-colors ${isHomePage ? 'hover:bg-white hover:text-gray-900' : 'hover:bg-gray-100'}`}
+                    className="flex items-center gap-3 px-4 py-2 rounded-md transition-colors hover:bg-gray-100"
                   >
                     <span className="text-xl">{category.icon}</span>
-                    <span className="text-sm text-white">{category.title}</span>
+                    <span className="text-sm text-gray-900">{t(category.titleKey)}</span>
                   </Link>
                 ))}
               </div>
 
-              <div className="border-t border-white/20 pt-2 pb-2">
-                <div className="text-xs text-white/70 font-medium px-4 mb-2">{t('common.account')}</div>
+              <div className="border-t border-gray-200 pt-2 pb-2 mx-2">
+                <div className="text-xs font-medium px-4 mb-2 text-gray-500">{t('nav.specialMenu')}</div>
+                {specialMenuItems.map((item) => (
+                  <Link
+                    key={item.link}
+                    to={item.link}
+                    onClick={() => setShowMobileMenu(false)}
+                    className="flex items-center gap-3 px-4 py-2 rounded-md transition-colors hover:bg-gray-100"
+                  >
+                    <span className="text-xl">{item.icon}</span>
+                    <span className="text-sm text-gray-900">{t(item.titleKey)}</span>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="border-t border-gray-200 pt-2 pb-2 mx-2">
+                <div className="text-xs font-medium px-4 mb-2 text-gray-500">{t('nav.account')}</div>
                 <Link
                   to="/account"
                   onClick={() => setShowMobileMenu(false)}
-                  className={`flex items-center gap-3 px-4 py-2 rounded-md transition-colors ${isHomePage ? 'hover:bg-white hover:text-gray-900' : 'hover:bg-gray-100'}`}
+                  className="flex items-center gap-3 px-4 py-2 rounded-md transition-colors hover:bg-gray-100"
                 >
                   <span className="text-xl">👤</span>
-                  <span className="text-sm text-white">{t('header.accountInfo')}</span>
+                  <span className="text-sm text-gray-900">{t('nav.accountInfo')}</span>
                 </Link>
                 <Link
                   to="/matching/profile"
                   onClick={() => setShowMobileMenu(false)}
-                  className={`flex items-center gap-3 px-4 py-2 rounded-md transition-colors ${isHomePage ? 'hover:bg-white hover:text-gray-900' : 'hover:bg-gray-100'}`}
+                  className="flex items-center gap-3 px-4 py-2 rounded-md transition-colors hover:bg-gray-100"
                 >
                   <span className="text-xl">✏️</span>
-                  <span className="text-sm text-white">{t('header.editProfile')}</span>
+                  <span className="text-sm text-gray-900">{t('nav.profileEdit')}</span>
                 </Link>
               </div>
 
-              <Link to="/blog" onClick={() => setShowMobileMenu(false)}>
-                <Button variant="ghost" className={`w-full justify-start ${isHomePage ? 'text-white hover:text-gray-900 hover:bg-white' : 'text-gray-900 hover:text-gray-900 hover:bg-gray-100'}`}>
-                  {t('header.blog')}
-                </Button>
-              </Link>
-
-              {(isFreeUser || !user) && (
-                <Link to="/login" onClick={() => setShowMobileMenu(false)}>
-                  <Button className="w-full bg-black hover:bg-gray-800 text-white">
-                    {t('common.login')}
+              <div className="mx-2">
+                <Link to="/blog" onClick={() => setShowMobileMenu(false)}>
+                  <Button variant="ghost" className="w-full justify-start text-gray-900 hover:bg-gray-100">
+                    {t('nav.blog')}
                   </Button>
                 </Link>
+              </div>
+
+              {(isFreeUser || !user) && (
+                <div className="mx-2 pt-2">
+                  <Link to="/login" onClick={() => setShowMobileMenu(false)}>
+                    <Button className="w-full bg-black hover:bg-gray-800 text-white">
+                      {t('common.login')}
+                    </Button>
+                  </Link>
+                </div>
               )}
             </nav>
           </div>
@@ -221,6 +223,7 @@ const Header: React.FC = () => {
           <div className="flex flex-col justify-start items-end space-y-2">
             {/* Top Row - Main Navigation */}
             <nav className="flex items-center gap-8">
+              {/* ホーム */}
               <Link to="/feed" onClick={() => {
                 setShowMemberMenu(false);
                 setShowBoardMenu(false);
@@ -228,45 +231,11 @@ const Header: React.FC = () => {
               }}>
                 <Button variant="ghost" className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:text-gray-900 hover:bg-white' : 'text-gray-900 hover:text-gray-900 hover:bg-gray-100'}`}>
                   <Home className="h-5 w-5 mr-2" />
-                  {t('common.home')}
+                  {t('nav.home')}
                 </Button>
               </Link>
               
-              {/* Member Benefits Dropdown */}
-              <div className="relative">
-                <Button 
-                  variant="ghost" 
-                  className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:text-gray-900 hover:bg-white' : 'text-gray-900 hover:text-gray-900 hover:bg-gray-100'}`}
-                  onClick={() => {
-                    setShowMemberMenu(!showMemberMenu);
-                    setShowBoardMenu(false);
-                    setShowAccountMenu(false);
-                  }}
-                >
-                  {t('header.memberBenefits')}
-                  <ChevronDown className="h-5 w-5 ml-1" />
-                </Button>
-                
-                {showMemberMenu && (
-                  <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                    <div className="p-2">
-                      {memberBenefits.map((benefit) => (
-                        <Link
-                          key={benefit.link}
-                          to={benefit.link}
-                          onClick={() => setShowMemberMenu(false)}
-                          className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-md transition-colors"
-                        >
-                          <span className="text-2xl">{benefit.icon}</span>
-                          <span className="text-sm text-gray-600">{benefit.title}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Board Dropdown */}
+              {/* 掲示板 Dropdown */}
               <div className="relative">
                 <Button 
                   variant="ghost" 
@@ -277,12 +246,12 @@ const Header: React.FC = () => {
                     setShowAccountMenu(false);
                   }}
                 >
-                  {t('header.board')}
+                  {t('nav.board')}
                   <ChevronDown className="h-5 w-5 ml-1" />
                 </Button>
                 
                 {showBoardMenu && (
-                  <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                  <div className="absolute top-full right-0 mt-2 w-72 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                     <div className="p-2">
                       {boardCategories.map((category) => (
                         <Link
@@ -292,7 +261,7 @@ const Header: React.FC = () => {
                           className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-md transition-colors"
                         >
                           <span className="text-2xl">{category.icon}</span>
-                          <span className="text-sm text-gray-600">{category.title}</span>
+                          <span className="text-sm text-gray-900">{t(category.titleKey)}</span>
                         </Link>
                       ))}
                     </div>
@@ -300,7 +269,41 @@ const Header: React.FC = () => {
                 )}
               </div>
 
-              {/* Account Dropdown */}
+              {/* 特別メニュー Dropdown */}
+              <div className="relative">
+                <Button 
+                  variant="ghost" 
+                  className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:text-gray-900 hover:bg-white' : 'text-gray-900 hover:text-gray-900 hover:bg-gray-100'}`}
+                  onClick={() => {
+                    setShowMemberMenu(!showMemberMenu);
+                    setShowBoardMenu(false);
+                    setShowAccountMenu(false);
+                  }}
+                >
+                  {t('nav.specialMenu')}
+                  <ChevronDown className="h-5 w-5 ml-1" />
+                </Button>
+                
+                {showMemberMenu && (
+                  <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                    <div className="p-2">
+                      {specialMenuItems.map((item) => (
+                        <Link
+                          key={item.link}
+                          to={item.link}
+                          onClick={() => setShowMemberMenu(false)}
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-md transition-colors"
+                        >
+                          <span className="text-2xl">{item.icon}</span>
+                          <span className="text-sm text-gray-900">{t(item.titleKey)}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* アカウント Dropdown */}
               <div className="relative">
                 <Button 
                   variant="ghost" 
@@ -311,7 +314,7 @@ const Header: React.FC = () => {
                     setShowBoardMenu(false);
                   }}
                 >
-                  {t('common.account')}
+                  {t('nav.account')}
                   <ChevronDown className="h-5 w-5 ml-1" />
                 </Button>
                 
@@ -324,7 +327,7 @@ const Header: React.FC = () => {
                         className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-md transition-colors"
                       >
                         <span className="text-2xl">👤</span>
-                        <span className="text-sm text-gray-600">{t('header.accountInfo')}</span>
+                        <span className="text-sm text-gray-900">{t('nav.accountInfo')}</span>
                       </Link>
                       <Link
                         to="/matching/profile"
@@ -332,20 +335,21 @@ const Header: React.FC = () => {
                         className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-md transition-colors"
                       >
                         <span className="text-2xl">✏️</span>
-                        <span className="text-sm text-gray-600">{t('header.editProfile')}</span>
+                        <span className="text-sm text-gray-900">{t('nav.profileEdit')}</span>
                       </Link>
                     </div>
                   </div>
                 )}
               </div>
 
+              {/* ブログ */}
               <Link to="/blog" onClick={() => {
                 setShowMemberMenu(false);
                 setShowBoardMenu(false);
                 setShowAccountMenu(false);
               }}>
                 <Button variant="ghost" className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:text-gray-900 hover:bg-white' : 'text-gray-900 hover:text-gray-900 hover:bg-gray-100'}`}>
-                  {t('header.blog')}
+                  {t('nav.blog')}
                 </Button>
               </Link>
             </nav>

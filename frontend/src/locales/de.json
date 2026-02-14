@@ -1,4 +1,28 @@
 {
+  "nav": {
+    "home": "Startseite",
+    "board": "Forum",
+    "specialMenu": "Spezialmenü",
+    "account": "Konto",
+    "blog": "Blog",
+    "accountInfo": "Kontoinformationen",
+    "profileEdit": "Profil Bearbeiten",
+    "boardCategories": {
+      "music": "Musik",
+      "art": "Kunst & Video",
+      "comics": "Subkultur",
+      "food": "Essen & Geschäfte",
+      "tourism": "Tourismus",
+      "boardGeneral": "Forum",
+      "news": "LGBTQ+ Nachrichten"
+    },
+    "specialMenuItems": {
+      "matching": "Mitglieder-Matching",
+      "salon": "Mitglieder-Salon",
+      "business": "Geschäft",
+      "liveWedding": "Live-Hochzeit"
+    }
+  },
   "hero": {
     "messages": [
       {
