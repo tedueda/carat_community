@@ -470,7 +470,11 @@
     "zodiac": "Zodiac",
     "notSet": "Not set",
     "identity": "Identity",
-    "romanceTargets": "Interested In",
+    "romanceTargets": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
     "meetingPurpose": "Looking For",
     "selfIntroduction": "About Me",
     "hobbies": "Hobbies",
@@ -667,11 +671,6 @@
       "male": "Male",
       "female": "Female",
       "hidden": "Hidden"
-    },
-    "romanceTargets": {
-      "male": "Male",
-      "female": "Female",
-      "other": "Other"
     },
     "hobbyCatalog": {
       "music": "Music",
@@ -1031,24 +1030,24 @@
       "paymentInfo": "Payment Information",
       "paymentPlaceholder": "Stripe integration coming soon"
     },
-        "profile": {
-          "title": "Profile",
-          "description": "Edit your public profile information",
-          "editMatchingProfile": "Edit Matching Profile",
-          "avatar": "Profile Picture",
-          "avatarChange": "Change Picture",
-          "displayName": "Display Name",
-          "bio": "Bio",
-          "bioPlaceholder": "Tell us about yourself...",
-          "location": "Location",
-          "locationPlaceholder": "e.g., Tokyo",
-          "interests": "Interests",
-          "interestsPlaceholder": "Add tags...",
-          "socialLinks": "Social Links",
-          "website": "Website",
-          "twitter": "Twitter",
-          "instagram": "Instagram"
-        },
+    "profile": {
+      "title": "Profile",
+      "description": "Edit your public profile information",
+      "editMatchingProfile": "Edit Matching Profile",
+      "avatar": "Profile Picture",
+      "avatarChange": "Change Picture",
+      "displayName": "Display Name",
+      "bio": "Bio",
+      "bioPlaceholder": "Tell us about yourself...",
+      "location": "Location",
+      "locationPlaceholder": "e.g., Tokyo",
+      "interests": "Interests",
+      "interestsPlaceholder": "Add tags...",
+      "socialLinks": "Social Links",
+      "website": "Website",
+      "twitter": "Twitter",
+      "instagram": "Instagram"
+    },
     "security": {
       "title": "Security",
       "changePassword": "Change Password",
@@ -1086,7 +1085,7 @@
     "residence_country": "Country of Residence",
     "terms_agreement": "I agree to the Terms of Service",
     "terms_link": "Read Terms",
-    "submit_button": "Proceed to Payment",
+    "submit_button": "Register & Verify Identity",
     "processing": "Processing...",
     "already_member": "Already a member?",
     "login_link": "Login",
@@ -1131,7 +1130,23 @@
     "description": "Identity verification is required to use posting, commenting, and chat features.",
     "verified_message": "Your identity has been verified.",
     "pending_message": "Your verification is being reviewed. Please wait.",
-    "rejected_message": "Your verification was not approved. Please try again."
+    "rejected_message": "Your verification was not approved. Please try again.",
+    "page": {
+      "loading": "Preparing identity verification...",
+      "no_auth": "Authentication required. Please return to the registration page.",
+      "session_error": "Failed to create verification session",
+      "verification_error": "Verification failed. Please try again.",
+      "unknown_error": "An error occurred",
+      "complete_title": "Verification Submitted",
+      "complete_message": "Your identity verification has been submitted. Please proceed to payment.",
+      "next_step_title": "Next Step",
+      "next_step_message": "Complete payment to unlock all premium features.",
+      "continue_to_payment": "Proceed to Payment",
+      "checkout_error": "Failed to create checkout session",
+      "error_title": "Error",
+      "retry": "Try Again",
+      "back_to_register": "Back to Registration"
+    }
   },
   "subscription": {
     "status": {

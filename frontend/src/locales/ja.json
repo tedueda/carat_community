@@ -470,7 +470,11 @@
     "zodiac": "星座",
     "notSet": "未設定",
     "identity": "アイデンティティ",
-    "romanceTargets": "恋愛対象",
+    "romanceTargets": {
+      "male": "男性",
+      "female": "女性",
+      "other": "その他"
+    },
     "meetingPurpose": "出会いの目的",
     "selfIntroduction": "自己紹介",
     "hobbies": "趣味",
@@ -667,11 +671,6 @@
       "male": "男性",
       "female": "女性",
       "hidden": "非表示"
-    },
-    "romanceTargets": {
-      "male": "男性",
-      "female": "女性",
-      "other": "その他"
     },
     "hobbyCatalog": {
       "music": "音楽",
@@ -1031,24 +1030,24 @@
       "paymentInfo": "決済情報",
       "paymentPlaceholder": "Stripe連携予定"
     },
-        "profile": {
-          "title": "プロフィール",
-          "description": "公開プロフィール情報を編集します",
-          "editMatchingProfile": "マッチングプロフィールを編集",
-          "avatar": "アイコン画像",
-          "avatarChange": "画像を変更",
-          "displayName": "表示名",
-          "bio": "自己紹介",
-          "bioPlaceholder": "自己紹介を入力してください...",
-          "location": "居住地",
-          "locationPlaceholder": "例: 東京都",
-          "interests": "興味・関心",
-          "interestsPlaceholder": "タグを追加...",
-          "socialLinks": "SNSリンク",
-          "website": "ウェブサイト",
-          "twitter": "Twitter",
-          "instagram": "Instagram"
-        },
+    "profile": {
+      "title": "プロフィール",
+      "description": "公開プロフィール情報を編集します",
+      "editMatchingProfile": "マッチングプロフィールを編集",
+      "avatar": "アイコン画像",
+      "avatarChange": "画像を変更",
+      "displayName": "表示名",
+      "bio": "自己紹介",
+      "bioPlaceholder": "自己紹介を入力してください...",
+      "location": "居住地",
+      "locationPlaceholder": "例: 東京都",
+      "interests": "興味・関心",
+      "interestsPlaceholder": "タグを追加...",
+      "socialLinks": "SNSリンク",
+      "website": "ウェブサイト",
+      "twitter": "Twitter",
+      "instagram": "Instagram"
+    },
     "security": {
       "title": "セキュリティ",
       "changePassword": "パスワードを変更",
@@ -1086,7 +1085,7 @@
     "residence_country": "居住国",
     "terms_agreement": "利用規約に同意します",
     "terms_link": "利用規約を読む",
-    "submit_button": "決済に進む",
+    "submit_button": "登録して本人確認へ",
     "processing": "処理中...",
     "already_member": "すでに会員の方は",
     "login_link": "ログイン",
@@ -1131,7 +1130,23 @@
     "description": "投稿・コメント・チャットなどの機能を利用するには本人確認が必要です。",
     "verified_message": "本人確認が完了しています。",
     "pending_message": "本人確認を審査中です。しばらくお待ちください。",
-    "rejected_message": "本人確認が承認されませんでした。再度お試しください。"
+    "rejected_message": "本人確認が承認されませんでした。再度お試しください。",
+    "page": {
+      "loading": "本人確認を準備中...",
+      "no_auth": "ログインが必要です。登録ページに戻ってください。",
+      "session_error": "本人確認セッションの作成に失敗しました",
+      "verification_error": "本人確認に失敗しました。もう一度お試しください。",
+      "unknown_error": "エラーが発生しました",
+      "complete_title": "本人確認が完了しました",
+      "complete_message": "本人確認の提出が完了しました。次に決済に進んでください。",
+      "next_step_title": "次のステップ",
+      "next_step_message": "決済を完了すると、有料会員として全機能をご利用いただけます。",
+      "continue_to_payment": "決済に進む",
+      "checkout_error": "決済セッションの作成に失敗しました",
+      "error_title": "エラー",
+      "retry": "もう一度試す",
+      "back_to_register": "登録ページに戻る"
+    }
   },
   "subscription": {
     "status": {

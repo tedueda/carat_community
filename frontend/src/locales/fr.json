@@ -410,7 +410,11 @@
     "zodiac": "Zodiaque",
     "notSet": "Non défini",
     "identity": "Identité",
-    "romanceTargets": "Intéressé par",
+    "romanceTargets": {
+      "male": "Homme",
+      "female": "Femme",
+      "other": "Autre"
+    },
     "meetingPurpose": "Recherche",
     "selfIntroduction": "À propos de moi",
     "hobbies": "Loisirs",
@@ -607,11 +611,6 @@
       "male": "Homme",
       "female": "Femme",
       "hidden": "Masqué"
-    },
-    "romanceTargets": {
-      "male": "Homme",
-      "female": "Femme",
-      "other": "Autre"
     },
     "hobbyCatalog": {
       "music": "Musique",
@@ -978,24 +977,24 @@
       "paymentInfo": "Informations de paiement",
       "paymentPlaceholder": "Intégration Stripe à venir"
     },
-        "profile": {
-          "title": "Profil",
-          "description": "Modifiez vos informations de profil public",
-          "editMatchingProfile": "Modifier le profil de matching",
-          "avatar": "Photo de profil",
-          "avatarChange": "Changer la photo",
-          "displayName": "Nom d'affichage",
-          "bio": "Biographie",
-          "bioPlaceholder": "Parlez-nous de vous...",
-          "location": "Emplacement",
-          "locationPlaceholder": "ex., Paris",
-          "interests": "Intérêts",
-          "interestsPlaceholder": "Ajouter des tags...",
-          "socialLinks": "Liens sociaux",
-          "website": "Site web",
-          "twitter": "Twitter",
-          "instagram": "Instagram"
-        },
+    "profile": {
+      "title": "Profil",
+      "description": "Modifiez vos informations de profil public",
+      "editMatchingProfile": "Modifier le profil de matching",
+      "avatar": "Photo de profil",
+      "avatarChange": "Changer la photo",
+      "displayName": "Nom d'affichage",
+      "bio": "Biographie",
+      "bioPlaceholder": "Parlez-nous de vous...",
+      "location": "Emplacement",
+      "locationPlaceholder": "ex., Paris",
+      "interests": "Intérêts",
+      "interestsPlaceholder": "Ajouter des tags...",
+      "socialLinks": "Liens sociaux",
+      "website": "Site web",
+      "twitter": "Twitter",
+      "instagram": "Instagram"
+    },
     "security": {
       "title": "Sécurité",
       "changePassword": "Changer le mot de passe",
@@ -1033,7 +1032,7 @@
     "residence_country": "Pays de résidence",
     "terms_agreement": "J'accepte les Conditions d'utilisation",
     "terms_link": "Lire les Conditions",
-    "submit_button": "Procéder au paiement",
+    "submit_button": "S'inscrire et vérifier l'identité",
     "processing": "Traitement en cours...",
     "already_member": "Déjà membre?",
     "login_link": "Se connecter",
@@ -1078,7 +1077,23 @@
     "description": "La vérification d'identité est requise pour utiliser les fonctionnalités de publication, commentaires et chat.",
     "verified_message": "Votre identité a été vérifiée.",
     "pending_message": "Votre vérification est en cours d'examen. Veuillez patienter.",
-    "rejected_message": "Votre vérification n'a pas été approuvée. Veuillez réessayer."
+    "rejected_message": "Votre vérification n'a pas été approuvée. Veuillez réessayer.",
+    "page": {
+      "loading": "Préparation de la vérification d'identité...",
+      "no_auth": "Authentification requise.",
+      "session_error": "Échec de la création de la session",
+      "verification_error": "La vérification a échoué. Veuillez réessayer.",
+      "unknown_error": "Une erreur est survenue",
+      "complete_title": "Vérification soumise",
+      "complete_message": "Votre vérification a été soumise. Veuillez procéder au paiement.",
+      "next_step_title": "Prochaine étape",
+      "next_step_message": "Complétez le paiement pour débloquer toutes les fonctionnalités premium.",
+      "continue_to_payment": "Procéder au paiement",
+      "checkout_error": "Échec de la création de la session de paiement",
+      "error_title": "Erreur",
+      "retry": "Réessayer",
+      "back_to_register": "Retour à l'inscription"
+    }
   },
   "subscription": {
     "status": {

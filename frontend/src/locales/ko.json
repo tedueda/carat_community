@@ -482,7 +482,11 @@
     "zodiac": "별자리",
     "notSet": "미설정",
     "identity": "정체성",
-    "romanceTargets": "관심 대상",
+    "romanceTargets": {
+      "male": "남성",
+      "female": "여성",
+      "other": "기타"
+    },
     "meetingPurpose": "만남 목적",
     "selfIntroduction": "자기소개",
     "hobbies": "취미",
@@ -679,11 +683,6 @@
       "male": "남성",
       "female": "여성",
       "hidden": "비공개"
-    },
-    "romanceTargets": {
-      "male": "남성",
-      "female": "여성",
-      "other": "기타"
     },
     "hobbyCatalog": {
       "music": "음악",
@@ -1043,24 +1042,24 @@
       "paymentInfo": "결제 정보",
       "paymentPlaceholder": "Stripe 연동 예정"
     },
-        "profile": {
-          "title": "프로필",
-          "description": "공개 프로필 정보를 편집합니다",
-          "editMatchingProfile": "매칭 프로필 편집",
-          "avatar": "프로필 사진",
-          "avatarChange": "사진 변경",
-          "displayName": "표시 이름",
-          "bio": "자기소개",
-          "bioPlaceholder": "자기소개를 입력하세요...",
-          "location": "거주지",
-          "locationPlaceholder": "예: 서울",
-          "interests": "관심사",
-          "interestsPlaceholder": "태그 추가...",
-          "socialLinks": "SNS 링크",
-          "website": "웹사이트",
-          "twitter": "Twitter",
-          "instagram": "Instagram"
-        },
+    "profile": {
+      "title": "프로필",
+      "description": "공개 프로필 정보를 편집합니다",
+      "editMatchingProfile": "매칭 프로필 편집",
+      "avatar": "프로필 사진",
+      "avatarChange": "사진 변경",
+      "displayName": "표시 이름",
+      "bio": "자기소개",
+      "bioPlaceholder": "자기소개를 입력하세요...",
+      "location": "거주지",
+      "locationPlaceholder": "예: 서울",
+      "interests": "관심사",
+      "interestsPlaceholder": "태그 추가...",
+      "socialLinks": "SNS 링크",
+      "website": "웹사이트",
+      "twitter": "Twitter",
+      "instagram": "Instagram"
+    },
     "security": {
       "title": "보안",
       "changePassword": "비밀번호 변경",
@@ -1098,7 +1097,7 @@
     "residence_country": "거주 국가",
     "terms_agreement": "이용약관에 동의합니다",
     "terms_link": "이용약관 읽기",
-    "submit_button": "결제 진행",
+    "submit_button": "등록 및 본인 인증",
     "processing": "처리 중...",
     "already_member": "이미 회원이신가요?",
     "login_link": "로그인",
@@ -1143,7 +1142,23 @@
     "description": "게시물, 댓글, 채팅 기능을 이용하려면 본인 인증이 필요합니다.",
     "verified_message": "본인 인증이 완료되었습니다.",
     "pending_message": "인증이 심사 중입니다. 잠시 기다려 주세요.",
-    "rejected_message": "인증이 승인되지 않았습니다. 다시 시도해 주세요."
+    "rejected_message": "인증이 승인되지 않았습니다. 다시 시도해 주세요.",
+    "page": {
+      "loading": "본인 인증 준비 중...",
+      "no_auth": "로그인이 필요합니다.",
+      "session_error": "인증 세션 생성 실패",
+      "verification_error": "인증에 실패했습니다. 다시 시도해주세요.",
+      "unknown_error": "오류가 발생했습니다",
+      "complete_title": "인증 제출 완료",
+      "complete_message": "본인 인증이 제출되었습니다. 결제를 진행해주세요.",
+      "next_step_title": "다음 단계",
+      "next_step_message": "결제를 완료하면 모든 프리미엄 기능을 이용할 수 있습니다.",
+      "continue_to_payment": "결제로 진행",
+      "checkout_error": "결제 세션 생성 실패",
+      "error_title": "오류",
+      "retry": "다시 시도",
+      "back_to_register": "등록 페이지로 돌아가기"
+    }
   },
   "subscription": {
     "status": {

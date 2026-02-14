@@ -95,6 +95,77 @@ async def get_stripe_config():
     }
 
 
+@router.post("/register-only")
+async def register_only(
+    request: CreateCheckoutSessionRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Register a new user and return an access token (no checkout).
+    Used as step 1 of the registration flow: Register -> KYC -> Payment.
+    """
+    existing_user = db.query(User).filter(User.email == request.email).first()
+
+    if existing_user:
+        if existing_user.subscription_status == "active":
+            raise HTTPException(status_code=400, detail="User already has an active subscription")
+        existing_user.display_name = request.display_name
+        existing_user.password_hash = get_password_hash(request.password)
+        existing_user.preferred_lang = request.preferred_lang
+        existing_user.residence_country = request.residence_country
+        existing_user.terms_accepted_at = datetime.utcnow()
+        existing_user.terms_version = "1.0"
+        db.commit()
+        user = existing_user
+    else:
+        user = User(
+            email=request.email,
+            password_hash=get_password_hash(request.password),
+            display_name=request.display_name,
+            membership_type="premium",
+            is_active=True,
+            preferred_lang=request.preferred_lang,
+            residence_country=request.residence_country,
+            terms_accepted_at=datetime.utcnow(),
+            terms_version="1.0",
+            kyc_status="UNVERIFIED"
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+        profile = Profile(
+            user_id=user.id,
+            handle=f"user_{user.id}"
+        )
+        db.add(profile)
+
+        matching_profile = MatchingProfile(
+            user_id=user.id,
+            nickname=request.display_name,
+            display_flag=True,
+            prefecture="未設定"
+        )
+        db.add(matching_profile)
+        db.commit()
+
+    get_or_create_stripe_customer(db, user)
+
+    access_token = create_access_token(
+        data={"sub": user.email},
+        expires_delta=timedelta(days=7)
+    )
+
+    return {
+        "access_token": access_token,
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "display_name": user.display_name
+        }
+    }
+
+
 @router.post("/create-checkout-session")
 async def create_checkout_session(
     request: CreateCheckoutSessionRequest,
@@ -106,16 +177,12 @@ async def create_checkout_session(
     """
     if not STRIPE_SECRET_KEY or not STRIPE_PRICE_ID:
         raise HTTPException(status_code=500, detail="Stripe not configured")
-    
-    # Check if user already exists
+
     existing_user = db.query(User).filter(User.email == request.email).first()
-    
+
     if existing_user:
-        # User exists - check if already subscribed
         if existing_user.subscription_status == "active":
             raise HTTPException(status_code=400, detail="User already has an active subscription")
-        
-        # Update user info and get/create Stripe customer
         existing_user.display_name = request.display_name
         existing_user.password_hash = get_password_hash(request.password)
         existing_user.preferred_lang = request.preferred_lang
@@ -123,17 +190,15 @@ async def create_checkout_session(
         existing_user.terms_accepted_at = datetime.utcnow()
         existing_user.terms_version = "1.0"
         db.commit()
-        
         customer_id = get_or_create_stripe_customer(db, existing_user)
         user_id = existing_user.id
     else:
-        # Create new user
         new_user = User(
             email=request.email,
             password_hash=get_password_hash(request.password),
             display_name=request.display_name,
             membership_type="premium",
-            is_active=False,  # Will be activated after payment
+            is_active=True,
             preferred_lang=request.preferred_lang,
             residence_country=request.residence_country,
             terms_accepted_at=datetime.utcnow(),
@@ -143,15 +208,13 @@ async def create_checkout_session(
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
-        
-        # Create profile
+
         profile = Profile(
             user_id=new_user.id,
             handle=f"user_{new_user.id}"
         )
         db.add(profile)
-        
-        # Create matching profile
+
         matching_profile = MatchingProfile(
             user_id=new_user.id,
             nickname=request.display_name,
@@ -160,11 +223,10 @@ async def create_checkout_session(
         )
         db.add(matching_profile)
         db.commit()
-        
+
         customer_id = get_or_create_stripe_customer(db, new_user)
         user_id = new_user.id
-    
-    # Create Stripe Checkout session
+
     try:
         checkout_session = stripe.checkout.Session.create(
             customer=customer_id,
@@ -185,7 +247,54 @@ async def create_checkout_session(
                 }
             }
         )
-        
+
+        return {
+            "checkout_url": checkout_session.url,
+            "session_id": checkout_session.id
+        }
+    except stripe.error.StripeError as e:
+        logger.error(f"Stripe error: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/start-checkout")
+async def start_checkout(
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Start a Stripe Checkout session for an already-registered and authenticated user.
+    Used after KYC verification in the registration flow.
+    """
+    if not STRIPE_SECRET_KEY or not STRIPE_PRICE_ID:
+        raise HTTPException(status_code=500, detail="Stripe not configured")
+
+    if current_user.subscription_status == "active":
+        raise HTTPException(status_code=400, detail="User already has an active subscription")
+
+    customer_id = get_or_create_stripe_customer(db, current_user)
+
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            customer=customer_id,
+            payment_method_types=["card"],
+            line_items=[{
+                "price": STRIPE_PRICE_ID,
+                "quantity": 1
+            }],
+            mode="subscription",
+            success_url=f"{FRONTEND_URL}/subscribe/success?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=f"{FRONTEND_URL}/subscribe?canceled=true",
+            metadata={
+                "user_id": str(current_user.id)
+            },
+            subscription_data={
+                "metadata": {
+                    "user_id": str(current_user.id)
+                }
+            }
+        )
+
         return {
             "checkout_url": checkout_session.url,
             "session_id": checkout_session.id
@@ -242,13 +351,6 @@ async def create_identity_session(
     """Create a Stripe Identity verification session for KYC."""
     if not STRIPE_SECRET_KEY:
         raise HTTPException(status_code=500, detail="Stripe not configured")
-    
-    # Check if user is a paid member
-    if not is_user_paid_member(current_user):
-        raise HTTPException(
-            status_code=403, 
-            detail="Subscription required before identity verification"
-        )
     
     # Check if already verified
     if current_user.kyc_status == "VERIFIED":
