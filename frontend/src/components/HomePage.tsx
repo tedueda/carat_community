@@ -332,51 +332,29 @@ const HomePage: React.FC = () => {
         {/* ヒーローセクション */}
         <section ref={heroSectionRef} className="relative w-full overflow-hidden" style={{height: '860px'}}>
           <div className="absolute inset-0">
-            <div 
-              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 0 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
-                src="/images/hero5.png" 
-                alt="LGBTQ+ Community 1"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div 
-              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 1 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
-                src="/images/hero1.png" 
-                alt="LGBTQ+ Community 2"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div 
-              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 2 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
-                src="/images/img14.jpg" 
-                alt="LGBTQ+ Community 3"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div 
-              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 3 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
-                src="/images/hero2.png" 
-                alt="LGBTQ+ Community 4"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div 
-              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 4 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
-                src="/images/img10.jpg" 
-                alt="LGBTQ+ Community 5"
-                className="w-full h-full object-cover"
-              />
-            </div>
+            {[
+              { desktop: '/images/hero5.png', mobile: '/images/m01.png' },
+              { desktop: '/images/hero1.png', mobile: '/images/m02.png' },
+              { desktop: '/images/img14.jpg', mobile: '/images/m03.png' },
+              { desktop: '/images/hero2.png', mobile: '/images/m04.png' },
+              { desktop: '/images/img10.jpg', mobile: '/images/m05.png' },
+            ].map((slide, idx) => (
+              <div
+                key={idx}
+                className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === idx ? 'opacity-100' : 'opacity-0'}`}
+              >
+                <img
+                  src={slide.desktop}
+                  alt={`LGBTQ+ Community ${idx + 1}`}
+                  className="hidden md:block w-full h-full object-cover"
+                />
+                <img
+                  src={slide.mobile}
+                  alt={`LGBTQ+ Community ${idx + 1}`}
+                  className="block md:hidden w-full h-full object-cover"
+                />
+              </div>
+            ))}
           </div>
           <div className="absolute inset-0 bg-black bg-opacity-40"></div>
           {/* Sound Credit and Audio Player */}
@@ -389,7 +367,7 @@ const HomePage: React.FC = () => {
           </div>
           <div className="relative z-10 flex items-center justify-center h-full">
             <div className="text-center text-white px-4 max-w-6xl">
-              <h2 key={`main-${currentSlide}`} className="text-3xl md:text-7xl font-serif font-bold leading-tight mb-6 transition-opacity duration-[3000ms] ease-in-out">
+              <h2 key={`main-${currentSlide}`} className="text-2xl md:text-7xl font-serif font-bold leading-tight mb-6 transition-opacity duration-[3000ms] ease-in-out">
                 {t(`hero.messages.${currentSlide}.main`).split('\n').map((line: string, i: number) => (
                   <React.Fragment key={i}>
                     {line}
@@ -398,7 +376,7 @@ const HomePage: React.FC = () => {
                 ))}
               </h2>
               {t(`hero.messages.${currentSlide}.sub`) && (
-                <p key={`sub-${currentSlide}`} className="text-lg md:text-2xl mb-8 opacity-90 transition-opacity duration-[3000ms] ease-in-out">
+                <p key={`sub-${currentSlide}`} className="text-sm md:text-2xl mb-8 opacity-90 transition-opacity duration-[3000ms] ease-in-out">
                   {t(`hero.messages.${currentSlide}.sub`).split('\n').map((line: string, i: number) => (
                     <React.Fragment key={i}>
                       {line}
