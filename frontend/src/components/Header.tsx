@@ -79,7 +79,7 @@ const Header: React.FC = () => {
         {/* Mobile Layout */}
         <div className="md:hidden flex items-center justify-between">
           <Link to="/feed">
-            <img src={isHomePage ? "/images/logo12.png" : "/images/logo13.png"} alt="Carat Logo" className="h-20 w-auto" />
+            <img src={isHomePage ? "/images/logo02.png" : "/images/logo04.png"} alt="Carat Logo" className="h-20 w-auto" />
           </Link>
           <div className="flex items-center gap-3">
             {/* 言語セレクター（モバイル） */}
@@ -213,7 +213,7 @@ const Header: React.FC = () => {
               setShowBoardMenu(false);
               setShowAccountMenu(false);
             }}>
-              <img src={isHomePage ? "/images/logo12.png" : "/images/logo13.png"} alt="Carat Logo" className="h-28 w-auto" />
+              <img src={isHomePage ? "/images/logo02.png" : "/images/logo04.png"} alt="Carat Logo" className="h-28 w-auto" />
             </Link>
           </div>
 
