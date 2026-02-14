@@ -397,14 +397,16 @@ const HomePage: React.FC = () => {
                   </React.Fragment>
                 ))}
               </h2>
-              <p key={`sub-${currentSlide}`} className="text-lg md:text-2xl mb-8 opacity-90 transition-opacity duration-[3000ms] ease-in-out">
-                {t(`hero.messages.${currentSlide}.sub`).split('\n').map((line: string, i: number) => (
-                  <React.Fragment key={i}>
-                    {line}
-                    {i < t(`hero.messages.${currentSlide}.sub`).split('\n').length - 1 && <br />}
-                  </React.Fragment>
-                ))}
-              </p>
+              {t(`hero.messages.${currentSlide}.sub`) && (
+                <p key={`sub-${currentSlide}`} className="text-lg md:text-2xl mb-8 opacity-90 transition-opacity duration-[3000ms] ease-in-out">
+                  {t(`hero.messages.${currentSlide}.sub`).split('\n').map((line: string, i: number) => (
+                    <React.Fragment key={i}>
+                      {line}
+                      {i < t(`hero.messages.${currentSlide}.sub`).split('\n').length - 1 && <br />}
+                    </React.Fragment>
+                  ))}
+                </p>
+              )}
             </div>
           </div>
         </section>
