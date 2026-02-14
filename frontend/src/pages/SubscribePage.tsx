@@ -124,7 +124,7 @@ const SubscribePage: React.FC = () => {
     setLoading(true);
     
     try {
-      const response = await resilientFetch('/api/stripe/create-checkout-session', {
+      const response = await resilientFetch('/api/stripe/register-only', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -146,9 +146,10 @@ const SubscribePage: React.FC = () => {
       
       const data = await response.json();
       
-      // Redirect to Stripe Checkout
-      if (data.checkout_url) {
-        window.location.href = data.checkout_url;
+      if (data.access_token) {
+        localStorage.setItem('token', data.access_token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        navigate('/kyc-verification');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : t('subscribe.error.unknown'));
