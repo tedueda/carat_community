@@ -286,7 +286,9 @@
       "submitting": "ログイン中...",
       "error": "メールアドレスまたはパスワードが正しくありません",
       "premiumDescription": "まだ会員でない方は、有料会員になって全機能をご利用ください",
-      "becomePremium": "有料会員になる"
+      "becomePremium": "有料会員になる",
+      "noAccount": "新規会員登録（有料）は",
+      "registerLink": "こちら"
     },
     "loginRequired": "ログインが必要です",
     "loginRequiredMessage": "この機能を利用するには、会員としてログインする必要があります。",

@@ -112,7 +112,7 @@ const Header: React.FC = () => {
                 variant="outline" 
                 size="sm"
                 onClick={handleLogout} 
-                className={`text-xs px-3 py-1 ${isHomePage ? 'border-white/30 text-white hover:bg-white hover:text-gray-900' : 'border-gray-300 text-gray-900 hover:bg-gray-100'}`}
+                className={`text-xs px-3 py-1 ${isHomePage ? 'bg-transparent border-white/30 text-white hover:bg-white/20 hover:text-white' : 'border-gray-300 text-gray-900 hover:bg-gray-100'}`}
               >
                 {t('common.logout')}
               </Button>
@@ -383,7 +383,7 @@ const Header: React.FC = () => {
                     </span>
                   </button>
                   <span className={`text-sm ${isHomePage ? 'text-white' : 'text-gray-600'}`}>{user.display_name}</span>
-                  <Button variant="outline" onClick={handleLogout} className={`text-sm px-4 ${isHomePage ? 'border-white/30 text-white hover:bg-white hover:text-gray-900' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}>
+                  <Button variant="outline" onClick={handleLogout} className={`text-sm px-4 ${isHomePage ? 'bg-transparent border-white/30 text-white hover:bg-white/20 hover:text-white' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}>
                     {t('common.logout')}
                   </Button>
                 </>
