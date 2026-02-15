@@ -399,19 +399,35 @@ const HomePage: React.FC = () => {
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-end">
                 {user && !isAnonymous ? (
-                  <Button 
-                    onClick={() => navigate('/create/board')}
-                    className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
-                  >
-                    {t('cta.createPost')}
-                  </Button>
+                  <>
+                    <Button
+                      onClick={() => navigate('/about')}
+                      className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
+                    >
+                      Caratとは
+                    </Button>
+                    <Button 
+                      onClick={() => navigate('/create/board')}
+                      className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
+                    >
+                      {t('cta.createPost')}
+                    </Button>
+                  </>
                 ) : (
-                  <Button 
-                    onClick={() => navigate('/subscribe')}
-                    className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
-                  >
-                    {t('cta.registerButton')}
-                  </Button>
+                  <>
+                    <Button
+                      onClick={() => navigate('/about')}
+                      className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
+                    >
+                      Caratとは
+                    </Button>
+                    <Button 
+                      onClick={() => navigate('/subscribe')}
+                      className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
+                    >
+                      {t('cta.registerButton')}
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
@@ -737,6 +753,12 @@ const HomePage: React.FC = () => {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-end">
+                <Button
+                  onClick={() => navigate('/about')}
+                  className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
+                >
+                  Caratとは
+                </Button>
                 <Button 
                   onClick={() => navigate('/subscribe')}
                   className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"

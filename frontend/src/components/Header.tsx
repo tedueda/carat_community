@@ -141,6 +141,12 @@ const Header: React.FC = () => {
                   {t('nav.home')}
                 </Button>
               </Link>
+
+              <Link to="/about" onClick={() => setShowMobileMenu(false)}>
+                <Button variant="ghost" className="w-full justify-start text-white hover:bg-black/65 hover:text-white">
+                  Caratとは
+                </Button>
+              </Link>
               
               <div className="border-t border-white/20 pt-2 pb-2 mx-2">
                 <div className="text-xs font-medium px-4 mb-2 text-white/70">{t('nav.board')}</div>
@@ -253,6 +259,20 @@ const Header: React.FC = () => {
                 >
                   <Home className="h-5 w-5 mr-2" />
                   {t('nav.home')}
+                </Button>
+              </Link>
+
+              {/* Caratとは */}
+              <Link to="/about" onClick={() => {
+                setShowMemberMenu(false);
+                setShowBoardMenu(false);
+                setShowAccountMenu(false);
+              }}>
+                <Button
+                  variant="ghost"
+                  className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+                >
+                  Caratとは
                 </Button>
               </Link>
               
