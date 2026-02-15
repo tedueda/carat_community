@@ -7,7 +7,6 @@ import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { ArrowLeft, Plus, MessageCircle, Filter, SortAsc, Globe } from 'lucide-react';
-import PostDetailModal from './PostDetailModal';
 import NewPostForm from './NewPostForm';
 import LikeButton from './common/LikeButton';
 import { Post } from '../types/Post';
@@ -77,8 +76,6 @@ const CategoryPage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [showNewPostForm, setShowNewPostForm] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'newest');
@@ -161,30 +158,9 @@ const CategoryPage: React.FC = () => {
     setSearchParams(params);
   };
 
-  const openPostModal = (post: Post) => {
-    setSelectedPost(post);
-    setIsModalOpen(true);
-  };
-
-  const closePostModal = () => {
-    setSelectedPost(null);
-    setIsModalOpen(false);
-  };
-
   const handlePostCreated = (newPost: Post) => {
     setPosts(prevPosts => [newPost, ...prevPosts]);
     setShowNewPostForm(false);
-  };
-
-  const handlePostUpdated = (updated: Post) => {
-    setPosts(prev => prev.map(p => (p.id === updated.id ? { ...p, ...updated } : p)));
-    setSelectedPost(prev => (prev && prev.id === updated.id ? { ...prev, ...updated } : prev));
-  };
-
-  const handlePostDeleted = (postId: number) => {
-    setPosts(prev => prev.filter(p => p.id !== postId));
-    setSelectedPost(null);
-    setIsModalOpen(false);
   };
 
   useEffect(() => {
@@ -396,14 +372,14 @@ const CategoryPage: React.FC = () => {
             <Card 
               key={post.id} 
               className="rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.01] transition-all duration-200 cursor-pointer border-pink-100"
-              onClick={() => openPostModal(post)}
+              onClick={() => navigate(`/posts/${post.id}`)}
               role="button"
               tabIndex={0}
               aria-label={`投稿: ${post.title || post.body.substring(0, 50)}`}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  openPostModal(post);
+                  navigate(`/posts/${post.id}`);
                 }
               }}
             >
@@ -501,21 +477,6 @@ const CategoryPage: React.FC = () => {
         </div>
       )}
 
-      {/* 投稿詳細モーダル */}
-      {selectedPost && (
-        <PostDetailModal
-          post={selectedPost}
-          user={{ id: selectedPost.user_id, display_name: selectedPost.user_display_name || 'ユーザー', email: '' } as any}
-          isOpen={isModalOpen}
-          onClose={closePostModal}
-          onUpdated={handlePostUpdated}
-          onDeleted={handlePostDeleted}
-          onEditInForm={(post) => {
-            setEditingPost(post);
-            setShowNewPostForm(true);
-          }}
-        />
-      )}
     </div>
   );
 };

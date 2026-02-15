@@ -5,20 +5,16 @@ import { Card, CardContent, CardHeader } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Heart, MessageCircle, Play, Search, ExternalLink, Home } from 'lucide-react';
 import { Post, User } from '../../types/Post';
-import PostDetailModal from '../../components/PostDetailModal';
 
 const BeautyPage: React.FC = () => {
   const { user, isAnonymous, token, isLoading } = useAuth();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
-  const [users, setUsers] = useState<{ [key: number]: User }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSubcategory, setSelectedSubcategory] = useState('all');
   const [sortBy, setSortBy] = useState<'latest' | 'popular'>('latest');
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
 
@@ -106,7 +102,6 @@ const BeautyPage: React.FC = () => {
           }
         }
         
-        setUsers(usersData);
       } else {
         setError('投稿の取得に失敗しました');
       }
@@ -253,10 +248,7 @@ const BeautyPage: React.FC = () => {
               <Card 
                 key={post.id} 
                 className="bg-carat-white border-carat-gray2 shadow-card hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer"
-                onClick={() => {
-                  setSelectedPost(post);
-                  setIsModalOpen(true);
-                }}
+                onClick={() => navigate(`/posts/${post.id}`)}
               >
                 {/* サムネイル */}
                 {(post.media_url || (post.media_urls && post.media_urls.length > 0)) ? (
@@ -361,28 +353,6 @@ const BeautyPage: React.FC = () => {
         )}
       </div>
 
-      {/* 投稿詳細モーダル */}
-      {selectedPost && (
-        <PostDetailModal
-          post={selectedPost}
-          user={users[selectedPost.user_id] || { id: selectedPost.user_id, display_name: 'ユーザー', email: '' } as User}
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-            setSelectedPost(null);
-          }}
-          onUpdated={(updatedPost: Post) => {
-            setPosts(posts.map(p => p.id === updatedPost.id ? updatedPost : p));
-            setIsModalOpen(false);
-            setSelectedPost(null);
-          }}
-          onDeleted={(deletedPostId: number) => {
-            setPosts(posts.filter(p => p.id !== deletedPostId));
-            setIsModalOpen(false);
-            setSelectedPost(null);
-          }}
-        />
-      )}
     </div>
   );
 };
