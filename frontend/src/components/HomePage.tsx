@@ -11,7 +11,7 @@ import PremiumUpgradeModal from './PremiumUpgradeModal';
 import { Post, User } from '../types/Post';
 import { extractYouTubeId } from '../utils/youtube';
 import HeroAudioPlayer from './HeroAudioPlayer';
-import liveWeddingBanner from '../assets/images/live-wedding-banner.jpg';
+import liveWeddingBanner from '../assets/images/LiveWedding.png';
 import { API_URL } from '../config';
 
 
@@ -140,7 +140,6 @@ const HomePage: React.FC = () => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeFeatureName, setUpgradeFeatureName] = useState('');
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [selectedNewsArticle, setSelectedNewsArticle] = useState<any>(null);
   const [isHeroVisible] = useState(true);
   const heroSectionRef = useRef<HTMLElement>(null);
   const { token, user, isAnonymous } = useAuth();
@@ -613,11 +612,11 @@ const HomePage: React.FC = () => {
 
         {/* ライブウェディングバナー */}
         <section className="py-6">
-          <div className="relative shadow-2xl">
-            <img 
-              src={liveWeddingBanner} 
+          <div className="relative shadow-2xl aspect-[4/3] md:aspect-[21/9]">
+            <img
+              src={liveWeddingBanner}
               alt={t('liveWedding.banner.bannerAlt')}
-              className="w-full h-auto block"
+              className="absolute inset-0 w-full h-full object-cover block"
             />
             <div className="absolute inset-0 bg-black/40"></div>
             <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4 md:px-16">
@@ -658,7 +657,7 @@ const HomePage: React.FC = () => {
               <Card 
                 key={article.id} 
                 className="group bg-white border border-gray-200 hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden rounded-lg"
-                onClick={() => setSelectedNewsArticle(article)}
+                onClick={() => navigate(`/posts/${article.id}`)}
               >
                 <div className="flex flex-row md:flex-col">
                 {(article.media_url || (article.media_urls && article.media_urls.length > 0)) ? (
@@ -762,60 +761,6 @@ const HomePage: React.FC = () => {
         onClose={() => setShowUpgradeModal(false)}
         featureName={upgradeFeatureName}
       />
-
-      {/* ニュース詳細モーダル */}
-      {selectedNewsArticle && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedNewsArticle(null)}>
-          <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900">{selectedNewsArticle.display_title || selectedNewsArticle.title}</h2>
-              <button
-                onClick={() => setSelectedNewsArticle(null)}
-                className="text-gray-500 hover:text-gray-700"
-                aria-label="閉じる"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            
-            <div className="p-6 space-y-4">
-              {selectedNewsArticle.media_url && (
-                <div className="rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center max-h-96">
-                  <img
-                    src={`${selectedNewsArticle.media_url.startsWith('/images/')
-                      ? ''
-                      : (selectedNewsArticle.media_url.startsWith('http') ? '' : API_URL)
-                    }${selectedNewsArticle.media_url}`}
-                    alt={selectedNewsArticle.title}
-                    className="max-w-full max-h-full object-contain"
-                  />
-                </div>
-              )}
-              
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium px-3 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-300">
-                  {selectedNewsArticle.category || 'ニュース'}
-                </span>
-                <span className="text-sm text-gray-500">
-                  {new Date(selectedNewsArticle.created_at).toLocaleDateString('ja-JP')}
-                </span>
-              </div>
-              
-              <div className="prose max-w-none">
-                <p className="text-gray-700 whitespace-pre-wrap">{selectedNewsArticle.display_text || selectedNewsArticle.body}</p>
-              </div>
-              
-              <div className="pt-4 border-t border-gray-200">
-                <p className="text-sm text-gray-500">
-                  投稿者: {selectedNewsArticle.user_display_name || 'ユーザー'}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ログインポップアップ */}
       {showLoginPrompt && (

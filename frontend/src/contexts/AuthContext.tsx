@@ -69,9 +69,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsLoading(true);
       
       const storedToken = localStorage.getItem('token');
-      const storedAnonymous = localStorage.getItem('anonymous') === 'true';
-      
-      if (storedToken && !storedAnonymous) {
+
+      if (storedToken) {
         console.log('🔑 Found stored token, validating...');
         setToken(storedToken);
         
@@ -87,12 +86,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             console.log('✅ Token valid, user data loaded:', userData);
             setUser(userData);
             setIsFreeUser(false);
+            localStorage.removeItem('anonymous');
           } else {
             console.log('❌ Token invalid, clearing...');
             localStorage.removeItem('token');
             localStorage.removeItem('rememberMe');
             setToken(null);
             setIsFreeUser(true);
+            localStorage.setItem('anonymous', 'true');
           }
         } catch (error) {
           console.error('Error validating token:', error);
@@ -100,9 +101,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           localStorage.removeItem('rememberMe');
           setToken(null);
           setIsFreeUser(true);
+          localStorage.setItem('anonymous', 'true');
         }
       } else {
-        console.log('🔓 No stored token or anonymous mode, setting anonymous');
+        console.log('🔓 No stored token, setting anonymous');
         setIsFreeUser(true);
       }
       

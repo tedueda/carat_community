@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { API_URL } from '../config';
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { MessageCircle, ArrowLeft, Calendar, User } from 'lucide-react';
@@ -13,8 +14,6 @@ const BlogDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const [blog, setBlog] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
 
   const fetchBlog = async () => {
     setLoading(true);

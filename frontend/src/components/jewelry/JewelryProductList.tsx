@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingBag, Search } from 'lucide-react';
 import jewelryBanner from '../../assets/images/jewelry-banner.jpg';
+import { API_URL } from '../../config';
 
 interface JewelryProduct {
   id: number;
@@ -29,8 +30,6 @@ const JEWELRY_CATEGORIES = [
   { id: 'ring', name: 'リング' },
   { id: 'other', name: 'その他' },
 ];
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const JewelryProductList: React.FC = () => {
   const navigate = useNavigate();

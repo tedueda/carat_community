@@ -173,19 +173,29 @@ const CourseList: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors"
+        >
+          ←戻る
+        </button>
+        <button
+          type="button"
+          onClick={handlePostClick}
+          className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+        >
+          <Plus className="w-5 h-5" />
+          新規投稿
+        </button>
+      </div>
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">{t('courses.title')}</h2>
           <p className="text-gray-600 mt-1">{t('courses.subtitle')}</p>
         </div>
-        <button
-          onClick={handlePostClick}
-          className="flex items-center justify-center gap-2 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
-        >
-          <Plus className="w-5 h-5" />
-          {t('courses.listCourse')}
-        </button>
       </div>
 
       {/* Filters */}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CheckCircle, Package, ChevronRight } from 'lucide-react';
+import { API_URL } from '../../config';
 
 interface OrderItem {
   id: number;
@@ -24,8 +25,6 @@ interface Order {
   created_at: string;
   items: OrderItem[];
 }
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const JewelryOrderComplete: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();

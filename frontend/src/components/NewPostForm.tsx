@@ -6,6 +6,7 @@ import { Textarea } from './ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { X, Upload, Youtube, Tag, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { API_URL } from '../config';
 import { Post } from '../types/Post';
 
 interface NewPostFormProps {
@@ -72,8 +73,6 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStartTime, setSubmitStartTime] = useState<number | null>(null);
-
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
   const category = categories[categoryKey as keyof typeof categories];
 
   const getLinkHostname = (url: string): string | null => {

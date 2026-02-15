@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ShoppingBag, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
 import PremiumUpgradeModal from '../PremiumUpgradeModal';
+import { API_URL } from '../../config';
 
 interface JewelryProduct {
   id: number;
@@ -26,8 +27,6 @@ interface User {
   id: number;
   membership_type: string;
 }
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const JewelryProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();

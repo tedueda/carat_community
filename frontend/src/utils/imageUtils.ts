@@ -3,14 +3,14 @@
  * バックエンドから返されるURLを適切な形式に変換します
  */
 
-const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
+import { API_URL } from '../config';
 
 /**
  * 画像URLを解決する
  * @param url - 元のURL（相対パスまたは絶対パス）
  * @returns 解決されたURL
  */
-export const resolveImageUrl = (url: string | undefined | null): string => {
+export const resolveImageUrl = (url: string | null | undefined): string => {
   if (!url) return '';
   
   // 既に完全なURLの場合はそのまま返す

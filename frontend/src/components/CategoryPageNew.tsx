@@ -4,18 +4,16 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { ArrowLeft, Plus, Heart, MessageCircle, Filter, SortAsc } from 'lucide-react';
-import NewPostForm from './NewPostForm';
+import { ArrowLeft, Plus, MessageCircle, Filter, SortAsc, Heart } from 'lucide-react';
 import { Post } from '../types/Post';
 import { Category, Subcategory } from '../types/category';
 import { extractYouTubeId } from '../utils/youtube';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+import { API_URL } from '../config';
 
 const sortOptions = [
   { value: "newest", label: "新着順" },
   { value: "popular", label: "人気順" },
-  { value: "comments", label: "コメント多い順" },
+  { value: "oldest", label: "古い順" },
   { value: "points", label: "ポイント高い順" },
 ];
 
@@ -56,8 +54,6 @@ const CategoryPageNew: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoryLoading, setCategoryLoading] = useState(true);
-  const [showNewPostForm, setShowNewPostForm] = useState(false);
-  const [editingPost, setEditingPost] = useState<Post | null>(null);
   
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'newest');
   const [timeRange, setTimeRange] = useState(searchParams.get('range') || 'all');
@@ -85,14 +81,15 @@ const CategoryPageNew: React.FC = () => {
             }
           }
         } else {
-          const response = await fetch(`${API_BASE_URL}/api/categories/${categorySlug}`);
-          
-          if (response.ok) {
-            const data = await response.json();
-            setCategory(data);
-            setSubcategories(data.subcategories || []);
-          } else {
-            console.error('カテゴリーの取得に失敗しました');
+          const categoryResponse = await fetch(`${API_URL}/api/categories`);
+          if (!categoryResponse.ok) {
+            throw new Error('Failed to fetch categories');
+          }
+          const categoriesData = await categoryResponse.json();
+          const foundCategory = categoriesData.find((cat: Category) => cat.slug === categorySlug);
+          if (foundCategory) {
+            setCategory(foundCategory);
+            setSubcategories(foundCategory.subcategories || []);
           }
         }
       } catch (error) {
@@ -161,7 +158,7 @@ const CategoryPageNew: React.FC = () => {
           params.set('tag', selectedTag);
         }
         
-        const response = await fetch(`${API_BASE_URL}/api/posts/?${params}`, {
+        const response = await fetch(`${API_URL}/api/posts/?${params}`, {
           headers: token ? {
             'Authorization': `Bearer ${token}`,
           } : {},
@@ -199,18 +196,12 @@ const CategoryPageNew: React.FC = () => {
 
   // URLパラメータに編集対象の投稿IDがある場合、該当する投稿を編集モードで開く
   useEffect(() => {
-    if (editPostId && posts.length > 0) {
-      const postToEdit = posts.find(p => p.id === parseInt(editPostId));
-      if (postToEdit) {
-        setEditingPost(postToEdit);
-        setShowNewPostForm(true);
-        // URLパラメータから編集IDを削除
-        const params = new URLSearchParams(searchParams);
-        params.delete('edit');
-        setSearchParams(params);
-      }
+    if (editPostId) {
+      const params = new URLSearchParams(searchParams);
+      params.delete('edit');
+      setSearchParams(params);
     }
-  }, [editPostId, posts]);
+  }, [editPostId]);
 
   const updateFilters = (newSort?: string, newRange?: string, newTag?: string) => {
     const params = new URLSearchParams(searchParams);
@@ -231,11 +222,6 @@ const CategoryPageNew: React.FC = () => {
       setSelectedTag(newTag);
     }
     setSearchParams(params);
-  };
-
-  const handlePostCreated = (newPost: Post) => {
-    setPosts(prevPosts => [newPost, ...prevPosts]);
-    setShowNewPostForm(false);
   };
 
   if (categoryLoading) {
@@ -262,43 +248,84 @@ const CategoryPageNew: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
       {/* ヘッダー */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate('/feed')}
-            className="text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            ホームに戻る
-          </Button>
-          <div className="flex items-center gap-3">
-            <div>
-              <h1 className="text-2xl font-serif font-bold text-gray-800">{category.name}</h1>
-              <p className="text-gray-600">{category.description}</p>
-              <p className="text-sm text-gray-500">{posts.length}件の投稿</p>
-            </div>
+      <div className="space-y-3">
+        {/* Mobile */}
+        <div className="sm:hidden grid grid-cols-2 gap-x-4 gap-y-2 items-start">
+          <div className="col-span-1">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/feed')}
+              className="text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              ホームに戻る
+            </Button>
+          </div>
+          <div className="col-span-1 flex justify-end">
+            {user && !isAnonymous ? (
+              <Button 
+                onClick={() => navigate(`/create/${categorySlug || ''}`)}
+                className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-gray-900 rounded-lg font-medium"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                新規投稿
+              </Button>
+            ) : (
+              <Button 
+                onClick={() => navigate('/login')}
+                className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-gray-900"
+              >
+                投稿するにはログイン
+              </Button>
+            )}
+          </div>
+          <div className="col-span-1 min-w-0">
+            <h1 className="text-xl font-serif font-bold text-gray-800 truncate">{category.name}</h1>
+            <p className="text-xs text-gray-500">{posts.length}件の投稿</p>
+          </div>
+          <div className="col-span-1 min-w-0">
+            <p className="text-gray-600 text-sm leading-snug line-clamp-2">{category.description}</p>
           </div>
         </div>
 
-        {/* 新規投稿ボタン */}
-        <div className="flex gap-2">
-          {user && !isAnonymous ? (
+        {/* Desktop / Tablet */}
+        <div className="hidden sm:flex sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-4">
             <Button 
-              onClick={() => setShowNewPostForm(!showNewPostForm)}
-              className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-gray-900 rounded-lg font-medium"
+              variant="ghost" 
+              onClick={() => navigate('/feed')}
+              className="text-gray-700 hover:text-gray-900 hover:bg-gray-50"
             >
-              <Plus className="h-4 w-4 mr-2" />
-              新規投稿
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              ホームに戻る
             </Button>
-          ) : (
-            <Button 
-              onClick={() => navigate('/login')}
-              className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-gray-900"
-            >
-              投稿するにはログイン
-            </Button>
-          )}
+            <div className="flex items-center gap-3">
+              <div>
+                <h1 className="text-2xl font-serif font-bold text-gray-800">{category.name}</h1>
+                <p className="text-gray-600">{category.description}</p>
+                <p className="text-sm text-gray-500">{posts.length}件の投稿</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            {user && !isAnonymous ? (
+              <Button 
+                onClick={() => navigate(`/create/${categorySlug || ''}`)}
+                className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-gray-900 rounded-lg font-medium"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                新規投稿
+              </Button>
+            ) : (
+              <Button 
+                onClick={() => navigate('/login')}
+                className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-gray-900"
+              >
+                投稿するにはログイン
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -362,19 +389,6 @@ const CategoryPageNew: React.FC = () => {
         </div>
       </div>
 
-      {/* 新規投稿フォーム */}
-      {showNewPostForm && (
-        <NewPostForm
-          categoryKey={categorySlug || ''}
-          onPostCreated={handlePostCreated}
-          onCancel={() => {
-            setShowNewPostForm(false);
-            setEditingPost(null);
-          }}
-          editingPost={editingPost}
-        />
-      )}
-
       {/* 投稿グリッド */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
@@ -403,7 +417,7 @@ const CategoryPageNew: React.FC = () => {
             </p>
             {user && !isAnonymous && (
               <Button 
-                onClick={() => setShowNewPostForm(true)}
+                onClick={() => navigate(`/create/${categorySlug || ''}`)}
                 className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-gray-900"
               >
                 <Plus className="h-4 w-4 mr-2" />

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Upload, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { API_URL } from '../../config';
 
 interface Category {
   id: string;
@@ -29,8 +30,6 @@ interface ArtSalePostFormProps {
   onCancel: () => void;
   onSuccess: () => void;
 }
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const CATEGORY_LABELS: Record<string, string> = {
   painting: '絵画',

@@ -26,8 +26,18 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       }
     };
 
+    const handlePointerDownOutside = (event: PointerEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('pointerdown', handlePointerDownOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('pointerdown', handlePointerDownOutside);
+    };
   }, []);
 
   const handleLanguageChange = async (lang: SupportedLanguage) => {
@@ -40,7 +50,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       <div className={`relative ${className}`} ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md transition-colors ${isHomePage ? 'bg-transparent text-white hover:bg-white/20 border border-white/30' : 'bg-gray-100 text-gray-900 hover:bg-gray-200'}`}
+          className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md transition-colors ${isHomePage ? 'bg-transparent text-white hover:bg-black/35 border border-white/30' : 'bg-gray-100 text-gray-900 hover:bg-gray-200'}`}
           disabled={isChangingLanguage}
         >
           <span className="text-base">{LANGUAGE_FLAGS[currentLanguage]}</span>
@@ -49,18 +59,20 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         </button>
 
         {isOpen && (
-          <div className="absolute top-full right-0 mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-200 z-50 py-1">
+          <div className={`absolute top-full right-0 mt-1 w-44 rounded-lg shadow-lg z-50 py-1 ${isHomePage ? 'bg-black/65 border border-white/20' : 'bg-white border border-gray-200'}`}>
             {supportedLanguages.map((lang) => (
               <button
                 key={lang}
                 onClick={() => handleLanguageChange(lang)}
-                className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm hover:bg-gray-50 transition-colors ${
-                  currentLanguage === lang ? 'bg-gray-50 text-blue-600' : 'text-gray-900'
+                className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm transition-colors ${isHomePage ? 'hover:bg-black/35' : 'hover:bg-gray-50'} ${
+                  currentLanguage === lang
+                    ? (isHomePage ? 'bg-black/35 text-white' : 'bg-gray-50 text-blue-600')
+                    : (isHomePage ? 'text-white' : 'text-gray-900')
                 }`}
               >
                 <span className="text-base">{LANGUAGE_FLAGS[lang]}</span>
                 <span className="flex-1 text-left">{LANGUAGE_NAMES[lang]}</span>
-                {currentLanguage === lang && <Check className="h-4 w-4" />}
+                {currentLanguage === lang && <Check className={`h-4 w-4 ${isHomePage ? 'text-white' : ''}`} />}
               </button>
             ))}
           </div>
@@ -73,7 +85,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     <div className={`relative ${className}`} ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${isHomePage ? 'bg-transparent text-white hover:bg-white/20 border border-white/30' : 'bg-gray-100 text-gray-900 hover:bg-gray-200'}`}
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${isHomePage ? 'bg-transparent text-white hover:bg-black/35 border border-white/30' : 'bg-gray-100 text-gray-900 hover:bg-gray-200'}`}
         disabled={isChangingLanguage}
         aria-label="言語を選択"
       >
@@ -85,21 +97,25 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-52 bg-white rounded-lg shadow-lg border border-gray-200 z-50 py-2">
-          <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100">
+        <div className={`absolute top-full right-0 mt-2 w-52 rounded-lg shadow-lg z-50 py-2 ${isHomePage ? 'bg-black/65 border border-white/20' : 'bg-white border border-gray-200'}`}>
+          <div className={`px-3 py-2 text-xs font-semibold uppercase tracking-wider border-b ${isHomePage ? 'text-white/80 border-white/20' : 'text-gray-500 border-gray-100'}`}>
             言語を選択 / Select Language
           </div>
           {supportedLanguages.map((lang) => (
             <button
               key={lang}
               onClick={() => handleLanguageChange(lang)}
-              className={`w-full flex items-center gap-3 px-4 py-3 text-base hover:bg-gray-50 transition-colors ${
-                currentLanguage === lang ? 'bg-blue-50 text-blue-600' : 'text-gray-900'
+              className={`w-full flex items-center gap-3 px-4 py-3 text-base transition-colors ${isHomePage ? 'hover:bg-black/35' : 'hover:bg-gray-50'} ${
+                currentLanguage === lang
+                  ? (isHomePage ? 'bg-black/35 text-white' : 'bg-blue-50 text-blue-600')
+                  : (isHomePage ? 'text-white' : 'text-gray-900')
               }`}
             >
               <span className="text-xl">{LANGUAGE_FLAGS[lang]}</span>
               <span className="flex-1 text-left">{LANGUAGE_NAMES[lang]}</span>
-              {currentLanguage === lang && <Check className="h-5 w-5 text-blue-600" />}
+              {currentLanguage === lang && (
+                <Check className={`h-5 w-5 ${isHomePage ? 'text-white' : 'text-blue-600'}`} />
+              )}
             </button>
           ))}
         </div>

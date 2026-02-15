@@ -6,6 +6,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import PremiumUpgradeModal from '../PremiumUpgradeModal';
 import { translateText } from '../../services/translationService';
+import { API_URL } from '../../config';
 
 interface ArtSaleItem {
   id: number;
@@ -33,8 +34,6 @@ interface ArtSaleDetailProps {
   onBack: () => void;
   onEdit?: (item: ArtSaleItem) => void;
 }
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const CATEGORY_LABELS: Record<string, string> = {
   painting: '絵画',

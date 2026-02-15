@@ -7,6 +7,7 @@ import { Card, CardContent } from '../ui/card';
 import { Plus, MessageCircle, Grid3x3, List, ArrowLeft } from 'lucide-react';
 import SalonRoomCard from './SalonRoomCard';
 import CreateSalonRoomModal from './CreateSalonRoomModal';
+import { API_URL } from '../../config';
 
 interface SalonRoom {
   id: number;
@@ -33,8 +34,6 @@ const SalonPage: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedRoomType, setSelectedRoomType] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
   // 有料会員かどうか
   const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
@@ -102,10 +101,22 @@ const SalonPage: React.FC = () => {
     navigate(`/salon/rooms/${roomId}`);
   };
 
+  const handleNewPost = () => {
+    if (!isLoggedIn) {
+      navigate('/login');
+      return;
+    }
+    if (!isPaidUser) {
+      navigate('/account');
+      return;
+    }
+    setShowCreateModal(true);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <Button 
             variant="ghost" 
             onClick={() => navigate('/feed')}
@@ -114,21 +125,19 @@ const SalonPage: React.FC = () => {
             <ArrowLeft className="h-4 w-4 mr-2" />
             {t('salon.backToHome')}
           </Button>
+          <Button
+            onClick={handleNewPost}
+            className="bg-black hover:bg-gray-800"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            新規投稿
+          </Button>
         </div>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div>
             <h1 className="text-3xl font-serif font-bold text-gray-900">{t('salon.title')}</h1>
             <p className="text-gray-600 mt-1">{t('salon.subtitle')}</p>
           </div>
-          {isPaidUser && (
-            <Button
-              onClick={() => setShowCreateModal(true)}
-              className="mt-4 md:mt-0 bg-black hover:bg-gray-800"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              {t('salon.createRoom')}
-            </Button>
-          )}
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">

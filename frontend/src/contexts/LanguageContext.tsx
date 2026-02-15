@@ -7,8 +7,7 @@ import {
   getCurrentLanguage 
 } from '../i18n';
 import { useAuth } from './AuthContext';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+import { API_URL } from '../config';
 
 interface LanguageContextType {
   currentLanguage: SupportedLanguage;

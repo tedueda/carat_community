@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Heart, MessageCircle, Share2, MoreHorizontal, Smile, Award } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MoreHorizontal, Smile, Award, ArrowLeft } from 'lucide-react';
+import { API_URL } from '../config';
+import { useNavigate } from 'react-router-dom';
 
 interface User {
   id: number;
@@ -27,8 +29,7 @@ const PostFeed: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const { token, user, isAnonymous } = useAuth();
-
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
+  const navigate = useNavigate();
 
   const fetchPosts = async () => {
     try {
@@ -100,6 +101,12 @@ const PostFeed: React.FC = () => {
 
   return (
     <div className="max-w-2xl mx-auto p-4 sm:p-6 space-y-6">
+      <div className="flex items-center justify-between gap-3">
+        <Button variant="ghost" onClick={() => navigate(-1)} className="text-gray-600 hover:text-gray-900">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          戻る
+        </Button>
+      </div>
       <div className="text-center">
         <h1 className="text-2xl sm:text-3xl font-bold text-pink-800 mb-2">コミュニティフィード</h1>
         <p className="text-gray-600">あなたの想いを共有し、みんなとつながりましょう</p>
@@ -111,21 +118,12 @@ const PostFeed: React.FC = () => {
             <Heart className="h-12 sm:h-16 w-12 sm:w-16 text-pink-300 mx-auto mb-4" />
             <h3 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">まだ投稿がありません。</h3>
             <p className="text-gray-500 mb-4">コミュニティの投稿をお待ちください。</p>
-            {user && !isAnonymous ? (
-              <Button 
-                onClick={() => window.location.href = '/create'}
-                className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
-              >
-                最初の投稿を作成
-              </Button>
-            ) : (
-              <Button 
-                onClick={() => window.location.href = '/login'}
-                className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
-              >
-                投稿するには有料会員登録
-              </Button>
-            )}
+            <Button 
+              onClick={() => window.location.href = '/login'}
+              className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
+            >
+              投稿するには有料会員登録
+            </Button>
           </CardContent>
         </Card>
       ) : (

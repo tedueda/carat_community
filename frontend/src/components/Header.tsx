@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Home, ChevronDown, Menu, X, MessageCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -9,8 +9,11 @@ import { API_URL } from '../config';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isFreeUser, logout } = useAuth();
   const { t } = useTranslation();
+  
+  const isHomePage = location.pathname === '/' || location.pathname === '/feed';
   
   const [showMemberMenu, setShowMemberMenu] = useState(false);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
@@ -69,21 +72,30 @@ const Header: React.FC = () => {
   ];
 
   return (
-    <header className="absolute top-0 left-0 right-0 z-50 bg-black/40">
+    <header className={`absolute top-0 left-0 right-0 z-[200] ${isHomePage ? 'bg-transparent' : 'bg-white'}`}>
       <div className="container mx-auto px-4 sm:px-6 md:px-8 py-3 md:py-5">
         {/* Mobile Layout */}
-        <div className="md:hidden flex items-center justify-between">
-          <Link to="/feed">
-            <img src="/images/logo12.png" alt="Carat Logo" className="h-20 w-auto" />
-          </Link>
-          <div className="flex items-center gap-3">
-            {/* 言語セレクター（モバイル） */}
-            <LanguageSelector variant="compact" isHomePage={true} />
-            {/* チャット通知アイコン（モバイル） */}
-            {!isFreeUser && user && (
+        <div className="md:hidden flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <Link to="/feed">
+              <img src={isHomePage ? "/images/logo12.png" : "/images/logo13.png"} alt="Carat Logo" className="h-20 w-auto" />
+            </Link>
+            <div className="flex items-center gap-2">
+              <LanguageSelector variant="compact" isHomePage={isHomePage} />
+              <button
+                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                className={`p-3 rounded-lg transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center ${isHomePage ? 'text-white hover:bg-black/35' : 'bg-white text-gray-900 hover:bg-gray-100'}`}
+              >
+                {showMobileMenu ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button>
+            </div>
+          </div>
+
+          {!isFreeUser && user && (
+            <div className="flex items-center justify-end gap-2 flex-wrap">
               <button
                 onClick={() => navigate('/matching/chats')}
-                className="flex items-center gap-1 px-2 py-1 rounded-full transition-colors hover:bg-black/60 text-white"
+                className="flex items-center gap-1 px-2 py-1 rounded-full transition-colors hover:bg-black/35 text-white"
                 aria-label="チャット"
               >
                 <div className="relative">
@@ -98,35 +110,33 @@ const Header: React.FC = () => {
                   {unreadCount > 0 ? '新着' : ''}
                 </span>
               </button>
-            )}
-            {!isFreeUser && user && (
-              <span className="text-sm font-medium text-white">{user.display_name}</span>
-            )}
-            {!isFreeUser && user && (
+              <span className="text-sm font-medium text-white whitespace-nowrap">{user.display_name}</span>
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={handleLogout} 
-                className="text-xs px-3 py-1 bg-transparent border-white/30 text-white hover:bg-black/60"
+                className={`text-xs px-3 py-1 ${isHomePage ? 'bg-transparent border-white/30 text-white hover:bg-black/35' : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-100'}`}
               >
                 {t('common.logout')}
               </Button>
-            )}
-            <button
-              onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="p-2 rounded-lg transition-colors text-white hover:bg-black/60"
-            >
-              {showMobileMenu ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Mobile Menu */}
         {showMobileMenu && (
-          <div className="md:hidden mt-4 pb-4 pt-4 bg-black/40 rounded-xl shadow-lg mx-2">
-            <nav className="flex flex-col space-y-1">
+          <>
+            <div
+              className="fixed inset-0 z-[190] md:hidden"
+              onClick={() => setShowMobileMenu(false)}
+            />
+            <div
+              className="fixed left-0 right-0 top-24 z-[210] md:hidden mx-2 pb-4 pt-4 bg-black/65 backdrop-blur-sm rounded-xl shadow-lg"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <nav className="flex flex-col space-y-1">
               <Link to="/feed" onClick={() => setShowMobileMenu(false)}>
-                <Button variant="ghost" className="w-full justify-start text-white hover:bg-black/60">
+                <Button variant="ghost" className="w-full justify-start text-white hover:bg-black/65 hover:text-white">
                   <Home className="h-5 w-5 mr-2" />
                   {t('nav.home')}
                 </Button>
@@ -139,7 +149,7 @@ const Header: React.FC = () => {
                     key={category.link}
                     to={category.link}
                     onClick={() => setShowMobileMenu(false)}
-                    className="flex items-center gap-3 px-4 py-2 rounded-md transition-colors text-white hover:bg-black/60"
+                    className="flex items-center gap-3 px-4 py-2 rounded-md transition-colors text-white hover:bg-black/65 hover:text-white"
                   >
                     <span className="text-xl">{category.icon}</span>
                     <span className="text-sm text-white">{t(category.titleKey)}</span>
@@ -154,7 +164,7 @@ const Header: React.FC = () => {
                     key={item.link}
                     to={item.link}
                     onClick={() => setShowMobileMenu(false)}
-                    className="flex items-center gap-3 px-4 py-2 rounded-md transition-colors text-white hover:bg-black/60"
+                    className="flex items-center gap-3 px-4 py-2 rounded-md transition-colors text-white hover:bg-black/65 hover:text-white"
                   >
                     <span className="text-xl">{item.icon}</span>
                     <span className="text-sm text-white">{t(item.titleKey)}</span>
@@ -167,7 +177,7 @@ const Header: React.FC = () => {
                 <Link
                   to="/account"
                   onClick={() => setShowMobileMenu(false)}
-                  className="flex items-center gap-3 px-4 py-2 rounded-md transition-colors text-white hover:bg-black/60"
+                  className="flex items-center gap-3 px-4 py-2 rounded-md transition-colors text-white hover:bg-black/65 hover:text-white"
                 >
                   <span className="text-xl">👤</span>
                   <span className="text-sm text-white">{t('nav.accountInfo')}</span>
@@ -175,7 +185,7 @@ const Header: React.FC = () => {
                 <Link
                   to="/matching/profile"
                   onClick={() => setShowMobileMenu(false)}
-                  className="flex items-center gap-3 px-4 py-2 rounded-md transition-colors text-white hover:bg-black/60"
+                  className="flex items-center gap-3 px-4 py-2 rounded-md transition-colors text-white hover:bg-black/65 hover:text-white"
                 >
                   <span className="text-xl">✏️</span>
                   <span className="text-sm text-white">{t('nav.profileEdit')}</span>
@@ -184,7 +194,7 @@ const Header: React.FC = () => {
 
               <div className="mx-2">
                 <Link to="/blog" onClick={() => setShowMobileMenu(false)}>
-                  <Button variant="ghost" className="w-full justify-start text-white hover:bg-black/60">
+                  <Button variant="ghost" className="w-full justify-start text-white hover:bg-black/65 hover:text-white">
                     {t('nav.blog')}
                   </Button>
                 </Link>
@@ -193,7 +203,7 @@ const Header: React.FC = () => {
               {(isFreeUser || !user) && (
                 <div className="mx-2 pt-2">
                   <Link to="/login" onClick={() => setShowMobileMenu(false)}>
-                    <Button className="w-full bg-black hover:bg-gray-800 text-white">
+                    <Button className="w-full bg-black/35 hover:bg-black/65 text-white">
                       {t('common.login')}
                     </Button>
                   </Link>
@@ -201,9 +211,20 @@ const Header: React.FC = () => {
               )}
             </nav>
           </div>
+          </>
         )}
 
         {/* Desktop Layout */}
+        {(showMemberMenu || showBoardMenu || showAccountMenu) && (
+          <div
+            className="fixed inset-0 z-[180] hidden md:block"
+            onClick={() => {
+              setShowMemberMenu(false);
+              setShowBoardMenu(false);
+              setShowAccountMenu(false);
+            }}
+          />
+        )}
         <div className="hidden md:grid grid-cols-2 gap-4 items-center">
           {/* Left Column - Logo */}
           <div className="flex justify-start items-start">
@@ -212,7 +233,7 @@ const Header: React.FC = () => {
               setShowBoardMenu(false);
               setShowAccountMenu(false);
             }}>
-              <img src="/images/logo12.png" alt="Carat Logo" className="h-28 w-auto" />
+              <img src={isHomePage ? "/images/logo12.png" : "/images/logo13.png"} alt="Carat Logo" className="h-28 w-auto" />
             </Link>
           </div>
 
@@ -226,7 +247,10 @@ const Header: React.FC = () => {
                 setShowBoardMenu(false);
                 setShowAccountMenu(false);
               }}>
-                <Button variant="ghost" className="text-base font-normal px-2 text-white hover:bg-black/60">
+                <Button
+                  variant="ghost"
+                  className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+                >
                   <Home className="h-5 w-5 mr-2" />
                   {t('nav.home')}
                 </Button>
@@ -234,28 +258,45 @@ const Header: React.FC = () => {
               
               {/* 掲示板 Dropdown */}
               <div className="relative">
-                <Button 
-                  variant="ghost" 
-                  className="text-base font-normal px-2 text-white hover:bg-black/60"
-                  onClick={() => {
-                    setShowBoardMenu(!showBoardMenu);
-                    setShowMemberMenu(false);
-                    setShowAccountMenu(false);
-                  }}
-                >
-                  {t('nav.board')}
-                  <ChevronDown className="h-5 w-5 ml-1" />
-                </Button>
+                <div className="flex items-center">
+                  <Link
+                    to="/category/board"
+                    onClick={() => {
+                      setShowBoardMenu(false);
+                      setShowMemberMenu(false);
+                      setShowAccountMenu(false);
+                    }}
+                  >
+                    <Button
+                      variant="ghost"
+                      className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+                    >
+                      {t('nav.board')}
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    className={`px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+                    onClick={() => {
+                      setShowBoardMenu(!showBoardMenu);
+                      setShowMemberMenu(false);
+                      setShowAccountMenu(false);
+                    }}
+                    aria-label={t('nav.board')}
+                  >
+                    <ChevronDown className="h-5 w-5" />
+                  </Button>
+                </div>
                 
                 {showBoardMenu && (
-                  <div className="absolute top-full right-0 mt-2 w-72 bg-black/40 rounded-lg shadow-lg border border-white/20 z-50">
+                  <div className="absolute top-full right-0 mt-2 w-72 bg-black/65 rounded-lg shadow-lg border border-white/20 z-50">
                     <div className="p-2">
                       {boardCategories.map((category) => (
                         <Link
                           key={category.link}
                           to={category.link}
                           onClick={() => setShowBoardMenu(false)}
-                          className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/60 rounded-md transition-colors"
+                          className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
                         >
                           <span className="text-2xl">{category.icon}</span>
                           <span className="text-sm text-white">{t(category.titleKey)}</span>
@@ -268,28 +309,45 @@ const Header: React.FC = () => {
 
               {/* 特別メニュー Dropdown */}
               <div className="relative">
-                <Button 
-                  variant="ghost" 
-                  className="text-base font-normal px-2 text-white hover:bg-black/60"
-                  onClick={() => {
-                    setShowMemberMenu(!showMemberMenu);
-                    setShowBoardMenu(false);
-                    setShowAccountMenu(false);
-                  }}
-                >
-                  {t('nav.specialMenu')}
-                  <ChevronDown className="h-5 w-5 ml-1" />
-                </Button>
+                <div className="flex items-center">
+                  <Link
+                    to="/matching"
+                    onClick={() => {
+                      setShowMemberMenu(false);
+                      setShowBoardMenu(false);
+                      setShowAccountMenu(false);
+                    }}
+                  >
+                    <Button
+                      variant="ghost"
+                      className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+                    >
+                      {t('nav.specialMenu')}
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    className={`px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+                    onClick={() => {
+                      setShowMemberMenu(!showMemberMenu);
+                      setShowBoardMenu(false);
+                      setShowAccountMenu(false);
+                    }}
+                    aria-label={t('nav.specialMenu')}
+                  >
+                    <ChevronDown className="h-5 w-5" />
+                  </Button>
+                </div>
                 
                 {showMemberMenu && (
-                  <div className="absolute top-full right-0 mt-2 w-64 bg-black/40 rounded-lg shadow-lg border border-white/20 z-50">
+                  <div className="absolute top-full right-0 mt-2 w-64 bg-black/65 rounded-lg shadow-lg border border-white/20 z-50">
                     <div className="p-2">
                       {specialMenuItems.map((item) => (
                         <Link
                           key={item.link}
                           to={item.link}
                           onClick={() => setShowMemberMenu(false)}
-                          className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/60 rounded-md transition-colors"
+                          className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
                         >
                           <span className="text-2xl">{item.icon}</span>
                           <span className="text-sm text-white">{t(item.titleKey)}</span>
@@ -302,26 +360,43 @@ const Header: React.FC = () => {
 
               {/* アカウント Dropdown */}
               <div className="relative">
-                <Button 
-                  variant="ghost" 
-                  className="text-base font-normal px-2 text-white hover:bg-black/60"
-                  onClick={() => {
-                    setShowAccountMenu(!showAccountMenu);
-                    setShowMemberMenu(false);
-                    setShowBoardMenu(false);
-                  }}
-                >
-                  {t('nav.account')}
-                  <ChevronDown className="h-5 w-5 ml-1" />
-                </Button>
+                <div className="flex items-center">
+                  <Link
+                    to="/account"
+                    onClick={() => {
+                      setShowAccountMenu(false);
+                      setShowMemberMenu(false);
+                      setShowBoardMenu(false);
+                    }}
+                  >
+                    <Button
+                      variant="ghost"
+                      className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+                    >
+                      {t('nav.account')}
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    className={`px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+                    onClick={() => {
+                      setShowAccountMenu(!showAccountMenu);
+                      setShowMemberMenu(false);
+                      setShowBoardMenu(false);
+                    }}
+                    aria-label={t('nav.account')}
+                  >
+                    <ChevronDown className="h-5 w-5" />
+                  </Button>
+                </div>
                 
                 {showAccountMenu && (
-                  <div className="absolute top-full right-0 mt-2 w-56 bg-black/40 rounded-lg shadow-lg border border-white/20 z-[100]">
+                  <div className="absolute top-full right-0 mt-2 w-56 bg-black/65 rounded-lg shadow-lg border border-white/20 z-[100]">
                     <div className="p-2">
                       <Link
                         to="/account"
                         onClick={() => setShowAccountMenu(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/60 rounded-md transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
                       >
                         <span className="text-2xl">👤</span>
                         <span className="text-sm text-white">{t('nav.accountInfo')}</span>
@@ -329,7 +404,7 @@ const Header: React.FC = () => {
                       <Link
                         to="/matching/profile"
                         onClick={() => setShowAccountMenu(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/60 rounded-md transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
                       >
                         <span className="text-2xl">✏️</span>
                         <span className="text-sm text-white">{t('nav.profileEdit')}</span>
@@ -345,7 +420,10 @@ const Header: React.FC = () => {
                 setShowBoardMenu(false);
                 setShowAccountMenu(false);
               }}>
-                <Button variant="ghost" className="text-base font-normal px-2 text-white hover:bg-black/60">
+                <Button
+                  variant="ghost"
+                  className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+                >
                   {t('nav.blog')}
                 </Button>
               </Link>
@@ -354,10 +432,10 @@ const Header: React.FC = () => {
             {/* Bottom Row - User Info & Auth */}
             <div className="flex items-center gap-4">
               {/* 言語セレクター（デスクトップ） */}
-              <LanguageSelector variant="header" isHomePage={true} />
+              <LanguageSelector variant="header" isHomePage={isHomePage} />
               {isFreeUser || !user ? (
                 <Link to="/login">
-                  <Button className="text-sm px-6 py-2 bg-transparent border border-white/30 text-white hover:bg-black/60">
+                  <Button className={`text-sm px-6 py-2 bg-transparent ${isHomePage ? 'border border-white/30 text-white hover:bg-black/35 hover:text-white' : 'border border-gray-300 text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}>
                     {t('common.login')}
                   </Button>
                 </Link>
@@ -366,25 +444,29 @@ const Header: React.FC = () => {
                   {/* チャット通知アイコン（デスクトップ） */}
                   <button
                     onClick={() => navigate('/matching/chats')}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors hover:bg-black/60"
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors ${isHomePage ? 'hover:bg-black/35' : 'hover:bg-gray-100'}`}
                     aria-label={t('header.chat')}
                   >
                     <div className="relative">
-                      <MessageCircle className="h-5 w-5 text-white" />
+                      <MessageCircle className={`h-5 w-5 ${isHomePage ? 'text-white' : 'text-gray-900'}`} />
                       {unreadCount > 0 && (
                         <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 animate-pulse">
                           {unreadCount > 99 ? '99+' : unreadCount}
                         </span>
                       )}
                     </div>
-                    <span className="text-xs text-white">
+                    <span className={`text-xs ${isHomePage ? 'text-white' : 'text-gray-900'}`}>
                       {unreadCount > 0 
                         ? t('header.unreadMessages', { count: unreadCount })
                         : t('header.chat')}
                     </span>
                   </button>
-                  <span className="text-sm text-white">{user.display_name}</span>
-                  <Button variant="outline" onClick={handleLogout} className="text-sm px-4 bg-transparent border-white/30 text-white hover:bg-black/60">
+                  <span className={`text-sm ${isHomePage ? 'text-white' : 'text-gray-900'}`}>{user.display_name}</span>
+                  <Button
+                    variant="outline"
+                    onClick={handleLogout}
+                    className={`text-sm px-4 bg-transparent ${isHomePage ? 'border-white/30 text-white hover:bg-black/35' : 'border-gray-300 text-gray-900 hover:bg-gray-100'}`}
+                  >
                     {t('common.logout')}
                   </Button>
                 </>

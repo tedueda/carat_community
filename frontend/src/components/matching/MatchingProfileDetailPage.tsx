@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { IdentityBadge } from '@/components/ui/IdentityBadge';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+import { API_URL } from '@/config';
 
 // アイコンコンポーネント
 const ArrowLeft = ({ className }: { className?: string }) => (
@@ -215,7 +214,7 @@ const MatchingProfileDetailPage: React.FC = () => {
           <div className="aspect-[4/3]">
             {profile.avatar_url ? (
               <img
-                src={profile.avatar_url.startsWith('http') ? profile.avatar_url : `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${profile.avatar_url}`}
+                src={profile.avatar_url.startsWith('http') ? profile.avatar_url : `${API_URL}${profile.avatar_url}`}
                 alt={`${profile.display_name}のプロフィール画像`}
                 className="h-full w-full object-cover"
                 key={`profile-${profile.user_id}-${profile.avatar_url}`}

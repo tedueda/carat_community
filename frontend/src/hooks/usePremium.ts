@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { API_URL } from '@/config';
 
 export function usePremium() {
   const { token, user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [isPremium, setIsPremium] = useState<boolean>(false);
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
 
   const evaluateFallback = useCallback(() => {
     return (user as any)?.premium_status === true || (user as any)?.membership_type === 'premium';

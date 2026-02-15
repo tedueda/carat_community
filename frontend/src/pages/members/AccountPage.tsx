@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { API_URL } from '../../config';
 import { LANGUAGE_NAMES, LANGUAGE_FLAGS, SupportedLanguage } from '../../i18n';
 import { 
   User, Mail, Lock, AlertCircle, CheckCircle, Trash2, 
   Crown, Shield, Gem, MessageCircle, TrendingUp, Globe, ExternalLink
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 interface AccountData {
   id: number;
