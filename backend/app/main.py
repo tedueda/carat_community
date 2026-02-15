@@ -23,6 +23,44 @@ def run_migrations():
     """Run database migrations on startup"""
     try:
         db = next(get_db())
+
+        def _table_exists(table_name: str) -> bool:
+            result = db.execute(
+                text(
+                    """
+                    SELECT 1
+                    FROM information_schema.tables
+                    WHERE table_schema = 'public' AND table_name = :table_name
+                    LIMIT 1
+                    """
+                ),
+                {"table_name": table_name},
+            )
+            return result.fetchone() is not None
+
+        def _column_exists(table_name: str, column_name: str) -> bool:
+            result = db.execute(
+                text(
+                    """
+                    SELECT 1
+                    FROM information_schema.columns
+                    WHERE table_schema = 'public'
+                      AND table_name = :table_name
+                      AND column_name = :column_name
+                    LIMIT 1
+                    """
+                ),
+                {"table_name": table_name, "column_name": column_name},
+            )
+            return result.fetchone() is not None
+
+        def _add_column_if_missing(table_name: str, column_name: str, column_ddl: str) -> None:
+            if not _table_exists(table_name):
+                return
+            if _column_exists(table_name, column_name):
+                return
+            db.execute(text(f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_ddl}"))
+            db.commit()
         # Migration 1: Add phone_number column to users table
         result = db.execute(text("""
             SELECT column_name 
@@ -35,19 +73,33 @@ def run_migrations():
             print("✅ Successfully added phone_number column to users table")
         else:
             print("✅ phone_number column already exists")
+
+        if _table_exists("posts"):
+            _add_column_if_missing("posts", "category", "VARCHAR")
+            _add_column_if_missing("posts", "subcategory", "VARCHAR")
+            _add_column_if_missing("posts", "post_type", "VARCHAR")
+            _add_column_if_missing("posts", "slug", "VARCHAR")
+            _add_column_if_missing("posts", "status", "VARCHAR")
+            _add_column_if_missing("posts", "og_image_url", "VARCHAR")
+            _add_column_if_missing("posts", "excerpt", "TEXT")
+            _add_column_if_missing("posts", "goal_amount", "INTEGER")
+            _add_column_if_missing("posts", "current_amount", "INTEGER")
+            _add_column_if_missing("posts", "deadline", "DATE")
+            _add_column_if_missing("posts", "original_lang", "VARCHAR")
         
         # Migration 2: Add nationality column to matching_profiles table
-        result = db.execute(text("""
-            SELECT column_name 
-            FROM information_schema.columns 
-            WHERE table_name='matching_profiles' AND column_name='nationality'
-        """))
-        if not result.fetchone():
-            db.execute(text("ALTER TABLE matching_profiles ADD COLUMN nationality VARCHAR(100)"))
-            db.commit()
-            print("✅ Successfully added nationality column to matching_profiles table")
-        else:
-            print("✅ nationality column already exists")
+        if _table_exists("matching_profiles"):
+            result = db.execute(text("""
+                SELECT column_name 
+                FROM information_schema.columns 
+                WHERE table_name='matching_profiles' AND column_name='nationality'
+            """))
+            if not result.fetchone():
+                db.execute(text("ALTER TABLE matching_profiles ADD COLUMN nationality VARCHAR(100)"))
+                db.commit()
+                print("✅ Successfully added nationality column to matching_profiles table")
+            else:
+                print("✅ nationality column already exists")
     except Exception as e:
         print(f"⚠️ Migration error (may be safe to ignore if column exists): {e}")
     finally:
