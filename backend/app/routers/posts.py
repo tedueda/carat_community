@@ -92,7 +92,16 @@ async def read_posts(
     limit = max(1, min(100, limit))
     offset = (page - 1) * limit
     posts = query.offset(offset).limit(limit).all()
-    
+
+    if cat_value:
+        needle = f"#{cat_value}".lower()
+        for post in posts:
+            if post.category:
+                continue
+            body = (post.body or "").lower()
+            if needle in body:
+                post.category = cat_value
+
     # N+1クエリ問題を解決：一括でいいね数とコメント数を取得
     post_ids = [post.id for post in posts]
     
