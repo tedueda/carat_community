@@ -10,7 +10,6 @@ const SubscribeSuccessPage: React.FC = () => {
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [_success, setSuccess] = useState(false);
 
   useEffect(() => {
     const sessionId = searchParams.get('session_id');
@@ -35,7 +34,9 @@ const SubscribeSuccessPage: React.FC = () => {
           // Store the token for auto-login
           localStorage.setItem('token', data.access_token);
           localStorage.setItem('user', JSON.stringify(data.user));
-          setSuccess(true);
+          localStorage.removeItem('anonymous');
+          window.location.href = '/feed';
+          return;
         } else if (data.status === 'pending') {
           // Payment still processing
           setError(t('subscribe.success.payment_pending'));
@@ -53,7 +54,7 @@ const SubscribeSuccessPage: React.FC = () => {
   }, [searchParams, t]);
 
   const handleContinue = () => {
-    navigate('/account');
+    navigate('/feed');
   };
 
   const handleLogin = () => {

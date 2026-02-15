@@ -113,6 +113,18 @@ const LoginForm: React.FC = () => {
               {isLoading ? t('auth.login.submitting') : t('auth.login.submit')}
             </Button>
           </form>
+          <div className="mt-6 text-center border-t border-gray-200 pt-6">
+            <p className="text-gray-600 text-sm">
+              {t('auth.login.noAccount')}{' '}
+              <button
+                type="button"
+                onClick={() => navigate('/subscribe')}
+                className="text-black font-semibold hover:underline"
+              >
+                {t('auth.login.registerLink')}
+              </button>
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>

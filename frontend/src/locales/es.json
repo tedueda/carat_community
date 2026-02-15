@@ -1,4 +1,28 @@
 {
+  "nav": {
+    "home": "Inicio",
+    "board": "Tablero",
+    "specialMenu": "Menú Especial",
+    "account": "Cuenta",
+    "blog": "Blog",
+    "accountInfo": "Información de Cuenta",
+    "profileEdit": "Editar Perfil",
+    "boardCategories": {
+      "music": "Música",
+      "art": "Arte y Video",
+      "comics": "Subcultura",
+      "food": "Comida y Tiendas",
+      "tourism": "Turismo",
+      "boardGeneral": "Tablero",
+      "news": "Noticias LGBTQ+"
+    },
+    "specialMenuItems": {
+      "matching": "Emparejamiento de Miembros",
+      "salon": "Salón de Miembros",
+      "business": "Negocios",
+      "liveWedding": "Boda en Vivo"
+    }
+  },
   "hero": {
     "messages": [
       {

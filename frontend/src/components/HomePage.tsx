@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, MessageCircle, Gem as DiamondIcon, Lock } from 'lucide-react';
+import { ArrowRight, Lock, Globe } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import UnderConstructionModal from './UnderConstructionModal';
@@ -13,7 +13,8 @@ import { Post, User } from '../types/Post';
 import { extractYouTubeId } from '../utils/youtube';
 import HeroAudioPlayer from './HeroAudioPlayer';
 import liveWeddingBanner from '../assets/images/live-wedding-banner.jpg';
-import jewelryBanner from '../assets/images/jewelry-banner.jpg';
+import { API_URL } from '../config';
+
 
 
 const specialMenuItems = [
@@ -47,7 +48,7 @@ const boardCategories = [
   { key: "music", title: "ミュージック", desc: "あなたの好きな楽曲、作成した楽曲を投稿して共有しましょう！", emoji: "🎵", link: "/category/music" },
   { key: "art", title: "アート・動画", desc: "イラスト・写真・映像作品を発表して、アートの世界を広げましょう！", emoji: "🎨", link: "/category/art" },
   { key: "comics", title: "サブカルチャー", desc: "映画・アニメ・ゲーム・小説などの作品レビューと感想を共有しましょう！", emoji: "🎭", link: "/category/comics" },
-  { key: "food_shops", title: "食レポ・お店・ライブハウス", desc: "美味しいグルメやLGBTQフレンドリーなお店を紹介しましょう！", emoji: "🍽️", link: "/category/food", categories: ["food", "shops"] },
+  { key: "food_shops", title: "食レポ・お店", desc: "美味しいグルメやLGBTQフレンドリーなお店を紹介しましょう！", emoji: "🍽️", link: "/category/food", categories: ["food", "shops"] },
   { key: "tourism", title: "ツーリズム", desc: "おすすめの旅行先や観光スポットを紹介して、旅の楽しさを共有しましょう！", emoji: "📍", link: "/category/tourism" },
   { key: "board", title: "掲示板", desc: "悩み相談や雑談、日常の話題を自由に投稿しましょう！", emoji: "💬", link: "/category/board" },
 ];
@@ -131,6 +132,7 @@ const HomePage: React.FC = () => {
   const { currentLanguage } = useLanguage();
   const [posts, setPosts] = useState<Post[]>([]);
   const [categoryPosts, setCategoryPosts] = useState<{ [key: string]: Post[] }>({});
+  const [translatedPosts, setTranslatedPosts] = useState<{ [key: number]: boolean }>({});
   const [newsArticles, setNewsArticles] = useState<any[]>([]);
   const [, setUsers] = useState<{ [key: number]: User }>(dummyUsers);
   const [loading, setLoading] = useState(false);
@@ -146,9 +148,6 @@ const HomePage: React.FC = () => {
   const heroSectionRef = useRef<HTMLElement>(null);
   const { token, user, isAnonymous } = useAuth();
   const navigate = useNavigate();
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
 
   const fetchNews = async (lang?: string) => {
     try {
@@ -332,55 +331,33 @@ const HomePage: React.FC = () => {
         {/* ヒーローセクション */}
         <section ref={heroSectionRef} className="relative w-full overflow-hidden" style={{height: '860px'}}>
           <div className="absolute inset-0">
-            <div 
-              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 0 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
-                src="/images/hero5.png" 
-                alt="LGBTQ+ Community 1"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div 
-              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 1 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
-                src="/images/hero1.png" 
-                alt="LGBTQ+ Community 2"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div 
-              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 2 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
-                src="/images/img14.jpg" 
-                alt="LGBTQ+ Community 3"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div 
-              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 3 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
-                src="/images/hero2.png" 
-                alt="LGBTQ+ Community 4"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div 
-              className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === 4 ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img 
-                src="/images/hero3.png" 
-                alt="LGBTQ+ Community 5"
-                className="w-full h-full object-cover"
-              />
-            </div>
+            {[
+              { desktop: '/images/hero5.png', mobile: '/images/m01.png' },
+              { desktop: '/images/hero1.png', mobile: '/images/m02.png' },
+              { desktop: '/images/img14.jpg', mobile: '/images/m03.png' },
+              { desktop: '/images/hero2.png', mobile: '/images/m04.png' },
+              { desktop: '/images/img10.jpg', mobile: '/images/m05.png' },
+            ].map((slide, idx) => (
+              <div
+                key={idx}
+                className={`absolute inset-0 transition-opacity duration-[3000ms] ease-in-out ${currentSlide === idx ? 'opacity-100' : 'opacity-0'}`}
+              >
+                <img
+                  src={slide.desktop}
+                  alt={`LGBTQ+ Community ${idx + 1}`}
+                  className="hidden md:block w-full h-full object-cover"
+                />
+                <img
+                  src={slide.mobile}
+                  alt={`LGBTQ+ Community ${idx + 1}`}
+                  className="block md:hidden w-full h-full object-cover"
+                />
+              </div>
+            ))}
           </div>
           <div className="absolute inset-0 bg-black bg-opacity-40"></div>
           {/* Sound Credit and Audio Player */}
-          <div className="absolute bottom-16 right-8 z-50 flex flex-col items-end gap-2 pointer-events-auto">
+          <div className="absolute bottom-1/4 md:bottom-16 right-8 z-50 flex flex-col items-end gap-2 pointer-events-auto">
             <div className="text-white text-sm opacity-70 flex items-center gap-2">
               <span className="text-lg">♫</span>
               <span>Inspired by Marvin Gaye</span>
@@ -389,7 +366,7 @@ const HomePage: React.FC = () => {
           </div>
           <div className="relative z-10 flex items-center justify-center h-full">
             <div className="text-center text-white px-4 max-w-6xl">
-              <h2 key={`main-${currentSlide}`} className="text-3xl md:text-7xl font-serif font-bold leading-tight mb-6 transition-opacity duration-[3000ms] ease-in-out">
+              <h2 key={`main-${currentSlide}`} className="text-4xl md:text-6xl font-serif font-bold leading-tight mb-6 transition-opacity duration-[3000ms] ease-in-out">
                 {t(`hero.messages.${currentSlide}.main`).split('\n').map((line: string, i: number) => (
                   <React.Fragment key={i}>
                     {line}
@@ -397,14 +374,16 @@ const HomePage: React.FC = () => {
                   </React.Fragment>
                 ))}
               </h2>
-              <p key={`sub-${currentSlide}`} className="text-lg md:text-2xl mb-8 opacity-90 transition-opacity duration-[3000ms] ease-in-out">
-                {t(`hero.messages.${currentSlide}.sub`).split('\n').map((line: string, i: number) => (
-                  <React.Fragment key={i}>
-                    {line}
-                    {i < t(`hero.messages.${currentSlide}.sub`).split('\n').length - 1 && <br />}
-                  </React.Fragment>
-                ))}
-              </p>
+              {t(`hero.messages.${currentSlide}.sub`) && (
+                <p key={`sub-${currentSlide}`} className="text-base md:text-xl mb-8 opacity-90 transition-opacity duration-[3000ms] ease-in-out">
+                  {t(`hero.messages.${currentSlide}.sub`).split('\n').map((line: string, i: number) => (
+                    <React.Fragment key={i}>
+                      {line}
+                      {i < t(`hero.messages.${currentSlide}.sub`).split('\n').length - 1 && <br />}
+                    </React.Fragment>
+                  ))}
+                </p>
+              )}
             </div>
           </div>
         </section>
@@ -464,7 +443,7 @@ const HomePage: React.FC = () => {
                 {t('homepage.viewAll')}→
               </Button>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-4 gap-4">
               {(categoryPosts[cat.key] || []).slice(0, 4).map((post) => {
                 // youtube_urlフィールドがない場合、本文からYouTubeのURLを抽出
                 const youtubeUrl = post.youtube_url || (post.body ? post.body.match(/https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)[^\s)<>"']+/i)?.[0] : null);
@@ -482,12 +461,13 @@ const HomePage: React.FC = () => {
                   }}
                   className="group backdrop-blur-md bg-gray-50/80 border border-gray-200 hover:bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer hover:scale-[1.02] shadow-lg hover:shadow-2xl"
                 >
+                  <div className="flex flex-row md:flex-col">
                   {youtubeUrl ? (
-                    <div className="h-40 overflow-hidden rounded-t-lg bg-black flex items-center justify-center relative">
+                    <div className="w-32 h-20 md:w-full md:h-40 flex-shrink-0 overflow-hidden rounded-l-lg md:rounded-l-none md:rounded-t-lg bg-black flex items-center justify-center relative">
                       <img 
                         src={`https://img.youtube.com/vi/${extractYouTubeId(youtubeUrl)}/maxresdefault.jpg`}
                         alt={post.title || 'YouTube動画'}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain md:object-cover"
                         onError={(e) => {
                           const videoId = extractYouTubeId(youtubeUrl);
                           if (videoId) {
@@ -497,16 +477,9 @@ const HomePage: React.FC = () => {
                           }
                         }}
                       />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="bg-black/60 rounded-full p-3">
-                          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z"/>
-                          </svg>
-                        </div>
-                      </div>
                     </div>
                   ) : (post.media_url || (post.media_urls && post.media_urls.length > 0)) ? (
-                    <div className="h-40 overflow-hidden rounded-t-lg bg-gray-100 flex items-center justify-center">
+                    <div className="w-32 h-20 md:w-full md:h-40 flex-shrink-0 overflow-hidden rounded-l-lg md:rounded-l-none md:rounded-t-lg bg-gray-100 flex items-center justify-center">
                       <img 
                         src={`${(() => {
                           const imageUrl = post.media_url || (post.media_urls && post.media_urls[0]);
@@ -516,46 +489,46 @@ const HomePage: React.FC = () => {
                                  `${API_URL}${imageUrl}`;
                         })()}`}
                         alt={post.title || '投稿画像'}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain md:object-cover"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = getCategoryPlaceholder(post.category);
                         }}
                       />
                     </div>
                   ) : (
-                    <div className="h-40 overflow-hidden rounded-t-lg bg-gray-100 flex items-center justify-center">
+                    <div className="w-32 h-20 md:w-full md:h-40 flex-shrink-0 overflow-hidden rounded-l-lg md:rounded-l-none md:rounded-t-lg bg-gray-100 flex items-center justify-center">
                       <img 
                         src={getCategoryPlaceholder(post.category)}
                         alt={cat.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain md:object-cover"
                       />
                     </div>
                   )}
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-2 text-xs mb-2">
-                      <span className="text-slate-500">
-                        {new Date(post.created_at).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' })}
-                      </span>
-                    </div>
-                    {(post.display_title || post.title) && (
-                      <h4 className="font-serif font-semibold leading-snug text-slate-900 mb-2 group-hover:gold-accent line-clamp-2">
-                        {post.display_title || post.title}
-                      </h4>
-                    )}
-                    <p className="text-sm text-slate-600 line-clamp-2">{post.display_text || post.body}</p>
-                    <div className="flex items-center justify-between text-sm mt-3">
-                      <div className="flex items-center gap-3 text-slate-500">
-                        <span className="flex items-center gap-1">
-                          <DiamondIcon className="h-3 w-3 text-blue-500" />
-                          {post.like_count || 0}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <MessageCircle className="h-3 w-3" />
-                          {post.comment_count || 0}
-                        </span>
-                      </div>
+                  <CardContent className="p-2 md:p-4 flex-1">
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      {(post.display_title || post.title) && (
+                        <h4 className="text-sm md:text-base font-serif font-semibold leading-snug text-slate-900 group-hover:gold-accent line-clamp-2 flex-1">
+                          {post.display_title || post.title}
+                        </h4>
+                      )}
+                      {post.original_lang && post.original_lang !== currentLanguage && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setTranslatedPosts(prev => ({
+                              ...prev,
+                              [post.id]: !prev[post.id]
+                            }));
+                          }}
+                          className="flex-shrink-0 p-1 hover:bg-gray-100 rounded transition-colors"
+                          title={translatedPosts[post.id] ? t('common.showOriginal', '原文') : t('common.showTranslation', '翻訳')}
+                        >
+                          <Globe className={`h-4 w-4 ${translatedPosts[post.id] ? 'text-blue-600' : 'text-gray-400'}`} />
+                        </button>
+                      )}
                     </div>
                   </CardContent>
+                  </div>
                 </Card>
               );
               })}
@@ -650,18 +623,18 @@ const HomePage: React.FC = () => {
 
         {/* ライブウェディングバナー */}
         <section className="py-6">
-          <div className="relative rounded-xl shadow-2xl overflow-hidden" style={{ maxHeight: '400px' }}>
+          <div className="relative shadow-2xl">
             <img 
               src={liveWeddingBanner} 
               alt={t('liveWedding.banner.bannerAlt')}
-              className="w-full h-full object-cover"
+              className="w-full h-auto block"
             />
             <div className="absolute inset-0 bg-black/40"></div>
-            <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-8 md:px-16">
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
+            <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4 md:px-16">
+              <h2 className="text-2xl md:text-5xl font-serif font-bold text-white mb-2 md:mb-4">
                 {t('liveWedding.banner.title')}
               </h2>
-              <p className="text-xl md:text-2xl text-white/90 mb-6 max-w-2xl">
+              <p className="text-sm md:text-2xl text-white/90 mb-4 md:mb-6 max-w-2xl">
                 {t('liveWedding.banner.subtitle')}
               </p>
               <button
@@ -669,37 +642,10 @@ const HomePage: React.FC = () => {
                   navigate('/live-wedding');
                   window.scrollTo(0, 0);
                 }}
-                className="inline-flex items-center gap-2 px-8 py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="inline-flex items-center gap-2 px-4 py-2 md:px-8 md:py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl text-sm md:text-base"
               >
                 {t('liveWedding.banner.viewDetails')}
-                <ArrowRight className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* ジュエリー販売バナー */}
-        <section className="py-6">
-          <div className="relative rounded-xl shadow-2xl overflow-hidden" style={{ maxHeight: '400px' }}>
-            <img 
-              src={jewelryBanner} 
-              alt={t('jewelry.bannerAlt')}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black/40"></div>
-            <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-8 md:px-16">
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
-                {t('jewelry.banner.title')}
-              </h2>
-              <p className="text-xl md:text-2xl text-white/90 mb-6 max-w-2xl">
-                {t('jewelry.banner.subtitle')}
-              </p>
-              <button
-                onClick={() => navigate('/jewelry')}
-                className="inline-flex items-center gap-2 px-8 py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
-                {t('jewelry.banner.viewDetails')}
-                <ArrowRight className="h-5 w-5" />
+                <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
               </button>
             </div>
           </div>
@@ -717,15 +663,16 @@ const HomePage: React.FC = () => {
               {t('news.viewAll')}
             </Button>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {newsArticles.slice(0, 4).map((article) => (
               <Card 
                 key={article.id} 
                 className="group bg-white border border-gray-200 hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden rounded-lg"
                 onClick={() => setSelectedNewsArticle(article)}
               >
+                <div className="flex flex-row md:flex-col">
                 {(article.media_url || (article.media_urls && article.media_urls.length > 0)) ? (
-                  <div className="h-[200px] overflow-hidden bg-gray-50">
+                  <div className="w-32 h-20 md:w-full md:h-[200px] flex-shrink-0 overflow-hidden rounded-l-lg md:rounded-l-none md:rounded-t-lg bg-gray-50">
                     <img
                       src={`${(() => {
                         const imageUrl = article.media_url || (article.media_urls && article.media_urls[0]);
@@ -735,30 +682,47 @@ const HomePage: React.FC = () => {
                                `${API_URL}${imageUrl}`;
                       })()}`}
                       alt={article.title || 'ニュース画像'}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-contain md:object-cover group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
                         (e.target as HTMLImageElement).style.display = 'none';
                       }}
                     />
                   </div>
                 ) : (
-                  <div className="h-[200px] bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+                  <div className="w-32 h-20 md:w-full md:h-[200px] flex-shrink-0 overflow-hidden rounded-l-lg md:rounded-l-none md:rounded-t-lg bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
                     <span className="text-6xl opacity-30">📰</span>
                   </div>
                 )}
-                <CardContent className="p-5">
-                  <div className="flex items-center gap-2 mb-3">
+                <CardContent className="p-2 md:p-5 flex-1">
+                  <div className="hidden md:flex items-center gap-2 mb-3">
                     <span className="text-xs bg-gray-800 text-white px-2.5 py-1 rounded font-medium">
                       news
                     </span>
                   </div>
-                  <h4 className="font-bold text-slate-900 mb-3 line-clamp-2 text-lg leading-snug group-hover:text-gray-700 transition-colors">
-                    {article.display_title || article.title}
-                  </h4>
-                  <p className="text-sm text-slate-600 mb-4 line-clamp-3 leading-relaxed">
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <h4 className="text-sm md:text-lg font-bold text-slate-900 line-clamp-2 leading-snug group-hover:text-gray-700 transition-colors flex-1">
+                      {article.display_title || article.title}
+                    </h4>
+                    {article.original_lang && article.original_lang !== currentLanguage && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setTranslatedPosts(prev => ({
+                            ...prev,
+                            [article.id]: !prev[article.id]
+                          }));
+                        }}
+                        className="flex-shrink-0 p-1 hover:bg-gray-100 rounded transition-colors"
+                        title={translatedPosts[article.id] ? t('common.showOriginal', '原文') : t('common.showTranslation', '翻訳')}
+                      >
+                        <Globe className={`h-4 w-4 ${translatedPosts[article.id] ? 'text-blue-600' : 'text-gray-400'}`} />
+                      </button>
+                    )}
+                  </div>
+                  <p className="hidden md:block text-sm text-slate-600 mb-4 line-clamp-3 leading-relaxed">
                     {article.display_text || article.body}
                   </p>
-                  <div className="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-gray-100">
+                  <div className="hidden md:flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-gray-100">
                     <span>{new Date(article.created_at).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/')}</span>
                     <span className="text-gray-700 hover:text-black font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
                       {t('post.readMore')}
@@ -766,6 +730,7 @@ const HomePage: React.FC = () => {
                     </span>
                   </div>
                 </CardContent>
+                </div>
               </Card>
             ))}
           </div>
@@ -784,7 +749,7 @@ const HomePage: React.FC = () => {
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-end">
                 <Button 
-                  onClick={() => window.location.href = '/login'}
+                  onClick={() => navigate('/subscribe')}
                   className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:text-black px-6 py-3 text-base md:text-lg font-medium shadow-md hover:shadow-lg transition-all"
                 >
                   {t('membership.registerMonthly')}
