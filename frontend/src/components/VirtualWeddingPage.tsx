@@ -9,6 +9,8 @@ const VirtualWeddingPage: React.FC = () => {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
+  const youtubeVideoId = 'JQlhQTPbKsk';
+
   // const features = [
   //   {
   //     icon: <Globe className="w-8 h-8" />,
@@ -74,15 +76,13 @@ const VirtualWeddingPage: React.FC = () => {
       {/* Hero Section with Background Video - Full Width */}
       <div className="relative w-full h-[850px] flex items-center justify-center overflow-hidden">
           {/* Background Video */}
-          <video 
-            className="absolute inset-0 w-full h-full object-cover"
-            autoPlay 
-            muted 
-            loop 
-            playsInline
-          >
-            <source src="https://test.studioq.co.jp/wp-content/uploads/2025/11/VW3.mp4" type="video/mp4" />
-          </video>
+          <iframe
+            className="absolute inset-0 w-full h-full object-cover scale-[1.25] pointer-events-none"
+            src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=1&loop=1&playlist=${youtubeVideoId}&controls=0&modestbranding=1&playsinline=1&rel=0`}
+            title="Live Wedding Video"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            referrerPolicy="strict-origin-when-cross-origin"
+          />
           
           {/* Overlay */}
           <div className="absolute inset-0 bg-black/40"></div>
@@ -241,13 +241,13 @@ const VirtualWeddingPage: React.FC = () => {
               className="aspect-video rounded-xl overflow-hidden mb-6 cursor-pointer relative group"
               onClick={() => setIsVideoModalOpen(true)}
             >
-              <video 
-                className="w-full h-full object-cover"
-                muted
-                poster=""
-              >
-                <source src="https://test.studioq.co.jp/wp-content/uploads/2025/11/バーチャルウェディング（DEMO.mp4" type="video/mp4" />
-              </video>
+              <iframe
+                className="w-full h-full object-cover pointer-events-none"
+                src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=1&loop=1&playlist=${youtubeVideoId}&controls=0&modestbranding=1&playsinline=1&rel=0`}
+                title="Background Composite Demo"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                referrerPolicy="strict-origin-when-cross-origin"
+              />
               {/* 再生ボタンオーバーレイ */}
               <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                 <div className="bg-transparent border-2 border-white rounded-full p-6 group-hover:bg-white/20 group-hover:scale-110 transition-all duration-300">
@@ -356,13 +356,13 @@ const VirtualWeddingPage: React.FC = () => {
             
             {/* 動画 */}
             <div className="aspect-video bg-black rounded-xl overflow-hidden">
-              <video 
-                className="w-full h-full object-cover"
-                controls
-                autoPlay
-              >
-                <source src="https://test.studioq.co.jp/wp-content/uploads/2025/11/バーチャルウェディング（DEMO.mp4" type="video/mp4" />
-              </video>
+              <iframe
+                className="w-full h-full"
+                src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=0&controls=1&modestbranding=1&playsinline=1&rel=0`}
+                title="Background Composite Demo (Modal)"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                referrerPolicy="strict-origin-when-cross-origin"
+              />
             </div>
           </div>
         </div>
