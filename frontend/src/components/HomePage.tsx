@@ -847,32 +847,6 @@ const HomePage: React.FC = () => {
         </div>
       )}
 
-      {/* PostDetailModal */}
-      {selectedPost && selectedUser && (
-        <PostDetailModal
-          post={selectedPost}
-          user={selectedUser}
-          isOpen={true}
-          onClose={() => {
-            setSelectedPost(null);
-            setSelectedUser(null);
-          }}
-          onUpdated={(updatedPost: Post) => {
-            setPosts(posts.map(p => p.id === updatedPost.id ? updatedPost : p));
-            setSelectedPost(updatedPost);
-          }}
-          onDeleted={(postId: number) => {
-            setPosts(posts.filter(p => p.id !== postId));
-            setSelectedPost(null);
-            setSelectedUser(null);
-          }}
-          onEditInForm={(post) => {
-            // カテゴリページに遷移して編集モードで開く
-            const category = post.category || 'board';
-            navigate(`/category/${category}?edit=${post.id}`);
-          }}
-        />
-      )}
     </div>
   );
 };

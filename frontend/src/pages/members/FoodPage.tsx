@@ -10,7 +10,6 @@ const FoodPage: React.FC = () => {
   const { user, isAnonymous, token, isLoading } = useAuth();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
-  const [users, setUsers] = useState<{ [key: number]: User }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
