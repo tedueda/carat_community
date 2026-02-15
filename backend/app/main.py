@@ -128,6 +128,17 @@ def run_migrations():
             _add_column_if_missing("posts", "current_amount", "INTEGER")
             _add_column_if_missing("posts", "deadline", "DATE")
             _add_column_if_missing("posts", "original_lang", "VARCHAR")
+
+            try:
+                if _column_exists("posts", "post_type"):
+                    db.execute(text("UPDATE posts SET post_type = 'post' WHERE post_type IS NULL"))
+                if _column_exists("posts", "status"):
+                    db.execute(text("UPDATE posts SET status = 'published' WHERE status IS NULL"))
+                db.commit()
+                print("✅ Backfilled posts.post_type/status defaults where NULL")
+            except Exception as e:
+                db.rollback()
+                print(f"⚠️ Failed backfilling posts defaults: {e}")
         else:
             print("⚠️ posts table not found in information_schema.tables")
 
