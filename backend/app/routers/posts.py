@@ -5,7 +5,7 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 import html
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import desc, func
+from sqlalchemy import desc, func, or_
 from typing import List, Optional
 from datetime import datetime, timedelta
 from app.database import get_db
@@ -58,8 +58,12 @@ async def read_posts(
     if category_id and not cat_value:
         cat_value = category_id
     if cat_value:
-        # Filter by category field directly instead of hashtag in body
-        query = query.filter(Post.category == cat_value)
+        query = query.filter(
+            or_(
+                Post.category == cat_value,
+                Post.body.ilike(f"%#{cat_value}%"),
+            )
+        )
     
     if subcategory:
         query = query.filter(Post.subcategory == subcategory)
