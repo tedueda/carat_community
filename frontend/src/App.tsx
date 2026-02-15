@@ -81,11 +81,13 @@ function ScrollToTop() {
 }
 
 function AppContent() {
+  const location = useLocation();
+  const isHome = location.pathname === '/' || location.pathname === '/feed';
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <ScrollToTop />
-      <main className="bg-white">
+      <main className={`bg-white ${isHome ? '' : 'pt-24 md:pt-28'}`}>
         <Routes>
           <Route path="/login" element={
             <PublicRoute>
