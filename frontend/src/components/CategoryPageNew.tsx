@@ -431,7 +431,7 @@ const CategoryPageNew: React.FC = () => {
                   <img 
                     src={`https://img.youtube.com/vi/${extractYouTubeId(youtubeUrl)}/maxresdefault.jpg`}
                     alt={post.title || 'YouTube動画'}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                     onError={(e) => {
                       const videoId = extractYouTubeId(youtubeUrl);
                       if (videoId) {

@@ -457,7 +457,7 @@ const HomePage: React.FC = () => {
                       <img 
                         src={`https://img.youtube.com/vi/${extractYouTubeId(youtubeUrl)}/maxresdefault.jpg`}
                         alt={post.title || 'YouTube動画'}
-                        className="w-full h-full object-contain md:object-cover"
+                        className="w-full h-full object-contain"
                         onError={(e) => {
                           const videoId = extractYouTubeId(youtubeUrl);
                           if (videoId) {
@@ -479,7 +479,7 @@ const HomePage: React.FC = () => {
                                  `${API_URL}${imageUrl}`;
                         })()}`}
                         alt={post.title || '投稿画像'}
-                        className="w-full h-full object-contain md:object-cover"
+                        className="w-full h-full object-contain"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = getCategoryPlaceholder(post.category);
                         }}
@@ -490,7 +490,7 @@ const HomePage: React.FC = () => {
                       <img 
                         src={getCategoryPlaceholder(post.category)}
                         alt={cat.title}
-                        className="w-full h-full object-contain md:object-cover"
+                        className="w-full h-full object-contain"
                       />
                     </div>
                   )}
