@@ -2,6 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Header, Request
 import logging
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 from typing import Optional
 from pydantic import BaseModel
 
@@ -148,9 +149,20 @@ async def get_posts_with_translation(
     # Build query
     query = db.query(Post).filter(Post.visibility == "public")
     if category:
-        query = query.filter(Post.category == category)
+        query = query.filter(
+            or_(
+                Post.category == category,
+                Post.body.ilike(f"%#{category}%"),
+            )
+        )
     
     posts = query.order_by(Post.created_at.desc()).offset(offset).limit(limit).all()
+    
+    if category:
+        needle = f"#{category}".lower()
+        for post in posts:
+            if not post.category and needle in (post.body or "").lower():
+                post.category = category
     
     result = []
     for post in posts:
