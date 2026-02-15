@@ -38,6 +38,23 @@ def run_migrations():
             )
             return result.fetchone() is not None
 
+        def _is_base_table(table_name: str) -> bool:
+            result = db.execute(
+                text(
+                    """
+                    SELECT 1
+                    FROM pg_class c
+                    JOIN pg_namespace n ON n.oid = c.relnamespace
+                    WHERE n.nspname = 'public'
+                      AND c.relname = :table_name
+                      AND c.relkind = 'r'
+                    LIMIT 1
+                    """
+                ),
+                {"table_name": table_name},
+            )
+            return result.fetchone() is not None
+
         def _column_exists(table_name: str, column_name: str) -> bool:
             result = db.execute(
                 text(
@@ -55,12 +72,20 @@ def run_migrations():
             return result.fetchone() is not None
 
         def _add_column_if_missing(table_name: str, column_name: str, column_ddl: str) -> None:
-            if not _table_exists(table_name):
+            if not _is_base_table(table_name):
+                print(f"ℹ️ Skipping {table_name}.{column_name}: '{table_name}' is not a base table")
                 return
-            if _column_exists(table_name, column_name):
-                return
-            db.execute(text(f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_ddl}"))
-            db.commit()
+            try:
+                db.execute(
+                    text(
+                        f"ALTER TABLE {table_name} ADD COLUMN IF NOT EXISTS {column_name} {column_ddl}"
+                    )
+                )
+                db.commit()
+                print(f"✅ Ensured column exists: {table_name}.{column_name}")
+            except Exception as e:
+                db.rollback()
+                print(f"⚠️ Failed ensuring column {table_name}.{column_name}: {e}")
         # Migration 1: Add phone_number column to users table
         result = db.execute(text("""
             SELECT column_name 
@@ -86,6 +111,8 @@ def run_migrations():
             _add_column_if_missing("posts", "current_amount", "INTEGER")
             _add_column_if_missing("posts", "deadline", "DATE")
             _add_column_if_missing("posts", "original_lang", "VARCHAR")
+        else:
+            print("⚠️ posts table not found in information_schema.tables")
         
         # Migration 2: Add nationality column to matching_profiles table
         if _table_exists("matching_profiles"):
