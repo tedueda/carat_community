@@ -12,6 +12,7 @@ import PremiumUpgradeModal from './PremiumUpgradeModal';
 import { Post, User } from '../types/Post';
 import { extractYouTubeId } from '../utils/youtube';
 import HeroAudioPlayer from './HeroAudioPlayer';
+import { API_URL } from '../config';
 import liveWeddingBanner from '../assets/images/live-wedding-banner.jpg';
 import jewelryBanner from '../assets/images/jewelry-banner.jpg';
 
@@ -146,8 +147,6 @@ const HomePage: React.FC = () => {
   const heroSectionRef = useRef<HTMLElement>(null);
   const { token, user, isAnonymous } = useAuth();
   const navigate = useNavigate();
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 
   const fetchNews = async (lang?: string) => {
