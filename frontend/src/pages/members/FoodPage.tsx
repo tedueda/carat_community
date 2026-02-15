@@ -105,7 +105,6 @@ const FoodPage: React.FC = () => {
           }
         }
         
-        setUsers(usersData);
       } else {
         setError('投稿の取得に失敗しました');
       }

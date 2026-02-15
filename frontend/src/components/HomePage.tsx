@@ -129,7 +129,7 @@ const dummyUsers: { [key: number]: User } = {
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
   const { currentLanguage } = useLanguage();
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [, setPosts] = useState<Post[]>([]);
   const [categoryPosts, setCategoryPosts] = useState<{ [key: string]: Post[] }>({});
   const [translatedPosts, setTranslatedPosts] = useState<{ [key: number]: boolean }>({});
   const [newsArticles, setNewsArticles] = useState<any[]>([]);
