@@ -1,4 +1,28 @@
 {
+  "nav": {
+    "home": "Home",
+    "board": "Forum",
+    "specialMenu": "Menu Speciale",
+    "account": "Account",
+    "blog": "Blog",
+    "accountInfo": "Informazioni Account",
+    "profileEdit": "Modifica Profilo",
+    "boardCategories": {
+      "music": "Musica",
+      "art": "Arte e Video",
+      "comics": "Sottocultura",
+      "food": "Cibo e Negozi",
+      "tourism": "Turismo",
+      "boardGeneral": "Forum",
+      "news": "Notizie LGBTQ+"
+    },
+    "specialMenuItems": {
+      "matching": "Abbinamento Membri",
+      "salon": "Salone Membri",
+      "business": "Affari",
+      "liveWedding": "Matrimonio dal Vivo"
+    }
+  },
   "hero": {
     "messages": [
       {

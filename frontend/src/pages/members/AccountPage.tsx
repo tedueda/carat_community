@@ -436,17 +436,7 @@ export default function AccountPage() {
                       </button>
                     )}
                   </div>
-                ) : (
-                  <div className="w-full px-4 py-3 border border-dashed border-gray-300 rounded-lg bg-gray-50">
-                    <p className="text-gray-500 text-center mb-3">{t('permission.subscription_required_message')}</p>
-                    <button
-                      onClick={() => navigate('/subscribe')}
-                      className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                    >
-                      {t('permission.subscribe_button')}
-                    </button>
-                  </div>
-                )}
+                ) : null}
               </div>
             </div>
             

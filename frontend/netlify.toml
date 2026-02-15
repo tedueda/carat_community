@@ -7,6 +7,13 @@
 # Site settings > Build & deploy > Environment > Environment variables
 # This prevents old URLs from being committed to the repository.
 
+# Proxy API requests to backend (must be BEFORE the SPA catch-all)
+[[redirects]]
+  from = "/api/*"
+  to = "https://ddxdewgmen.ap-northeast-1.awsapprunner.com/api/:splat"
+  status = 200
+  force = true
+
 # SPA redirect to index.html
 [[redirects]]
   from = "/*"
