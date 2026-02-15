@@ -256,7 +256,7 @@ const BeautyPage: React.FC = () => {
                     <img 
                       src={post.media_url ? resolveImageUrl(post.media_url) : resolveImageUrl(post.media_urls![0])}
                       alt={post.title || 'ビューティ画像'}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                       onError={(e) => {
                         const img = e.target as HTMLImageElement;
                         img.onerror = null;
@@ -269,7 +269,7 @@ const BeautyPage: React.FC = () => {
                     <img 
                       src={`https://i.ytimg.com/vi/${extractYouTubeVideoId(post.youtube_url)}/hqdefault.jpg`}
                       alt={post.title || 'YouTube動画'}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                       onError={(e) => {
                         const img = e.target as HTMLImageElement;
                         img.onerror = null;

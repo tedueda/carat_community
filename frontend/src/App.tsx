@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import Header from './components/Header';
@@ -72,10 +72,19 @@ const RequestsRedirect: React.FC = () => {
   return <Navigate to={`/matching/chats/requests/${requestId}`} replace />;
 };
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 function AppContent() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
+      <ScrollToTop />
       <main className="bg-white">
         <Routes>
           <Route path="/login" element={
