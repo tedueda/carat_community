@@ -99,6 +99,23 @@ def run_migrations():
         else:
             print("✅ phone_number column already exists")
 
+        if _table_exists("users"):
+            _add_column_if_missing("users", "real_name", "VARCHAR(100)")
+            _add_column_if_missing("users", "is_verified", "BOOLEAN DEFAULT FALSE")
+            _add_column_if_missing("users", "two_factor_enabled", "BOOLEAN DEFAULT FALSE")
+            _add_column_if_missing("users", "two_factor_secret", "VARCHAR(255)")
+            _add_column_if_missing("users", "carats", "INTEGER DEFAULT 0")
+            _add_column_if_missing("users", "stripe_customer_id", "VARCHAR(255)")
+            _add_column_if_missing("users", "stripe_subscription_id", "VARCHAR(255)")
+            _add_column_if_missing("users", "subscription_status", "VARCHAR(50)")
+            _add_column_if_missing("users", "kyc_status", "VARCHAR(50) DEFAULT 'UNVERIFIED'")
+            _add_column_if_missing("users", "stripe_identity_verification_session_id", "VARCHAR(255)")
+            _add_column_if_missing("users", "is_legacy_paid", "BOOLEAN DEFAULT FALSE")
+            _add_column_if_missing("users", "preferred_lang", "VARCHAR(10) DEFAULT 'ja'")
+            _add_column_if_missing("users", "residence_country", "VARCHAR(10)")
+            _add_column_if_missing("users", "terms_accepted_at", "TIMESTAMPTZ")
+            _add_column_if_missing("users", "terms_version", "VARCHAR(50)")
+        
         if _table_exists("posts"):
             _add_column_if_missing("posts", "category", "VARCHAR")
             _add_column_if_missing("posts", "subcategory", "VARCHAR")
