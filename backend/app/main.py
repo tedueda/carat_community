@@ -165,7 +165,73 @@ def run_migrations():
                 print(f"⚠️ Failed ensuring table post_media: {e}")
         else:
             print("✅ post_media table already exists")
-        
+
+        for tbl_name, tbl_ddl in [
+            ("post_translations", """
+                CREATE TABLE IF NOT EXISTS post_translations (
+                    id SERIAL PRIMARY KEY,
+                    post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+                    lang VARCHAR(10) NOT NULL,
+                    translated_title VARCHAR(200),
+                    translated_text TEXT NOT NULL,
+                    provider VARCHAR(50) NOT NULL DEFAULT 'openai',
+                    error_code VARCHAR(50),
+                    created_at TIMESTAMPTZ DEFAULT NOW(),
+                    updated_at TIMESTAMPTZ DEFAULT NOW(),
+                    CONSTRAINT uq_post_translation_lang UNIQUE (post_id, lang)
+                )
+            """),
+            ("comment_translations", """
+                CREATE TABLE IF NOT EXISTS comment_translations (
+                    id SERIAL PRIMARY KEY,
+                    comment_id INTEGER NOT NULL REFERENCES comments(id) ON DELETE CASCADE,
+                    lang VARCHAR(10) NOT NULL,
+                    translated_text TEXT NOT NULL,
+                    provider VARCHAR(50) NOT NULL DEFAULT 'openai',
+                    error_code VARCHAR(50),
+                    created_at TIMESTAMPTZ DEFAULT NOW(),
+                    updated_at TIMESTAMPTZ DEFAULT NOW(),
+                    CONSTRAINT uq_comment_translation_lang UNIQUE (comment_id, lang)
+                )
+            """),
+            ("message_translations", """
+                CREATE TABLE IF NOT EXISTS message_translations (
+                    id SERIAL PRIMARY KEY,
+                    message_id INTEGER NOT NULL REFERENCES messages(id) ON DELETE CASCADE,
+                    lang VARCHAR(10) NOT NULL,
+                    translated_text TEXT NOT NULL,
+                    provider VARCHAR(50) NOT NULL DEFAULT 'openai',
+                    error_code VARCHAR(50),
+                    created_at TIMESTAMPTZ DEFAULT NOW(),
+                    updated_at TIMESTAMPTZ DEFAULT NOW(),
+                    CONSTRAINT uq_message_translation_lang UNIQUE (message_id, lang)
+                )
+            """),
+            ("salon_message_translations", """
+                CREATE TABLE IF NOT EXISTS salon_message_translations (
+                    id SERIAL PRIMARY KEY,
+                    salon_message_id INTEGER NOT NULL REFERENCES salon_messages(id) ON DELETE CASCADE,
+                    lang VARCHAR(10) NOT NULL,
+                    translated_text TEXT NOT NULL,
+                    provider VARCHAR(50) NOT NULL DEFAULT 'openai',
+                    error_code VARCHAR(50),
+                    created_at TIMESTAMPTZ DEFAULT NOW(),
+                    updated_at TIMESTAMPTZ DEFAULT NOW(),
+                    CONSTRAINT uq_salon_message_translation_lang UNIQUE (salon_message_id, lang)
+                )
+            """),
+        ]:
+            if not _table_exists(tbl_name):
+                try:
+                    db.execute(text(tbl_ddl))
+                    db.commit()
+                    print(f"✅ Created table: {tbl_name}")
+                except Exception as e:
+                    db.rollback()
+                    print(f"⚠️ Failed creating table {tbl_name}: {e}")
+            else:
+                print(f"✅ {tbl_name} table already exists")
+
         # Migration 2: Add nationality column to matching_profiles table
         if _table_exists("matching_profiles"):
             result = db.execute(text("""
