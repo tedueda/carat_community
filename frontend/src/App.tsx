@@ -44,6 +44,7 @@ import JewelryAdmin from './components/jewelry/JewelryAdmin';
 import SubscribePage from './pages/SubscribePage';
 import SubscribeSuccessPage from './pages/SubscribeSuccessPage';
 import KycVerificationPage from './pages/KycVerificationPage';
+import PostDetailPage from './pages/PostDetailPage';
 
 
 const FeedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -94,6 +95,11 @@ function AppContent() {
           <Route path="/posts" element={
             <FeedRoute>
               <PostFeed />
+            </FeedRoute>
+          } />
+          <Route path="/posts/:id" element={
+            <FeedRoute>
+              <PostDetailPage />
             </FeedRoute>
           } />
           <Route path="/profile" element={

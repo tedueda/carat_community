@@ -7,7 +7,6 @@ import { ArrowRight, Lock, Globe } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import UnderConstructionModal from './UnderConstructionModal';
-import PostDetailModal from './PostDetailModal';
 import PremiumUpgradeModal from './PremiumUpgradeModal';
 import { Post, User } from '../types/Post';
 import { extractYouTubeId } from '../utils/youtube';
@@ -142,8 +141,6 @@ const HomePage: React.FC = () => {
   const [upgradeFeatureName, setUpgradeFeatureName] = useState('');
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedNewsArticle, setSelectedNewsArticle] = useState<any>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isHeroVisible] = useState(true);
   const heroSectionRef = useRef<HTMLElement>(null);
   const { token, user, isAnonymous } = useAuth();
@@ -451,14 +448,7 @@ const HomePage: React.FC = () => {
                 return (
                 <Card 
                   key={post.id} 
-                  onClick={() => {
-                    setSelectedPost(post);
-                    setSelectedUser({
-                      id: post.user_id,
-                      display_name: post.user_display_name || 'ユーザー',
-                      email: ''
-                    });
-                  }}
+                  onClick={() => navigate(`/posts/${post.id}`)}
                   className="group backdrop-blur-md bg-gray-50/80 border border-gray-200 hover:bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer hover:scale-[1.02] shadow-lg hover:shadow-2xl"
                 >
                   <div className="flex flex-row md:flex-col">
