@@ -130,6 +130,30 @@ def run_migrations():
             _add_column_if_missing("posts", "original_lang", "VARCHAR")
         else:
             print("⚠️ posts table not found in information_schema.tables")
+
+        if not _table_exists("post_media"):
+            try:
+                db.execute(
+                    text(
+                        """
+                        CREATE TABLE IF NOT EXISTS post_media (
+                            post_id INTEGER NOT NULL,
+                            media_asset_id INTEGER NOT NULL,
+                            order_index INTEGER NOT NULL DEFAULT 0,
+                            PRIMARY KEY (post_id, media_asset_id),
+                            CONSTRAINT fk_post_media_post_id FOREIGN KEY(post_id) REFERENCES posts(id),
+                            CONSTRAINT fk_post_media_media_asset_id FOREIGN KEY(media_asset_id) REFERENCES media_assets(id)
+                        )
+                        """
+                    )
+                )
+                db.commit()
+                print("✅ Ensured table exists: post_media")
+            except Exception as e:
+                db.rollback()
+                print(f"⚠️ Failed ensuring table post_media: {e}")
+        else:
+            print("✅ post_media table already exists")
         
         # Migration 2: Add nationality column to matching_profiles table
         if _table_exists("matching_profiles"):
