@@ -135,18 +135,26 @@ const Header: React.FC = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <nav className="flex flex-col space-y-1">
-              <Link to="/feed" onClick={() => setShowMobileMenu(false)}>
-                <Button variant="ghost" className="w-full justify-start text-white hover:bg-black/65 hover:text-white">
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start text-white hover:bg-black/65 hover:text-white"
+              >
+                <Link to="/feed" onClick={() => setShowMobileMenu(false)}>
                   <Home className="h-5 w-5 mr-2" />
                   {t('nav.home')}
-                </Button>
-              </Link>
+                </Link>
+              </Button>
 
-              <Link to="/about" onClick={() => setShowMobileMenu(false)}>
-                <Button variant="ghost" className="w-full justify-start text-white hover:bg-black/65 hover:text-white">
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start text-white hover:bg-black/65 hover:text-white"
+              >
+                <Link to="/about" onClick={() => setShowMobileMenu(false)}>
                   Caratとは
-                </Button>
-              </Link>
+                </Link>
+              </Button>
               
               <div className="border-t border-white/20 pt-2 pb-2 mx-2">
                 <div className="text-xs font-medium px-4 mb-2 text-white/70">{t('nav.board')}</div>
@@ -199,20 +207,24 @@ const Header: React.FC = () => {
               </div>
 
               <div className="mx-2">
-                <Link to="/blog" onClick={() => setShowMobileMenu(false)}>
-                  <Button variant="ghost" className="w-full justify-start text-white hover:bg-black/65 hover:text-white">
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full justify-start text-white hover:bg-black/65 hover:text-white"
+                >
+                  <Link to="/blog" onClick={() => setShowMobileMenu(false)}>
                     {t('nav.blog')}
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </div>
 
               {(isFreeUser || !user) && (
                 <div className="mx-2 pt-2">
-                  <Link to="/login" onClick={() => setShowMobileMenu(false)}>
-                    <Button className="w-full bg-black/35 hover:bg-black/65 text-white">
+                  <Button asChild className="w-full bg-black/35 hover:bg-black/65 text-white">
+                    <Link to="/login" onClick={() => setShowMobileMenu(false)}>
                       {t('common.login')}
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
               )}
             </nav>
@@ -248,52 +260,55 @@ const Header: React.FC = () => {
             {/* Top Row - Main Navigation */}
             <nav className="flex items-center gap-8">
               {/* ホーム */}
-              <Link to="/feed" onClick={() => {
-                setShowMemberMenu(false);
-                setShowBoardMenu(false);
-                setShowAccountMenu(false);
-              }}>
-                <Button
-                  variant="ghost"
-                  className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
-                >
+              <Button
+                asChild
+                variant="ghost"
+                className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+              >
+                <Link to="/feed" onClick={() => {
+                  setShowMemberMenu(false);
+                  setShowBoardMenu(false);
+                  setShowAccountMenu(false);
+                }}>
                   <Home className="h-5 w-5 mr-2" />
                   {t('nav.home')}
-                </Button>
-              </Link>
+                </Link>
+              </Button>
 
               {/* Caratとは */}
-              <Link to="/about" onClick={() => {
-                setShowMemberMenu(false);
-                setShowBoardMenu(false);
-                setShowAccountMenu(false);
-              }}>
-                <Button
-                  variant="ghost"
-                  className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
-                >
+              <Button
+                asChild
+                variant="ghost"
+                className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+              >
+                <Link to="/about" onClick={() => {
+                  setShowMemberMenu(false);
+                  setShowBoardMenu(false);
+                  setShowAccountMenu(false);
+                }}>
                   Caratとは
-                </Button>
-              </Link>
+                </Link>
+              </Button>
               
               {/* 掲示板 Dropdown */}
               <div className="relative">
                 <div className="flex items-center">
-                  <Link
-                    to="/category/board"
-                    onClick={() => {
-                      setShowBoardMenu(false);
-                      setShowMemberMenu(false);
-                      setShowAccountMenu(false);
-                    }}
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
                   >
-                    <Button
-                      variant="ghost"
-                      className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+                    <Link
+                      to="/category/board"
+                      onClick={() => {
+                        setShowBoardMenu(false);
+                        setShowMemberMenu(false);
+                        setShowAccountMenu(false);
+                      }}
                     >
                       {t('nav.board')}
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                   <Button
                     variant="ghost"
                     className={`px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
@@ -330,21 +345,22 @@ const Header: React.FC = () => {
               {/* 特別メニュー Dropdown */}
               <div className="relative">
                 <div className="flex items-center">
-                  <Link
-                    to="/matching"
-                    onClick={() => {
-                      setShowMemberMenu(false);
-                      setShowBoardMenu(false);
-                      setShowAccountMenu(false);
-                    }}
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
                   >
-                    <Button
-                      variant="ghost"
-                      className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+                    <Link
+                      to="/matching"
+                      onClick={() => {
+                        setShowMemberMenu(false);
+                        setShowBoardMenu(false);
+                        setShowAccountMenu(false);
+                      }}
                     >
                       {t('nav.specialMenu')}
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                   <Button
                     variant="ghost"
                     className={`px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
@@ -381,21 +397,22 @@ const Header: React.FC = () => {
               {/* アカウント Dropdown */}
               <div className="relative">
                 <div className="flex items-center">
-                  <Link
-                    to="/account"
-                    onClick={() => {
-                      setShowAccountMenu(false);
-                      setShowMemberMenu(false);
-                      setShowBoardMenu(false);
-                    }}
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
                   >
-                    <Button
-                      variant="ghost"
-                      className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+                    <Link
+                      to="/account"
+                      onClick={() => {
+                        setShowAccountMenu(false);
+                        setShowMemberMenu(false);
+                        setShowBoardMenu(false);
+                      }}
                     >
                       {t('nav.account')}
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                   <Button
                     variant="ghost"
                     className={`px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
@@ -435,18 +452,19 @@ const Header: React.FC = () => {
               </div>
 
               {/* ブログ */}
-              <Link to="/blog" onClick={() => {
-                setShowMemberMenu(false);
-                setShowBoardMenu(false);
-                setShowAccountMenu(false);
-              }}>
-                <Button
-                  variant="ghost"
-                  className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
-                >
+              <Button
+                asChild
+                variant="ghost"
+                className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+              >
+                <Link to="/blog" onClick={() => {
+                  setShowMemberMenu(false);
+                  setShowBoardMenu(false);
+                  setShowAccountMenu(false);
+                }}>
                   {t('nav.blog')}
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </nav>
 
             {/* Bottom Row - User Info & Auth */}
@@ -454,11 +472,12 @@ const Header: React.FC = () => {
               {/* 言語セレクター（デスクトップ） */}
               <LanguageSelector variant="header" isHomePage={isHomePage} />
               {isFreeUser || !user ? (
-                <Link to="/login">
-                  <Button className={`text-sm px-6 py-2 bg-transparent ${isHomePage ? 'border border-white/30 text-white hover:bg-black/35 hover:text-white' : 'border border-gray-300 text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}>
-                    {t('common.login')}
-                  </Button>
-                </Link>
+                <Button
+                  asChild
+                  className={`text-sm px-6 py-2 bg-transparent ${isHomePage ? 'border border-white/30 text-white hover:bg-black/35 hover:text-white' : 'border border-gray-300 text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+                >
+                  <Link to="/login">{t('common.login')}</Link>
+                </Button>
               ) : (
                 <>
                   {/* チャット通知アイコン（デスクトップ） */}
