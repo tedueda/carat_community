@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Mail, RefreshCw } from 'lucide-react';
-import { BACKEND_URL } from '../config';
+import { resilientFetch } from '../contexts/AuthContext';
 
 const EmailVerificationPendingPage: React.FC = () => {
   const { t } = useTranslation();
@@ -16,7 +16,7 @@ const EmailVerificationPendingPage: React.FC = () => {
     if (!email || resending) return;
     setResending(true);
     try {
-      await fetch(`${BACKEND_URL}/api/stripe/resend-verification`, {
+      await resilientFetch('/api/stripe/resend-verification', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

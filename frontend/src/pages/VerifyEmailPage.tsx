@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
-import { BACKEND_URL } from '../config';
+import { resilientFetch } from '../contexts/AuthContext';
 
 const VerifyEmailPage: React.FC = () => {
   const { t } = useTranslation();
@@ -21,7 +21,7 @@ const VerifyEmailPage: React.FC = () => {
 
     const verifyEmail = async () => {
       try {
-        const response = await fetch(`${BACKEND_URL}/api/stripe/verify-email`, {
+        const response = await resilientFetch('/api/stripe/verify-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token }),
