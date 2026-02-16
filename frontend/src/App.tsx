@@ -48,6 +48,8 @@ import PostDetailPage from './pages/PostDetailPage';
 import AboutPage from './pages/AboutPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import EmailVerificationPendingPage from './pages/EmailVerificationPendingPage';
+import VerifyEmailPage from './pages/VerifyEmailPage';
 
 const FeedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isLoading } = useAuth();
@@ -110,6 +112,8 @@ function AppContent() {
           {/* Subscription routes */}
           <Route path="/subscribe" element={<SubscribePage />} />
           <Route path="/subscribe/success" element={<SubscribeSuccessPage />} />
+          <Route path="/email-verification-pending" element={<EmailVerificationPendingPage />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
           <Route path="/kyc-verification" element={<KycVerificationPage />} />
           <Route path="/feed" element={
             <FeedRoute>

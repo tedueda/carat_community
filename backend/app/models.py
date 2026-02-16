@@ -40,6 +40,11 @@ class User(Base):
     terms_accepted_at = Column(DateTime(timezone=True), nullable=True)
     terms_version = Column(String(50), nullable=True)
 
+    # Email verification fields
+    email_verified = Column(Boolean, default=False)
+    email_verification_token_hash = Column(String(64), nullable=True)
+    email_verification_expires = Column(DateTime(timezone=True), nullable=True)
+
     # Password reset fields
     password_reset_token_hash = Column(String(64), nullable=True)
     password_reset_expires = Column(DateTime(timezone=True), nullable=True)
