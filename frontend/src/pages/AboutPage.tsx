@@ -23,7 +23,7 @@ const AboutPage: React.FC = () => {
             <div className="mt-6 overflow-hidden rounded-2xl border border-white/15 bg-white/5 shadow-2xl">
               <div className="relative aspect-[16/9] md:aspect-[21/9]">
                 <img
-                  src="/images/caio_01680_create_a_vibrant_poster_to_celebrate_So_Bernardo_do__9f9f3bde-d4c7-49b7-afcc-d79a6870886c.png"
+                  src={`${import.meta.env.BASE_URL}images/caio_01680_create_a_vibrant_poster_to_celebrate_So_Bernardo_do__9f9f3bde-d4c7-49b7-afcc-d79a6870886c.png`}
                   alt="Carat concept visual"
                   className="absolute inset-0 h-full w-full object-cover"
                   loading="lazy"

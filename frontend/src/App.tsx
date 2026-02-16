@@ -87,7 +87,7 @@ function AppContent() {
     <div className="min-h-screen bg-white">
       <Header />
       <ScrollToTop />
-      <main className={`bg-white ${isHome ? '' : 'pt-28 md:pt-32'}`}>
+      <main className={`bg-white ${isHome ? '' : 'pt-40 md:pt-32'}`}>
         <Routes>
           <Route path="/login" element={
             <PublicRoute>
