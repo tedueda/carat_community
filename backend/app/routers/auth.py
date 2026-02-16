@@ -384,11 +384,14 @@ async def read_users_me(
         "id": current_user.id,
         "email": current_user.email,
         "display_name": current_user.display_name,
-        "nickname": current_user.display_name,  # Use display_name as fallback
+        "nickname": current_user.display_name,
         "membership_type": current_user.membership_type,
         "is_active": current_user.is_active,
         "created_at": current_user.created_at,
-        "avatar_url": avatar_url
+        "avatar_url": avatar_url,
+        "kyc_status": current_user.kyc_status or "UNVERIFIED",
+        "subscription_status": current_user.subscription_status,
+        "is_legacy_paid": current_user.is_legacy_paid,
     }
     
     return user_dict

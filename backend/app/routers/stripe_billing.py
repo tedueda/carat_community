@@ -289,6 +289,9 @@ async def start_checkout(
     if current_user.subscription_status == "active":
         raise HTTPException(status_code=400, detail="User already has an active subscription")
 
+    if not is_user_kyc_verified(current_user):
+        raise HTTPException(status_code=403, detail="KYC verification required before payment")
+
     customer_id = get_or_create_stripe_customer(db, current_user)
 
     try:
@@ -323,18 +326,24 @@ async def start_checkout(
 
 @router.get("/checkout-session/{session_id}")
 async def get_checkout_session(session_id: str, db: Session = Depends(get_db)):
-    """Get checkout session status and user info after successful payment."""
+    """Get checkout session status and user info after successful payment.
+    Only issues access token if user has completed KYC verification."""
     try:
         session = stripe.checkout.Session.retrieve(session_id)
         
         if session.payment_status == "paid":
-            # Find user by customer ID
             user = db.query(User).filter(
                 User.stripe_customer_id == session.customer
             ).first()
             
             if user:
-                # Generate access token for auto-login
+                if not is_user_kyc_verified(user):
+                    return {
+                        "status": "kyc_required",
+                        "payment_status": session.payment_status,
+                        "message": "KYC verification required before login"
+                    }
+
                 access_token = create_access_token(
                     data={"sub": user.email},
                     expires_delta=timedelta(days=7)
@@ -442,6 +451,32 @@ async def get_subscription_status(
         "can_perform_actions": can_user_perform_action(current_user),
         "stripe_customer_id": current_user.stripe_customer_id
     }
+
+
+@router.get("/kyc-status")
+async def get_kyc_status(
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """Poll KYC verification status. Used by frontend to check if webhook has confirmed KYC."""
+    session_id = current_user.stripe_identity_verification_session_id
+
+    if current_user.kyc_status == "VERIFIED" or current_user.is_legacy_paid:
+        return {"kyc_status": "VERIFIED", "can_proceed_to_payment": True}
+
+    if session_id and STRIPE_SECRET_KEY:
+        try:
+            vs = stripe.identity.VerificationSession.retrieve(session_id)
+            if vs.status == "verified" and current_user.kyc_status != "VERIFIED":
+                current_user.kyc_status = "VERIFIED"
+                current_user.is_verified = True
+                db.commit()
+                return {"kyc_status": "VERIFIED", "can_proceed_to_payment": True}
+            return {"kyc_status": current_user.kyc_status, "stripe_status": vs.status, "can_proceed_to_payment": False}
+        except stripe.error.StripeError as e:
+            logger.error(f"Failed to check verification session: {e}")
+
+    return {"kyc_status": current_user.kyc_status, "can_proceed_to_payment": False}
 
 
 @router.post("/webhook")

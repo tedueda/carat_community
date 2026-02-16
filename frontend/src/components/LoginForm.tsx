@@ -37,6 +37,24 @@ const LoginForm: React.FC = () => {
     const success = await login(email, password, rememberMe);
     
     if (success) {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        try {
+          const userData = JSON.parse(storedUser);
+          const kycOk = userData.is_legacy_paid || userData.kyc_status === 'VERIFIED';
+          const subOk = userData.is_legacy_paid || userData.subscription_status === 'active';
+          if (!kycOk) {
+            navigate('/kyc-verification');
+            setIsLoading(false);
+            return;
+          }
+          if (!subOk) {
+            navigate('/kyc-verification');
+            setIsLoading(false);
+            return;
+          }
+        } catch (_e) { /* proceed to feed */ }
+      }
       navigate('/feed');
     } else {
       setError('メールアドレスまたはパスワードが正しくありません');

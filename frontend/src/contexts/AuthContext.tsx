@@ -24,6 +24,9 @@ interface User {
   is_active: boolean;
   created_at: string;
   avatar_url?: string;
+  kyc_status?: string;
+  subscription_status?: string;
+  is_legacy_paid?: boolean;
 }
 
 interface AuthContextType {
@@ -162,6 +165,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             localStorage.setItem('token', newToken);
             localStorage.setItem('rememberMe', 'true');
           }
+          localStorage.setItem('user', JSON.stringify(userData));
           localStorage.removeItem('anonymous');
           
           return true;
