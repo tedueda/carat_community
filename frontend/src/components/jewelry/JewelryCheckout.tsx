@@ -35,7 +35,10 @@ interface ShippingInfo {
   email: string;
 }
 
-const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY || 'pk_test_placeholder';
+const STRIPE_PUBLIC_KEY =
+  import.meta.env.VITE_STRIPE_PUBLIC_KEY ||
+  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ||
+  'pk_test_placeholder';
 
 const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
 
