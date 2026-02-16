@@ -40,11 +40,11 @@ def _send_email(to_email: str, subject: str, body: str) -> None:
     smtp_password = os.getenv("SMTP_PASSWORD", "")
 
     if not smtp_user or not smtp_password:
-        print("=== Password Reset Email (dev mode) ===")
+        print("=== Email (dev mode - SMTP not configured) ===")
         print(f"To: {to_email}")
         print(f"Subject: {subject}")
         print(body)
-        print("======================================")
+        print("===============================================")
         return
 
     msg = MIMEMultipart()
@@ -53,10 +53,15 @@ def _send_email(to_email: str, subject: str, body: str) -> None:
     msg['Subject'] = subject
     msg.attach(MIMEText(body, 'plain', 'utf-8'))
 
-    with smtplib.SMTP(smtp_host, smtp_port) as server:
-        server.starttls()
-        server.login(smtp_user, smtp_password)
-        server.send_message(msg)
+    if smtp_port == 465:
+        with smtplib.SMTP_SSL(smtp_host, smtp_port) as server:
+            server.login(smtp_user, smtp_password)
+            server.send_message(msg)
+    else:
+        with smtplib.SMTP(smtp_host, smtp_port) as server:
+            server.starttls()
+            server.login(smtp_user, smtp_password)
+            server.send_message(msg)
 
 
 @router.post("/password-reset/request")
