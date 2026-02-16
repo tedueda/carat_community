@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../contexts/AuthContext';
+import { API_URL } from '../../config';
 import { Lock } from 'lucide-react';
 
 type ChatItem = {
@@ -30,7 +31,6 @@ const MatchingChatsPage: React.FC = () => {
   // ログイン状態と有料会員かどうか
   const isLoggedIn = !!user;
   const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<ChatItem[]>([]);
   const [requests, setRequests] = useState<ChatRequest[]>([]);

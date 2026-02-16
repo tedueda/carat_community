@@ -24,6 +24,9 @@ interface User {
   is_active: boolean;
   created_at: string;
   avatar_url?: string;
+  kyc_status?: string;
+  subscription_status?: string;
+  is_legacy_paid?: boolean;
 }
 
 interface AuthContextType {
@@ -69,9 +72,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsLoading(true);
       
       const storedToken = localStorage.getItem('token');
-      const storedAnonymous = localStorage.getItem('anonymous') === 'true';
-      
-      if (storedToken && !storedAnonymous) {
+
+      if (storedToken) {
         console.log('🔑 Found stored token, validating...');
         setToken(storedToken);
         
@@ -87,12 +89,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             console.log('✅ Token valid, user data loaded:', userData);
             setUser(userData);
             setIsFreeUser(false);
+            localStorage.removeItem('anonymous');
           } else {
             console.log('❌ Token invalid, clearing...');
             localStorage.removeItem('token');
             localStorage.removeItem('rememberMe');
             setToken(null);
             setIsFreeUser(true);
+            localStorage.setItem('anonymous', 'true');
           }
         } catch (error) {
           console.error('Error validating token:', error);
@@ -100,9 +104,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           localStorage.removeItem('rememberMe');
           setToken(null);
           setIsFreeUser(true);
+          localStorage.setItem('anonymous', 'true');
         }
       } else {
-        console.log('🔓 No stored token or anonymous mode, setting anonymous');
+        console.log('🔓 No stored token, setting anonymous');
         setIsFreeUser(true);
       }
       
@@ -160,6 +165,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             localStorage.setItem('token', newToken);
             localStorage.setItem('rememberMe', 'true');
           }
+          localStorage.setItem('user', JSON.stringify(userData));
           localStorage.removeItem('anonymous');
           
           return true;

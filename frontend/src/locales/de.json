@@ -1,6 +1,7 @@
 {
   "nav": {
     "home": "Startseite",
+    "about": "Über Carat",
     "board": "Forum",
     "specialMenu": "Spezialmenü",
     "account": "Konto",
@@ -58,6 +59,64 @@
         "sub": "Beratung, Kunst, Musik, lokale Touren.\nDeine Geschichte beginnt hier."
       }
     ]
+  },
+  "about": {
+    "badge": "Das Konzept der Community-Seite \"Carat\"",
+    "heroTitle": "Jenseits von Grenzen und Gender. Ein Ort, an dem du dich sicher verbinden kannst.",
+    "heroLead": "Carat ist eine neue Art von Community, in der sich Menschen ganz natürlich über Grenzen, Sprachen und Gender hinweg verbinden.\nWir streben eine ruhige Gesellschaft an, die auf Respekt und gegenseitiger Unterstützung basiert — frei von Schuldzuweisungen und Diskriminierung.",
+    "cta": {
+      "community": "Community ansehen",
+      "plans": "Mitgliedschaftspläne ansehen",
+      "getStarted": "Loslegen"
+    },
+    "features": {
+      "crossBorder": {
+        "title": "Grenzenlose Verbindung",
+        "body": "Sprich ganz natürlich über Unterschiede in Grenzen und Sprache hinweg."
+      },
+      "growTogether": {
+        "title": "Gemeinsam wachsen",
+        "body": "Matching, Salon und Forum vertiefen Verständnis und Zusammenarbeit."
+      },
+      "respectEmpathy": {
+        "title": "Respekt und Empathie",
+        "body": "Höre echte Stimmen, fühle Empathie und finde die Kraft, voranzugehen."
+      }
+    },
+    "canDo": {
+      "title": "Was du auf Carat tun kannst",
+      "body": "Carat bietet Mitglieder-Matching, einen Community-Salon, Foren und mehr — Funktionen, die Mitglieder zusammenbringen, Verständnis fördern und Verbindungen stärken.\nEs ist ein Ort für lockere Gespräche und zugleich für Empathie und Kraft durch echte Geschichten über Leben, Arbeit, Liebe und Sorgen.",
+      "cards": {
+        "everyday": {
+          "title": "Von Alltags-Tipps bis zu Zukunfts-Chancen",
+          "body": "Von praktischen Informationen über Event-Ankündigungen bis hin zu Kreativprojekten, Aktivitäten und Business-Chancen — Carat wächst durch die Inhalte der Mitglieder."
+        },
+        "expression": {
+          "title": "Ein Ort, um dich auszudrücken",
+          "body": "Teile deine verborgenen Talente, deine Bemühungen und dein einzigartiges Selbst."
+        }
+      }
+    },
+    "safety": {
+      "title": "Eine sichere Umgebung schaffen",
+      "body": "Carat setzt sich für eine sichere Umgebung durch strenge Identitätsprüfung und angemessene Überwachung ein.\nWir stärken kontinuierlich Sicherheitsmaßnahmen zum Schutz persönlicher Daten und der Community-Sicherheit.",
+      "cards": {
+        "kyc": {
+          "title": "Identitätsprüfung",
+          "body": "Wir schützen sichere und aufrichtige Verbindungen durch einen Verifizierungsprozess bei der Anmeldung."
+        },
+        "moderation": {
+          "title": "Angemessene Moderation",
+          "body": "Unser Team behält die Community kontinuierlich im Blick, um sie gesund zu halten."
+        },
+        "security": {
+          "title": "Kontinuierliche Sicherheitsverbesserungen",
+          "body": "Wir aktualisieren Maßnahmen mit Blick auf Datenschutz und Community-Sicherheit."
+        }
+      }
+    },
+    "closingQuote": "Wir hoffen, dass Carat ein Ort wird, auf den du dich jeden Tag verlassen kannst.",
+    "operatorLabel": "Betreiber"
   },
   "homepage": {
     "specialMenu": {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../config';
 
 interface JewelryProduct {
   id: number;
@@ -18,7 +19,7 @@ interface JewelryProduct {
   has_certificate: boolean;
   has_gem_id: boolean;
   is_sold_out: boolean;
-  images: { id: number; image_url: string; display_order: number }[];
+  image_urls: string[];
   created_at: string;
 }
 
@@ -53,8 +54,6 @@ interface ProductFormData {
   is_sold_out: boolean;
   image_urls: string[];
 }
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const JewelryAdmin: React.FC = () => {
   const navigate = useNavigate();
@@ -92,7 +91,7 @@ const JewelryAdmin: React.FC = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/jewelry/products?limit=100`);
+      const response = await fetch(`${API_URL}/jewelry/products?limit=100`);
       if (!response.ok) throw new Error('商品の取得に失敗しました');
       const data = await response.json();
       setProducts(data);
@@ -148,9 +147,7 @@ const JewelryAdmin: React.FC = () => {
       has_certificate: product.has_certificate || false,
       has_gem_id: product.has_gem_id || false,
       is_sold_out: product.is_sold_out || false,
-      image_urls: product.images.length > 0 
-        ? product.images.map(img => img.image_url) 
-        : [],
+      image_urls: Array.isArray(product.image_urls) ? product.image_urls : [],
     });
     setImageFiles([]);
     setImagePreviewUrls([]);
@@ -167,7 +164,7 @@ const JewelryAdmin: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/jewelry/products/${productId}`, {
+      const response = await fetch(`${API_URL}/jewelry/products/${productId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -221,8 +218,8 @@ const JewelryAdmin: React.FC = () => {
       };
 
       const url = editingProduct 
-        ? `${API_BASE_URL}/jewelry/products/${editingProduct.id}`
-        : `${API_BASE_URL}/jewelry/products`;
+        ? `${API_URL}/jewelry/products/${editingProduct.id}`
+        : `${API_URL}/jewelry/products`;
       
       const method = editingProduct ? 'PUT' : 'POST';
 
@@ -301,7 +298,7 @@ const JewelryAdmin: React.FC = () => {
       formDataObj.append('file', file);
       
       try {
-        const response = await fetch(`${API_BASE_URL}/api/media/upload`, {
+        const response = await fetch(`${API_URL}/api/media/upload`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -873,9 +870,9 @@ const JewelryAdmin: React.FC = () => {
               products.filter(p => !filterCategory || p.category === filterCategory).map((product) => (
                 <tr key={product.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
                   <td style={{ padding: '12px' }}>
-                    {product.images.length > 0 ? (
+                    {product.image_urls && product.image_urls.length > 0 ? (
                       <img
-                        src={product.images[0].image_url}
+                        src={product.image_urls[0]}
                         alt={product.name}
                         style={{
                           width: '60px',

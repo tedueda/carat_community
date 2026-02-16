@@ -179,6 +179,23 @@ const FleaMarketList: React.FC = () => {
 
   return (
     <div>
+      <div className="mb-6 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors"
+        >
+          ←戻る
+        </button>
+        <button
+          type="button"
+          onClick={handlePostClick}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+        >
+          <Plus className="w-5 h-5" />
+          新規投稿
+        </button>
+      </div>
       <form onSubmit={handleSearch} className="mb-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
@@ -196,14 +213,6 @@ const FleaMarketList: React.FC = () => {
             className="px-6 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
           >
             {t('fleaMarket.search')}
-          </button>
-          <button
-            type="button"
-            onClick={handlePostClick}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
-          >
-            <Plus className="w-5 h-5" />
-            {t('fleaMarket.listItem')}
           </button>
         </div>
       </form>

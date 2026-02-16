@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MessageCircle, Package, User, Clock, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useSearchParams } from 'react-router-dom';
+import { API_URL } from '../../config';
 
 interface Chat {
   id: number;
@@ -23,8 +24,6 @@ interface Message {
   body: string;
   created_at: string;
 }
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const FleaMarketChats: React.FC = () => {
   const { user } = useAuth();

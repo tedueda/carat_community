@@ -7,7 +7,6 @@ import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { ArrowLeft, Plus, MessageCircle, Filter, SortAsc, Globe } from 'lucide-react';
-import NewPostForm from './NewPostForm';
 import LikeButton from './common/LikeButton';
 import { Post } from '../types/Post';
 import { getYouTubeThumbnail, extractYouTubeUrlFromText } from '../utils/youtube';
@@ -75,8 +74,6 @@ const CategoryPage: React.FC = () => {
   
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showNewPostForm, setShowNewPostForm] = useState(false);
-  const [editingPost, setEditingPost] = useState<Post | null>(null);
   
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'newest');
   const [timeRange, setTimeRange] = useState(searchParams.get('range') || 'all');
@@ -158,11 +155,6 @@ const CategoryPage: React.FC = () => {
     setSearchParams(params);
   };
 
-  const handlePostCreated = (newPost: Post) => {
-    setPosts(prevPosts => [newPost, ...prevPosts]);
-    setShowNewPostForm(false);
-  };
-
   useEffect(() => {
     fetchPosts(currentLanguage);
   }, [categoryKey, token, sortBy, timeRange, selectedTag, selectedSubcategory]);
@@ -174,20 +166,13 @@ const CategoryPage: React.FC = () => {
     }
   }, [currentLanguage]);
 
-  // URLパラメータに編集対象の投稿IDがある場合、該当する投稿を編集モードで開く
   useEffect(() => {
-    if (editPostId && posts.length > 0) {
-      const postToEdit = posts.find(p => p.id === parseInt(editPostId));
-      if (postToEdit) {
-        setEditingPost(postToEdit);
-        setShowNewPostForm(true);
-        // URLパラメータから編集IDを削除
-        const params = new URLSearchParams(searchParams);
-        params.delete('edit');
-        setSearchParams(params);
-      }
+    if (editPostId) {
+      const params = new URLSearchParams(searchParams);
+      params.delete('edit');
+      setSearchParams(params);
     }
-  }, [editPostId, posts]);
+  }, [editPostId]);
 
 
   if (!isValidCategory) {
@@ -214,44 +199,86 @@ const CategoryPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
       {/* ヘッダー */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate('/feed')}
-            className="text-pink-700 hover:text-pink-900 hover:bg-pink-50"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            {t('common.backToHome')}
-          </Button>
-          <div className="flex items-center gap-3">
-            <div className="text-3xl">{categoryEmoji}</div>
-            <div>
-              <h1 className="text-2xl font-bold text-pink-800">{categoryTitle}</h1>
-              <p className="text-slate-600">{categoryDesc}</p>
-              <p className="text-sm text-slate-500">{t('categoryPage.postsCount', { count: posts.length })}</p>
-            </div>
+      <div className="space-y-3">
+        {/* Mobile */}
+        <div className="sm:hidden grid grid-cols-2 gap-x-4 gap-y-2 items-start">
+          <div className="col-span-1">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/feed')}
+              className="text-pink-700 hover:text-pink-900 hover:bg-pink-50"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              {t('common.backToHome')}
+            </Button>
+          </div>
+          <div className="col-span-1 flex justify-end">
+            {user && !isFreeUser ? (
+              <Button 
+                onClick={() => navigate(`/create/${categoryKey || ''}`)}
+                className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white rounded-full"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                {t('categoryPage.newPost')}
+              </Button>
+            ) : (
+              <Button 
+                onClick={() => navigate('/login')}
+                className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
+              >
+                {t('common.registerToPaidMember')}
+              </Button>
+            )}
+          </div>
+          <div className="col-span-1 flex items-center gap-2 min-w-0">
+            <div className="text-2xl shrink-0">{categoryEmoji}</div>
+            <h1 className="text-xl font-bold text-pink-800 truncate">{categoryTitle}</h1>
+          </div>
+          <div className="col-span-1 min-w-0">
+            <p className="text-slate-600 text-sm leading-snug line-clamp-2">{categoryDesc}</p>
+            <p className="text-xs text-slate-500">{t('categoryPage.postsCount', { count: posts.length })}</p>
           </div>
         </div>
 
-        {/* 新規投稿ボタン */}
-        <div className="flex gap-2">
-          {user && !isFreeUser ? (
+        {/* Desktop / Tablet */}
+        <div className="hidden sm:flex sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-4">
             <Button 
-              onClick={() => setShowNewPostForm(!showNewPostForm)}
-              className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white rounded-full"
+              variant="ghost" 
+              onClick={() => navigate('/feed')}
+              className="text-pink-700 hover:text-pink-900 hover:bg-pink-50"
             >
-              <Plus className="h-4 w-4 mr-2" />
-              {t('categoryPage.newPost')}
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              {t('common.backToHome')}
             </Button>
-          ) : (
-            <Button 
-              onClick={() => navigate('/login')}
-              className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
-            >
-              {t('common.registerToPaidMember')}
-            </Button>
-          )}
+            <div className="flex items-center gap-3">
+              <div className="text-3xl">{categoryEmoji}</div>
+              <div>
+                <h1 className="text-2xl font-bold text-pink-800">{categoryTitle}</h1>
+                <p className="text-slate-600">{categoryDesc}</p>
+                <p className="text-sm text-slate-500">{t('categoryPage.postsCount', { count: posts.length })}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            {user && !isFreeUser ? (
+              <Button 
+                onClick={() => navigate(`/create/${categoryKey || ''}`)}
+                className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white rounded-full"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                {t('categoryPage.newPost')}
+              </Button>
+            ) : (
+              <Button 
+                onClick={() => navigate('/login')}
+                className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
+              >
+                {t('common.registerToPaidMember')}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -315,19 +342,6 @@ const CategoryPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 新規投稿フォーム */}
-      {showNewPostForm && (
-        <NewPostForm
-          categoryKey={categoryKey || ''}
-          onPostCreated={handlePostCreated}
-          onCancel={() => {
-            setShowNewPostForm(false);
-            setEditingPost(null);
-          }}
-          editingPost={editingPost}
-        />
-      )}
-
       {/* 投稿グリッド */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
@@ -357,7 +371,7 @@ const CategoryPage: React.FC = () => {
             </p>
             {user && !isFreeUser && (
               <Button 
-                onClick={() => setShowNewPostForm(true)}
+                onClick={() => navigate(`/create/${categoryKey || ''}`)}
                 className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white"
               >
                 <Plus className="h-4 w-4 mr-2" />

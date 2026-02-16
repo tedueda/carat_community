@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlusCircle, Music, MessageSquare, Store, MapPin, Film, FileText, Palette, Upload, X, Lock } from 'lucide-react';
+import { API_URL } from '../config';
 
 const CreatePost: React.FC = () => {
   const [title, setTitle] = useState('');
@@ -36,10 +37,9 @@ const CreatePost: React.FC = () => {
   
   const { token, user, isAnonymous } = useAuth();
   const navigate = useNavigate();
-  const { categoryKey } = useParams();
+  const params = useParams();
+  const categoryParam = params.categoryKey ?? params.category;
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
 
   const categories = [
     // サブカルチャー（= comics カテゴリ）
@@ -78,14 +78,14 @@ const CreatePost: React.FC = () => {
   };
 
   useEffect(() => {
-    if (categoryKey) {
-      const validCategory = categories.find(cat => cat.key === categoryKey);
+    if (categoryParam) {
+      const validCategory = categories.find(cat => cat.key === categoryParam);
       if (validCategory) {
-        setCategory(categoryKey);
+        setCategory(categoryParam);
         setSubcategory('');
       }
     }
-  }, [categoryKey]);
+  }, [categoryParam]);
 
   useEffect(() => {
     setSubcategory('');
@@ -358,7 +358,7 @@ const CreatePost: React.FC = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {!categoryKey && (
+            {!categoryParam && (
               <div className="space-y-2">
                 <Label htmlFor="category" className="text-gray-800">カテゴリー</Label>
                 <Select value={category} onValueChange={setCategory}>

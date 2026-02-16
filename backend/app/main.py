@@ -115,6 +115,8 @@ def run_migrations():
             _add_column_if_missing("users", "residence_country", "VARCHAR(10)")
             _add_column_if_missing("users", "terms_accepted_at", "TIMESTAMPTZ")
             _add_column_if_missing("users", "terms_version", "VARCHAR(50)")
+            _add_column_if_missing("users", "password_reset_token_hash", "VARCHAR(64)")
+            _add_column_if_missing("users", "password_reset_expires", "TIMESTAMPTZ")
         
         if _table_exists("posts"):
             _add_column_if_missing("posts", "category", "VARCHAR")

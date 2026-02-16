@@ -37,6 +37,24 @@ const LoginForm: React.FC = () => {
     const success = await login(email, password, rememberMe);
     
     if (success) {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        try {
+          const userData = JSON.parse(storedUser);
+          const kycOk = userData.is_legacy_paid || userData.kyc_status === 'VERIFIED';
+          const subOk = userData.is_legacy_paid || userData.subscription_status === 'active';
+          if (!kycOk) {
+            navigate('/kyc-verification');
+            setIsLoading(false);
+            return;
+          }
+          if (!subOk) {
+            navigate('/kyc-verification');
+            setIsLoading(false);
+            return;
+          }
+        } catch (_e) { /* proceed to feed */ }
+      }
       navigate('/feed');
     } else {
       setError('メールアドレスまたはパスワードが正しくありません');
@@ -105,6 +123,14 @@ const LoginForm: React.FC = () => {
                 {t('auth.login.rememberMe')}
               </Label>
             </div>
+
+            <button
+              type="button"
+              onClick={() => navigate('/forgot-password')}
+              className="text-sm text-gray-700 hover:underline text-left"
+            >
+              パスワードを忘れた方
+            </button>
             <Button 
               type="submit" 
               className="w-full bg-black hover:bg-gray-800 text-white h-12 text-base font-medium"

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { API_URL } from '../../config';
 import { LANGUAGE_NAMES, LANGUAGE_FLAGS, SupportedLanguage } from '../../i18n';
 import { 
   User, Mail, Lock, AlertCircle, CheckCircle, Trash2, 
   Crown, Shield, Gem, MessageCircle, TrendingUp, Globe, ExternalLink
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 interface AccountData {
   id: number;
@@ -29,6 +28,8 @@ interface AccountData {
   instagram?: string;
   interests?: string[];
   country?: string;
+  residence_country?: string;
+  preferred_lang?: string;
   // Stripe subscription fields
   subscription_status?: string;
   kyc_status?: string;
@@ -320,11 +321,12 @@ export default function AccountPage() {
             
             {/* 表示言語 */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="displayLanguage" className="block text-sm font-medium text-gray-700 mb-2">
                 <Globe className="w-4 h-4 inline mr-2" />
                 {t('account.info.displayLanguage')}
               </label>
               <select
+                id="displayLanguage"
                 value={currentLanguage}
                 onChange={(e) => setLanguage(e.target.value as SupportedLanguage)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
@@ -345,7 +347,7 @@ export default function AccountPage() {
               </label>
               <input
                 type="text"
-                value={account?.country || '-'}
+                value={account?.residence_country || '-'}
                 disabled
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500"
               />
@@ -605,20 +607,7 @@ export default function AccountPage() {
                 />
                 <p className="mt-1 text-sm text-gray-500">{t('account.security.passwordMinLength')}</p>
               </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('account.security.confirmPassword')}
-                </label>
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  required
-                />
-              </div>
-              
+
               <div className="flex gap-3 pt-4">
                 <button
                   type="submit"

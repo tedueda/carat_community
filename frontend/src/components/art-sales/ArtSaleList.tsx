@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Grid, List, Search } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import ArtSaleDetail from './ArtSaleDetail';
 import ArtSalePostForm from './ArtSalePostForm';
+import { API_URL } from '../../config';
 
 interface ArtSaleItem {
   id: number;
@@ -31,8 +33,6 @@ interface Category {
   name: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
 const CATEGORY_LABELS: Record<string, string> = {
   painting: '絵画',
   sculpture: '彫刻',
@@ -45,6 +45,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 const ArtSaleList: React.FC = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { user } = useAuth();
   const isPaidUser = user?.membership_type === 'premium' || user?.membership_type === 'admin';
@@ -106,6 +107,19 @@ const ArtSaleList: React.FC = () => {
     fetchItems();
   };
 
+  const handleNewPost = () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    if (!isPaidUser) {
+      navigate('/account');
+      return;
+    }
+    setEditingItem(null);
+    setShowPostForm(true);
+  };
+
   const filteredItems = items.filter(item => {
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -151,17 +165,26 @@ const ArtSaleList: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors"
+        >
+          ←戻る
+        </button>
+        <button
+          type="button"
+          onClick={handleNewPost}
+          className="flex items-center gap-2 px-4 py-2 bg-pink-600 text-white rounded-lg font-medium hover:bg-pink-700 transition-colors"
+        >
+          <Plus className="w-5 h-5" />
+          新規投稿
+        </button>
+      </div>
+
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-2xl font-bold text-gray-900">{t('artSales.title')}</h2>
-        {isPaidUser && (
-          <button
-            onClick={() => setShowPostForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
-          >
-            <Plus className="w-5 h-5" />
-            {t('artSales.listArtwork')}
-          </button>
-        )}
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">

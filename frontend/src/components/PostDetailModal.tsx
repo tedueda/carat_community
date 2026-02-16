@@ -11,6 +11,7 @@ import { compressImage } from '../utils/imageCompression';
 import TranslationToggle from './common/TranslationToggle';
 import { fetchPostWithTranslation } from '../services/translationService';
 import { getPreferredLanguage } from '../utils/languageUtils';
+import { API_URL } from '../config';
 
 interface PostDetailModalProps {
   post: Post;
@@ -60,8 +61,6 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
     const [translationError, setTranslationError] = useState<string | null>(null);
     const [showTranslated, setShowTranslated] = useState<boolean>(true);
     const [viewLang, setViewLang] = useState<string>(getPreferredLanguage());
-
-    const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
 
   const formatNumber = (num: number): string => {
     if (num >= 1000) {

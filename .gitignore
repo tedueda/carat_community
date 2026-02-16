@@ -24,3 +24,11 @@ backend/debug_*.py
 # Local Netlify folder
 .netlify
 node_modules
+
+# Frontend build artifacts / local deploy zips
+frontend/dist
+frontend/dist/
+frontend/carat_dist_final.zip
+
+# Local helper scripts (do not commit)
+frontend/fix_*.sh

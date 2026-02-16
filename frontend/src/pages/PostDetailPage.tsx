@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, MessageCircle, Send, Camera, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, MessageCircle, Send, Camera, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
 import { useAuth } from '../contexts/AuthContext';
@@ -12,8 +12,7 @@ import { compressImage } from '../utils/imageCompression';
 import TranslationToggle from '../components/common/TranslationToggle';
 import { fetchPostWithTranslation } from '../services/translationService';
 import { getPreferredLanguage } from '../utils/languageUtils';
-
-const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
+import { API_URL } from '../config';
 
 const formatNumber = (num: number): string => {
   if (num >= 1000) {
@@ -375,7 +374,7 @@ const PostDetailPage: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        <div className="text-gray-600">Loading...</div>
       </div>
     );
   }
@@ -395,14 +394,27 @@ const PostDetailPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-3xl mx-auto px-4 py-6">
-        <Button
-          variant="ghost"
-          onClick={() => navigate(-1)}
-          className="mb-4 text-gray-600 hover:text-gray-900"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          {t('common.back')}
-        </Button>
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(-1)}
+            className="text-gray-600 hover:text-gray-900"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            {t('common.back')}
+          </Button>
+
+          {!isAnonymous && currentUser && (
+            <Button
+              variant="outline"
+              onClick={() => navigate(`/create/${post.category || ''}`)}
+              className="bg-white text-gray-900 hover:bg-gray-100"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              新規投稿
+            </Button>
+          )}
+        </div>
 
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="flex items-center justify-between p-4 border-b border-gray-200">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { API_URL } from '../../config';
 import { Card, CardContent, CardHeader } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Heart, MessageCircle, Play, Search, Home } from 'lucide-react';
@@ -15,8 +16,6 @@ const FoodPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSubcategory, setSelectedSubcategory] = useState('all');
   const [sortBy, setSortBy] = useState<'latest' | 'popular'>('latest');
-
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000';
 
   // 画像URL解決: /images/ はフロント配信なのでそのまま。/media,/uploads はAPIにぶら下げる。
   const resolveImageUrl = (url?: string): string => {

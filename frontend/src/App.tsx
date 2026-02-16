@@ -45,7 +45,9 @@ import SubscribePage from './pages/SubscribePage';
 import SubscribeSuccessPage from './pages/SubscribeSuccessPage';
 import KycVerificationPage from './pages/KycVerificationPage';
 import PostDetailPage from './pages/PostDetailPage';
-
+import AboutPage from './pages/AboutPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 const FeedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isLoading } = useAuth();
@@ -87,17 +89,28 @@ function AppContent() {
     <div className="min-h-screen bg-white">
       <Header />
       <ScrollToTop />
-      <main className={`bg-white ${isHome ? '' : 'pt-24 md:pt-28'}`}>
+      <main className={`bg-white ${isHome ? '' : 'pt-40 md:pt-32'}`}>
         <Routes>
           <Route path="/login" element={
             <PublicRoute>
               <LoginForm />
             </PublicRoute>
           } />
-                    {/* Subscription routes */}
-                    <Route path="/subscribe" element={<SubscribePage />} />
-                    <Route path="/subscribe/success" element={<SubscribeSuccessPage />} />
-                    <Route path="/kyc-verification" element={<KycVerificationPage />} />
+          <Route path="/forgot-password" element={
+            <PublicRoute>
+              <ForgotPasswordPage />
+            </PublicRoute>
+          } />
+          <Route path="/reset-password" element={
+            <PublicRoute>
+              <ResetPasswordPage />
+            </PublicRoute>
+          } />
+          <Route path="/about" element={<AboutPage />} />
+          {/* Subscription routes */}
+          <Route path="/subscribe" element={<SubscribePage />} />
+          <Route path="/subscribe/success" element={<SubscribeSuccessPage />} />
+          <Route path="/kyc-verification" element={<KycVerificationPage />} />
           <Route path="/feed" element={
             <FeedRoute>
               <HomePage />
