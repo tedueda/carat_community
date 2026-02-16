@@ -144,13 +144,13 @@ const SubscribePage: React.FC = () => {
         })
       });
       
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.detail || t('subscribe.error.checkout_failed'));
-      }
-      
       const data = await response.json();
-      
+
+      if (!response.ok) {
+        const detail = data.detail || t('subscribe.error.checkout_failed');
+        throw new Error(detail);
+      }
+
       if (data.status === 'email_verification_required') {
         navigate('/email-verification-pending', { state: { email: data.email } });
       } else if (data.access_token) {
