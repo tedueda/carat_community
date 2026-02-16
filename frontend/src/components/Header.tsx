@@ -82,6 +82,14 @@ const Header: React.FC = () => {
             </Link>
             <div className="flex items-center gap-2">
               <LanguageSelector variant="compact" isHomePage={isHomePage} />
+              {(isFreeUser || !user) && (
+                <Link
+                  to="/login"
+                  className={`px-3 py-1.5 rounded-full border text-xs font-medium transition-colors ${isHomePage ? 'border-white/30 text-white hover:bg-black/35' : 'border-gray-300 text-gray-900 hover:bg-gray-100'}`}
+                >
+                  {t('common.login')}
+                </Link>
+              )}
               <button
                 onClick={() => setShowMobileMenu(!showMobileMenu)}
                 className={`p-3 rounded-lg transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center ${isHomePage ? 'text-white hover:bg-black/35' : 'bg-white text-gray-900 hover:bg-gray-100'}`}
@@ -218,15 +226,6 @@ const Header: React.FC = () => {
                 </Button>
               </div>
 
-              {(isFreeUser || !user) && (
-                <div className="mx-2 pt-2">
-                  <Button asChild className="w-full bg-black/35 hover:bg-black/65 text-white">
-                    <Link to="/login" onClick={() => setShowMobileMenu(false)}>
-                      {t('common.login')}
-                    </Link>
-                  </Button>
-                </div>
-              )}
             </nav>
           </div>
           </>
@@ -235,7 +234,7 @@ const Header: React.FC = () => {
         {/* Desktop Layout */}
         {(showMemberMenu || showBoardMenu || showAccountMenu) && (
           <div
-            className="fixed inset-0 z-[180] hidden md:block"
+            className="fixed inset-0 z-[49] hidden md:block"
             onClick={() => {
               setShowMemberMenu(false);
               setShowBoardMenu(false);
@@ -324,7 +323,7 @@ const Header: React.FC = () => {
                 </div>
                 
                 {showBoardMenu && (
-                  <div className="absolute top-full right-0 mt-2 w-72 bg-black/65 rounded-lg shadow-lg border border-white/20 z-50">
+                  <div className="absolute top-full right-0 mt-2 w-72 bg-black/65 rounded-lg shadow-lg border border-white/20 z-[200]">
                     <div className="p-2">
                       {boardCategories.map((category) => (
                         <Link
@@ -376,7 +375,7 @@ const Header: React.FC = () => {
                 </div>
                 
                 {showMemberMenu && (
-                  <div className="absolute top-full right-0 mt-2 w-64 bg-black/65 rounded-lg shadow-lg border border-white/20 z-50">
+                  <div className="absolute top-full right-0 mt-2 w-64 bg-black/65 rounded-lg shadow-lg border border-white/20 z-[200]">
                     <div className="p-2">
                       {specialMenuItems.map((item) => (
                         <Link
@@ -428,7 +427,7 @@ const Header: React.FC = () => {
                 </div>
                 
                 {showAccountMenu && (
-                  <div className="absolute top-full right-0 mt-2 w-56 bg-black/65 rounded-lg shadow-lg border border-white/20 z-[100]">
+                  <div className="absolute top-full right-0 mt-2 w-56 bg-black/65 rounded-lg shadow-lg border border-white/20 z-[200]">
                     <div className="p-2">
                       <Link
                         to="/account"
