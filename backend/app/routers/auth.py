@@ -15,9 +15,12 @@ import logging
 import hashlib
 import secrets
 import smtplib
+import threading
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from pydantic import BaseModel, EmailStr
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/auth", tags=["authentication"])
 
@@ -33,18 +36,17 @@ class PasswordResetConfirm(BaseModel):
     new_password: str
 
 
-def _send_email(to_email: str, subject: str, body: str) -> None:
+SMTP_TIMEOUT = 15
+
+
+def _send_email_sync(to_email: str, subject: str, body: str) -> None:
     smtp_host = os.getenv("SMTP_HOST", "smtp.gmail.com")
     smtp_port = int(os.getenv("SMTP_PORT", "587"))
     smtp_user = os.getenv("SMTP_USER", "")
     smtp_password = os.getenv("SMTP_PASSWORD", "")
 
     if not smtp_user or not smtp_password:
-        print("=== Email (dev mode - SMTP not configured) ===")
-        print(f"To: {to_email}")
-        print(f"Subject: {subject}")
-        print(body)
-        print("===============================================")
+        logger.info(f"SMTP not configured. Email to {to_email} subject={subject} logged only.")
         return
 
     msg = MIMEMultipart()
@@ -54,14 +56,27 @@ def _send_email(to_email: str, subject: str, body: str) -> None:
     msg.attach(MIMEText(body, 'plain', 'utf-8'))
 
     if smtp_port == 465:
-        with smtplib.SMTP_SSL(smtp_host, smtp_port) as server:
+        with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=SMTP_TIMEOUT) as server:
             server.login(smtp_user, smtp_password)
             server.send_message(msg)
     else:
-        with smtplib.SMTP(smtp_host, smtp_port) as server:
+        with smtplib.SMTP(smtp_host, smtp_port, timeout=SMTP_TIMEOUT) as server:
             server.starttls()
             server.login(smtp_user, smtp_password)
             server.send_message(msg)
+
+    logger.info(f"Email sent to {to_email} subject={subject}")
+
+
+def _send_email(to_email: str, subject: str, body: str) -> None:
+    def _worker():
+        try:
+            _send_email_sync(to_email, subject, body)
+        except Exception as e:
+            logger.error(f"Email send failed to={to_email}: {type(e).__name__}: {e}")
+
+    thread = threading.Thread(target=_worker, daemon=True)
+    thread.start()
 
 
 @router.post("/password-reset/request")
@@ -128,8 +143,43 @@ async def confirm_password_reset(payload: PasswordResetConfirm, db: Session = De
 
 @router.get("/health")
 async def auth_health():
-    """Health check endpoint for authentication service - no authentication required"""
     return {"status": "ok", "service": "authentication"}
+
+
+@router.get("/smtp-test")
+async def smtp_test():
+    smtp_host = os.getenv("SMTP_HOST", "")
+    smtp_port = int(os.getenv("SMTP_PORT", "465"))
+    smtp_user = os.getenv("SMTP_USER", "")
+    smtp_password = os.getenv("SMTP_PASSWORD", "")
+
+    if not smtp_host or not smtp_user:
+        return {"status": "not_configured", "smtp_host": smtp_host, "smtp_port": smtp_port}
+
+    import socket
+    results = {}
+
+    for port in [465, 587]:
+        try:
+            sock = socket.create_connection((smtp_host, port), timeout=10)
+            sock.close()
+            results[f"tcp_{port}"] = "reachable"
+        except Exception as e:
+            results[f"tcp_{port}"] = f"{type(e).__name__}: {e}"
+
+    try:
+        if smtp_port == 465:
+            server = smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=15)
+        else:
+            server = smtplib.SMTP(smtp_host, smtp_port, timeout=15)
+            server.starttls()
+        server.login(smtp_user, smtp_password)
+        results["login"] = "success"
+        server.quit()
+    except Exception as e:
+        results["login"] = f"{type(e).__name__}: {e}"
+
+    return {"status": "tested", "smtp_host": smtp_host, "smtp_port": smtp_port, "results": results}
 
 @router.post("/send-verification-code")
 async def send_verification_code(request: PhoneVerificationRequest, db: Session = Depends(get_db)):
