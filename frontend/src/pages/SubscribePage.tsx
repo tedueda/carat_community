@@ -151,7 +151,9 @@ const SubscribePage: React.FC = () => {
       
       const data = await response.json();
       
-      if (data.access_token) {
+      if (data.status === 'email_verification_required') {
+        navigate('/email-verification-pending', { state: { email: data.email } });
+      } else if (data.access_token) {
         localStorage.setItem('token', data.access_token);
         localStorage.setItem('user', JSON.stringify(data.user));
         navigate('/kyc-verification');

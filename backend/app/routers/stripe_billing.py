@@ -5,7 +5,9 @@ Stripe Billing Router - Handles subscription checkout, webhooks, and Identity (K
 import os
 import stripe
 import logging
-from datetime import datetime
+import hashlib
+import secrets
+from datetime import datetime, timedelta
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Request, Header
 from sqlalchemy.orm import Session
@@ -14,7 +16,6 @@ from pydantic import BaseModel, EmailStr
 from app.database import get_db
 from app.models import User, Profile, MatchingProfile
 from app.auth import get_password_hash, get_current_active_user, create_access_token
-from datetime import timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +50,14 @@ class CreateIdentitySessionRequest(BaseModel):
 
 class CreatePortalSessionRequest(BaseModel):
     return_url: Optional[str] = None
+
+
+class EmailVerificationRequest(BaseModel):
+    token: str
+
+
+class ResendVerificationRequest(BaseModel):
+    email: EmailStr
 
 
 # ============ Helper Functions ============
@@ -96,14 +105,24 @@ async def get_stripe_config():
     }
 
 
+def _send_verification_email(to_email: str, display_name: str, token: str) -> None:
+    """Send email verification link."""
+    from app.routers.auth import _send_email
+    frontend_url = FRONTEND_URL
+    verify_url = f"{frontend_url}/verify-email?token={token}"
+    subject = "【Carat】メールアドレスの確認"
+    body = f"""{display_name} 様\n\nCaratへのご登録ありがとうございます。\n以下のリンクをクリックしてメールアドレスを確認してください（有効期限: 24時間）。\n\n{verify_url}\n\nこのメールに心当たりがない場合は、このメールを破棄してください。\n"""
+    _send_email(to_email, subject, body)
+
+
 @router.post("/register-only")
 async def register_only(
     request: CreateCheckoutSessionRequest,
     db: Session = Depends(get_db)
 ):
     """
-    Register a new user and return an access token (no checkout).
-    Used as step 1 of the registration flow: Register -> KYC -> Payment.
+    Register a new user and send email verification.
+    Flow: Register -> Email Verify -> KYC -> Payment.
     """
     existing_user = db.query(User).filter(User.email == request.email).first()
 
@@ -137,7 +156,8 @@ async def register_only(
             residence_country=request.residence_country,
             terms_accepted_at=datetime.utcnow(),
             terms_version="1.0",
-            kyc_status="UNVERIFIED"
+            kyc_status="UNVERIFIED",
+            email_verified=False
         )
         db.add(user)
         db.commit()
@@ -160,12 +180,52 @@ async def register_only(
 
     get_or_create_stripe_customer(db, user)
 
+    token = secrets.token_urlsafe(32)
+    token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
+    user.email_verification_token_hash = token_hash
+    user.email_verification_expires = datetime.utcnow() + timedelta(hours=24)
+    user.email_verified = False
+    db.commit()
+
+    try:
+        _send_verification_email(user.email, user.display_name, token)
+    except Exception as e:
+        logger.error(f"Verification email send failed: {e}")
+
+    return {
+        "status": "email_verification_required",
+        "email": user.email,
+        "message": "確認メールを送信しました。メール内のリンクをクリックしてください。"
+    }
+
+
+@router.post("/verify-email")
+async def verify_email(
+    request: EmailVerificationRequest,
+    db: Session = Depends(get_db)
+):
+    """Verify email address using token from verification email."""
+    token_hash = hashlib.sha256(request.token.encode("utf-8")).hexdigest()
+    user = db.query(User).filter(User.email_verification_token_hash == token_hash).first()
+
+    if not user:
+        raise HTTPException(status_code=400, detail="無効なトークンです")
+
+    if user.email_verification_expires and user.email_verification_expires < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="トークンの有効期限が切れています。再送信してください。")
+
+    user.email_verified = True
+    user.email_verification_token_hash = None
+    user.email_verification_expires = None
+    db.commit()
+
     access_token = create_access_token(
         data={"sub": user.email},
         expires_delta=timedelta(days=7)
     )
 
     return {
+        "status": "verified",
         "access_token": access_token,
         "user": {
             "id": user.id,
@@ -173,6 +233,31 @@ async def register_only(
             "display_name": user.display_name
         }
     }
+
+
+@router.post("/resend-verification")
+async def resend_verification(
+    request: ResendVerificationRequest,
+    db: Session = Depends(get_db)
+):
+    """Resend email verification. Always returns success to avoid enumeration."""
+    user = db.query(User).filter(User.email == request.email).first()
+
+    if not user or user.email_verified:
+        return {"status": "ok"}
+
+    token = secrets.token_urlsafe(32)
+    token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
+    user.email_verification_token_hash = token_hash
+    user.email_verification_expires = datetime.utcnow() + timedelta(hours=24)
+    db.commit()
+
+    try:
+        _send_verification_email(user.email, user.display_name, token)
+    except Exception as e:
+        logger.error(f"Resend verification email failed: {e}")
+
+    return {"status": "ok"}
 
 
 @router.post("/create-checkout-session")
