@@ -82,14 +82,6 @@ const Header: React.FC = () => {
             </Link>
             <div className="flex items-center gap-2">
               <LanguageSelector variant="compact" isHomePage={isHomePage} />
-              {(isFreeUser || !user) && (
-                <Link
-                  to="/login"
-                  className={`px-3 py-1.5 rounded-full border text-xs font-medium transition-colors ${isHomePage ? 'border-white/30 text-white hover:bg-black/35' : 'border-gray-300 text-gray-900 hover:bg-gray-100'}`}
-                >
-                  {t('common.login')}
-                </Link>
-              )}
               <button
                 onClick={() => setShowMobileMenu(!showMobileMenu)}
                 className={`p-3 rounded-lg transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center ${isHomePage ? 'text-white hover:bg-black/35' : 'bg-white text-gray-900 hover:bg-gray-100'}`}
@@ -98,6 +90,17 @@ const Header: React.FC = () => {
               </button>
             </div>
           </div>
+
+          {(isFreeUser || !user) && (
+            <div className="flex justify-end mt-1">
+              <Link
+                to="/login"
+                className="px-6 py-2 rounded-full bg-black/40 text-white text-sm font-medium transition-colors hover:bg-black/60"
+              >
+                {t('common.login')}
+              </Link>
+            </div>
+          )}
 
           {!isFreeUser && user && (
             <div className="flex items-center justify-end gap-2 flex-wrap">
