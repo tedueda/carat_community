@@ -131,7 +131,8 @@ async def confirm_password_reset(payload: PasswordResetConfirm, db: Session = De
     if not user or not user.password_reset_expires:
         raise HTTPException(status_code=400, detail="無効なトークンです")
 
-    if user.password_reset_expires < datetime.utcnow():
+    expires_naive = user.password_reset_expires.replace(tzinfo=None) if user.password_reset_expires.tzinfo else user.password_reset_expires
+    if expires_naive < datetime.utcnow():
         raise HTTPException(status_code=400, detail="トークンの有効期限が切れています")
 
     user.password_hash = get_password_hash(payload.new_password)
@@ -262,7 +263,8 @@ async def verify_phone(request: PhoneVerificationConfirm, db: Session = Depends(
         )
     
     # 有効期限チェック
-    if user.phone_verification_expires < datetime.utcnow():
+    expires_naive = user.phone_verification_expires.replace(tzinfo=None) if user.phone_verification_expires.tzinfo else user.phone_verification_expires
+    if expires_naive < datetime.utcnow():
         raise HTTPException(
             status_code=400,
             detail="認証コードの有効期限が切れています"

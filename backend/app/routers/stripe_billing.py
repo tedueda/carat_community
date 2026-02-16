@@ -211,8 +211,10 @@ async def verify_email(
     if not user:
         raise HTTPException(status_code=400, detail="無効なトークンです")
 
-    if user.email_verification_expires and user.email_verification_expires < datetime.utcnow():
-        raise HTTPException(status_code=400, detail="トークンの有効期限が切れています。再送信してください。")
+    if user.email_verification_expires:
+        expires_naive = user.email_verification_expires.replace(tzinfo=None) if user.email_verification_expires.tzinfo else user.email_verification_expires
+        if expires_naive < datetime.utcnow():
+            raise HTTPException(status_code=400, detail="トークンの有効期限が切れています。再送信してください。")
 
     user.email_verified = True
     user.email_verification_token_hash = None
