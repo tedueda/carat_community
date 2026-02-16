@@ -131,7 +131,7 @@ const Header: React.FC = () => {
               onClick={() => setShowMobileMenu(false)}
             />
             <div
-              className="fixed left-0 right-0 top-24 z-[210] md:hidden mx-2 pb-4 pt-4 bg-black/65 backdrop-blur-sm rounded-xl shadow-lg"
+              className="fixed left-0 right-0 top-24 z-[210] md:hidden mx-2 pb-4 pt-4 bg-black/65 backdrop-blur-sm rounded-xl shadow-lg max-h-[calc(100dvh-6rem)] overflow-y-auto overscroll-contain touch-pan-y"
               onClick={(e) => e.stopPropagation()}
             >
               <nav className="flex flex-col space-y-1">
@@ -152,7 +152,7 @@ const Header: React.FC = () => {
                 className="w-full justify-start text-white hover:bg-black/65 hover:text-white"
               >
                 <Link to="/about" onClick={() => setShowMobileMenu(false)}>
-                  Caratとは
+                  {t('nav.about')}
                 </Link>
               </Button>
               
@@ -286,7 +286,7 @@ const Header: React.FC = () => {
                   setShowBoardMenu(false);
                   setShowAccountMenu(false);
                 }}>
-                  Caratとは
+                  {t('nav.about')}
                 </Link>
               </Button>
               

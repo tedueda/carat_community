@@ -12,10 +12,114 @@ from app.sms_service import sms_service
 import random
 import os
 import logging
+import hashlib
+import secrets
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from pydantic import BaseModel, EmailStr
 
 router = APIRouter(prefix="/api/auth", tags=["authentication"])
 
 PHONE_AUTH_ENABLED = os.getenv("PHONE_AUTH_ENABLED", "false").lower() == "true"
+
+
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+
+class PasswordResetConfirm(BaseModel):
+    token: str
+    new_password: str
+
+
+def _send_email(to_email: str, subject: str, body: str) -> None:
+    smtp_host = os.getenv("SMTP_HOST", "smtp.gmail.com")
+    smtp_port = int(os.getenv("SMTP_PORT", "587"))
+    smtp_user = os.getenv("SMTP_USER", "")
+    smtp_password = os.getenv("SMTP_PASSWORD", "")
+
+    if not smtp_user or not smtp_password:
+        print("=== Password Reset Email (dev mode) ===")
+        print(f"To: {to_email}")
+        print(f"Subject: {subject}")
+        print(body)
+        print("======================================")
+        return
+
+    msg = MIMEMultipart()
+    msg['From'] = smtp_user
+    msg['To'] = to_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain', 'utf-8'))
+
+    with smtplib.SMTP(smtp_host, smtp_port) as server:
+        server.starttls()
+        server.login(smtp_user, smtp_password)
+        server.send_message(msg)
+
+
+@router.post("/password-reset/request")
+async def request_password_reset(payload: PasswordResetRequest, db: Session = Depends(get_db)):
+    """Request password reset email. Always returns success to avoid account enumeration."""
+    user = db.query(User).filter(User.email == payload.email).first()
+
+    # Always return success to prevent email enumeration.
+    if not user:
+        return {"status": "ok"}
+
+    token = secrets.token_urlsafe(32)
+    token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
+    expires_at = datetime.utcnow() + timedelta(hours=1)
+
+    user.password_reset_token_hash = token_hash
+    user.password_reset_expires = expires_at
+    db.commit()
+
+    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
+    reset_url = f"{frontend_url}/reset-password?token={token}"
+
+    subject = "【Carat】パスワード再設定のご案内"
+    body = f"""{user.display_name} 様
+
+パスワード再設定のリクエストを受け付けました。
+以下のリンクから新しいパスワードを設定してください（有効期限: 1時間）。
+
+{reset_url}
+
+もしこのメールに心当たりがない場合は、このメールを破棄してください。
+"""
+
+    try:
+        _send_email(user.email, subject, body)
+    except Exception as e:
+        logging.getLogger(__name__).error(f"Password reset email send failed: {e}")
+        # Still return ok to avoid leaking info.
+
+    return {"status": "ok"}
+
+
+@router.post("/password-reset/confirm")
+async def confirm_password_reset(payload: PasswordResetConfirm, db: Session = Depends(get_db)):
+    """Confirm password reset using token and set new password."""
+    if len(payload.new_password) < 8:
+        raise HTTPException(status_code=400, detail="パスワードは8文字以上である必要があります")
+
+    token_hash = hashlib.sha256(payload.token.encode("utf-8")).hexdigest()
+    user = db.query(User).filter(User.password_reset_token_hash == token_hash).first()
+
+    if not user or not user.password_reset_expires:
+        raise HTTPException(status_code=400, detail="無効なトークンです")
+
+    if user.password_reset_expires < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="トークンの有効期限が切れています")
+
+    user.password_hash = get_password_hash(payload.new_password)
+    user.password_reset_token_hash = None
+    user.password_reset_expires = None
+    db.commit()
+
+    return {"status": "ok"}
 
 @router.get("/health")
 async def auth_health():

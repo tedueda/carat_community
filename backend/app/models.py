@@ -39,6 +39,10 @@ class User(Base):
     residence_country = Column(String(10), nullable=True)  # ISO country code
     terms_accepted_at = Column(DateTime(timezone=True), nullable=True)
     terms_version = Column(String(50), nullable=True)
+
+    # Password reset fields
+    password_reset_token_hash = Column(String(64), nullable=True)
+    password_reset_expires = Column(DateTime(timezone=True), nullable=True)
     
     __table_args__ = (
         CheckConstraint("membership_type IN ('free', 'premium', 'admin')", name="check_membership_type"),

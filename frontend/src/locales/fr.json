@@ -1,6 +1,7 @@
 {
   "nav": {
     "home": "Accueil",
+    "about": "À propos de Carat",
     "board": "Forum",
     "specialMenu": "Menu Spécial",
     "account": "Compte",
@@ -58,6 +59,64 @@
         "sub": "Conseils, art, musique, visites locales.\nVotre histoire commence ici."
       }
     ]
+  },
+  "about": {
+    "badge": "Le concept du site communautaire \"Carat\"",
+    "heroTitle": "Au-delà des frontières et du genre. Un lieu pour se connecter en toute sérénité.",
+    "heroLead": "Carat est une nouvelle communauté où les personnes se connectent naturellement au-delà des frontières, des langues et du genre.\nNous visons une société apaisée fondée sur le respect et le soutien mutuel, sans reproches ni discrimination.",
+    "cta": {
+      "community": "Découvrir la communauté",
+      "plans": "Voir les offres d’adhésion",
+      "getStarted": "Commencer"
+    },
+    "features": {
+      "crossBorder": {
+        "title": "Connexion sans frontières",
+        "body": "Discutez naturellement au-delà des différences de frontières et de langue."
+      },
+      "growTogether": {
+        "title": "Grandir ensemble",
+        "body": "Matching, salon et forum renforcent la compréhension et la collaboration."
+      },
+      "respectEmpathy": {
+        "title": "Respect et empathie",
+        "body": "Écoutez des voix réelles, ressentez de l’empathie et trouvez la force d’avancer."
+      }
+    },
+    "canDo": {
+      "title": "Ce que vous pouvez faire sur Carat",
+      "body": "Carat propose le matching des membres, un salon communautaire, des forums et bien plus encore — des fonctionnalités conçues pour se rencontrer, se comprendre et renforcer les liens.\nC’est un lieu pour échanger librement tout en trouvant empathie et énergie à travers des histoires réelles sur la vie, le travail, l’amour et les préoccupations.",
+      "cards": {
+        "everyday": {
+          "title": "Du quotidien aux défis de demain",
+          "body": "Des informations pratiques aux annonces d’événements, en passant par la création, les activités et les opportunités business — Carat grandit grâce aux contenus des membres."
+        },
+        "expression": {
+          "title": "Un lieu pour s’exprimer",
+          "body": "Partagez vos talents cachés, vos efforts et votre singularité."
+        }
+      }
+    },
+    "safety": {
+      "title": "Créer un environnement sûr",
+      "body": "Carat s’engage à créer un environnement sûr grâce à une vérification d’identité stricte et à une surveillance appropriée.\nNous renforçons continuellement la sécurité pour protéger les données personnelles et la sécurité de la communauté.",
+      "cards": {
+        "kyc": {
+          "title": "Vérification d’identité",
+          "body": "Nous protégeons des connexions sûres et sincères grâce à un processus de vérification lors de l’inscription."
+        },
+        "moderation": {
+          "title": "Surveillance appropriée",
+          "body": "Notre équipe veille en continu sur la communauté pour la maintenir saine."
+        },
+        "security": {
+          "title": "Amélioration continue de la sécurité",
+          "body": "Nous mettons à jour les mesures en tenant compte de la confidentialité et de la sécurité."
+        }
+      }
+    },
+    "closingQuote": "Nous espérons que Carat deviendra un lieu sur lequel vous pourrez compter au quotidien.",
+    "operatorLabel": "Opérateur"
   },
   "homepage": {
     "specialMenu": {

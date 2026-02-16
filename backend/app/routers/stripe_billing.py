@@ -37,6 +37,7 @@ class CreateCheckoutSessionRequest(BaseModel):
     email: EmailStr
     display_name: str
     password: str
+    phone_number: Optional[str] = None
     preferred_lang: str = "ja"
     residence_country: str = "JP"
     terms_accepted: bool = True
@@ -106,11 +107,18 @@ async def register_only(
     """
     existing_user = db.query(User).filter(User.email == request.email).first()
 
+    if request.phone_number:
+        existing_phone = db.query(User).filter(User.phone_number == request.phone_number).first()
+        if existing_phone and (not existing_user or existing_phone.id != existing_user.id):
+            raise HTTPException(status_code=400, detail="この携帯番号は既に使用されています")
+
     if existing_user:
         if existing_user.subscription_status == "active":
             raise HTTPException(status_code=400, detail="User already has an active subscription")
         existing_user.display_name = request.display_name
         existing_user.password_hash = get_password_hash(request.password)
+        if request.phone_number is not None:
+            existing_user.phone_number = request.phone_number or None
         existing_user.preferred_lang = request.preferred_lang
         existing_user.residence_country = request.residence_country
         existing_user.terms_accepted_at = datetime.utcnow()
@@ -122,6 +130,7 @@ async def register_only(
             email=request.email,
             password_hash=get_password_hash(request.password),
             display_name=request.display_name,
+            phone_number=request.phone_number or None,
             membership_type="premium",
             is_active=True,
             preferred_lang=request.preferred_lang,
@@ -180,11 +189,18 @@ async def create_checkout_session(
 
     existing_user = db.query(User).filter(User.email == request.email).first()
 
+    if request.phone_number:
+        existing_phone = db.query(User).filter(User.phone_number == request.phone_number).first()
+        if existing_phone and (not existing_user or existing_phone.id != existing_user.id):
+            raise HTTPException(status_code=400, detail="この携帯番号は既に使用されています")
+
     if existing_user:
         if existing_user.subscription_status == "active":
             raise HTTPException(status_code=400, detail="User already has an active subscription")
         existing_user.display_name = request.display_name
         existing_user.password_hash = get_password_hash(request.password)
+        if request.phone_number is not None:
+            existing_user.phone_number = request.phone_number or None
         existing_user.preferred_lang = request.preferred_lang
         existing_user.residence_country = request.residence_country
         existing_user.terms_accepted_at = datetime.utcnow()
@@ -197,6 +213,7 @@ async def create_checkout_session(
             email=request.email,
             password_hash=get_password_hash(request.password),
             display_name=request.display_name,
+            phone_number=request.phone_number or None,
             membership_type="premium",
             is_active=True,
             preferred_lang=request.preferred_lang,

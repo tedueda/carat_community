@@ -105,6 +105,14 @@ const LoginForm: React.FC = () => {
                 {t('auth.login.rememberMe')}
               </Label>
             </div>
+
+            <button
+              type="button"
+              onClick={() => navigate('/forgot-password')}
+              className="text-sm text-gray-700 hover:underline text-left"
+            >
+              パスワードを忘れた方
+            </button>
             <Button 
               type="submit" 
               className="w-full bg-black hover:bg-gray-800 text-white h-12 text-base font-medium"

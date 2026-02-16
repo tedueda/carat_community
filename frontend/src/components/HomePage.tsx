@@ -351,7 +351,7 @@ const HomePage: React.FC = () => {
               </div>
             ))}
           </div>
-          <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+          <div className="absolute inset-0 bg-black bg-opacity-25"></div>
           {/* Sound Credit and Audio Player */}
           <div className="absolute bottom-1/4 md:bottom-16 right-8 z-50 flex flex-col items-end gap-2 pointer-events-auto">
             <div className="text-white text-sm opacity-70 flex items-center gap-2">

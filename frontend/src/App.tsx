@@ -46,6 +46,8 @@ import SubscribeSuccessPage from './pages/SubscribeSuccessPage';
 import KycVerificationPage from './pages/KycVerificationPage';
 import PostDetailPage from './pages/PostDetailPage';
 import AboutPage from './pages/AboutPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 const FeedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isLoading } = useAuth();
@@ -92,6 +94,16 @@ function AppContent() {
           <Route path="/login" element={
             <PublicRoute>
               <LoginForm />
+            </PublicRoute>
+          } />
+          <Route path="/forgot-password" element={
+            <PublicRoute>
+              <ForgotPasswordPage />
+            </PublicRoute>
+          } />
+          <Route path="/reset-password" element={
+            <PublicRoute>
+              <ResetPasswordPage />
             </PublicRoute>
           } />
           <Route path="/about" element={<AboutPage />} />
