@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Globe2, HeartHandshake, ShieldCheck, Sparkles, Users } from 'lucide-react';
+import tourismHero from '../assets/images/tourism01.jpg';
 
 const AboutPage: React.FC = () => {
   return (
@@ -23,7 +24,7 @@ const AboutPage: React.FC = () => {
             <div className="mt-6 overflow-hidden rounded-2xl border border-white/15 bg-white/5 shadow-2xl">
               <div className="relative aspect-[16/9] md:aspect-[21/9]">
                 <img
-                  src={`${import.meta.env.BASE_URL}images/tourism01.jpg`}
+                  src={tourismHero}
                   alt="Carat concept visual"
                   className="absolute inset-0 h-full w-full object-cover"
                   loading="lazy"
