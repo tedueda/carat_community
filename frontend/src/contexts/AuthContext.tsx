@@ -32,7 +32,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  /** 無料会員（未ログイン）かどうか */
+  /** 閲覧者（未ログイン）かどうか */
   isFreeUser: boolean;
   /** @deprecated isFreeUser を使用してください */
   isAnonymous: boolean;
