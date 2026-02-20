@@ -19,6 +19,7 @@ const Header: React.FC = () => {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showBoardMenu, setShowBoardMenu] = useState(false);
+  const [showAboutMenu, setShowAboutMenu] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
   // 未読メッセージ数を取得
@@ -166,6 +167,15 @@ const Header: React.FC = () => {
                   {t('nav.about')}
                 </Link>
               </Button>
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start text-white hover:bg-black/65 hover:text-white pl-8"
+              >
+                <Link to="/about/usage" onClick={() => setShowMobileMenu(false)}>
+                  ご利用方法
+                </Link>
+              </Button>
               
               <div className="border-t border-white/20 pt-2 pb-2 mx-2">
                 <div className="text-xs font-medium px-4 mb-2 text-white/70">{t('nav.board')}</div>
@@ -235,13 +245,14 @@ const Header: React.FC = () => {
         )}
 
         {/* Desktop Layout */}
-        {(showMemberMenu || showBoardMenu || showAccountMenu) && (
+        {(showMemberMenu || showBoardMenu || showAccountMenu || showAboutMenu) && (
           <div
             className="fixed inset-0 z-[49] hidden md:block"
             onClick={() => {
               setShowMemberMenu(false);
               setShowBoardMenu(false);
               setShowAccountMenu(false);
+              setShowAboutMenu(false);
             }}
           />
         )}
@@ -252,6 +263,7 @@ const Header: React.FC = () => {
               setShowMemberMenu(false);
               setShowBoardMenu(false);
               setShowAccountMenu(false);
+              setShowAboutMenu(false);
             }}>
               <img src={isHomePage ? "/images/logo12.png" : "/images/logo13.png"} alt="Carat Logo" className="h-28 w-auto" />
             </Link>
@@ -271,26 +283,59 @@ const Header: React.FC = () => {
                   setShowMemberMenu(false);
                   setShowBoardMenu(false);
                   setShowAccountMenu(false);
+                  setShowAboutMenu(false);
                 }}>
                   <Home className="h-5 w-5 mr-2" />
                   {t('nav.home')}
                 </Link>
               </Button>
 
-              {/* Caratとは */}
-              <Button
-                asChild
-                variant="ghost"
-                className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
-              >
-                <Link to="/about" onClick={() => {
-                  setShowMemberMenu(false);
-                  setShowBoardMenu(false);
-                  setShowAccountMenu(false);
-                }}>
-                  {t('nav.about')}
-                </Link>
-              </Button>
+              {/* Caratとは Dropdown */}
+              <div className="relative">
+                <div className="flex items-center">
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className={`text-base font-normal px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+                  >
+                    <Link to="/about" onClick={() => {
+                      setShowMemberMenu(false);
+                      setShowBoardMenu(false);
+                      setShowAccountMenu(false);
+                      setShowAboutMenu(false);
+                    }}>
+                      {t('nav.about')}
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className={`px-2 ${isHomePage ? 'text-white hover:bg-black/35 hover:text-white' : 'text-gray-900 hover:bg-gray-100 hover:text-gray-900'}`}
+                    onClick={() => {
+                      setShowAboutMenu(!showAboutMenu);
+                      setShowMemberMenu(false);
+                      setShowBoardMenu(false);
+                      setShowAccountMenu(false);
+                    }}
+                    aria-label={t('nav.about')}
+                  >
+                    <ChevronDown className="h-5 w-5" />
+                  </Button>
+                </div>
+
+                {showAboutMenu && (
+                  <div className="absolute top-full right-0 mt-2 w-56 bg-black/65 rounded-lg shadow-lg border border-white/20 z-[200]">
+                    <div className="p-2">
+                      <Link
+                        to="/about/usage"
+                        onClick={() => setShowAboutMenu(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
+                      >
+                        <span className="text-sm text-white">ご利用方法</span>
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
               
               {/* 掲示板 Dropdown */}
               <div className="relative">
@@ -303,9 +348,10 @@ const Header: React.FC = () => {
                     <Link
                       to="/category/board"
                       onClick={() => {
-                        setShowBoardMenu(false);
-                        setShowMemberMenu(false);
-                        setShowAccountMenu(false);
+                          setShowBoardMenu(false);
+                          setShowMemberMenu(false);
+                          setShowAccountMenu(false);
+                          setShowAboutMenu(false);
                       }}
                     >
                       {t('nav.board')}
@@ -318,6 +364,7 @@ const Header: React.FC = () => {
                       setShowBoardMenu(!showBoardMenu);
                       setShowMemberMenu(false);
                       setShowAccountMenu(false);
+                      setShowAboutMenu(false);
                     }}
                     aria-label={t('nav.board')}
                   >
@@ -358,6 +405,7 @@ const Header: React.FC = () => {
                         setShowMemberMenu(false);
                         setShowBoardMenu(false);
                         setShowAccountMenu(false);
+                        setShowAboutMenu(false);
                       }}
                     >
                       {t('nav.specialMenu')}
@@ -370,6 +418,7 @@ const Header: React.FC = () => {
                       setShowMemberMenu(!showMemberMenu);
                       setShowBoardMenu(false);
                       setShowAccountMenu(false);
+                      setShowAboutMenu(false);
                     }}
                     aria-label={t('nav.specialMenu')}
                   >
@@ -410,6 +459,7 @@ const Header: React.FC = () => {
                         setShowAccountMenu(false);
                         setShowMemberMenu(false);
                         setShowBoardMenu(false);
+                        setShowAboutMenu(false);
                       }}
                     >
                       {t('nav.account')}
@@ -422,6 +472,7 @@ const Header: React.FC = () => {
                       setShowAccountMenu(!showAccountMenu);
                       setShowMemberMenu(false);
                       setShowBoardMenu(false);
+                      setShowAboutMenu(false);
                     }}
                     aria-label={t('nav.account')}
                   >
@@ -463,6 +514,7 @@ const Header: React.FC = () => {
                   setShowMemberMenu(false);
                   setShowBoardMenu(false);
                   setShowAccountMenu(false);
+                  setShowAboutMenu(false);
                 }}>
                   {t('nav.blog')}
                 </Link>
