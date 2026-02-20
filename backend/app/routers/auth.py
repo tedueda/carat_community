@@ -400,6 +400,13 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    if not user.is_legacy_paid:
+        if not getattr(user, 'email_verified', False):
+            raise HTTPException(status_code=403, detail="EMAIL_NOT_VERIFIED")
+        if getattr(user, 'kyc_status', 'UNVERIFIED') != 'VERIFIED':
+            raise HTTPException(status_code=403, detail="KYC_NOT_VERIFIED")
+        if getattr(user, 'subscription_status', None) != 'active':
+            raise HTTPException(status_code=403, detail="SUBSCRIPTION_NOT_ACTIVE")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
@@ -415,6 +422,13 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    if not user.is_legacy_paid:
+        if not getattr(user, 'email_verified', False):
+            raise HTTPException(status_code=403, detail="EMAIL_NOT_VERIFIED")
+        if getattr(user, 'kyc_status', 'UNVERIFIED') != 'VERIFIED':
+            raise HTTPException(status_code=403, detail="KYC_NOT_VERIFIED")
+        if getattr(user, 'subscription_status', None) != 'active':
+            raise HTTPException(status_code=403, detail="SUBSCRIPTION_NOT_ACTIVE")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires

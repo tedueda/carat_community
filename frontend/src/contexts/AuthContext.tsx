@@ -146,7 +146,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const data = await response.json();
         const newToken = data.access_token;
         
-        // ユーザー情報を取得
         const userResponse = await resilientFetch('/api/auth/me', {
           headers: {
             'Authorization': `Bearer ${newToken}`,
@@ -175,9 +174,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           return false;
         }
       } else {
-        const errorText = await response.text();
-        console.error('Login failed:', response.status, errorText);
-        setError(`ログインに失敗しました (${response.status})`);
+        let detail = '';
+        try {
+          const errData = await response.json();
+          detail = errData.detail || '';
+        } catch (_e) {
+          detail = '';
+        }
+        if (detail === 'EMAIL_NOT_VERIFIED') {
+          setError('メールアドレスの確認が完了していません。登録時に届いたメールのリンクをクリックしてください。');
+        } else if (detail === 'KYC_NOT_VERIFIED') {
+          setError('本人確認（KYC）が完了していません。登録手続きを最初からやり直してください。');
+        } else if (detail === 'SUBSCRIPTION_NOT_ACTIVE') {
+          setError('決済が完了していません。登録手続きを最初からやり直してください。');
+        } else {
+          setError('メールアドレスまたはパスワードが正しくありません');
+        }
         return false;
       }
     } catch (error: any) {

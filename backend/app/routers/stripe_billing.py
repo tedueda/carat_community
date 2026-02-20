@@ -209,7 +209,21 @@ async def verify_email(
     user = db.query(User).filter(User.email_verification_token_hash == token_hash).first()
 
     if not user:
-        raise HTTPException(status_code=400, detail="無効なトークンです")
+        raise HTTPException(
+            status_code=400,
+            detail="無効なトークンです。既にメール認証が完了している場合は、ログインページからログインしてください。"
+        )
+
+    if user.email_verified:
+        return {
+            "status": "already_verified",
+            "message": "このメールアドレスは既に確認済みです。",
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "display_name": user.display_name
+            }
+        }
 
     if user.email_verification_expires:
         expires_naive = user.email_verification_expires.replace(tzinfo=None) if user.email_verification_expires.tzinfo else user.email_verification_expires
@@ -217,7 +231,6 @@ async def verify_email(
             raise HTTPException(status_code=400, detail="トークンの有効期限が切れています。再送信してください。")
 
     user.email_verified = True
-    user.email_verification_token_hash = None
     user.email_verification_expires = None
     db.commit()
 
