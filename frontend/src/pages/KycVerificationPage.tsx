@@ -5,7 +5,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { resilientFetch } from '../contexts/AuthContext';
 
 const KycVerificationPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -58,7 +58,8 @@ const KycVerificationPage: React.FC = () => {
       if (!configRes.ok) throw new Error('Failed to load Stripe config');
       const configData = await configRes.json();
 
-      const stripePromise = loadStripe(configData.publishable_key);
+      const stripeLocale = (i18n.language || 'ja').substring(0, 2) as 'ja' | 'en';
+      const stripePromise = loadStripe(configData.publishable_key, { locale: stripeLocale });
 
       const res = await resilientFetch('/api/stripe/create-identity-session', {
         method: 'POST',

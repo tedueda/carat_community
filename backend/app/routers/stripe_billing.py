@@ -382,6 +382,10 @@ async def start_checkout(
     customer_id = get_or_create_stripe_customer(db, current_user)
 
     try:
+        locale = current_user.preferred_lang or "ja"
+        if locale not in ("ja", "en"):
+            locale = "ja"
+
         checkout_session = stripe.checkout.Session.create(
             customer=customer_id,
             payment_method_types=["card"],
@@ -390,6 +394,7 @@ async def start_checkout(
                 "quantity": 1
             }],
             mode="subscription",
+            locale=locale,
             success_url=f"{FRONTEND_URL}/subscribe/success?session_id={{CHECKOUT_SESSION_ID}}",
             cancel_url=f"{FRONTEND_URL}/subscribe?canceled=true",
             metadata={
