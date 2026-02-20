@@ -17,13 +17,14 @@ const LoginForm: React.FC = () => {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   
-  const { login } = useAuth();
+  const { login, error: authError, clearError } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+    clearError();
 
     console.log('🔐 LoginForm: Submitting login');
     console.log('🔐 Environment check:', {
@@ -37,27 +38,7 @@ const LoginForm: React.FC = () => {
     const success = await login(email, password, rememberMe);
     
     if (success) {
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        try {
-          const userData = JSON.parse(storedUser);
-          const kycOk = userData.is_legacy_paid || userData.kyc_status === 'VERIFIED';
-          const subOk = userData.is_legacy_paid || userData.subscription_status === 'active';
-          if (!kycOk) {
-            navigate('/kyc-verification');
-            setIsLoading(false);
-            return;
-          }
-          if (!subOk) {
-            navigate('/kyc-verification');
-            setIsLoading(false);
-            return;
-          }
-        } catch (_e) { /* proceed to feed */ }
-      }
       navigate('/feed');
-    } else {
-      setError('メールアドレスまたはパスワードが正しくありません');
     }
     
     setIsLoading(false);
@@ -108,8 +89,8 @@ const LoginForm: React.FC = () => {
                 </button>
               </div>
             </div>
-            {error && (
-              <div className="text-red-600 text-sm bg-red-50 p-3 rounded">{t('auth.login.error')}</div>
+            {(error || authError) && (
+              <div className="text-red-600 text-sm bg-red-50 p-3 rounded">{authError || t('auth.login.error')}</div>
             )}
             <div className="flex items-center space-x-2">
               <input
