@@ -47,6 +47,7 @@ import KycVerificationPage from './pages/KycVerificationPage';
 import PostDetailPage from './pages/PostDetailPage';
 import AboutPage from './pages/AboutPage';
 import UsagePage from './pages/UsagePage';
+import TermsPage from './pages/TermsPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import EmailVerificationPendingPage from './pages/EmailVerificationPendingPage';
@@ -111,6 +112,7 @@ function AppContent() {
           } />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/about/usage" element={<UsagePage />} />
+          <Route path="/about/terms" element={<TermsPage />} />
           {/* Subscription routes */}
           <Route path="/subscribe" element={<SubscribePage />} />
           <Route path="/subscribe/success" element={<SubscribeSuccessPage />} />

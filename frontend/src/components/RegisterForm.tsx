@@ -15,6 +15,8 @@ const RegisterForm: React.FC = () => {
   const [displayName, setDisplayName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [agreeAge, setAgreeAge] = useState(false);
   
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -38,6 +40,12 @@ const RegisterForm: React.FC = () => {
 
     if (!phoneNumber.trim()) {
       setError('携帯番号は必須です');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!agreeTerms || !agreeAge) {
+      setError('利用規約への同意と年齢確認が必要です');
       setIsLoading(false);
       return;
     }
@@ -155,26 +163,50 @@ const RegisterForm: React.FC = () => {
                 placeholder="パスワードを再入力"
               />
             </div>
+            <div className="space-y-3 pt-2">
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={agreeTerms}
+                  onChange={(e) => setAgreeTerms(e.target.checked)}
+                  className="mt-1 h-4 w-4 rounded border-gray-300 text-black focus:ring-black/20 shrink-0"
+                />
+                <span className="text-sm text-gray-700">
+                  利用規約に同意します{' '}
+                  <Link to="/about/terms" target="_blank" className="text-purple-700 hover:text-purple-900 underline">
+                    利用規約を読む
+                  </Link>
+                </span>
+              </label>
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={agreeAge}
+                  onChange={(e) => setAgreeAge(e.target.checked)}
+                  className="mt-1 h-4 w-4 rounded border-gray-300 text-black focus:ring-black/20 shrink-0"
+                />
+                <span className="text-sm text-gray-700">
+                  私は18歳以上です
+                </span>
+              </label>
+            </div>
             {error && (
               <div className="text-red-600 text-sm bg-red-50 p-2 rounded">{error}</div>
             )}
             <Button 
               type="submit" 
               className="w-full bg-black text-white hover:bg-gray-800 transition-colors text-lg font-bold py-6 shadow-lg hover:shadow-xl"
-              disabled={isLoading}
+              disabled={isLoading || !agreeTerms || !agreeAge}
             >
-              {isLoading ? '登録中...' : 'アカウントを作成'}
+              {isLoading ? '登録中...' : '登録して本人確認へ'}
             </Button>
           </form>
           <div className="mt-6 text-center space-y-2">
             <p className="text-base text-black">
-              既にアカウントをお持ちの方は{' '}
+              すでに会員の方は{' '}
               <Link to="/login" className="text-purple-700 hover:text-purple-900 font-semibold underline">
-                こちらからログイン
+                ログイン
               </Link>
-            </p>
-            <p className="text-xs text-carat-gray4">
-              登録することで利用規約に同意したことになります
             </p>
           </div>
         </CardContent>
