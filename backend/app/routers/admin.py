@@ -242,6 +242,7 @@ def _parse_llm_json(text: str) -> dict:
 
 
 @router.post("/api/admin/blog/generate", response_model=GenerateResponse)
+@limiter.limit(os.getenv("RATE_LIMIT_BLOG_GEN_PER_MIN", "1") + "/minute")
 def generate_blog(
     body: GenerateRequest,
     request: Request,
