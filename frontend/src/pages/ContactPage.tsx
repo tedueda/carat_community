@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail } from 'lucide-react';
 import { resilientFetch } from '@/contexts/AuthContext';
+import { Trans, useTranslation } from 'react-i18next';
 
 const ContactPage: React.FC = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -52,7 +54,7 @@ const ContactPage: React.FC = () => {
               Carat Community
             </div>
             <h1 className="mt-6 text-3xl md:text-5xl font-bold tracking-tight text-white">
-              お問い合わせ
+              {t('contactPage.title')}
             </h1>
           </div>
         </div>
@@ -65,32 +67,32 @@ const ContactPage: React.FC = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-6">
                 <Mail className="h-8 w-8 text-green-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">送信完了</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('contactPage.sentTitle')}</h2>
               <p className="text-gray-600 mb-8">
-                お問い合わせありがとうございます。内容を確認の上、折り返しご連絡いたします。
+                {t('contactPage.sentMessage')}
               </p>
               <button
                 onClick={() => setStatus('idle')}
                 className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
               >
-                新しいお問い合わせ
+                {t('contactPage.newInquiry')}
               </button>
             </div>
           ) : (
             <>
               <p className="text-sm md:text-base text-gray-600 mb-8">
-                ご質問・ご意見・お問い合わせは、下記フォームまたはメール（<a href="mailto:ted@carat-community.com" className="text-blue-600 hover:underline">ted@carat-community.com</a>）にてお気軽にどうぞ。
+                {t('contactPage.intro', { email: 'ted@carat-community.com' })}
               </p>
 
               {status === 'error' && (
                 <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-red-600 text-sm">送信に失敗しました。お手数ですが、メール（<a href="mailto:ted@carat-community.com" className="underline">ted@carat-community.com</a>）にて直接ご連絡ください。</p>
+                  <p className="text-red-600 text-sm">{t('contactPage.errorMessage', { email: 'ted@carat-community.com' })}</p>
                 </div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-900 mb-2">お名前</label>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-900 mb-2">{t('contactPage.name')}</label>
                   <input
                     id="name"
                     name="name"
@@ -103,7 +105,7 @@ const ContactPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-900 mb-2">メールアドレス</label>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-900 mb-2">{t('contactPage.email')}</label>
                   <input
                     id="email"
                     name="email"
@@ -116,7 +118,7 @@ const ContactPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-900 mb-2">件名</label>
+                  <label htmlFor="subject" className="block text-sm font-medium text-gray-900 mb-2">{t('contactPage.subject')}</label>
                   <select
                     id="subject"
                     name="subject"
@@ -125,17 +127,17 @@ const ContactPage: React.FC = () => {
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black bg-white"
                   >
-                    <option value="">選択してください</option>
-                    <option value="サービスについて">サービスについて</option>
-                    <option value="アカウントについて">アカウントについて</option>
-                    <option value="決済・お支払いについて">決済・お支払いについて</option>
-                    <option value="不具合・バグ報告">不具合・バグ報告</option>
-                    <option value="その他">その他</option>
+                    <option value="">{t('contactPage.subjectPlaceholder')}</option>
+                    <option value="service">{t('contactPage.subjectService')}</option>
+                    <option value="account">{t('contactPage.subjectAccount')}</option>
+                    <option value="payment">{t('contactPage.subjectPayment')}</option>
+                    <option value="bug">{t('contactPage.subjectBug')}</option>
+                    <option value="other">{t('contactPage.subjectOther')}</option>
                   </select>
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-900 mb-2">お問い合わせ内容</label>
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-900 mb-2">{t('contactPage.message')}</label>
                   <textarea
                     id="message"
                     name="message"
@@ -148,7 +150,11 @@ const ContactPage: React.FC = () => {
                 </div>
 
                 <p className="text-xs text-gray-500">
-                  お問い合わせの際は、<Link to="/privacy" className="text-blue-600 hover:underline">プライバシーポリシー</Link>をご確認ください。
+                  <Trans
+                    i18nKey="contactPage.privacyNote"
+                    values={{ privacyLink: t('contactPage.privacyLinkText') }}
+                    components={{ 1: <Link to="/privacy" className="text-blue-600 hover:underline" /> }}
+                  />
                 </p>
 
                 <button
@@ -156,7 +162,7 @@ const ContactPage: React.FC = () => {
                   disabled={status === 'sending'}
                   className="w-full py-4 bg-black text-white font-bold rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {status === 'sending' ? '送信中...' : '送信する'}
+                  {status === 'sending' ? t('contactPage.sending') : t('contactPage.submit')}
                 </button>
               </form>
             </>

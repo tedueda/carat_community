@@ -172,8 +172,17 @@ const Header: React.FC = () => {
                 variant="ghost"
                 className="w-full justify-start text-white hover:bg-black/65 hover:text-white pl-8"
               >
+                <Link to="/about" onClick={() => setShowMobileMenu(false)}>
+                  {t('nav.aboutItems.aboutCarat')}
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start text-white hover:bg-black/65 hover:text-white pl-8"
+              >
                 <Link to="/about/usage" onClick={() => setShowMobileMenu(false)}>
-                  ご利用方法
+                  {t('nav.aboutItems.usage')}
                 </Link>
               </Button>
               <Button
@@ -182,7 +191,7 @@ const Header: React.FC = () => {
                 className="w-full justify-start text-white hover:bg-black/65 hover:text-white pl-8"
               >
                 <Link to="/about/terms" onClick={() => setShowMobileMenu(false)}>
-                  利用規約
+                  {t('nav.aboutItems.terms')}
                 </Link>
               </Button>
               <Button
@@ -191,7 +200,7 @@ const Header: React.FC = () => {
                 className="w-full justify-start text-white hover:bg-black/65 hover:text-white pl-8"
               >
                 <Link to="/privacy" onClick={() => setShowMobileMenu(false)}>
-                  プライバシーポリシー
+                  {t('nav.aboutItems.privacy')}
                 </Link>
               </Button>
               <Button
@@ -200,7 +209,16 @@ const Header: React.FC = () => {
                 className="w-full justify-start text-white hover:bg-black/65 hover:text-white pl-8"
               >
                 <Link to="/about/tokushoho" onClick={() => setShowMobileMenu(false)}>
-                  特定商取引法に基づく表記
+                  {t('nav.aboutItems.tokushoho')}
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start text-white hover:bg-black/65 hover:text-white pl-8"
+              >
+                <Link to="/contact" onClick={() => setShowMobileMenu(false)}>
+                  {t('nav.aboutItems.contact')}
                 </Link>
               </Button>
               
@@ -353,32 +371,46 @@ const Header: React.FC = () => {
                   <div className="absolute top-full right-0 mt-2 w-56 bg-black/65 rounded-lg shadow-lg border border-white/20 z-[200]">
                     <div className="p-2">
                       <Link
+                        to="/about"
+                        onClick={() => setShowAboutMenu(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
+                      >
+                        <span className="text-sm text-white">{t('nav.aboutItems.aboutCarat')}</span>
+                      </Link>
+                      <Link
                         to="/about/usage"
                         onClick={() => setShowAboutMenu(false)}
                         className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
                       >
-                        <span className="text-sm text-white">ご利用方法</span>
+                        <span className="text-sm text-white">{t('nav.aboutItems.usage')}</span>
                       </Link>
                       <Link
                         to="/about/terms"
                         onClick={() => setShowAboutMenu(false)}
                         className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
                       >
-                        <span className="text-sm text-white">利用規約</span>
+                        <span className="text-sm text-white">{t('nav.aboutItems.terms')}</span>
                       </Link>
                       <Link
                         to="/privacy"
                         onClick={() => setShowAboutMenu(false)}
                         className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
                       >
-                        <span className="text-sm text-white">プライバシーポリシー</span>
+                        <span className="text-sm text-white">{t('nav.aboutItems.privacy')}</span>
                       </Link>
                       <Link
                         to="/about/tokushoho"
                         onClick={() => setShowAboutMenu(false)}
                         className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
                       >
-                        <span className="text-sm text-white">特定商取引法に基づく表記</span>
+                        <span className="text-sm text-white">{t('nav.aboutItems.tokushoho')}</span>
+                      </Link>
+                      <Link
+                        to="/contact"
+                        onClick={() => setShowAboutMenu(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
+                      >
+                        <span className="text-sm text-white">{t('nav.aboutItems.contact')}</span>
                       </Link>
                     </div>
                   </div>
