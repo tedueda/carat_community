@@ -176,6 +176,15 @@ const Header: React.FC = () => {
                   ご利用方法
                 </Link>
               </Button>
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start text-white hover:bg-black/65 hover:text-white pl-8"
+              >
+                <Link to="/about/terms" onClick={() => setShowMobileMenu(false)}>
+                  利用規約
+                </Link>
+              </Button>
               
               <div className="border-t border-white/20 pt-2 pb-2 mx-2">
                 <div className="text-xs font-medium px-4 mb-2 text-white/70">{t('nav.board')}</div>
@@ -331,6 +340,13 @@ const Header: React.FC = () => {
                         className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
                       >
                         <span className="text-sm text-white">ご利用方法</span>
+                      </Link>
+                      <Link
+                        to="/about/terms"
+                        onClick={() => setShowAboutMenu(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
+                      >
+                        <span className="text-sm text-white">利用規約</span>
                       </Link>
                     </div>
                   </div>
