@@ -69,7 +69,7 @@ const PublicBlogListPage: React.FC = () => {
                 {blog.image_url && (
                   <div className="h-48 overflow-hidden">
                     <img
-                      src={blog.image_url}
+                      src={blog.image_url.startsWith('http') ? blog.image_url : `${BACKEND_URL}${blog.image_url}`}
                       alt={blog.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />

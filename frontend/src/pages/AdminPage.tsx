@@ -287,7 +287,8 @@ const BlogGeneratorTab: React.FC<{ token: string }> = ({ token }) => {
       });
       if (!res.ok) throw new Error('Upload failed');
       const data = await res.json();
-      setImageUrl(`${BACKEND_URL}${data.url}`);
+      const url = data.url.startsWith('http') ? data.url : `${BACKEND_URL}${data.url}`;
+      setImageUrl(url);
     } catch (err: any) {
       setError(err.message);
     }

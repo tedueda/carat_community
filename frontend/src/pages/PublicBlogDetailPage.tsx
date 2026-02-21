@@ -155,7 +155,7 @@ const PublicBlogDetailPage: React.FC = () => {
 
         {blog.image_url && (
           <img
-            src={blog.image_url}
+            src={blog.image_url.startsWith('http') ? blog.image_url : `${BACKEND_URL}${blog.image_url}`}
             alt={blog.title}
             className="w-full rounded-lg mb-8 shadow-sm"
           />
