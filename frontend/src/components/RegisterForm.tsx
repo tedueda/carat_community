@@ -172,10 +172,10 @@ const RegisterForm: React.FC = () => {
                   className="mt-1 h-4 w-4 rounded border-gray-300 text-black focus:ring-black/20 shrink-0"
                 />
                 <span className="text-sm text-gray-700">
-                  利用規約に同意します{' '}
-                  <Link to="/about/terms" target="_blank" className="text-purple-700 hover:text-purple-900 underline">
-                    利用規約を読む
-                  </Link>
+                  <Link to="/about/terms" target="_blank" className="text-purple-700 hover:text-purple-900 underline">利用規約</Link>
+                  ・
+                  <Link to="/privacy" target="_blank" className="text-purple-700 hover:text-purple-900 underline">プライバシーポリシー</Link>
+                  に同意します
                 </span>
               </label>
               <label className="flex items-start gap-2 cursor-pointer">

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -120,7 +120,7 @@ const LoginForm: React.FC = () => {
               {isLoading ? t('auth.login.submitting') : t('auth.login.submit')}
             </Button>
           </form>
-          <div className="mt-6 text-center border-t border-gray-200 pt-6">
+          <div className="mt-6 text-center border-t border-gray-200 pt-6 space-y-3">
             <p className="text-gray-600 text-sm">
               {t('auth.login.noAccount')}{' '}
               <button
@@ -130,6 +130,11 @@ const LoginForm: React.FC = () => {
               >
                 {t('auth.login.registerLink')}
               </button>
+            </p>
+            <p className="text-xs text-gray-400">
+              <Link to="/about/terms" className="hover:underline">利用規約</Link>
+              {' ・ '}
+              <Link to="/privacy" className="hover:underline">プライバシーポリシー</Link>
             </p>
           </div>
         </CardContent>

@@ -185,6 +185,24 @@ const Header: React.FC = () => {
                   利用規約
                 </Link>
               </Button>
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start text-white hover:bg-black/65 hover:text-white pl-8"
+              >
+                <Link to="/privacy" onClick={() => setShowMobileMenu(false)}>
+                  プライバシーポリシー
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start text-white hover:bg-black/65 hover:text-white pl-8"
+              >
+                <Link to="/about/tokushoho" onClick={() => setShowMobileMenu(false)}>
+                  特定商取引法に基づく表記
+                </Link>
+              </Button>
               
               <div className="border-t border-white/20 pt-2 pb-2 mx-2">
                 <div className="text-xs font-medium px-4 mb-2 text-white/70">{t('nav.board')}</div>
@@ -347,6 +365,20 @@ const Header: React.FC = () => {
                         className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
                       >
                         <span className="text-sm text-white">利用規約</span>
+                      </Link>
+                      <Link
+                        to="/privacy"
+                        onClick={() => setShowAboutMenu(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
+                      >
+                        <span className="text-sm text-white">プライバシーポリシー</span>
+                      </Link>
+                      <Link
+                        to="/about/tokushoho"
+                        onClick={() => setShowAboutMenu(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-white hover:bg-black/35 rounded-md transition-colors"
+                      >
+                        <span className="text-sm text-white">特定商取引法に基づく表記</span>
                       </Link>
                     </div>
                   </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { resilientFetch } from '../contexts/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
@@ -345,13 +345,18 @@ const SubscribePage: React.FC = () => {
                 required
               />
               <label htmlFor="terms_accepted" className="ml-3 text-sm text-gray-600">
-                {t('subscribe.terms_agreement')}
-                <a href="/terms" target="_blank" className="text-black hover:text-gray-700 underline ml-1">
-                  {t('subscribe.terms_link')}
-                </a>
+                <Link to="/about/terms" target="_blank" className="text-black hover:text-gray-700 underline">利用規約</Link>
+                および
+                <Link to="/privacy" target="_blank" className="text-black hover:text-gray-700 underline">プライバシーポリシー</Link>
+                に同意します
               </label>
             </div>
             
+            <p className="text-xs text-gray-400">
+              申込により、<Link to="/about/terms" target="_blank" className="underline hover:text-gray-600">利用規約</Link>および<Link to="/privacy" target="_blank" className="underline hover:text-gray-600">プライバシーポリシー</Link>に同意したものとみなします。
+              <Link to="/about/tokushoho" target="_blank" className="underline hover:text-gray-600">特定商取引法に基づく表記</Link>
+            </p>
+
             <button
               type="submit"
               disabled={loading}
