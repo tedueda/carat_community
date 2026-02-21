@@ -20,7 +20,7 @@ const Footer: React.FC = () => {
             <h4 className="text-sm font-semibold mb-4">{t('footer.about', 'サイトについて')}</h4>
             <ul className="space-y-2 text-sm">
               <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors">{t('footer.aboutUs', '私たちについて')}</Link></li>
-              <li><Link to="/terms" className="text-gray-400 hover:text-white transition-colors">{t('footer.terms', '利用規約')}</Link></li>
+              <li><Link to="/about/terms" className="text-gray-400 hover:text-white transition-colors">{t('footer.terms', '利用規約')}</Link></li>
               <li><Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">{t('footer.privacy', 'プライバシーポリシー')}</Link></li>
             </ul>
           </div>
