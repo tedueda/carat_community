@@ -1,7 +1,9 @@
+import uuid
 from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, Date, ForeignKey, CheckConstraint, UniqueConstraint, BigInteger, JSON
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from app.database import Base
 
 class User(Base):
@@ -49,6 +51,10 @@ class User(Base):
     password_reset_token_hash = Column(String(64), nullable=True)
     password_reset_expires = Column(DateTime(timezone=True), nullable=True)
     
+    role = Column(String(20), server_default="user", nullable=False)
+    payment_status = Column(String(30), server_default="unpaid", nullable=True)
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
+
     __table_args__ = (
         CheckConstraint("membership_type IN ('free', 'premium', 'admin')", name="check_membership_type"),
     )
@@ -991,3 +997,41 @@ class SalonMessageTranslation(Base):
     )
 
     salon_message = relationship("SalonMessage", back_populates="translations")
+
+
+class BlogPost(Base):
+    __tablename__ = "blog_posts"
+
+    id = Column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    title = Column(String(300), nullable=False)
+    slug = Column(String(300), unique=True, nullable=False, index=True)
+    body = Column(Text, nullable=False)
+    excerpt = Column(Text, nullable=True)
+    image_url = Column(String(500), nullable=True)
+    seo_keywords = Column(JSON, nullable=True)
+    status = Column(String(20), server_default="draft", nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    published_at = Column(DateTime(timezone=True), nullable=True)
+    created_by_admin_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    __table_args__ = (
+        CheckConstraint("status IN ('draft', 'published')", name="check_blog_status"),
+    )
+
+    creator = relationship("User")
+
+
+class AuditLog(Base):
+    __tablename__ = "audit_logs"
+
+    id = Column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    admin_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    action = Column(String(100), nullable=False)
+    target_type = Column(String(50), nullable=True)
+    target_id = Column(String(100), nullable=True)
+    metadata_ = Column("metadata", JSON, nullable=True)
+    ip = Column(String(50), nullable=True)
+    user_agent = Column(String(500), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    admin = relationship("User")

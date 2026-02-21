@@ -51,6 +51,9 @@ import TermsPage from './pages/TermsPage';
 import TokushohoPage from './pages/TokushohoPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import ContactPage from './pages/ContactPage';
+import AdminPage from './pages/AdminPage';
+import PublicBlogListPage from './pages/PublicBlogListPage';
+import PublicBlogDetailPage from './pages/PublicBlogDetailPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import EmailVerificationPendingPage from './pages/EmailVerificationPendingPage';
@@ -265,12 +268,15 @@ function AppContent() {
               <NewsPage />
             </FeedRoute>
           } />
-          <Route path="/blog" element={
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/blog" element={<PublicBlogListPage />} />
+          <Route path="/blog/:slug" element={<PublicBlogDetailPage />} />
+          <Route path="/blog-members" element={
             <FeedRoute>
               <BlogListPage />
             </FeedRoute>
           } />
-          <Route path="/blog/:slug" element={
+          <Route path="/blog-members/:slug" element={
             <FeedRoute>
               <BlogDetailPage />
             </FeedRoute>
