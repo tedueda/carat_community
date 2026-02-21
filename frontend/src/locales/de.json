@@ -1239,7 +1239,7 @@
     "sending": "Wird gesendet...",
     "sentTitle": "Erfolgreich gesendet",
     "sentMessage": "Vielen Dank für Ihre Anfrage. Wir werden Ihre Nachricht prüfen und uns in Kürze bei Ihnen melden.",
-    "newInquiry": "Neue Anfrage",
+    "backToTop": "Zurück zur Startseite",
     "errorMessage": "Senden fehlgeschlagen. Kontaktieren Sie uns direkt per E-Mail an {{email}}."
   },
   "privacyPage": {

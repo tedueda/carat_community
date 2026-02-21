@@ -1239,7 +1239,7 @@
     "sending": "Invio in corso...",
     "sentTitle": "Inviato con successo",
     "sentMessage": "Grazie per la tua richiesta. Esamineremo il tuo messaggio e ti risponderemo al più presto.",
-    "newInquiry": "Nuova richiesta",
+    "backToTop": "Torna alla pagina principale",
     "errorMessage": "Invio fallito. Contattaci direttamente via e-mail a {{email}}."
   },
   "privacyPage": {

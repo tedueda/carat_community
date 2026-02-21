@@ -1239,7 +1239,7 @@
     "sending": "Enviando...",
     "sentTitle": "Enviado com sucesso",
     "sentMessage": "Obrigado pela sua consulta. Analisaremos sua mensagem e responderemos em breve.",
-    "newInquiry": "Nova consulta",
+    "backToTop": "Voltar à página inicial",
     "errorMessage": "Falha ao enviar. Entre em contato diretamente por e-mail em {{email}}."
   },
   "privacyPage": {

@@ -1294,7 +1294,7 @@
     "sending": "送信中...",
     "sentTitle": "送信完了",
     "sentMessage": "お問い合わせありがとうございます。内容を確認の上、折り返しご連絡いたします。",
-    "newInquiry": "新しいお問い合わせ",
+    "backToTop": "トップページに戻る",
     "errorMessage": "送信に失敗しました。お手数ですが、メール（{{email}}）にて直接ご連絡ください。"
   },
   "privacyPage": {

@@ -1304,7 +1304,7 @@
     "sending": "전송 중...",
     "sentTitle": "전송 완료",
     "sentMessage": "문의해 주셔서 감사합니다. 내용을 확인 후 연락드리겠습니다.",
-    "newInquiry": "새 문의",
+    "backToTop": "톱페이지로 돌아가기",
     "errorMessage": "전송에 실패했습니다. 이메일({{email}})로 직접 연락해 주세요."
   },
   "privacyPage": {
