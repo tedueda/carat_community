@@ -2,6 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from pydantic import BaseModel, EmailStr
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import os
 import logging
 
@@ -10,11 +13,23 @@ from app.database import get_db
 logger = logging.getLogger(__name__)
 
 CONTACT_RECIPIENT = os.getenv("CONTACT_EMAIL", "ted@carat-community.com")
+SMTP_HOST = os.getenv("SMTP_HOST", "sv14645.xserver.jp")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "465"))
+SMTP_USER = os.getenv("SMTP_USER", "ted@carat-community.com")
+SMTP_PASS = os.getenv("SMTP_PASS", "")
 
 router = APIRouter(
     prefix="/api/contact",
     tags=["contact"],
 )
+
+SUBJECT_MAP = {
+    "service": "サービスについて",
+    "account": "アカウントについて",
+    "payment": "決済・お支払いについて",
+    "bug": "不具合・バグ報告",
+    "other": "その他",
+}
 
 
 class ContactRequest(BaseModel):
@@ -51,45 +66,36 @@ def submit_contact(
         raise HTTPException(status_code=500, detail="Failed to save inquiry")
 
     try:
-        _send_notification_email(payload)
+        _send_smtp_email(payload)
     except Exception as e:
-        logger.warning("Email notification skipped: %s", e)
+        logger.warning("Email notification failed: %s", e)
 
     return {"ok": True}
 
 
-def _send_notification_email(payload: ContactRequest) -> None:
-    import boto3
-    from botocore.exceptions import ClientError
+def _send_smtp_email(payload: ContactRequest) -> None:
+    if not SMTP_PASS:
+        logger.warning("SMTP_PASS not set, skipping email")
+        return
 
-    region = os.getenv("AWS_REGION", "ap-northeast-1")
-    sender = os.getenv("SES_SENDER", CONTACT_RECIPIENT)
+    subject_label = SUBJECT_MAP.get(payload.subject, payload.subject)
 
-    client = boto3.client("ses", region_name=region)
-    subject_map = {
-        "service": "サービスについて",
-        "account": "アカウントについて",
-        "payment": "決済・お支払いについて",
-        "bug": "不具合・バグ報告",
-        "other": "その他",
-    }
-    subject_label = subject_map.get(payload.subject, payload.subject)
+    msg = MIMEMultipart()
+    msg["From"] = SMTP_USER
+    msg["To"] = CONTACT_RECIPIENT
+    msg["Subject"] = f"[Carat お問い合わせ] {subject_label}"
+    msg["Reply-To"] = payload.email
 
-    client.send_email(
-        Source=sender,
-        Destination={"ToAddresses": [CONTACT_RECIPIENT]},
-        Message={
-            "Subject": {"Data": f"[Carat お問い合わせ] {subject_label}", "Charset": "UTF-8"},
-            "Body": {
-                "Text": {
-                    "Data": (
-                        f"名前: {payload.name}\n"
-                        f"メール: {payload.email}\n"
-                        f"件名: {subject_label}\n\n"
-                        f"{payload.message}"
-                    ),
-                    "Charset": "UTF-8",
-                }
-            },
-        },
+    body = (
+        f"名前: {payload.name}\n"
+        f"メール: {payload.email}\n"
+        f"件名: {subject_label}\n\n"
+        f"{payload.message}"
     )
+    msg.attach(MIMEText(body, "plain", "utf-8"))
+
+    with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=10) as server:
+        server.login(SMTP_USER, SMTP_PASS)
+        server.sendmail(SMTP_USER, [CONTACT_RECIPIENT], msg.as_string())
+
+    logger.info("Contact email sent to %s", CONTACT_RECIPIENT)
