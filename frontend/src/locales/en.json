@@ -1294,7 +1294,7 @@
     "sending": "Sending...",
     "sentTitle": "Sent Successfully",
     "sentMessage": "Thank you for your inquiry. We will review your message and get back to you shortly.",
-    "newInquiry": "New Inquiry",
+    "backToTop": "Back to Top Page",
     "errorMessage": "Failed to send. Please contact us directly via email at {{email}}."
   },
   "privacyPage": {

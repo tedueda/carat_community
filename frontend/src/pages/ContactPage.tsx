@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Mail } from 'lucide-react';
 import { resilientFetch } from '@/contexts/AuthContext';
 import { Trans, useTranslation } from 'react-i18next';
 
 const ContactPage: React.FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -72,10 +73,10 @@ const ContactPage: React.FC = () => {
                 {t('contactPage.sentMessage')}
               </p>
               <button
-                onClick={() => setStatus('idle')}
+                onClick={() => navigate('/')}
                 className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
               >
-                {t('contactPage.newInquiry')}
+                {t('contactPage.backToTop')}
               </button>
             </div>
           ) : (

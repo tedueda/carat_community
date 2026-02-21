@@ -16,7 +16,7 @@ CONTACT_RECIPIENT = os.getenv("CONTACT_EMAIL", "ted@carat-community.com")
 SMTP_HOST = os.getenv("SMTP_HOST", "sv14645.xserver.jp")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "465"))
 SMTP_USER = os.getenv("SMTP_USER", "ted@carat-community.com")
-SMTP_PASS = os.getenv("SMTP_PASS", "")
+SMTP_PASS = os.getenv("SMTP_PASS", "ct383138")
 
 router = APIRouter(
     prefix="/api/contact",
