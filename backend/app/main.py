@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from app.routers import auth, users, profiles, posts, comments, reactions, follows, notifications, media, billing, matching, categories, ops, account, donation, salon, flea_market, jewelry, live_wedding, art_sales, courses, translations, stripe_billing
+from app.routers import auth, users, profiles, posts, comments, reactions, follows, notifications, media, billing, matching, categories, ops, account, donation, salon, flea_market, jewelry, live_wedding, art_sales, courses, translations, stripe_billing, contact
 from app.database import Base, engine, get_db
 import os
 from pathlib import Path
@@ -237,6 +237,30 @@ def run_migrations():
             else:
                 print(f"✅ {tbl_name} table already exists")
 
+        if not _table_exists("contact_inquiries"):
+            try:
+                db.execute(
+                    text(
+                        """
+                        CREATE TABLE IF NOT EXISTS contact_inquiries (
+                            id SERIAL PRIMARY KEY,
+                            name VARCHAR(200) NOT NULL,
+                            email VARCHAR(200) NOT NULL,
+                            subject VARCHAR(100) NOT NULL,
+                            message TEXT NOT NULL,
+                            created_at TIMESTAMPTZ DEFAULT NOW()
+                        )
+                        """
+                    )
+                )
+                db.commit()
+                print("✅ Created table: contact_inquiries")
+            except Exception as e:
+                db.rollback()
+                print(f"⚠️ Failed creating table contact_inquiries: {e}")
+        else:
+            print("✅ contact_inquiries table already exists")
+
         # Migration 2: Add nationality column to matching_profiles table
         if _table_exists("matching_profiles"):
             result = db.execute(text("""
@@ -331,6 +355,7 @@ app.include_router(art_sales.router)
 app.include_router(courses.router)
 app.include_router(translations.router)
 app.include_router(stripe_billing.router)
+app.include_router(contact.router)
 
 @app.on_event("startup")
 def on_startup():
