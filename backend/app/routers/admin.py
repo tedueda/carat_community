@@ -7,7 +7,10 @@ import imghdr
 import logging
 from datetime import datetime, timezone
 from typing import Optional, List
+from pathlib import Path
 
+import boto3
+from botocore.exceptions import ClientError
 from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile, File, Query, status
 from pydantic import BaseModel, EmailStr
 from sqlalchemy import or_, func as sa_func
@@ -24,6 +27,20 @@ logger = logging.getLogger(__name__)
 UPLOAD_MAX_MB = int(os.getenv("UPLOAD_MAX_MB", "5"))
 UPLOAD_ALLOWED_EXT = set(os.getenv("UPLOAD_ALLOWED_EXT", "jpg,jpeg,png,webp").split(","))
 ALLOWED_MIME = {"image/jpeg", "image/png", "image/webp"}
+
+S3_BUCKET = os.getenv("AWS_S3_BUCKET", "rainbow-community-media-prod")
+S3_REGION = os.getenv("AWS_REGION", "ap-northeast-1")
+USE_S3 = os.getenv("USE_S3", "false").lower() == "true"
+
+if USE_S3:
+    s3_client = boto3.client(
+        "s3",
+        region_name=S3_REGION,
+        aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+    )
+else:
+    s3_client = None
 
 LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
 LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.7"))
@@ -196,17 +213,30 @@ async def upload_image(
     if kind not in ("jpeg", "png", "webp", "rgb"):
         raise HTTPException(status_code=400, detail="Invalid image content")
 
-    from pathlib import Path
-    media_base = os.getenv("MEDIA_DIR")
-    if not media_base:
-        media_base = "/data/media" if os.path.exists("/data") else "media"
-    media_dir = Path(media_base) / "blog"
-    media_dir.mkdir(parents=True, exist_ok=True)
     fname = f"{uuid.uuid4().hex}.{ext}"
-    fpath = media_dir / fname
-    fpath.write_bytes(data)
 
-    url = f"/media/blog/{fname}"
+    if USE_S3 and s3_client:
+        try:
+            s3_key = f"media/blog/{fname}"
+            s3_client.put_object(
+                Bucket=S3_BUCKET,
+                Key=s3_key,
+                Body=data,
+                ContentType=file.content_type or "application/octet-stream",
+            )
+            url = f"https://{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com/{s3_key}"
+        except ClientError as e:
+            raise HTTPException(status_code=500, detail=f"S3 upload failed: {str(e)}")
+    else:
+        media_base = os.getenv("MEDIA_DIR")
+        if not media_base:
+            media_base = "/data/media" if os.path.exists("/data") else "media"
+        media_dir = Path(media_base) / "blog"
+        media_dir.mkdir(parents=True, exist_ok=True)
+        fpath = media_dir / fname
+        fpath.write_bytes(data)
+        url = f"/media/blog/{fname}"
+
     _write_audit(db, current_user.id, "IMAGE_UPLOAD", request, target_type="blog", metadata={"filename": fname})
     return {"url": url, "filename": fname}
 

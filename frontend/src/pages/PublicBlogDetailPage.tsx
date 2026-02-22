@@ -68,7 +68,8 @@ const PublicBlogDetailPage: React.FC = () => {
     setMeta('og:type', 'article', true);
     setMeta('og:url', window.location.href, true);
     if (data.image_url) {
-      setMeta('og:image', data.image_url, true);
+      const imgUrl = data.image_url.startsWith('http') ? data.image_url : `${BACKEND_URL}${data.image_url}`;
+      setMeta('og:image', imgUrl, true);
     }
 
     let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
@@ -84,7 +85,7 @@ const PublicBlogDetailPage: React.FC = () => {
       '@type': 'Article',
       headline: data.title,
       description: data.excerpt || '',
-      image: data.image_url || '',
+      image: data.image_url ? (data.image_url.startsWith('http') ? data.image_url : `${BACKEND_URL}${data.image_url}`) : '',
       datePublished: data.published_at || data.created_at || '',
       author: { '@type': 'Organization', name: 'Carat Community' },
       publisher: { '@type': 'Organization', name: 'Carat Community' },
@@ -155,7 +156,7 @@ const PublicBlogDetailPage: React.FC = () => {
 
         {blog.image_url && (
           <img
-            src={blog.image_url}
+            src={blog.image_url.startsWith('http') ? blog.image_url : `${BACKEND_URL}${blog.image_url}`}
             alt={blog.title}
             className="w-full rounded-lg mb-8 shadow-sm"
           />
