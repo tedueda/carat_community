@@ -440,6 +440,31 @@ def delete_blog(
     return {"ok": True}
 
 
+class AdminBlogItem(BaseModel):
+    id: str
+    title: str
+    slug: str
+    status: str
+    image_url: Optional[str] = None
+    published_at: Optional[datetime] = None
+    created_at: Optional[datetime] = None
+
+
+@router.get("/api/admin/blog", response_model=List[AdminBlogItem])
+def admin_blog_list(
+    current_user: User = Depends(get_current_admin_user),
+    db: Session = Depends(get_db),
+):
+    posts = db.query(BlogPost).order_by(BlogPost.created_at.desc()).all()
+    return [
+        AdminBlogItem(
+            id=str(p.id), title=p.title, slug=p.slug, status=p.status,
+            image_url=p.image_url, published_at=p.published_at, created_at=p.created_at,
+        )
+        for p in posts
+    ]
+
+
 # ──────────────── Public Blog ────────────────
 
 class PublicBlogItem(BaseModel):
