@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowLeft, ArrowRight } from 'lucide-react';
@@ -18,6 +19,7 @@ interface BlogDetail {
 }
 
 const PublicBlogDetailPage: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const [blog, setBlog] = useState<BlogDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -103,7 +105,8 @@ const PublicBlogDetailPage: React.FC = () => {
 
   const formatDate = (d: string | null) => {
     if (!d) return '';
-    return new Date(d).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+    const locale = i18n.language === 'ja' ? 'ja-JP' : i18n.language === 'ko' ? 'ko-KR' : i18n.language === 'de' ? 'de-DE' : i18n.language === 'fr' ? 'fr-FR' : i18n.language === 'es' ? 'es-ES' : i18n.language === 'pt' ? 'pt-BR' : i18n.language === 'it' ? 'it-IT' : 'en-US';
+    return new Date(d).toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
   if (loading) {
@@ -122,9 +125,9 @@ const PublicBlogDetailPage: React.FC = () => {
   if (!blog) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-8 text-center">
-        <p className="text-gray-500 mb-4">ブログ記事が見つかりません</p>
+        <p className="text-gray-500 mb-4">{t('blogDetail.notFound')}</p>
         <Link to="/blog">
-          <Button variant="outline">ブログ一覧に戻る</Button>
+          <Button variant="outline">{t('blogDetail.backToList')}</Button>
         </Link>
       </div>
     );
@@ -133,7 +136,7 @@ const PublicBlogDetailPage: React.FC = () => {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <Link to="/blog" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-6">
-        <ArrowLeft className="h-4 w-4" /> ブログ一覧
+        <ArrowLeft className="h-4 w-4" /> {t('blogDetail.backToList')}
       </Link>
 
       <article>
@@ -168,11 +171,11 @@ const PublicBlogDetailPage: React.FC = () => {
 
         <Card className="bg-gradient-to-r from-pink-50 to-orange-50 border-pink-200">
           <CardContent className="p-6 text-center space-y-3">
-            <h3 className="text-lg font-bold text-gray-800">Carat Communityに参加しませんか？</h3>
-            <p className="text-sm text-gray-600">LGBTQ+の仲間とつながる、安心・安全なコミュニティです。</p>
+            <h3 className="text-lg font-bold text-gray-800">{t('blogDetail.ctaTitle')}</h3>
+            <p className="text-sm text-gray-600">{t('blogDetail.ctaDescription')}</p>
             <Link to="/subscribe">
               <Button className="bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 text-white">
-                今すぐ参加する <ArrowRight className="h-4 w-4 ml-1" />
+                {t('blogDetail.ctaButton')} <ArrowRight className="h-4 w-4 ml-1" />
               </Button>
             </Link>
           </CardContent>

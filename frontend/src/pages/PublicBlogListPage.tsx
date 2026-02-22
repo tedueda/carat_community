@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { BACKEND_URL } from '@/config';
@@ -15,6 +16,7 @@ interface BlogItem {
 }
 
 const PublicBlogListPage: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const [blogs, setBlogs] = useState<BlogItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,14 +35,15 @@ const PublicBlogListPage: React.FC = () => {
 
   const formatDate = (d: string | null) => {
     if (!d) return '';
-    return new Date(d).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+    const locale = i18n.language === 'ja' ? 'ja-JP' : i18n.language === 'ko' ? 'ko-KR' : i18n.language === 'de' ? 'de-DE' : i18n.language === 'fr' ? 'fr-FR' : i18n.language === 'es' ? 'es-ES' : i18n.language === 'pt' ? 'pt-BR' : i18n.language === 'it' ? 'it-IT' : 'en-US';
+    return new Date(d).toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">ブログ</h1>
-        <p className="text-gray-600 mt-1">Caratコミュニティの最新情報</p>
+        <h1 className="text-3xl font-bold text-gray-900">{t('blogPage.title')}</h1>
+        <p className="text-gray-600 mt-1">{t('blogPage.subtitle')}</p>
       </div>
 
       {loading ? (
@@ -58,7 +61,7 @@ const PublicBlogListPage: React.FC = () => {
       ) : blogs.length === 0 ? (
         <Card className="text-center p-12">
           <CardContent>
-            <p className="text-gray-500">まだブログ記事がありません</p>
+            <p className="text-gray-500">{t('blogPage.noPosts')}</p>
           </CardContent>
         </Card>
       ) : (
@@ -88,7 +91,7 @@ const PublicBlogListPage: React.FC = () => {
                       <span>{formatDate(blog.published_at)}</span>
                     </div>
                     <span className="flex items-center gap-1 text-blue-600 group-hover:underline">
-                      続きを読む <ArrowRight className="h-3 w-3" />
+                      {t('blogPage.readMore')} <ArrowRight className="h-3 w-3" />
                     </span>
                   </div>
                 </CardContent>
