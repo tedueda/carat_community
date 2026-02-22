@@ -420,6 +420,26 @@ def publish_blog(
     return BlogPublishResponse(id=str(post.id), slug=post.slug, status=post.status, published_at=post.published_at)
 
 
+@router.delete("/api/admin/blog/{blog_id}")
+def delete_blog(
+    blog_id: str,
+    request: Request,
+    current_user: User = Depends(get_current_admin_user),
+    db: Session = Depends(get_db),
+):
+    try:
+        uid = uuid.UUID(blog_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid blog ID")
+    post = db.query(BlogPost).filter(BlogPost.id == uid).first()
+    if not post:
+        raise HTTPException(status_code=404, detail="Blog not found")
+    _write_audit(db, current_user.id, "BLOG_DELETE", request, target_type="blog", target_id=str(post.id), metadata={"title": post.title})
+    db.delete(post)
+    db.commit()
+    return {"ok": True}
+
+
 # ──────────────── Public Blog ────────────────
 
 class PublicBlogItem(BaseModel):

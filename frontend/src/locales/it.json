@@ -1294,5 +1294,18 @@
     "bottomTerms": "Termini di servizio",
     "bottomTokushoho": "Legge sulle transazioni commerciali",
     "bottomContact": "Contatti"
+  },
+  "blogPage": {
+    "title": "Blog",
+    "subtitle": "Ultime notizie dalla Carat Community",
+    "noPosts": "Nessun articolo del blog ancora",
+    "readMore": "Leggi di più"
+  },
+  "blogDetail": {
+    "notFound": "Articolo del blog non trovato",
+    "backToList": "Lista del blog",
+    "ctaTitle": "Unisciti a Carat Community?",
+    "ctaDescription": "Una comunità sicura per connettersi con amici LGBTQ+.",
+    "ctaButton": "Unisciti ora"
   }
 }

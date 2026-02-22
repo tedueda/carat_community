@@ -11,7 +11,7 @@ import {
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog';
-import { Search, Trash2, Upload, Sparkles, Eye, Send, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
+import { Search, Trash2, Upload, Sparkles, Eye, Send, ChevronLeft, ChevronRight, LogOut, Pencil } from 'lucide-react';
 import { BACKEND_URL } from '@/config';
 
 const AdminPage: React.FC = () => {
@@ -262,7 +262,7 @@ const UserManagementTab: React.FC<{ token: string }> = ({ token }) => {
   );
 };
 
-type BlogStep = 'input' | 'generating' | 'preview' | 'publishing' | 'done';
+type BlogStep = 'input' | 'generating' | 'preview' | 'editing' | 'publishing' | 'done';
 
 const BlogGeneratorTab: React.FC<{ token: string }> = ({ token }) => {
   const [step, setStep] = useState<BlogStep>('input');
@@ -271,6 +271,10 @@ const BlogGeneratorTab: React.FC<{ token: string }> = ({ token }) => {
   const [imagePreview, setImagePreview] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [generated, setGenerated] = useState<any>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editBody, setEditBody] = useState('');
+  const [editExcerpt, setEditExcerpt] = useState('');
+  const [editKeywords, setEditKeywords] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -318,6 +322,26 @@ const BlogGeneratorTab: React.FC<{ token: string }> = ({ token }) => {
     }
   };
 
+  const startEditing = () => {
+    if (!generated) return;
+    setEditTitle(generated.final_title || '');
+    setEditBody(generated.body || '');
+    setEditExcerpt(generated.excerpt || '');
+    setEditKeywords((generated.keywords || []).join(', '));
+    setStep('editing');
+  };
+
+  const saveEdits = () => {
+    setGenerated({
+      ...generated,
+      final_title: editTitle,
+      body: editBody,
+      excerpt: editExcerpt,
+      keywords: editKeywords.split(',').map((k: string) => k.trim()).filter(Boolean),
+    });
+    setStep('preview');
+  };
+
   const handlePublish = async () => {
     setStep('publishing');
     setError('');
@@ -356,6 +380,10 @@ const BlogGeneratorTab: React.FC<{ token: string }> = ({ token }) => {
     setImagePreview('');
     setImageUrl('');
     setGenerated(null);
+    setEditTitle('');
+    setEditBody('');
+    setEditExcerpt('');
+    setEditKeywords('');
     setError('');
   };
 
@@ -374,6 +402,39 @@ const BlogGeneratorTab: React.FC<{ token: string }> = ({ token }) => {
           </div>
         </CardContent>
       </Card>
+    );
+  }
+
+  if (step === 'editing' && generated) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardContent className="p-6 space-y-4">
+            <h3 className="text-sm font-medium text-gray-500 mb-1">記事を編集</h3>
+            <div>
+              <label className="block text-sm font-medium mb-1">タイトル</label>
+              <Input value={editTitle} onChange={e => setEditTitle(e.target.value)} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">SEOキーワード（カンマ区切り）</label>
+              <Input value={editKeywords} onChange={e => setEditKeywords(e.target.value)} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">抜粋</label>
+              <Textarea rows={2} value={editExcerpt} onChange={e => setEditExcerpt(e.target.value)} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">本文</label>
+              <Textarea rows={16} value={editBody} onChange={e => setEditBody(e.target.value)} />
+              <p className="text-xs text-gray-400 mt-1">{editBody.length}文字</p>
+            </div>
+          </CardContent>
+        </Card>
+        <div className="flex gap-3">
+          <Button variant="outline" onClick={() => setStep('preview')}>キャンセル</Button>
+          <Button onClick={saveEdits}>編集を保存してプレビューへ</Button>
+        </div>
+      </div>
     );
   }
 
@@ -404,6 +465,10 @@ const BlogGeneratorTab: React.FC<{ token: string }> = ({ token }) => {
         {error && <p className="text-red-600 text-sm">{error}</p>}
         <div className="flex gap-3">
           <Button variant="outline" onClick={() => setStep('input')}>戻る</Button>
+          <Button variant="outline" onClick={startEditing}>
+            <Pencil className="h-4 w-4 mr-2" />
+            編集する
+          </Button>
           <Button onClick={handlePublish}>
             <Send className="h-4 w-4 mr-2" />
             公開する

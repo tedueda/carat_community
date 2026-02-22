@@ -1359,5 +1359,18 @@
     "bottomTerms": "이용약관",
     "bottomTokushoho": "특정상거래법 표기",
     "bottomContact": "문의하기"
+  },
+  "blogPage": {
+    "title": "블로그",
+    "subtitle": "Carat 커뮤니티 최신 소식",
+    "noPosts": "아직 블로그 게시물이 없습니다",
+    "readMore": "더 보기"
+  },
+  "blogDetail": {
+    "notFound": "블로그 게시물을 찾을 수 없습니다",
+    "backToList": "블로그 목록",
+    "ctaTitle": "Carat Community에 참여하시겠어요?",
+    "ctaDescription": "LGBTQ+ 동료와 연결되는 안전한 커뮤니티입니다.",
+    "ctaButton": "지금 참여하기"
   }
 }
