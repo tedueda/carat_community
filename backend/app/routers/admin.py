@@ -44,7 +44,7 @@ else:
 
 LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
 LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.7"))
-LLM_MAX_TOKENS = int(os.getenv("LLM_MAX_TOKENS", "1600"))
+LLM_MAX_TOKENS = int(os.getenv("LLM_MAX_TOKENS", "3200"))
 
 ADMIN_SEED_EMAIL = os.getenv("ADMIN_SEED_EMAIL", "ted@carat-community.com")
 ADMIN_SEED_PASSWORD = os.getenv("ADMIN_SEED_PASSWORD", "")
@@ -296,7 +296,7 @@ def generate_blog(
         "Return ONLY valid JSON with these keys: "
         "keywords (array of 3-8 SEO keywords), "
         "final_title (the best title from candidates or improved), "
-        "body (blog body text, exactly 900-1100 Japanese characters, naturally integrating keywords), "
+        "body (blog body text, exactly 1800-2200 Japanese characters, naturally integrating keywords), "
         "excerpt (120 character summary), "
         "slug (URL-friendly ASCII slug derived from the title)."
     )
